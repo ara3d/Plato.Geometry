@@ -5,9 +5,37 @@ other words it is a math and geometry library that is appropriate for usage in
 3D Computer Aided Design (CAD), Computer Aided Engineering (CAE), and 
 Digital Content Creation (DCC) software. 
 
-Plato.Geometry is currently delivered as a C# library, but the roadmap includes C++ and JavaScript support. 
+Plato.Geometry is delivered as a cross-platform C# library, but the roadmap includes C++ and JavaScript support. 
 All algorithms and data structures are written in a high-level programming language called Plato
 which makes porting to different languages easier. 
+
+# About the C# Library 
+
+Plato is a self-contained C# library with no 3rd party dependencies, and very little dependency on the System framework, 
+which is designed for simple and efficient mathematical and geometric routines. 
+
+# About Code Generation
+
+High quality mathematical libraries in different languages commonly resort to using code generation, to cover the 
+large amounts of repetition and boilerplate that can arise. They also do this to minimize introducing abstraction
+penalties that can arise by using virtual function table lookups.  
+
+For example: 
+
+* Different dimensionality of vectors
+* Implicit/explicit conversions
+* Single / double precision 
+* String formatting and parsing
+* Optimizations such as loop rolling, function inlining  
+
+Some examples of C# mathematical libraries that use code generation techniques are:
+
+* Unity.Mathematics
+* VIM.Math3D
+* System.Numerics
+
+We took this idea to another level, by creating a domain specific language (Plato) for expressing concrete data types, abstrsact data types, and algorithms
+in a way that could easily yield high-performance code, not just in C#, but in other languages.  
 
 # About Plato 
 
