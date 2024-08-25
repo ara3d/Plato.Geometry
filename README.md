@@ -9,14 +9,26 @@ Plato.Geometry is delivered as a cross-platform C# library, but the roadmap incl
 All algorithms and data structures are written in a high-level programming language called Plato
 which makes porting to different languages easier. 
 
+## Rebuilding the C# Source Files from Plato
+
+The C# source files in this repository are generated from the Plato source files in the `plato-src` directory.
+Do not edit the C# source files with the extension ".g.cs" directly. 
+
+The tool for building C# source files from Plato source files is in a separate repository (https://github.com/cdiggins/plato), and is 
+called `PlatoWinFormsEditor`. 
+
+It is not a tool that is intended for public consumption. You can use it if you want, but there is very little documentation and some of the 
+error messages may be cryptic. 
+
 ## About the C# Library 
 
-Plato.Geometry is a self-contained C# library with no 3rd party dependencies, and very little dependency on the System framework, 
-which is designed for simple and efficient mathematical and geometric routines. 
+Plato.Geometry is a self-contained C# library with no 3rd party dependencies, and very little dependency on the System libraries. 
+It is designed to make it easy to define simple, efficient, and easy to read mathematical and geometric routines and data-structures.  
 
 All classes in Plato are immutable, meaning that they can't be changed. However every class comes with 
-helper functions for transforming them implicitly into tuples, or classes which are structurally similar,
-and functions that allow them to be easily transformed into new values by changing one of their fields. 
+helper functions for transforming them implicitly into tuples, or classes which are structurally similar.
+Helper functions are also provided that allow them to be easily transformed into new values by changing one of their fields,
+which are named `With__FIELDNAME__()`.   
 
 ## About Code Generation
 
@@ -40,8 +52,6 @@ Some examples of C# mathematical libraries that use code generation techniques a
 
 We took this idea to another level, by creating a domain specific language (Plato) for expressing concrete data types, abstrsact data types, and algorithms
 in a way that could easily yield high-performance code, not just in C#, but in other languages.  
-
---
 
 # About Plato 
 
@@ -104,5 +114,5 @@ as well as parsing and compilers. When you put it all together, this is actually
 trying to manually write and maintain libraries by hand in different programming languages. 
 We observed that sophisticated math libraries
 often resort to code generation techniques simply to work around limitations in the core languages. 
-This project just takes the idea to its logical conclusion. 
+This project just takes the idea to a logical next step. 
 
