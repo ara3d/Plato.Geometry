@@ -274,11 +274,10 @@ namespace Ara3D.SinglePrecision
     public interface SolidPolyhedron: Polyhedron
     {
     }
-    public interface TriMesh: Polyhedron
+    public interface Mesh<FaceType, VertexType>: Geometry3D
     {
-    }
-    public interface QuadMesh: Polyhedron
-    {
+        Array<FaceType> Faces { get; }
+        Array<VertexType> Vertices { get; }
     }
     public interface Grid2D: Array2D<Point2D>
     {
@@ -305,6 +304,29 @@ namespace Ara3D.SinglePrecision
     }
     public interface Polygon3D: PolygonalChain3D
     {
+    }
+    public readonly partial struct ArrayImplementation<T>: Array<T>
+    {
+        public readonly Integer Count;
+        public readonly Function1<Integer, T> Function;
+        public ArrayImplementation<T> WithCount(Integer count) => (count, Function);
+        public ArrayImplementation<T> WithFunction(Function1<Integer, T> function) => (Count, function);
+        public ArrayImplementation(Integer count, Function1<Integer, T> function) => (Count, Function) = (count, function);
+        public static ArrayImplementation<T> Default = new ArrayImplementation<T>();
+        public static ArrayImplementation<T> New(Integer count, Function1<Integer, T> function) => new ArrayImplementation<T>(count, function);
+        public static implicit operator (Integer, Function1<Integer, T>)(ArrayImplementation<T> self) => (self.Count, self.Function);
+        public static implicit operator ArrayImplementation<T>((Integer, Function1<Integer, T>) value) => new ArrayImplementation<T>(value.Item1, value.Item2);
+        public void Deconstruct(out Integer count, out Function1<Integer, T> function) { count = Count; function = Function; }
+        public override bool Equals(object obj) { if (!(obj is ArrayImplementation<T>)) return false; var other = (ArrayImplementation<T>)obj; return Count.Equals(other.Count) && Function.Equals(other.Function); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Count, Function);
+        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public static implicit operator Dynamic(ArrayImplementation<T> self) => new Dynamic(self);
+        public static implicit operator ArrayImplementation<T>(Dynamic value) => value.As<ArrayImplementation<T>>();
+        public String TypeName => "ArrayImplementation<T>";
+        public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Count", (String)"Function");
+        public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Count), new Dynamic(Function));
+        Integer Array<T>.Count => Count;
+        // Unimplemented concept functions
     }
     public readonly partial struct Point2D: Coordinate<Point2D>, Difference<Point2D, Vector2D>
     {
@@ -650,28 +672,6 @@ namespace Ara3D.SinglePrecision
         public String TypeName => "Lens";
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
-        // Unimplemented concept functions
-    }
-    public readonly partial struct PolygonFace
-    {
-        public readonly Integer FaceIndex;
-        public readonly Array<Integer> PointIndices;
-        public PolygonFace WithFaceIndex(Integer faceIndex) => (faceIndex, PointIndices);
-        public PolygonFace WithPointIndices(Array<Integer> pointIndices) => (FaceIndex, pointIndices);
-        public PolygonFace(Integer faceIndex, Array<Integer> pointIndices) => (FaceIndex, PointIndices) = (faceIndex, pointIndices);
-        public static PolygonFace Default = new PolygonFace();
-        public static PolygonFace New(Integer faceIndex, Array<Integer> pointIndices) => new PolygonFace(faceIndex, pointIndices);
-        public static implicit operator (Integer, Array<Integer>)(PolygonFace self) => (self.FaceIndex, self.PointIndices);
-        public static implicit operator PolygonFace((Integer, Array<Integer>) value) => new PolygonFace(value.Item1, value.Item2);
-        public void Deconstruct(out Integer faceIndex, out Array<Integer> pointIndices) { faceIndex = FaceIndex; pointIndices = PointIndices; }
-        public override bool Equals(object obj) { if (!(obj is PolygonFace)) return false; var other = (PolygonFace)obj; return FaceIndex.Equals(other.FaceIndex) && PointIndices.Equals(other.PointIndices); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(FaceIndex, PointIndices);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(PolygonFace self) => new Dynamic(self);
-        public static implicit operator PolygonFace(Dynamic value) => value.As<PolygonFace>();
-        public String TypeName => "PolygonFace";
-        public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"FaceIndex", (String)"PointIndices");
-        public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(FaceIndex), new Dynamic(PointIndices));
         // Unimplemented concept functions
     }
     public readonly partial struct Rect2D: Polygon2D
@@ -1729,6 +1729,106 @@ namespace Ara3D.SinglePrecision
         public Integer Count => 4;
         public Number At(Integer n) => n == 0 ? X : n == 1 ? Y : n == 2 ? Z : n == 3 ? W : throw new System.IndexOutOfRangeException();
         public Number this[Integer n] => At(n);
+    }
+    public readonly partial struct PolygonFace
+    {
+        public readonly Integer Index;
+        public readonly Array<Integer> VertexIndices;
+        public PolygonFace WithIndex(Integer index) => (index, VertexIndices);
+        public PolygonFace WithVertexIndices(Array<Integer> vertexIndices) => (Index, vertexIndices);
+        public PolygonFace(Integer index, Array<Integer> vertexIndices) => (Index, VertexIndices) = (index, vertexIndices);
+        public static PolygonFace Default = new PolygonFace();
+        public static PolygonFace New(Integer index, Array<Integer> vertexIndices) => new PolygonFace(index, vertexIndices);
+        public static implicit operator (Integer, Array<Integer>)(PolygonFace self) => (self.Index, self.VertexIndices);
+        public static implicit operator PolygonFace((Integer, Array<Integer>) value) => new PolygonFace(value.Item1, value.Item2);
+        public void Deconstruct(out Integer index, out Array<Integer> vertexIndices) { index = Index; vertexIndices = VertexIndices; }
+        public override bool Equals(object obj) { if (!(obj is PolygonFace)) return false; var other = (PolygonFace)obj; return Index.Equals(other.Index) && VertexIndices.Equals(other.VertexIndices); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Index, VertexIndices);
+        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public static implicit operator Dynamic(PolygonFace self) => new Dynamic(self);
+        public static implicit operator PolygonFace(Dynamic value) => value.As<PolygonFace>();
+        public String TypeName => "PolygonFace";
+        public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Index", (String)"VertexIndices");
+        public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Index), new Dynamic(VertexIndices));
+        // Unimplemented concept functions
+    }
+    public readonly partial struct TriFace
+    {
+        public readonly Integer Index;
+        public readonly Integer3 VertexIndices;
+        public TriFace WithIndex(Integer index) => (index, VertexIndices);
+        public TriFace WithVertexIndices(Integer3 vertexIndices) => (Index, vertexIndices);
+        public TriFace(Integer index, Integer3 vertexIndices) => (Index, VertexIndices) = (index, vertexIndices);
+        public static TriFace Default = new TriFace();
+        public static TriFace New(Integer index, Integer3 vertexIndices) => new TriFace(index, vertexIndices);
+        public Ara3D.DoublePrecision.TriFace ChangePrecision() => (Index.ChangePrecision(), VertexIndices.ChangePrecision());
+        public static implicit operator Ara3D.DoublePrecision.TriFace(TriFace self) => self.ChangePrecision();
+        public static implicit operator (Integer, Integer3)(TriFace self) => (self.Index, self.VertexIndices);
+        public static implicit operator TriFace((Integer, Integer3) value) => new TriFace(value.Item1, value.Item2);
+        public void Deconstruct(out Integer index, out Integer3 vertexIndices) { index = Index; vertexIndices = VertexIndices; }
+        public override bool Equals(object obj) { if (!(obj is TriFace)) return false; var other = (TriFace)obj; return Index.Equals(other.Index) && VertexIndices.Equals(other.VertexIndices); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Index, VertexIndices);
+        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public static implicit operator Dynamic(TriFace self) => new Dynamic(self);
+        public static implicit operator TriFace(Dynamic value) => value.As<TriFace>();
+        public String TypeName => "TriFace";
+        public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Index", (String)"VertexIndices");
+        public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Index), new Dynamic(VertexIndices));
+        // Unimplemented concept functions
+    }
+    public readonly partial struct TriMesh: Mesh<TriFace, SimpleVertex>
+    {
+        public readonly Array<SimpleVertex> Vertices;
+        public readonly Array<TriFace> Faces;
+        public TriMesh WithVertices(Array<SimpleVertex> vertices) => (vertices, Faces);
+        public TriMesh WithFaces(Array<TriFace> faces) => (Vertices, faces);
+        public TriMesh(Array<SimpleVertex> vertices, Array<TriFace> faces) => (Vertices, Faces) = (vertices, faces);
+        public static TriMesh Default = new TriMesh();
+        public static TriMesh New(Array<SimpleVertex> vertices, Array<TriFace> faces) => new TriMesh(vertices, faces);
+        public static implicit operator (Array<SimpleVertex>, Array<TriFace>)(TriMesh self) => (self.Vertices, self.Faces);
+        public static implicit operator TriMesh((Array<SimpleVertex>, Array<TriFace>) value) => new TriMesh(value.Item1, value.Item2);
+        public void Deconstruct(out Array<SimpleVertex> vertices, out Array<TriFace> faces) { vertices = Vertices; faces = Faces; }
+        public override bool Equals(object obj) { if (!(obj is TriMesh)) return false; var other = (TriMesh)obj; return Vertices.Equals(other.Vertices) && Faces.Equals(other.Faces); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Vertices, Faces);
+        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public static implicit operator Dynamic(TriMesh self) => new Dynamic(self);
+        public static implicit operator TriMesh(Dynamic value) => value.As<TriMesh>();
+        public String TypeName => "TriMesh";
+        public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Vertices", (String)"Faces");
+        public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Vertices), new Dynamic(Faces));
+        Array<TriFace> Mesh<TriFace, SimpleVertex>.Faces => Faces;
+        Array<SimpleVertex> Mesh<TriFace, SimpleVertex>.Vertices => Vertices;
+        // Unimplemented concept functions
+    }
+    public readonly partial struct SimpleVertex
+    {
+        public readonly Integer Index;
+        public readonly Point3D Position;
+        public readonly Vector3D Normal;
+        public readonly UV UV;
+        public readonly Color Color;
+        public SimpleVertex WithIndex(Integer index) => (index, Position, Normal, UV, Color);
+        public SimpleVertex WithPosition(Point3D position) => (Index, position, Normal, UV, Color);
+        public SimpleVertex WithNormal(Vector3D normal) => (Index, Position, normal, UV, Color);
+        public SimpleVertex WithUV(UV uV) => (Index, Position, Normal, uV, Color);
+        public SimpleVertex WithColor(Color color) => (Index, Position, Normal, UV, color);
+        public SimpleVertex(Integer index, Point3D position, Vector3D normal, UV uV, Color color) => (Index, Position, Normal, UV, Color) = (index, position, normal, uV, color);
+        public static SimpleVertex Default = new SimpleVertex();
+        public static SimpleVertex New(Integer index, Point3D position, Vector3D normal, UV uV, Color color) => new SimpleVertex(index, position, normal, uV, color);
+        public Ara3D.DoublePrecision.SimpleVertex ChangePrecision() => (Index.ChangePrecision(), Position.ChangePrecision(), Normal.ChangePrecision(), UV.ChangePrecision(), Color.ChangePrecision());
+        public static implicit operator Ara3D.DoublePrecision.SimpleVertex(SimpleVertex self) => self.ChangePrecision();
+        public static implicit operator (Integer, Point3D, Vector3D, UV, Color)(SimpleVertex self) => (self.Index, self.Position, self.Normal, self.UV, self.Color);
+        public static implicit operator SimpleVertex((Integer, Point3D, Vector3D, UV, Color) value) => new SimpleVertex(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
+        public void Deconstruct(out Integer index, out Point3D position, out Vector3D normal, out UV uV, out Color color) { index = Index; position = Position; normal = Normal; uV = UV; color = Color; }
+        public override bool Equals(object obj) { if (!(obj is SimpleVertex)) return false; var other = (SimpleVertex)obj; return Index.Equals(other.Index) && Position.Equals(other.Position) && Normal.Equals(other.Normal) && UV.Equals(other.UV) && Color.Equals(other.Color); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Index, Position, Normal, UV, Color);
+        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public static implicit operator Dynamic(SimpleVertex self) => new Dynamic(self);
+        public static implicit operator SimpleVertex(Dynamic value) => value.As<SimpleVertex>();
+        public String TypeName => "SimpleVertex";
+        public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Index", (String)"Position", (String)"Normal", (String)"UV", (String)"Color");
+        public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Index), new Dynamic(Position), new Dynamic(Normal), new Dynamic(UV), new Dynamic(Color));
+        // Unimplemented concept functions
     }
     public readonly partial struct Number: Real<Number>, Numerical<Number>, Arithmetic<Number>, Comparable<Number>
     {
@@ -3826,6 +3926,11 @@ namespace Ara3D.SinglePrecision
         public static Number JulianYearSeconds => ((Integer)31557600);
         public static Number GregorianYearDays => ((Number)365.2425);
     }
+    public readonly partial struct ArrayImplementation<T>
+    {
+        public T At(Integer n) => this.Function.Invoke(n);
+        public T this[Integer n] => At(n);
+    }
     public readonly partial struct Point2D
     {
         public static implicit operator Point3D(Point2D x)  => x.X.Tuple3(x.Y, ((Number)0));
@@ -3900,9 +4005,6 @@ namespace Ara3D.SinglePrecision
     public readonly partial struct Lens
     {
         public Boolean Closed => ((Boolean)true);
-    }
-    public readonly partial struct PolygonFace
-    {
     }
     public readonly partial struct Rect2D
     {
@@ -4135,6 +4237,18 @@ namespace Ara3D.SinglePrecision
         public Quadray Twice => this.Multiply(((Number)2));
         public Quadray Lerp(Quadray b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
     }
+    public readonly partial struct PolygonFace
+    {
+    }
+    public readonly partial struct TriFace
+    {
+    }
+    public readonly partial struct TriMesh
+    {
+    }
+    public readonly partial struct SimpleVertex
+    {
+    }
     public readonly partial struct Number
     {
         public Angle Turns => this;
@@ -4331,18 +4445,23 @@ namespace Ara3D.SinglePrecision
     }
     public readonly partial struct Function0<TR>
     {
+        public TR Invoke => Intrinsics.Invoke(this);
     }
     public readonly partial struct Function1<T0, TR>
     {
+        public TR Invoke(T0 a0) => Intrinsics.Invoke(this, a0);
     }
     public readonly partial struct Function2<T0, T1, TR>
     {
+        public TR Invoke(T0 a0, T1 a1) => Intrinsics.Invoke(this, a0, a1);
     }
     public readonly partial struct Function3<T0, T1, T2, TR>
     {
+        public TR Invoke(T0 a0, T1 a1, T2 a2) => Intrinsics.Invoke(this, a0, a1, a2);
     }
     public readonly partial struct Function4<T0, T1, T2, T3, TR>
     {
+        public TR Invoke(T0 a0, T1 a1, T2 a2, T3 a3) => Intrinsics.Invoke(this, a0, a1, a2, a3);
     }
     public readonly partial struct Function5<T0, T1, T2, T3, T4, TR>
     {
@@ -5022,6 +5141,16 @@ namespace Ara3D.SinglePrecision
     }
         public static class Intrinsics
     {
+        public static TR Invoke<TR>(this Function0<TR> self) => self._function();
+        public static TR Invoke<T0, TR>(this Function1<T0, TR> self, T0 arg) => self._function(arg);
+        public static TR Invoke<T0, T1, TR>(this Function2<T0, T1, TR> self, T0 arg0, T1 arg1) => self._function(arg0, arg1);
+        public static TR Invoke<T0, T1, T2, TR>(this Function3<T0, T1, T2, TR> self, T0 arg0, T1 arg1, T2 arg2) => self._function(arg0, arg1, arg2);
+        public static TR Invoke<T0, T1, T2, T3, TR>(this Function4<T0, T1, T2, T3, TR> self, T0 arg0, T1 arg1, T2 arg2, T3 arg3) => self._function(arg0, arg1, arg2, arg3);
+
+        public static T ChangePrecision<T>(this T self) => self;
+        public static float ChangePrecision(this double self) => (float)self;
+        public static string ChangePrecision(this string self) => self;
+
         public static Number Cos(Angle x) => (float)System.Math.Cos(x.Value);
         public static Number Sin(Angle x) => (float)System.Math.Sin(x.Value);
         public static Number Tan(Angle x) => (float)System.Math.Tan(x.Value);
@@ -5108,7 +5237,7 @@ namespace Ara3D.SinglePrecision
             for (var i = 0; i < self.Count; ++i)
                 init = f(init, self.At(i));
             return init;
-        }
+        }        
     }
 
     public readonly struct PrimitiveArray<T> : Array<T>
@@ -5204,4 +5333,38 @@ namespace Ara3D.SinglePrecision
         public T As<T>() => (T)Value;
     }
 
+    public readonly partial struct Function0<TR>
+    {
+        public readonly System.Func<TR> _function;
+        public Function0(System.Func<TR> f) => _function = f;
+        public static implicit operator Function0<TR>(System.Func<TR> f) => new Function0<TR>(f);
+    }
+
+    public readonly partial struct Function1<T0, TR>
+    {
+        public readonly System.Func<T0, TR> _function;
+        public Function1(System.Func<T0, TR> f) => _function = f;
+        public static implicit operator Function1<T0, TR>(System.Func<T0, TR> f) => new Function1<T0, TR>(f);
+    }
+
+    public readonly partial struct Function2<T0, T1, TR>
+    {
+        public readonly System.Func<T0, T1, TR> _function;
+        public Function2(System.Func<T0, T1, TR> f) => _function = f;
+        public static implicit operator Function2<T0, T1, TR>(System.Func<T0, T1, TR> f) => new Function2<T0, T1, TR>(f);
+    }
+
+    public readonly partial struct Function3<T0, T1, T2, TR>
+    {
+        public readonly System.Func<T0, T1, T2, TR> _function;
+        public Function3(System.Func<T0, T1, T2, TR> f) => _function = f;
+        public static implicit operator Function3<T0, T1, T2, TR>(System.Func<T0, T1, T2, TR> f) => new Function3<T0, T1, T2, TR>(f);
+    }
+    
+    public readonly partial struct Function4<T0, T1, T2, T3, TR>
+    {
+        public readonly System.Func<T0, T1, T2, T3, TR> _function;
+        public Function4(System.Func<T0, T1, T2, T3, TR> f) => _function = f;
+        public static implicit operator Function4<T0, T1, T2, T3, TR>(System.Func<T0, T1, T2, T3, TR> f) => new Function4<T0, T1, T2, T3, TR>(f);
+    }
 }

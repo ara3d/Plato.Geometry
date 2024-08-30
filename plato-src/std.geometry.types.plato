@@ -90,12 +90,6 @@ type Lens
     B: Circle;
 }
 
-type PolygonFace
-{
-    FaceIndex: Integer;
-    PointIndices: Array<Integer>;
-}
-
 type Rect2D
     implements Polygon2D
 {
@@ -374,4 +368,32 @@ type Quadray
     Y: Number;
     Z: Number;
     W: Number;
+}
+
+type PolygonFace
+{
+    Index: Integer;
+    VertexIndices: Array<Integer>;
+}
+
+type TriFace
+{
+	Index: Integer;
+    VertexIndices: Integer3;
+}
+
+type TriMesh
+    implements Mesh<TriFace, SimpleVertex>
+{   
+    Vertices: Array<SimpleVertex>;
+    Faces: Array<TriFace>;
+}
+
+type SimpleVertex
+{  
+    Index: Integer;
+	Position: Point3D;
+	Normal: Vector3D;
+	UV: UV;
+    Color: Color;
 }

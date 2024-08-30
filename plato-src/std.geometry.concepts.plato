@@ -253,17 +253,11 @@ concept SolidPolyhedron
     inherits Polyhedron 
 { }
 
-// A 3 dimensional triangle mesh
-concept TriMesh
-    inherits Polyhedron
+concept Mesh<FaceType, VertexType>
+	inherits Geometry3D
 {
-}
-
-// A 3 dimensional shape consisting of quadrilateral faces. 
-// Quad meshes are easier to generate from UV functions.  
-concept QuadMesh
-    inherits Polyhedron
-{
+	Faces(x: Self): Array<FaceType>;
+	Vertices(x: Self): Array<VertexType>;
 }
 
 concept Grid2D
@@ -311,4 +305,6 @@ concept Polygon3D
     inherits PolygonalChain3D
 {
 }
+
+
 
