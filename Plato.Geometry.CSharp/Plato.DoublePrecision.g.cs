@@ -1,4 +1,4 @@
-namespace Ara3D.SinglePrecision
+namespace Plato.DoublePrecision
 {
     public interface Any
     {
@@ -337,8 +337,8 @@ namespace Ara3D.SinglePrecision
         public Point2D(Number x, Number y) => (X, Y) = (x, y);
         public static Point2D Default = new Point2D();
         public static Point2D New(Number x, Number y) => new Point2D(x, y);
-        public Ara3D.DoublePrecision.Point2D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Point2D(Point2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Point2D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Point2D(Point2D self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Point2D self) => (self.X, self.Y);
         public static implicit operator Point2D((Number, Number) value) => new Point2D(value.Item1, value.Item2);
         public void Deconstruct(out Number x, out Number y) { x = X; y = Y; }
@@ -370,8 +370,8 @@ namespace Ara3D.SinglePrecision
         public Transform2D(Vector2D translation, Angle rotation, Vector2D scale) => (Translation, Rotation, Scale) = (translation, rotation, scale);
         public static Transform2D Default = new Transform2D();
         public static Transform2D New(Vector2D translation, Angle rotation, Vector2D scale) => new Transform2D(translation, rotation, scale);
-        public Ara3D.DoublePrecision.Transform2D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Transform2D(Transform2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Transform2D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Transform2D(Transform2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle, Vector2D)(Transform2D self) => (self.Translation, self.Rotation, self.Scale);
         public static implicit operator Transform2D((Vector2D, Angle, Vector2D) value) => new Transform2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D translation, out Angle rotation, out Vector2D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
@@ -398,8 +398,8 @@ namespace Ara3D.SinglePrecision
         public Pose2D(Vector2D position, Angle orientation) => (Position, Orientation) = (position, orientation);
         public static Pose2D Default = new Pose2D();
         public static Pose2D New(Vector2D position, Angle orientation) => new Pose2D(position, orientation);
-        public Ara3D.DoublePrecision.Pose2D ChangePrecision() => (Position.ChangePrecision(), Orientation.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Pose2D(Pose2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Pose2D ChangePrecision() => (Position.ChangePrecision(), Orientation.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Pose2D(Pose2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle)(Pose2D self) => (self.Position, self.Orientation);
         public static implicit operator Pose2D((Vector2D, Angle) value) => new Pose2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D position, out Angle orientation) { position = Position; orientation = Orientation; }
@@ -426,8 +426,8 @@ namespace Ara3D.SinglePrecision
         public Bounds2D(Point2D min, Point2D max) => (Min, Max) = (min, max);
         public static Bounds2D Default = new Bounds2D();
         public static Bounds2D New(Point2D min, Point2D max) => new Bounds2D(min, max);
-        public Ara3D.DoublePrecision.Bounds2D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Bounds2D(Bounds2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Bounds2D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Bounds2D(Bounds2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Point2D)(Bounds2D self) => (self.Min, self.Max);
         public static implicit operator Bounds2D((Point2D, Point2D) value) => new Bounds2D(value.Item1, value.Item2);
         public void Deconstruct(out Point2D min, out Point2D max) { min = Min; max = Max; }
@@ -456,8 +456,8 @@ namespace Ara3D.SinglePrecision
         public Ray2D(Vector2D direction, Point2D position) => (Direction, Position) = (direction, position);
         public static Ray2D Default = new Ray2D();
         public static Ray2D New(Vector2D direction, Point2D position) => new Ray2D(direction, position);
-        public Ara3D.DoublePrecision.Ray2D ChangePrecision() => (Direction.ChangePrecision(), Position.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Ray2D(Ray2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Ray2D ChangePrecision() => (Direction.ChangePrecision(), Position.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Ray2D(Ray2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Point2D)(Ray2D self) => (self.Direction, self.Position);
         public static implicit operator Ray2D((Vector2D, Point2D) value) => new Ray2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D direction, out Point2D position) { direction = Direction; position = Position; }
@@ -484,8 +484,8 @@ namespace Ara3D.SinglePrecision
         public Sphere(Point3D center, Number radius) => (Center, Radius) = (center, radius);
         public static Sphere Default = new Sphere();
         public static Sphere New(Point3D center, Number radius) => new Sphere(center, radius);
-        public Ara3D.DoublePrecision.Sphere ChangePrecision() => (Center.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Sphere(Sphere self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Sphere ChangePrecision() => (Center.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Sphere(Sphere self) => self.ChangePrecision();
         public static implicit operator (Point3D, Number)(Sphere self) => (self.Center, self.Radius);
         public static implicit operator Sphere((Point3D, Number) value) => new Sphere(value.Item1, value.Item2);
         public void Deconstruct(out Point3D center, out Number radius) { center = Center; radius = Radius; }
@@ -512,8 +512,8 @@ namespace Ara3D.SinglePrecision
         public Plane(Vector3D normal, Number d) => (Normal, D) = (normal, d);
         public static Plane Default = new Plane();
         public static Plane New(Vector3D normal, Number d) => new Plane(normal, d);
-        public Ara3D.DoublePrecision.Plane ChangePrecision() => (Normal.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Plane(Plane self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Plane ChangePrecision() => (Normal.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Plane(Plane self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Number)(Plane self) => (self.Normal, self.D);
         public static implicit operator Plane((Vector3D, Number) value) => new Plane(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D normal, out Number d) { normal = Normal; d = D; }
@@ -542,8 +542,8 @@ namespace Ara3D.SinglePrecision
         public Triangle2D(Point2D a, Point2D b, Point2D c) => (A, B, C) = (a, b, c);
         public static Triangle2D Default = new Triangle2D();
         public static Triangle2D New(Point2D a, Point2D b, Point2D c) => new Triangle2D(a, b, c);
-        public Ara3D.DoublePrecision.Triangle2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Triangle2D(Triangle2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Triangle2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Triangle2D(Triangle2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Point2D, Point2D)(Triangle2D self) => (self.A, self.B, self.C);
         public static implicit operator Triangle2D((Point2D, Point2D, Point2D) value) => new Triangle2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Point2D a, out Point2D b, out Point2D c) { a = A; b = B; c = C; }
@@ -577,8 +577,8 @@ namespace Ara3D.SinglePrecision
         public Quad2D(Point2D a, Point2D b, Point2D c, Point2D d) => (A, B, C, D) = (a, b, c, d);
         public static Quad2D Default = new Quad2D();
         public static Quad2D New(Point2D a, Point2D b, Point2D c, Point2D d) => new Quad2D(a, b, c, d);
-        public Ara3D.DoublePrecision.Quad2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Quad2D(Quad2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Quad2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Quad2D(Quad2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Point2D, Point2D, Point2D)(Quad2D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Quad2D((Point2D, Point2D, Point2D, Point2D) value) => new Quad2D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Point2D a, out Point2D b, out Point2D c, out Point2D d) { a = A; b = B; c = C; d = D; }
@@ -608,8 +608,8 @@ namespace Ara3D.SinglePrecision
         public Line2D(Point2D a, Point2D b) => (A, B) = (a, b);
         public static Line2D Default = new Line2D();
         public static Line2D New(Point2D a, Point2D b) => new Line2D(a, b);
-        public Ara3D.DoublePrecision.Line2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Line2D(Line2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Line2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Line2D(Line2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Point2D)(Line2D self) => (self.A, self.B);
         public static implicit operator Line2D((Point2D, Point2D) value) => new Line2D(value.Item1, value.Item2);
         public void Deconstruct(out Point2D a, out Point2D b) { a = A; b = B; }
@@ -635,8 +635,8 @@ namespace Ara3D.SinglePrecision
         public Circle(Point2D center, Number radius) => (Center, Radius) = (center, radius);
         public static Circle Default = new Circle();
         public static Circle New(Point2D center, Number radius) => new Circle(center, radius);
-        public Ara3D.DoublePrecision.Circle ChangePrecision() => (Center.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Circle(Circle self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Circle ChangePrecision() => (Center.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Circle(Circle self) => self.ChangePrecision();
         public static implicit operator (Point2D, Number)(Circle self) => (self.Center, self.Radius);
         public static implicit operator Circle((Point2D, Number) value) => new Circle(value.Item1, value.Item2);
         public void Deconstruct(out Point2D center, out Number radius) { center = Center; radius = Radius; }
@@ -659,8 +659,8 @@ namespace Ara3D.SinglePrecision
         public Lens(Circle a, Circle b) => (A, B) = (a, b);
         public static Lens Default = new Lens();
         public static Lens New(Circle a, Circle b) => new Lens(a, b);
-        public Ara3D.DoublePrecision.Lens ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Lens(Lens self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Lens ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Lens(Lens self) => self.ChangePrecision();
         public static implicit operator (Circle, Circle)(Lens self) => (self.A, self.B);
         public static implicit operator Lens((Circle, Circle) value) => new Lens(value.Item1, value.Item2);
         public void Deconstruct(out Circle a, out Circle b) { a = A; b = B; }
@@ -683,8 +683,8 @@ namespace Ara3D.SinglePrecision
         public Rect2D(Point2D center, Size2D size) => (Center, Size) = (center, size);
         public static Rect2D Default = new Rect2D();
         public static Rect2D New(Point2D center, Size2D size) => new Rect2D(center, size);
-        public Ara3D.DoublePrecision.Rect2D ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Rect2D(Rect2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Rect2D ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Rect2D(Rect2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Size2D)(Rect2D self) => (self.Center, self.Size);
         public static implicit operator Rect2D((Point2D, Size2D) value) => new Rect2D(value.Item1, value.Item2);
         public void Deconstruct(out Point2D center, out Size2D size) { center = Center; size = Size; }
@@ -707,8 +707,8 @@ namespace Ara3D.SinglePrecision
         public Ellipse(Point2D center, Size2D size) => (Center, Size) = (center, size);
         public static Ellipse Default = new Ellipse();
         public static Ellipse New(Point2D center, Size2D size) => new Ellipse(center, size);
-        public Ara3D.DoublePrecision.Ellipse ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Ellipse(Ellipse self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Ellipse ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Ellipse(Ellipse self) => self.ChangePrecision();
         public static implicit operator (Point2D, Size2D)(Ellipse self) => (self.Center, self.Size);
         public static implicit operator Ellipse((Point2D, Size2D) value) => new Ellipse(value.Item1, value.Item2);
         public void Deconstruct(out Point2D center, out Size2D size) { center = Center; size = Size; }
@@ -733,8 +733,8 @@ namespace Ara3D.SinglePrecision
         public Ring(Point2D center, Number innerRadius, Number outerRadius) => (Center, InnerRadius, OuterRadius) = (center, innerRadius, outerRadius);
         public static Ring Default = new Ring();
         public static Ring New(Point2D center, Number innerRadius, Number outerRadius) => new Ring(center, innerRadius, outerRadius);
-        public Ara3D.DoublePrecision.Ring ChangePrecision() => (Center.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Ring(Ring self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Ring ChangePrecision() => (Center.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Ring(Ring self) => self.ChangePrecision();
         public static implicit operator (Point2D, Number, Number)(Ring self) => (self.Center, self.InnerRadius, self.OuterRadius);
         public static implicit operator Ring((Point2D, Number, Number) value) => new Ring(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Point2D center, out Number innerRadius, out Number outerRadius) { center = Center; innerRadius = InnerRadius; outerRadius = OuterRadius; }
@@ -757,8 +757,8 @@ namespace Ara3D.SinglePrecision
         public Arc(AnglePair angles, Circle circle) => (Angles, Circle) = (angles, circle);
         public static Arc Default = new Arc();
         public static Arc New(AnglePair angles, Circle circle) => new Arc(angles, circle);
-        public Ara3D.DoublePrecision.Arc ChangePrecision() => (Angles.ChangePrecision(), Circle.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Arc(Arc self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Arc ChangePrecision() => (Angles.ChangePrecision(), Circle.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Arc(Arc self) => self.ChangePrecision();
         public static implicit operator (AnglePair, Circle)(Arc self) => (self.Angles, self.Circle);
         public static implicit operator Arc((AnglePair, Circle) value) => new Arc(value.Item1, value.Item2);
         public void Deconstruct(out AnglePair angles, out Circle circle) { angles = Angles; circle = Circle; }
@@ -779,8 +779,8 @@ namespace Ara3D.SinglePrecision
         public Sector(Arc arc) => (Arc) = (arc);
         public static Sector Default = new Sector();
         public static Sector New(Arc arc) => new Sector(arc);
-        public Ara3D.DoublePrecision.Sector ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Sector(Sector self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Sector ChangePrecision() => (Arc.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Sector(Sector self) => self.ChangePrecision();
         public static implicit operator Arc(Sector self) => self.Arc;
         public static implicit operator Sector(Arc value) => new Sector(value);
         public override bool Equals(object obj) { if (!(obj is Sector)) return false; var other = (Sector)obj; return Arc.Equals(other.Arc); }
@@ -800,8 +800,8 @@ namespace Ara3D.SinglePrecision
         public Chord(Arc arc) => (Arc) = (arc);
         public static Chord Default = new Chord();
         public static Chord New(Arc arc) => new Chord(arc);
-        public Ara3D.DoublePrecision.Chord ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Chord(Chord self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Chord ChangePrecision() => (Arc.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Chord(Chord self) => self.ChangePrecision();
         public static implicit operator Arc(Chord self) => self.Arc;
         public static implicit operator Chord(Arc value) => new Chord(value);
         public override bool Equals(object obj) { if (!(obj is Chord)) return false; var other = (Chord)obj; return Arc.Equals(other.Arc); }
@@ -821,8 +821,8 @@ namespace Ara3D.SinglePrecision
         public Segment(Arc arc) => (Arc) = (arc);
         public static Segment Default = new Segment();
         public static Segment New(Arc arc) => new Segment(arc);
-        public Ara3D.DoublePrecision.Segment ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Segment(Segment self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Segment ChangePrecision() => (Arc.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Segment(Segment self) => self.ChangePrecision();
         public static implicit operator Arc(Segment self) => self.Arc;
         public static implicit operator Segment(Arc value) => new Segment(value);
         public override bool Equals(object obj) { if (!(obj is Segment)) return false; var other = (Segment)obj; return Arc.Equals(other.Arc); }
@@ -842,8 +842,8 @@ namespace Ara3D.SinglePrecision
         public RegularPolygon(Integer numPoints) => (NumPoints) = (numPoints);
         public static RegularPolygon Default = new RegularPolygon();
         public static RegularPolygon New(Integer numPoints) => new RegularPolygon(numPoints);
-        public Ara3D.DoublePrecision.RegularPolygon ChangePrecision() => (NumPoints.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.RegularPolygon(RegularPolygon self) => self.ChangePrecision();
+        public Plato.SinglePrecision.RegularPolygon ChangePrecision() => (NumPoints.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.RegularPolygon(RegularPolygon self) => self.ChangePrecision();
         public static implicit operator Integer(RegularPolygon self) => self.NumPoints;
         public static implicit operator RegularPolygon(Integer value) => new RegularPolygon(value);
         public override bool Equals(object obj) { if (!(obj is RegularPolygon)) return false; var other = (RegularPolygon)obj; return NumPoints.Equals(other.NumPoints); }
@@ -867,8 +867,8 @@ namespace Ara3D.SinglePrecision
         public Box2D(Point2D center, Angle rotation, Size2D extent) => (Center, Rotation, Extent) = (center, rotation, extent);
         public static Box2D Default = new Box2D();
         public static Box2D New(Point2D center, Angle rotation, Size2D extent) => new Box2D(center, rotation, extent);
-        public Ara3D.DoublePrecision.Box2D ChangePrecision() => (Center.ChangePrecision(), Rotation.ChangePrecision(), Extent.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Box2D(Box2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Box2D ChangePrecision() => (Center.ChangePrecision(), Rotation.ChangePrecision(), Extent.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Box2D(Box2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Angle, Size2D)(Box2D self) => (self.Center, self.Rotation, self.Extent);
         public static implicit operator Box2D((Point2D, Angle, Size2D) value) => new Box2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Point2D center, out Angle rotation, out Size2D extent) { center = Center; rotation = Rotation; extent = Extent; }
@@ -893,8 +893,8 @@ namespace Ara3D.SinglePrecision
         public Point3D(Number x, Number y, Number z) => (X, Y, Z) = (x, y, z);
         public static Point3D Default = new Point3D();
         public static Point3D New(Number x, Number y, Number z) => new Point3D(x, y, z);
-        public Ara3D.DoublePrecision.Point3D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Point3D(Point3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Point3D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Point3D(Point3D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Point3D self) => (self.X, self.Y, self.Z);
         public static implicit operator Point3D((Number, Number, Number) value) => new Point3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number x, out Number y, out Number z) { x = X; y = Y; z = Z; }
@@ -929,8 +929,8 @@ namespace Ara3D.SinglePrecision
         public Transform3D(Vector3D translation, Rotation3D rotation, Vector3D scale) => (Translation, Rotation, Scale) = (translation, rotation, scale);
         public static Transform3D Default = new Transform3D();
         public static Transform3D New(Vector3D translation, Rotation3D rotation, Vector3D scale) => new Transform3D(translation, rotation, scale);
-        public Ara3D.DoublePrecision.Transform3D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Transform3D(Transform3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Transform3D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Transform3D(Transform3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Rotation3D, Vector3D)(Transform3D self) => (self.Translation, self.Rotation, self.Scale);
         public static implicit operator Transform3D((Vector3D, Rotation3D, Vector3D) value) => new Transform3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D translation, out Rotation3D rotation, out Vector3D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
@@ -957,8 +957,8 @@ namespace Ara3D.SinglePrecision
         public Pose3D(Vector3D position, Orientation3D orientation) => (Position, Orientation) = (position, orientation);
         public static Pose3D Default = new Pose3D();
         public static Pose3D New(Vector3D position, Orientation3D orientation) => new Pose3D(position, orientation);
-        public Ara3D.DoublePrecision.Pose3D ChangePrecision() => (Position.ChangePrecision(), Orientation.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Pose3D(Pose3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Pose3D ChangePrecision() => (Position.ChangePrecision(), Orientation.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Pose3D(Pose3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Orientation3D)(Pose3D self) => (self.Position, self.Orientation);
         public static implicit operator Pose3D((Vector3D, Orientation3D) value) => new Pose3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D position, out Orientation3D orientation) { position = Position; orientation = Orientation; }
@@ -987,8 +987,8 @@ namespace Ara3D.SinglePrecision
         public Frame3D(Vector3D forward, Vector3D up, Vector3D right) => (Forward, Up, Right) = (forward, up, right);
         public static Frame3D Default = new Frame3D();
         public static Frame3D New(Vector3D forward, Vector3D up, Vector3D right) => new Frame3D(forward, up, right);
-        public Ara3D.DoublePrecision.Frame3D ChangePrecision() => (Forward.ChangePrecision(), Up.ChangePrecision(), Right.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Frame3D(Frame3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Frame3D ChangePrecision() => (Forward.ChangePrecision(), Up.ChangePrecision(), Right.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Frame3D(Frame3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Frame3D self) => (self.Forward, self.Up, self.Right);
         public static implicit operator Frame3D((Vector3D, Vector3D, Vector3D) value) => new Frame3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D forward, out Vector3D up, out Vector3D right) { forward = Forward; up = Up; right = Right; }
@@ -1011,8 +1011,8 @@ namespace Ara3D.SinglePrecision
         public Bounds3D(Point3D min, Point3D max) => (Min, Max) = (min, max);
         public static Bounds3D Default = new Bounds3D();
         public static Bounds3D New(Point3D min, Point3D max) => new Bounds3D(min, max);
-        public Ara3D.DoublePrecision.Bounds3D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Bounds3D(Bounds3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Bounds3D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Bounds3D(Bounds3D self) => self.ChangePrecision();
         public static implicit operator (Point3D, Point3D)(Bounds3D self) => (self.Min, self.Max);
         public static implicit operator Bounds3D((Point3D, Point3D) value) => new Bounds3D(value.Item1, value.Item2);
         public void Deconstruct(out Point3D min, out Point3D max) { min = Min; max = Max; }
@@ -1041,8 +1041,8 @@ namespace Ara3D.SinglePrecision
         public Line3D(Point3D a, Point3D b) => (A, B) = (a, b);
         public static Line3D Default = new Line3D();
         public static Line3D New(Point3D a, Point3D b) => new Line3D(a, b);
-        public Ara3D.DoublePrecision.Line3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Line3D(Line3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Line3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Line3D(Line3D self) => self.ChangePrecision();
         public static implicit operator (Point3D, Point3D)(Line3D self) => (self.A, self.B);
         public static implicit operator Line3D((Point3D, Point3D) value) => new Line3D(value.Item1, value.Item2);
         public void Deconstruct(out Point3D a, out Point3D b) { a = A; b = B; }
@@ -1068,8 +1068,8 @@ namespace Ara3D.SinglePrecision
         public Ray3D(Vector3D direction, Point3D position) => (Direction, Position) = (direction, position);
         public static Ray3D Default = new Ray3D();
         public static Ray3D New(Vector3D direction, Point3D position) => new Ray3D(direction, position);
-        public Ara3D.DoublePrecision.Ray3D ChangePrecision() => (Direction.ChangePrecision(), Position.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Ray3D(Ray3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Ray3D ChangePrecision() => (Direction.ChangePrecision(), Position.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Ray3D(Ray3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Point3D)(Ray3D self) => (self.Direction, self.Position);
         public static implicit operator Ray3D((Vector3D, Point3D) value) => new Ray3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D direction, out Point3D position) { direction = Direction; position = Position; }
@@ -1098,8 +1098,8 @@ namespace Ara3D.SinglePrecision
         public Triangle3D(Point3D a, Point3D b, Point3D c) => (A, B, C) = (a, b, c);
         public static Triangle3D Default = new Triangle3D();
         public static Triangle3D New(Point3D a, Point3D b, Point3D c) => new Triangle3D(a, b, c);
-        public Ara3D.DoublePrecision.Triangle3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Triangle3D(Triangle3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Triangle3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Triangle3D(Triangle3D self) => self.ChangePrecision();
         public static implicit operator (Point3D, Point3D, Point3D)(Triangle3D self) => (self.A, self.B, self.C);
         public static implicit operator Triangle3D((Point3D, Point3D, Point3D) value) => new Triangle3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Point3D a, out Point3D b, out Point3D c) { a = A; b = B; c = C; }
@@ -1133,8 +1133,8 @@ namespace Ara3D.SinglePrecision
         public Quad3D(Point3D a, Point3D b, Point3D c, Point3D d) => (A, B, C, D) = (a, b, c, d);
         public static Quad3D Default = new Quad3D();
         public static Quad3D New(Point3D a, Point3D b, Point3D c, Point3D d) => new Quad3D(a, b, c, d);
-        public Ara3D.DoublePrecision.Quad3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Quad3D(Quad3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Quad3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Quad3D(Quad3D self) => self.ChangePrecision();
         public static implicit operator (Point3D, Point3D, Point3D, Point3D)(Quad3D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Quad3D((Point3D, Point3D, Point3D, Point3D) value) => new Quad3D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Point3D a, out Point3D b, out Point3D c, out Point3D d) { a = A; b = B; c = C; d = D; }
@@ -1164,8 +1164,8 @@ namespace Ara3D.SinglePrecision
         public Capsule(Line3D line, Number radius) => (Line, Radius) = (line, radius);
         public static Capsule Default = new Capsule();
         public static Capsule New(Line3D line, Number radius) => new Capsule(line, radius);
-        public Ara3D.DoublePrecision.Capsule ChangePrecision() => (Line.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Capsule(Capsule self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Capsule ChangePrecision() => (Line.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Capsule(Capsule self) => self.ChangePrecision();
         public static implicit operator (Line3D, Number)(Capsule self) => (self.Line, self.Radius);
         public static implicit operator Capsule((Line3D, Number) value) => new Capsule(value.Item1, value.Item2);
         public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
@@ -1188,8 +1188,8 @@ namespace Ara3D.SinglePrecision
         public Cylinder(Line3D line, Number radius) => (Line, Radius) = (line, radius);
         public static Cylinder Default = new Cylinder();
         public static Cylinder New(Line3D line, Number radius) => new Cylinder(line, radius);
-        public Ara3D.DoublePrecision.Cylinder ChangePrecision() => (Line.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Cylinder(Cylinder self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Cylinder ChangePrecision() => (Line.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Cylinder(Cylinder self) => self.ChangePrecision();
         public static implicit operator (Line3D, Number)(Cylinder self) => (self.Line, self.Radius);
         public static implicit operator Cylinder((Line3D, Number) value) => new Cylinder(value.Item1, value.Item2);
         public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
@@ -1212,8 +1212,8 @@ namespace Ara3D.SinglePrecision
         public Cone(Line3D line, Number radius) => (Line, Radius) = (line, radius);
         public static Cone Default = new Cone();
         public static Cone New(Line3D line, Number radius) => new Cone(line, radius);
-        public Ara3D.DoublePrecision.Cone ChangePrecision() => (Line.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Cone(Cone self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Cone ChangePrecision() => (Line.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Cone(Cone self) => self.ChangePrecision();
         public static implicit operator (Line3D, Number)(Cone self) => (self.Line, self.Radius);
         public static implicit operator Cone((Line3D, Number) value) => new Cone(value.Item1, value.Item2);
         public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
@@ -1238,8 +1238,8 @@ namespace Ara3D.SinglePrecision
         public Tube(Line3D line, Number innerRadius, Number outerRadius) => (Line, InnerRadius, OuterRadius) = (line, innerRadius, outerRadius);
         public static Tube Default = new Tube();
         public static Tube New(Line3D line, Number innerRadius, Number outerRadius) => new Tube(line, innerRadius, outerRadius);
-        public Ara3D.DoublePrecision.Tube ChangePrecision() => (Line.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Tube(Tube self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Tube ChangePrecision() => (Line.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Tube(Tube self) => self.ChangePrecision();
         public static implicit operator (Line3D, Number, Number)(Tube self) => (self.Line, self.InnerRadius, self.OuterRadius);
         public static implicit operator Tube((Line3D, Number, Number) value) => new Tube(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Line3D line, out Number innerRadius, out Number outerRadius) { line = Line; innerRadius = InnerRadius; outerRadius = OuterRadius; }
@@ -1264,8 +1264,8 @@ namespace Ara3D.SinglePrecision
         public ConeSegment(Line3D line, Number radius1, Number radius2) => (Line, Radius1, Radius2) = (line, radius1, radius2);
         public static ConeSegment Default = new ConeSegment();
         public static ConeSegment New(Line3D line, Number radius1, Number radius2) => new ConeSegment(line, radius1, radius2);
-        public Ara3D.DoublePrecision.ConeSegment ChangePrecision() => (Line.ChangePrecision(), Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.ConeSegment(ConeSegment self) => self.ChangePrecision();
+        public Plato.SinglePrecision.ConeSegment ChangePrecision() => (Line.ChangePrecision(), Radius1.ChangePrecision(), Radius2.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ConeSegment(ConeSegment self) => self.ChangePrecision();
         public static implicit operator (Line3D, Number, Number)(ConeSegment self) => (self.Line, self.Radius1, self.Radius2);
         public static implicit operator ConeSegment((Line3D, Number, Number) value) => new ConeSegment(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Line3D line, out Number radius1, out Number radius2) { line = Line; radius1 = Radius1; radius2 = Radius2; }
@@ -1290,8 +1290,8 @@ namespace Ara3D.SinglePrecision
         public Box3D(Point3D center, Rotation3D rotation, Size3D extent) => (Center, Rotation, Extent) = (center, rotation, extent);
         public static Box3D Default = new Box3D();
         public static Box3D New(Point3D center, Rotation3D rotation, Size3D extent) => new Box3D(center, rotation, extent);
-        public Ara3D.DoublePrecision.Box3D ChangePrecision() => (Center.ChangePrecision(), Rotation.ChangePrecision(), Extent.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Box3D(Box3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Box3D ChangePrecision() => (Center.ChangePrecision(), Rotation.ChangePrecision(), Extent.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Box3D(Box3D self) => self.ChangePrecision();
         public static implicit operator (Point3D, Rotation3D, Size3D)(Box3D self) => (self.Center, self.Rotation, self.Extent);
         public static implicit operator Box3D((Point3D, Rotation3D, Size3D) value) => new Box3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Point3D center, out Rotation3D rotation, out Size3D extent) { center = Center; rotation = Rotation; extent = Extent; }
@@ -1318,8 +1318,8 @@ namespace Ara3D.SinglePrecision
         public CubicBezier2D(Point2D a, Point2D b, Point2D c, Point2D d) => (A, B, C, D) = (a, b, c, d);
         public static CubicBezier2D Default = new CubicBezier2D();
         public static CubicBezier2D New(Point2D a, Point2D b, Point2D c, Point2D d) => new CubicBezier2D(a, b, c, d);
-        public Ara3D.DoublePrecision.CubicBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.CubicBezier2D(CubicBezier2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.CubicBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.CubicBezier2D(CubicBezier2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Point2D, Point2D, Point2D)(CubicBezier2D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator CubicBezier2D((Point2D, Point2D, Point2D, Point2D) value) => new CubicBezier2D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Point2D a, out Point2D b, out Point2D c, out Point2D d) { a = A; b = B; c = C; d = D; }
@@ -1349,8 +1349,8 @@ namespace Ara3D.SinglePrecision
         public CubicBezier3D(Point3D a, Point3D b, Point3D c, Point3D d) => (A, B, C, D) = (a, b, c, d);
         public static CubicBezier3D Default = new CubicBezier3D();
         public static CubicBezier3D New(Point3D a, Point3D b, Point3D c, Point3D d) => new CubicBezier3D(a, b, c, d);
-        public Ara3D.DoublePrecision.CubicBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.CubicBezier3D(CubicBezier3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.CubicBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.CubicBezier3D(CubicBezier3D self) => self.ChangePrecision();
         public static implicit operator (Point3D, Point3D, Point3D, Point3D)(CubicBezier3D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator CubicBezier3D((Point3D, Point3D, Point3D, Point3D) value) => new CubicBezier3D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Point3D a, out Point3D b, out Point3D c, out Point3D d) { a = A; b = B; c = C; d = D; }
@@ -1378,8 +1378,8 @@ namespace Ara3D.SinglePrecision
         public QuadraticBezier2D(Point2D a, Point2D b, Point2D c) => (A, B, C) = (a, b, c);
         public static QuadraticBezier2D Default = new QuadraticBezier2D();
         public static QuadraticBezier2D New(Point2D a, Point2D b, Point2D c) => new QuadraticBezier2D(a, b, c);
-        public Ara3D.DoublePrecision.QuadraticBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.QuadraticBezier2D(QuadraticBezier2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.QuadraticBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.QuadraticBezier2D(QuadraticBezier2D self) => self.ChangePrecision();
         public static implicit operator (Point2D, Point2D, Point2D)(QuadraticBezier2D self) => (self.A, self.B, self.C);
         public static implicit operator QuadraticBezier2D((Point2D, Point2D, Point2D) value) => new QuadraticBezier2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Point2D a, out Point2D b, out Point2D c) { a = A; b = B; c = C; }
@@ -1407,8 +1407,8 @@ namespace Ara3D.SinglePrecision
         public QuadraticBezier3D(Point3D a, Point3D b, Point3D c) => (A, B, C) = (a, b, c);
         public static QuadraticBezier3D Default = new QuadraticBezier3D();
         public static QuadraticBezier3D New(Point3D a, Point3D b, Point3D c) => new QuadraticBezier3D(a, b, c);
-        public Ara3D.DoublePrecision.QuadraticBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.QuadraticBezier3D(QuadraticBezier3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.QuadraticBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.QuadraticBezier3D(QuadraticBezier3D self) => self.ChangePrecision();
         public static implicit operator (Point3D, Point3D, Point3D)(QuadraticBezier3D self) => (self.A, self.B, self.C);
         public static implicit operator QuadraticBezier3D((Point3D, Point3D, Point3D) value) => new QuadraticBezier3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Point3D a, out Point3D b, out Point3D c) { a = A; b = B; c = C; }
@@ -1438,8 +1438,8 @@ namespace Ara3D.SinglePrecision
         public Quaternion(Number x, Number y, Number z, Number w) => (X, Y, Z, W) = (x, y, z, w);
         public static Quaternion Default = new Quaternion();
         public static Quaternion New(Number x, Number y, Number z, Number w) => new Quaternion(x, y, z, w);
-        public Ara3D.DoublePrecision.Quaternion ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Quaternion(Quaternion self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Quaternion ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Quaternion(Quaternion self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Quaternion self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Quaternion((Number, Number, Number, Number) value) => new Quaternion(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -1498,8 +1498,8 @@ namespace Ara3D.SinglePrecision
         public AxisAngle(Vector3D axis, Angle angle) => (Axis, Angle) = (axis, angle);
         public static AxisAngle Default = new AxisAngle();
         public static AxisAngle New(Vector3D axis, Angle angle) => new AxisAngle(axis, angle);
-        public Ara3D.DoublePrecision.AxisAngle ChangePrecision() => (Axis.ChangePrecision(), Angle.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.AxisAngle(AxisAngle self) => self.ChangePrecision();
+        public Plato.SinglePrecision.AxisAngle ChangePrecision() => (Axis.ChangePrecision(), Angle.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.AxisAngle(AxisAngle self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Angle)(AxisAngle self) => (self.Axis, self.Angle);
         public static implicit operator AxisAngle((Vector3D, Angle) value) => new AxisAngle(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D axis, out Angle angle) { axis = Axis; angle = Angle; }
@@ -1528,8 +1528,8 @@ namespace Ara3D.SinglePrecision
         public EulerAngles(Angle yaw, Angle pitch, Angle roll) => (Yaw, Pitch, Roll) = (yaw, pitch, roll);
         public static EulerAngles Default = new EulerAngles();
         public static EulerAngles New(Angle yaw, Angle pitch, Angle roll) => new EulerAngles(yaw, pitch, roll);
-        public Ara3D.DoublePrecision.EulerAngles ChangePrecision() => (Yaw.ChangePrecision(), Pitch.ChangePrecision(), Roll.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.EulerAngles(EulerAngles self) => self.ChangePrecision();
+        public Plato.SinglePrecision.EulerAngles ChangePrecision() => (Yaw.ChangePrecision(), Pitch.ChangePrecision(), Roll.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.EulerAngles(EulerAngles self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle, Angle)(EulerAngles self) => (self.Yaw, self.Pitch, self.Roll);
         public static implicit operator EulerAngles((Angle, Angle, Angle) value) => new EulerAngles(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle yaw, out Angle pitch, out Angle roll) { yaw = Yaw; pitch = Pitch; roll = Roll; }
@@ -1554,8 +1554,8 @@ namespace Ara3D.SinglePrecision
         public Rotation3D(Quaternion quaternion) => (Quaternion) = (quaternion);
         public static Rotation3D Default = new Rotation3D();
         public static Rotation3D New(Quaternion quaternion) => new Rotation3D(quaternion);
-        public Ara3D.DoublePrecision.Rotation3D ChangePrecision() => (Quaternion.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Rotation3D(Rotation3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Rotation3D ChangePrecision() => (Quaternion.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Rotation3D(Rotation3D self) => self.ChangePrecision();
         public static implicit operator Quaternion(Rotation3D self) => self.Quaternion;
         public static implicit operator Rotation3D(Quaternion value) => new Rotation3D(value);
         public override bool Equals(object obj) { if (!(obj is Rotation3D)) return false; var other = (Rotation3D)obj; return Quaternion.Equals(other.Quaternion); }
@@ -1579,8 +1579,8 @@ namespace Ara3D.SinglePrecision
         public Orientation3D(Rotation3D value) => (Value) = (value);
         public static Orientation3D Default = new Orientation3D();
         public static Orientation3D New(Rotation3D value) => new Orientation3D(value);
-        public Ara3D.DoublePrecision.Orientation3D ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Orientation3D(Orientation3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Orientation3D ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Orientation3D(Orientation3D self) => self.ChangePrecision();
         public static implicit operator Rotation3D(Orientation3D self) => self.Value;
         public static implicit operator Orientation3D(Rotation3D value) => new Orientation3D(value);
         public override bool Equals(object obj) { if (!(obj is Orientation3D)) return false; var other = (Orientation3D)obj; return Value.Equals(other.Value); }
@@ -1610,8 +1610,8 @@ namespace Ara3D.SinglePrecision
         public Point4D(Number x, Number y, Number z, Number w) => (X, Y, Z, W) = (x, y, z, w);
         public static Point4D Default = new Point4D();
         public static Point4D New(Number x, Number y, Number z, Number w) => new Point4D(x, y, z, w);
-        public Ara3D.DoublePrecision.Point4D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Point4D(Point4D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Point4D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Point4D(Point4D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Point4D self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Point4D((Number, Number, Number, Number) value) => new Point4D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -1644,8 +1644,8 @@ namespace Ara3D.SinglePrecision
         public Line4D(Point4D a, Point4D b) => (A, B) = (a, b);
         public static Line4D Default = new Line4D();
         public static Line4D New(Point4D a, Point4D b) => new Line4D(a, b);
-        public Ara3D.DoublePrecision.Line4D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Line4D(Line4D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Line4D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Line4D(Line4D self) => self.ChangePrecision();
         public static implicit operator (Point4D, Point4D)(Line4D self) => (self.A, self.B);
         public static implicit operator Line4D((Point4D, Point4D) value) => new Line4D(value.Item1, value.Item2);
         public void Deconstruct(out Point4D a, out Point4D b) { a = A; b = B; }
@@ -1679,8 +1679,8 @@ namespace Ara3D.SinglePrecision
         public Quadray(Number x, Number y, Number z, Number w) => (X, Y, Z, W) = (x, y, z, w);
         public static Quadray Default = new Quadray();
         public static Quadray New(Number x, Number y, Number z, Number w) => new Quadray(x, y, z, w);
-        public Ara3D.DoublePrecision.Quadray ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Quadray(Quadray self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Quadray ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Quadray(Quadray self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Quadray self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Quadray((Number, Number, Number, Number) value) => new Quadray(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -1761,8 +1761,8 @@ namespace Ara3D.SinglePrecision
         public TriFace(Integer index, Integer3 vertexIndices) => (Index, VertexIndices) = (index, vertexIndices);
         public static TriFace Default = new TriFace();
         public static TriFace New(Integer index, Integer3 vertexIndices) => new TriFace(index, vertexIndices);
-        public Ara3D.DoublePrecision.TriFace ChangePrecision() => (Index.ChangePrecision(), VertexIndices.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.TriFace(TriFace self) => self.ChangePrecision();
+        public Plato.SinglePrecision.TriFace ChangePrecision() => (Index.ChangePrecision(), VertexIndices.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.TriFace(TriFace self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer3)(TriFace self) => (self.Index, self.VertexIndices);
         public static implicit operator TriFace((Integer, Integer3) value) => new TriFace(value.Item1, value.Item2);
         public void Deconstruct(out Integer index, out Integer3 vertexIndices) { index = Index; vertexIndices = VertexIndices; }
@@ -1815,8 +1815,8 @@ namespace Ara3D.SinglePrecision
         public SimpleVertex(Integer index, Point3D position, Vector3D normal, UV uV, Color color) => (Index, Position, Normal, UV, Color) = (index, position, normal, uV, color);
         public static SimpleVertex Default = new SimpleVertex();
         public static SimpleVertex New(Integer index, Point3D position, Vector3D normal, UV uV, Color color) => new SimpleVertex(index, position, normal, uV, color);
-        public Ara3D.DoublePrecision.SimpleVertex ChangePrecision() => (Index.ChangePrecision(), Position.ChangePrecision(), Normal.ChangePrecision(), UV.ChangePrecision(), Color.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.SimpleVertex(SimpleVertex self) => self.ChangePrecision();
+        public Plato.SinglePrecision.SimpleVertex ChangePrecision() => (Index.ChangePrecision(), Position.ChangePrecision(), Normal.ChangePrecision(), UV.ChangePrecision(), Color.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.SimpleVertex(SimpleVertex self) => self.ChangePrecision();
         public static implicit operator (Integer, Point3D, Vector3D, UV, Color)(SimpleVertex self) => (self.Index, self.Position, self.Normal, self.UV, self.Color);
         public static implicit operator SimpleVertex((Integer, Point3D, Vector3D, UV, Color) value) => new SimpleVertex(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
         public void Deconstruct(out Integer index, out Point3D position, out Vector3D normal, out UV uV, out Color color) { index = Index; position = Position; normal = Normal; uV = UV; color = Color; }
@@ -1832,15 +1832,15 @@ namespace Ara3D.SinglePrecision
     }
     public readonly partial struct Number: Real<Number>, Numerical<Number>, Arithmetic<Number>, Comparable<Number>
     {
-        public readonly float Value;
-        public Number WithValue(float value) => (value);
-        public Number(float value) => (Value) = (value);
+        public readonly double Value;
+        public Number WithValue(double value) => (value);
+        public Number(double value) => (Value) = (value);
         public static Number Default = new Number();
-        public static Number New(float value) => new Number(value);
-        public Ara3D.DoublePrecision.Number ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Number(Number self) => self.ChangePrecision();
-        public static implicit operator float(Number self) => self.Value;
-        public static implicit operator Number(float value) => new Number(value);
+        public static Number New(double value) => new Number(value);
+        public Plato.SinglePrecision.Number ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Number(Number self) => self.ChangePrecision();
+        public static implicit operator double(Number self) => self.Value;
+        public static implicit operator Number(double value) => new Number(value);
         public override bool Equals(object obj) { if (!(obj is Number)) return false; var other = (Number)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
         public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
@@ -1858,8 +1858,8 @@ namespace Ara3D.SinglePrecision
         public Integer(int value) => (Value) = (value);
         public static Integer Default = new Integer();
         public static Integer New(int value) => new Integer(value);
-        public Ara3D.DoublePrecision.Integer ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Integer(Integer self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Integer ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Integer(Integer self) => self.ChangePrecision();
         public static implicit operator int(Integer self) => self.Value;
         public static implicit operator Integer(int value) => new Integer(value);
         public override bool Equals(object obj) { if (!(obj is Integer)) return false; var other = (Integer)obj; return Value.Equals(other.Value); }
@@ -1879,8 +1879,8 @@ namespace Ara3D.SinglePrecision
         public String(string value) => (Value) = (value);
         public static String Default = new String();
         public static String New(string value) => new String(value);
-        public Ara3D.DoublePrecision.String ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.String(String self) => self.ChangePrecision();
+        public Plato.SinglePrecision.String ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.String(String self) => self.ChangePrecision();
         public static implicit operator string(String self) => self.Value;
         public static implicit operator String(string value) => new String(value);
         public override bool Equals(object obj) { if (!(obj is String)) return false; var other = (String)obj; return Value.Equals(other.Value); }
@@ -1899,8 +1899,8 @@ namespace Ara3D.SinglePrecision
         public Boolean(bool value) => (Value) = (value);
         public static Boolean Default = new Boolean();
         public static Boolean New(bool value) => new Boolean(value);
-        public Ara3D.DoublePrecision.Boolean ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Boolean(Boolean self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Boolean ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Boolean(Boolean self) => self.ChangePrecision();
         public static implicit operator bool(Boolean self) => self.Value;
         public static implicit operator Boolean(bool value) => new Boolean(value);
         public override bool Equals(object obj) { if (!(obj is Boolean)) return false; var other = (Boolean)obj; return Value.Equals(other.Value); }
@@ -1919,8 +1919,8 @@ namespace Ara3D.SinglePrecision
         public Character(char value) => (Value) = (value);
         public static Character Default = new Character();
         public static Character New(char value) => new Character(value);
-        public Ara3D.DoublePrecision.Character ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Character(Character self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Character ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Character(Character self) => self.ChangePrecision();
         public static implicit operator char(Character self) => self.Value;
         public static implicit operator Character(char value) => new Character(value);
         public override bool Equals(object obj) { if (!(obj is Character)) return false; var other = (Character)obj; return Value.Equals(other.Value); }
@@ -1939,8 +1939,8 @@ namespace Ara3D.SinglePrecision
         public Type(System.Type value) => (Value) = (value);
         public static Type Default = new Type();
         public static Type New(System.Type value) => new Type(value);
-        public Ara3D.DoublePrecision.Type ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Type(Type self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Type ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Type(Type self) => self.ChangePrecision();
         public static implicit operator System.Type(Type self) => self.Value;
         public static implicit operator Type(System.Type value) => new Type(value);
         public override bool Equals(object obj) { if (!(obj is Type)) return false; var other = (Type)obj; return Value.Equals(other.Value); }
@@ -2333,8 +2333,8 @@ namespace Ara3D.SinglePrecision
         public Count(Integer value) => (Value) = (value);
         public static Count Default = new Count();
         public static Count New(Integer value) => new Count(value);
-        public Ara3D.DoublePrecision.Count ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Count(Count self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Count ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Count(Count self) => self.ChangePrecision();
         public static implicit operator Integer(Count self) => self.Value;
         public static implicit operator Count(Integer value) => new Count(value);
         public override bool Equals(object obj) { if (!(obj is Count)) return false; var other = (Count)obj; return Value.Equals(other.Value); }
@@ -2373,8 +2373,8 @@ namespace Ara3D.SinglePrecision
         public Cardinal(Integer value) => (Value) = (value);
         public static Cardinal Default = new Cardinal();
         public static Cardinal New(Integer value) => new Cardinal(value);
-        public Ara3D.DoublePrecision.Cardinal ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Cardinal(Cardinal self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Cardinal ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Cardinal(Cardinal self) => self.ChangePrecision();
         public static implicit operator Integer(Cardinal self) => self.Value;
         public static implicit operator Cardinal(Integer value) => new Cardinal(value);
         public override bool Equals(object obj) { if (!(obj is Cardinal)) return false; var other = (Cardinal)obj; return Value.Equals(other.Value); }
@@ -2413,8 +2413,8 @@ namespace Ara3D.SinglePrecision
         public Index(Integer value) => (Value) = (value);
         public static Index Default = new Index();
         public static Index New(Integer value) => new Index(value);
-        public Ara3D.DoublePrecision.Index ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Index(Index self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Index ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Index(Index self) => self.ChangePrecision();
         public static implicit operator Integer(Index self) => self.Value;
         public static implicit operator Index(Integer value) => new Index(value);
         public override bool Equals(object obj) { if (!(obj is Index)) return false; var other = (Index)obj; return Value.Equals(other.Value); }
@@ -2453,8 +2453,8 @@ namespace Ara3D.SinglePrecision
         public Unit(Number value) => (Value) = (value);
         public static Unit Default = new Unit();
         public static Unit New(Number value) => new Unit(value);
-        public Ara3D.DoublePrecision.Unit ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Unit(Unit self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Unit ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Unit(Unit self) => self.ChangePrecision();
         public static implicit operator Number(Unit self) => self.Value;
         public static implicit operator Unit(Number value) => new Unit(value);
         public override bool Equals(object obj) { if (!(obj is Unit)) return false; var other = (Unit)obj; return Value.Equals(other.Value); }
@@ -2495,8 +2495,8 @@ namespace Ara3D.SinglePrecision
         public Probability(Number value) => (Value) = (value);
         public static Probability Default = new Probability();
         public static Probability New(Number value) => new Probability(value);
-        public Ara3D.DoublePrecision.Probability ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Probability(Probability self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Probability ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Probability(Probability self) => self.ChangePrecision();
         public static implicit operator Number(Probability self) => self.Value;
         public static implicit operator Probability(Number value) => new Probability(value);
         public override bool Equals(object obj) { if (!(obj is Probability)) return false; var other = (Probability)obj; return Value.Equals(other.Value); }
@@ -2539,8 +2539,8 @@ namespace Ara3D.SinglePrecision
         public Complex(Number real, Number imaginary) => (Real, Imaginary) = (real, imaginary);
         public static Complex Default = new Complex();
         public static Complex New(Number real, Number imaginary) => new Complex(real, imaginary);
-        public Ara3D.DoublePrecision.Complex ChangePrecision() => (Real.ChangePrecision(), Imaginary.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Complex(Complex self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Complex ChangePrecision() => (Real.ChangePrecision(), Imaginary.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Complex(Complex self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Complex self) => (self.Real, self.Imaginary);
         public static implicit operator Complex((Number, Number) value) => new Complex(value.Item1, value.Item2);
         public void Deconstruct(out Number real, out Number imaginary) { real = Real; imaginary = Imaginary; }
@@ -2596,8 +2596,8 @@ namespace Ara3D.SinglePrecision
         public Integer2(Integer a, Integer b) => (A, B) = (a, b);
         public static Integer2 Default = new Integer2();
         public static Integer2 New(Integer a, Integer b) => new Integer2(a, b);
-        public Ara3D.DoublePrecision.Integer2 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Integer2(Integer2 self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Integer2 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Integer2(Integer2 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer)(Integer2 self) => (self.A, self.B);
         public static implicit operator Integer2((Integer, Integer) value) => new Integer2(value.Item1, value.Item2);
         public void Deconstruct(out Integer a, out Integer b) { a = A; b = B; }
@@ -2625,8 +2625,8 @@ namespace Ara3D.SinglePrecision
         public Integer3(Integer a, Integer b, Integer c) => (A, B, C) = (a, b, c);
         public static Integer3 Default = new Integer3();
         public static Integer3 New(Integer a, Integer b, Integer c) => new Integer3(a, b, c);
-        public Ara3D.DoublePrecision.Integer3 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Integer3(Integer3 self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Integer3 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Integer3(Integer3 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Integer)(Integer3 self) => (self.A, self.B, self.C);
         public static implicit operator Integer3((Integer, Integer, Integer) value) => new Integer3(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Integer a, out Integer b, out Integer c) { a = A; b = B; c = C; }
@@ -2656,8 +2656,8 @@ namespace Ara3D.SinglePrecision
         public Integer4(Integer a, Integer b, Integer c, Integer d) => (A, B, C, D) = (a, b, c, d);
         public static Integer4 Default = new Integer4();
         public static Integer4 New(Integer a, Integer b, Integer c, Integer d) => new Integer4(a, b, c, d);
-        public Ara3D.DoublePrecision.Integer4 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Integer4(Integer4 self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Integer4 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Integer4(Integer4 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Integer, Integer)(Integer4 self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Integer4((Integer, Integer, Integer, Integer) value) => new Integer4(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Integer a, out Integer b, out Integer c, out Integer d) { a = A; b = B; c = C; d = D; }
@@ -2687,8 +2687,8 @@ namespace Ara3D.SinglePrecision
         public Color(Unit r, Unit g, Unit b, Unit a) => (R, G, B, A) = (r, g, b, a);
         public static Color Default = new Color();
         public static Color New(Unit r, Unit g, Unit b, Unit a) => new Color(r, g, b, a);
-        public Ara3D.DoublePrecision.Color ChangePrecision() => (R.ChangePrecision(), G.ChangePrecision(), B.ChangePrecision(), A.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Color(Color self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Color ChangePrecision() => (R.ChangePrecision(), G.ChangePrecision(), B.ChangePrecision(), A.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Color(Color self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit, Unit)(Color self) => (self.R, self.G, self.B, self.A);
         public static implicit operator Color((Unit, Unit, Unit, Unit) value) => new Color(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Unit r, out Unit g, out Unit b, out Unit a) { r = R; g = G; b = B; a = A; }
@@ -2720,8 +2720,8 @@ namespace Ara3D.SinglePrecision
         public ColorLUV(Unit lightness, Unit u, Unit v) => (Lightness, U, V) = (lightness, u, v);
         public static ColorLUV Default = new ColorLUV();
         public static ColorLUV New(Unit lightness, Unit u, Unit v) => new ColorLUV(lightness, u, v);
-        public Ara3D.DoublePrecision.ColorLUV ChangePrecision() => (Lightness.ChangePrecision(), U.ChangePrecision(), V.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.ColorLUV(ColorLUV self) => self.ChangePrecision();
+        public Plato.SinglePrecision.ColorLUV ChangePrecision() => (Lightness.ChangePrecision(), U.ChangePrecision(), V.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ColorLUV(ColorLUV self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit)(ColorLUV self) => (self.Lightness, self.U, self.V);
         public static implicit operator ColorLUV((Unit, Unit, Unit) value) => new ColorLUV(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit lightness, out Unit u, out Unit v) { lightness = Lightness; u = U; v = V; }
@@ -2753,8 +2753,8 @@ namespace Ara3D.SinglePrecision
         public ColorLAB(Unit lightness, Number a, Number b) => (Lightness, A, B) = (lightness, a, b);
         public static ColorLAB Default = new ColorLAB();
         public static ColorLAB New(Unit lightness, Number a, Number b) => new ColorLAB(lightness, a, b);
-        public Ara3D.DoublePrecision.ColorLAB ChangePrecision() => (Lightness.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.ColorLAB(ColorLAB self) => self.ChangePrecision();
+        public Plato.SinglePrecision.ColorLAB ChangePrecision() => (Lightness.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ColorLAB(ColorLAB self) => self.ChangePrecision();
         public static implicit operator (Unit, Number, Number)(ColorLAB self) => (self.Lightness, self.A, self.B);
         public static implicit operator ColorLAB((Unit, Number, Number) value) => new ColorLAB(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit lightness, out Number a, out Number b) { lightness = Lightness; a = A; b = B; }
@@ -2784,8 +2784,8 @@ namespace Ara3D.SinglePrecision
         public ColorLCh(Unit lightness, PolarCoordinate chromaHue) => (Lightness, ChromaHue) = (lightness, chromaHue);
         public static ColorLCh Default = new ColorLCh();
         public static ColorLCh New(Unit lightness, PolarCoordinate chromaHue) => new ColorLCh(lightness, chromaHue);
-        public Ara3D.DoublePrecision.ColorLCh ChangePrecision() => (Lightness.ChangePrecision(), ChromaHue.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.ColorLCh(ColorLCh self) => self.ChangePrecision();
+        public Plato.SinglePrecision.ColorLCh ChangePrecision() => (Lightness.ChangePrecision(), ChromaHue.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ColorLCh(ColorLCh self) => self.ChangePrecision();
         public static implicit operator (Unit, PolarCoordinate)(ColorLCh self) => (self.Lightness, self.ChromaHue);
         public static implicit operator ColorLCh((Unit, PolarCoordinate) value) => new ColorLCh(value.Item1, value.Item2);
         public void Deconstruct(out Unit lightness, out PolarCoordinate chromaHue) { lightness = Lightness; chromaHue = ChromaHue; }
@@ -2817,8 +2817,8 @@ namespace Ara3D.SinglePrecision
         public ColorHSV(Angle hue, Unit s, Unit v) => (Hue, S, V) = (hue, s, v);
         public static ColorHSV Default = new ColorHSV();
         public static ColorHSV New(Angle hue, Unit s, Unit v) => new ColorHSV(hue, s, v);
-        public Ara3D.DoublePrecision.ColorHSV ChangePrecision() => (Hue.ChangePrecision(), S.ChangePrecision(), V.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.ColorHSV(ColorHSV self) => self.ChangePrecision();
+        public Plato.SinglePrecision.ColorHSV ChangePrecision() => (Hue.ChangePrecision(), S.ChangePrecision(), V.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ColorHSV(ColorHSV self) => self.ChangePrecision();
         public static implicit operator (Angle, Unit, Unit)(ColorHSV self) => (self.Hue, self.S, self.V);
         public static implicit operator ColorHSV((Angle, Unit, Unit) value) => new ColorHSV(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle hue, out Unit s, out Unit v) { hue = Hue; s = S; v = V; }
@@ -2850,8 +2850,8 @@ namespace Ara3D.SinglePrecision
         public ColorHSL(Angle hue, Unit saturation, Unit luminance) => (Hue, Saturation, Luminance) = (hue, saturation, luminance);
         public static ColorHSL Default = new ColorHSL();
         public static ColorHSL New(Angle hue, Unit saturation, Unit luminance) => new ColorHSL(hue, saturation, luminance);
-        public Ara3D.DoublePrecision.ColorHSL ChangePrecision() => (Hue.ChangePrecision(), Saturation.ChangePrecision(), Luminance.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.ColorHSL(ColorHSL self) => self.ChangePrecision();
+        public Plato.SinglePrecision.ColorHSL ChangePrecision() => (Hue.ChangePrecision(), Saturation.ChangePrecision(), Luminance.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ColorHSL(ColorHSL self) => self.ChangePrecision();
         public static implicit operator (Angle, Unit, Unit)(ColorHSL self) => (self.Hue, self.Saturation, self.Luminance);
         public static implicit operator ColorHSL((Angle, Unit, Unit) value) => new ColorHSL(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle hue, out Unit saturation, out Unit luminance) { hue = Hue; saturation = Saturation; luminance = Luminance; }
@@ -2883,8 +2883,8 @@ namespace Ara3D.SinglePrecision
         public ColorYCbCr(Unit y, Unit cb, Unit cr) => (Y, Cb, Cr) = (y, cb, cr);
         public static ColorYCbCr Default = new ColorYCbCr();
         public static ColorYCbCr New(Unit y, Unit cb, Unit cr) => new ColorYCbCr(y, cb, cr);
-        public Ara3D.DoublePrecision.ColorYCbCr ChangePrecision() => (Y.ChangePrecision(), Cb.ChangePrecision(), Cr.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.ColorYCbCr(ColorYCbCr self) => self.ChangePrecision();
+        public Plato.SinglePrecision.ColorYCbCr ChangePrecision() => (Y.ChangePrecision(), Cb.ChangePrecision(), Cr.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ColorYCbCr(ColorYCbCr self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit)(ColorYCbCr self) => (self.Y, self.Cb, self.Cr);
         public static implicit operator ColorYCbCr((Unit, Unit, Unit) value) => new ColorYCbCr(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit y, out Unit cb, out Unit cr) { y = Y; cb = Cb; cr = Cr; }
@@ -2916,8 +2916,8 @@ namespace Ara3D.SinglePrecision
         public SphericalCoordinate(Number radius, Angle azimuth, Angle polar) => (Radius, Azimuth, Polar) = (radius, azimuth, polar);
         public static SphericalCoordinate Default = new SphericalCoordinate();
         public static SphericalCoordinate New(Number radius, Angle azimuth, Angle polar) => new SphericalCoordinate(radius, azimuth, polar);
-        public Ara3D.DoublePrecision.SphericalCoordinate ChangePrecision() => (Radius.ChangePrecision(), Azimuth.ChangePrecision(), Polar.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.SphericalCoordinate(SphericalCoordinate self) => self.ChangePrecision();
+        public Plato.SinglePrecision.SphericalCoordinate ChangePrecision() => (Radius.ChangePrecision(), Azimuth.ChangePrecision(), Polar.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.SphericalCoordinate(SphericalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle, Angle)(SphericalCoordinate self) => (self.Radius, self.Azimuth, self.Polar);
         public static implicit operator SphericalCoordinate((Number, Angle, Angle) value) => new SphericalCoordinate(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius, out Angle azimuth, out Angle polar) { radius = Radius; azimuth = Azimuth; polar = Polar; }
@@ -2947,8 +2947,8 @@ namespace Ara3D.SinglePrecision
         public PolarCoordinate(Number radius, Angle angle) => (Radius, Angle) = (radius, angle);
         public static PolarCoordinate Default = new PolarCoordinate();
         public static PolarCoordinate New(Number radius, Angle angle) => new PolarCoordinate(radius, angle);
-        public Ara3D.DoublePrecision.PolarCoordinate ChangePrecision() => (Radius.ChangePrecision(), Angle.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.PolarCoordinate(PolarCoordinate self) => self.ChangePrecision();
+        public Plato.SinglePrecision.PolarCoordinate ChangePrecision() => (Radius.ChangePrecision(), Angle.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.PolarCoordinate(PolarCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle)(PolarCoordinate self) => (self.Radius, self.Angle);
         public static implicit operator PolarCoordinate((Number, Angle) value) => new PolarCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Number radius, out Angle angle) { radius = Radius; angle = Angle; }
@@ -2978,8 +2978,8 @@ namespace Ara3D.SinglePrecision
         public LogPolarCoordinate(Number rho, Angle azimuth) => (Rho, Azimuth) = (rho, azimuth);
         public static LogPolarCoordinate Default = new LogPolarCoordinate();
         public static LogPolarCoordinate New(Number rho, Angle azimuth) => new LogPolarCoordinate(rho, azimuth);
-        public Ara3D.DoublePrecision.LogPolarCoordinate ChangePrecision() => (Rho.ChangePrecision(), Azimuth.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.LogPolarCoordinate(LogPolarCoordinate self) => self.ChangePrecision();
+        public Plato.SinglePrecision.LogPolarCoordinate ChangePrecision() => (Rho.ChangePrecision(), Azimuth.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.LogPolarCoordinate(LogPolarCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle)(LogPolarCoordinate self) => (self.Rho, self.Azimuth);
         public static implicit operator LogPolarCoordinate((Number, Angle) value) => new LogPolarCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Number rho, out Angle azimuth) { rho = Rho; azimuth = Azimuth; }
@@ -3011,8 +3011,8 @@ namespace Ara3D.SinglePrecision
         public CylindricalCoordinate(Number radialDistance, Angle azimuth, Number height) => (RadialDistance, Azimuth, Height) = (radialDistance, azimuth, height);
         public static CylindricalCoordinate Default = new CylindricalCoordinate();
         public static CylindricalCoordinate New(Number radialDistance, Angle azimuth, Number height) => new CylindricalCoordinate(radialDistance, azimuth, height);
-        public Ara3D.DoublePrecision.CylindricalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Height.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.CylindricalCoordinate(CylindricalCoordinate self) => self.ChangePrecision();
+        public Plato.SinglePrecision.CylindricalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Height.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.CylindricalCoordinate(CylindricalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle, Number)(CylindricalCoordinate self) => (self.RadialDistance, self.Azimuth, self.Height);
         public static implicit operator CylindricalCoordinate((Number, Angle, Number) value) => new CylindricalCoordinate(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radialDistance, out Angle azimuth, out Number height) { radialDistance = RadialDistance; azimuth = Azimuth; height = Height; }
@@ -3044,8 +3044,8 @@ namespace Ara3D.SinglePrecision
         public HorizontalCoordinate(Number radius, Angle azimuth, Number height) => (Radius, Azimuth, Height) = (radius, azimuth, height);
         public static HorizontalCoordinate Default = new HorizontalCoordinate();
         public static HorizontalCoordinate New(Number radius, Angle azimuth, Number height) => new HorizontalCoordinate(radius, azimuth, height);
-        public Ara3D.DoublePrecision.HorizontalCoordinate ChangePrecision() => (Radius.ChangePrecision(), Azimuth.ChangePrecision(), Height.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.HorizontalCoordinate(HorizontalCoordinate self) => self.ChangePrecision();
+        public Plato.SinglePrecision.HorizontalCoordinate ChangePrecision() => (Radius.ChangePrecision(), Azimuth.ChangePrecision(), Height.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.HorizontalCoordinate(HorizontalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle, Number)(HorizontalCoordinate self) => (self.Radius, self.Azimuth, self.Height);
         public static implicit operator HorizontalCoordinate((Number, Angle, Number) value) => new HorizontalCoordinate(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius, out Angle azimuth, out Number height) { radius = Radius; azimuth = Azimuth; height = Height; }
@@ -3075,8 +3075,8 @@ namespace Ara3D.SinglePrecision
         public GeoCoordinate(Angle latitude, Angle longitude) => (Latitude, Longitude) = (latitude, longitude);
         public static GeoCoordinate Default = new GeoCoordinate();
         public static GeoCoordinate New(Angle latitude, Angle longitude) => new GeoCoordinate(latitude, longitude);
-        public Ara3D.DoublePrecision.GeoCoordinate ChangePrecision() => (Latitude.ChangePrecision(), Longitude.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.GeoCoordinate(GeoCoordinate self) => self.ChangePrecision();
+        public Plato.SinglePrecision.GeoCoordinate ChangePrecision() => (Latitude.ChangePrecision(), Longitude.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.GeoCoordinate(GeoCoordinate self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(GeoCoordinate self) => (self.Latitude, self.Longitude);
         public static implicit operator GeoCoordinate((Angle, Angle) value) => new GeoCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Angle latitude, out Angle longitude) { latitude = Latitude; longitude = Longitude; }
@@ -3106,8 +3106,8 @@ namespace Ara3D.SinglePrecision
         public GeoCoordinateWithAltitude(GeoCoordinate coordinate, Number altitude) => (Coordinate, Altitude) = (coordinate, altitude);
         public static GeoCoordinateWithAltitude Default = new GeoCoordinateWithAltitude();
         public static GeoCoordinateWithAltitude New(GeoCoordinate coordinate, Number altitude) => new GeoCoordinateWithAltitude(coordinate, altitude);
-        public Ara3D.DoublePrecision.GeoCoordinateWithAltitude ChangePrecision() => (Coordinate.ChangePrecision(), Altitude.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.GeoCoordinateWithAltitude(GeoCoordinateWithAltitude self) => self.ChangePrecision();
+        public Plato.SinglePrecision.GeoCoordinateWithAltitude ChangePrecision() => (Coordinate.ChangePrecision(), Altitude.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.GeoCoordinateWithAltitude(GeoCoordinateWithAltitude self) => self.ChangePrecision();
         public static implicit operator (GeoCoordinate, Number)(GeoCoordinateWithAltitude self) => (self.Coordinate, self.Altitude);
         public static implicit operator GeoCoordinateWithAltitude((GeoCoordinate, Number) value) => new GeoCoordinateWithAltitude(value.Item1, value.Item2);
         public void Deconstruct(out GeoCoordinate coordinate, out Number altitude) { coordinate = Coordinate; altitude = Altitude; }
@@ -3137,8 +3137,8 @@ namespace Ara3D.SinglePrecision
         public Size2D(Number width, Number height) => (Width, Height) = (width, height);
         public static Size2D Default = new Size2D();
         public static Size2D New(Number width, Number height) => new Size2D(width, height);
-        public Ara3D.DoublePrecision.Size2D ChangePrecision() => (Width.ChangePrecision(), Height.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Size2D(Size2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Size2D ChangePrecision() => (Width.ChangePrecision(), Height.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Size2D(Size2D self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Size2D self) => (self.Width, self.Height);
         public static implicit operator Size2D((Number, Number) value) => new Size2D(value.Item1, value.Item2);
         public void Deconstruct(out Number width, out Number height) { width = Width; height = Height; }
@@ -3167,8 +3167,8 @@ namespace Ara3D.SinglePrecision
         public Size3D(Number width, Number height, Number depth) => (Width, Height, Depth) = (width, height, depth);
         public static Size3D Default = new Size3D();
         public static Size3D New(Number width, Number height, Number depth) => new Size3D(width, height, depth);
-        public Ara3D.DoublePrecision.Size3D ChangePrecision() => (Width.ChangePrecision(), Height.ChangePrecision(), Depth.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Size3D(Size3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Size3D ChangePrecision() => (Width.ChangePrecision(), Height.ChangePrecision(), Depth.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Size3D(Size3D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Size3D self) => (self.Width, self.Height, self.Depth);
         public static implicit operator Size3D((Number, Number, Number) value) => new Size3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number width, out Number height, out Number depth) { width = Width; height = Height; depth = Depth; }
@@ -3195,8 +3195,8 @@ namespace Ara3D.SinglePrecision
         public Fraction(Number numerator, Number denominator) => (Numerator, Denominator) = (numerator, denominator);
         public static Fraction Default = new Fraction();
         public static Fraction New(Number numerator, Number denominator) => new Fraction(numerator, denominator);
-        public Ara3D.DoublePrecision.Fraction ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Fraction(Fraction self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Fraction ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Fraction(Fraction self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Fraction self) => (self.Numerator, self.Denominator);
         public static implicit operator Fraction((Number, Number) value) => new Fraction(value.Item1, value.Item2);
         public void Deconstruct(out Number numerator, out Number denominator) { numerator = Numerator; denominator = Denominator; }
@@ -3221,8 +3221,8 @@ namespace Ara3D.SinglePrecision
         public Angle(Number radians) => (Radians) = (radians);
         public static Angle Default = new Angle();
         public static Angle New(Number radians) => new Angle(radians);
-        public Ara3D.DoublePrecision.Angle ChangePrecision() => (Radians.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Angle(Angle self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Angle ChangePrecision() => (Radians.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Angle(Angle self) => self.ChangePrecision();
         public static implicit operator Number(Angle self) => self.Radians;
         public static implicit operator Angle(Number value) => new Angle(value);
         public override bool Equals(object obj) { if (!(obj is Angle)) return false; var other = (Angle)obj; return Radians.Equals(other.Radians); }
@@ -3263,8 +3263,8 @@ namespace Ara3D.SinglePrecision
         public Length(Number meters) => (Meters) = (meters);
         public static Length Default = new Length();
         public static Length New(Number meters) => new Length(meters);
-        public Ara3D.DoublePrecision.Length ChangePrecision() => (Meters.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Length(Length self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Length ChangePrecision() => (Meters.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Length(Length self) => self.ChangePrecision();
         public static implicit operator Number(Length self) => self.Meters;
         public static implicit operator Length(Number value) => new Length(value);
         public override bool Equals(object obj) { if (!(obj is Length)) return false; var other = (Length)obj; return Meters.Equals(other.Meters); }
@@ -3305,8 +3305,8 @@ namespace Ara3D.SinglePrecision
         public Mass(Number kilograms) => (Kilograms) = (kilograms);
         public static Mass Default = new Mass();
         public static Mass New(Number kilograms) => new Mass(kilograms);
-        public Ara3D.DoublePrecision.Mass ChangePrecision() => (Kilograms.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Mass(Mass self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Mass ChangePrecision() => (Kilograms.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Mass(Mass self) => self.ChangePrecision();
         public static implicit operator Number(Mass self) => self.Kilograms;
         public static implicit operator Mass(Number value) => new Mass(value);
         public override bool Equals(object obj) { if (!(obj is Mass)) return false; var other = (Mass)obj; return Kilograms.Equals(other.Kilograms); }
@@ -3347,8 +3347,8 @@ namespace Ara3D.SinglePrecision
         public Temperature(Number celsius) => (Celsius) = (celsius);
         public static Temperature Default = new Temperature();
         public static Temperature New(Number celsius) => new Temperature(celsius);
-        public Ara3D.DoublePrecision.Temperature ChangePrecision() => (Celsius.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Temperature(Temperature self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Temperature ChangePrecision() => (Celsius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Temperature(Temperature self) => self.ChangePrecision();
         public static implicit operator Number(Temperature self) => self.Celsius;
         public static implicit operator Temperature(Number value) => new Temperature(value);
         public override bool Equals(object obj) { if (!(obj is Temperature)) return false; var other = (Temperature)obj; return Celsius.Equals(other.Celsius); }
@@ -3389,8 +3389,8 @@ namespace Ara3D.SinglePrecision
         public Time(Number seconds) => (Seconds) = (seconds);
         public static Time Default = new Time();
         public static Time New(Number seconds) => new Time(seconds);
-        public Ara3D.DoublePrecision.Time ChangePrecision() => (Seconds.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Time(Time self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Time ChangePrecision() => (Seconds.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Time(Time self) => self.ChangePrecision();
         public static implicit operator Number(Time self) => self.Seconds;
         public static implicit operator Time(Number value) => new Time(value);
         public override bool Equals(object obj) { if (!(obj is Time)) return false; var other = (Time)obj; return Seconds.Equals(other.Seconds); }
@@ -3433,8 +3433,8 @@ namespace Ara3D.SinglePrecision
         public TimeRange(DateTime min, DateTime max) => (Min, Max) = (min, max);
         public static TimeRange Default = new TimeRange();
         public static TimeRange New(DateTime min, DateTime max) => new TimeRange(min, max);
-        public Ara3D.DoublePrecision.TimeRange ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.TimeRange(TimeRange self) => self.ChangePrecision();
+        public Plato.SinglePrecision.TimeRange ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.TimeRange(TimeRange self) => self.ChangePrecision();
         public static implicit operator (DateTime, DateTime)(TimeRange self) => (self.Min, self.Max);
         public static implicit operator TimeRange((DateTime, DateTime) value) => new TimeRange(value.Item1, value.Item2);
         public void Deconstruct(out DateTime min, out DateTime max) { min = Min; max = Max; }
@@ -3461,8 +3461,8 @@ namespace Ara3D.SinglePrecision
         public DateTime(Number value) => (Value) = (value);
         public static DateTime Default = new DateTime();
         public static DateTime New(Number value) => new DateTime(value);
-        public Ara3D.DoublePrecision.DateTime ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.DateTime(DateTime self) => self.ChangePrecision();
+        public Plato.SinglePrecision.DateTime ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.DateTime(DateTime self) => self.ChangePrecision();
         public static implicit operator Number(DateTime self) => self.Value;
         public static implicit operator DateTime(Number value) => new DateTime(value);
         public override bool Equals(object obj) { if (!(obj is DateTime)) return false; var other = (DateTime)obj; return Value.Equals(other.Value); }
@@ -3497,8 +3497,8 @@ namespace Ara3D.SinglePrecision
         public AnglePair(Angle min, Angle max) => (Min, Max) = (min, max);
         public static AnglePair Default = new AnglePair();
         public static AnglePair New(Angle min, Angle max) => new AnglePair(min, max);
-        public Ara3D.DoublePrecision.AnglePair ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.AnglePair(AnglePair self) => self.ChangePrecision();
+        public Plato.SinglePrecision.AnglePair ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.AnglePair(AnglePair self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(AnglePair self) => (self.Min, self.Max);
         public static implicit operator AnglePair((Angle, Angle) value) => new AnglePair(value.Item1, value.Item2);
         public void Deconstruct(out Angle min, out Angle max) { min = Min; max = Max; }
@@ -3527,8 +3527,8 @@ namespace Ara3D.SinglePrecision
         public NumberInterval(Number min, Number max) => (Min, Max) = (min, max);
         public static NumberInterval Default = new NumberInterval();
         public static NumberInterval New(Number min, Number max) => new NumberInterval(min, max);
-        public Ara3D.DoublePrecision.NumberInterval ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.NumberInterval(NumberInterval self) => self.ChangePrecision();
+        public Plato.SinglePrecision.NumberInterval ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.NumberInterval(NumberInterval self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(NumberInterval self) => (self.Min, self.Max);
         public static implicit operator NumberInterval((Number, Number) value) => new NumberInterval(value.Item1, value.Item2);
         public void Deconstruct(out Number min, out Number max) { min = Min; max = Max; }
@@ -3559,8 +3559,8 @@ namespace Ara3D.SinglePrecision
         public Matrix2D(Vector3D column1, Vector3D column2, Vector3D column3) => (Column1, Column2, Column3) = (column1, column2, column3);
         public static Matrix2D Default = new Matrix2D();
         public static Matrix2D New(Vector3D column1, Vector3D column2, Vector3D column3) => new Matrix2D(column1, column2, column3);
-        public Ara3D.DoublePrecision.Matrix2D ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Matrix2D(Matrix2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Matrix2D ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Matrix2D(Matrix2D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Matrix2D self) => (self.Column1, self.Column2, self.Column3);
         public static implicit operator Matrix2D((Vector3D, Vector3D, Vector3D) value) => new Matrix2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D column1, out Vector3D column2, out Vector3D column3) { column1 = Column1; column2 = Column2; column3 = Column3; }
@@ -3594,8 +3594,8 @@ namespace Ara3D.SinglePrecision
         public Matrix3D(Vector4D column1, Vector4D column2, Vector4D column3, Vector4D column4) => (Column1, Column2, Column3, Column4) = (column1, column2, column3, column4);
         public static Matrix3D Default = new Matrix3D();
         public static Matrix3D New(Vector4D column1, Vector4D column2, Vector4D column3, Vector4D column4) => new Matrix3D(column1, column2, column3, column4);
-        public Ara3D.DoublePrecision.Matrix3D ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision(), Column4.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Matrix3D(Matrix3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Matrix3D ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision(), Column4.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Matrix3D(Matrix3D self) => self.ChangePrecision();
         public static implicit operator (Vector4D, Vector4D, Vector4D, Vector4D)(Matrix3D self) => (self.Column1, self.Column2, self.Column3, self.Column4);
         public static implicit operator Matrix3D((Vector4D, Vector4D, Vector4D, Vector4D) value) => new Matrix3D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector4D column1, out Vector4D column2, out Vector4D column3, out Vector4D column4) { column1 = Column1; column2 = Column2; column3 = Column3; column4 = Column4; }
@@ -3625,8 +3625,8 @@ namespace Ara3D.SinglePrecision
         public UV(Number u, Number v) => (U, V) = (u, v);
         public static UV Default = new UV();
         public static UV New(Number u, Number v) => new UV(u, v);
-        public Ara3D.DoublePrecision.UV ChangePrecision() => (U.ChangePrecision(), V.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.UV(UV self) => self.ChangePrecision();
+        public Plato.SinglePrecision.UV ChangePrecision() => (U.ChangePrecision(), V.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.UV(UV self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(UV self) => (self.U, self.V);
         public static implicit operator UV((Number, Number) value) => new UV(value.Item1, value.Item2);
         public void Deconstruct(out Number u, out Number v) { u = U; v = V; }
@@ -3684,8 +3684,8 @@ namespace Ara3D.SinglePrecision
         public UVW(Number u, Number v, Number w) => (U, V, W) = (u, v, w);
         public static UVW Default = new UVW();
         public static UVW New(Number u, Number v, Number w) => new UVW(u, v, w);
-        public Ara3D.DoublePrecision.UVW ChangePrecision() => (U.ChangePrecision(), V.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.UVW(UVW self) => self.ChangePrecision();
+        public Plato.SinglePrecision.UVW ChangePrecision() => (U.ChangePrecision(), V.ChangePrecision(), W.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.UVW(UVW self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(UVW self) => (self.U, self.V, self.W);
         public static implicit operator UVW((Number, Number, Number) value) => new UVW(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number u, out Number v, out Number w) { u = U; v = V; w = W; }
@@ -3741,8 +3741,8 @@ namespace Ara3D.SinglePrecision
         public Vector2D(Number x, Number y) => (X, Y) = (x, y);
         public static Vector2D Default = new Vector2D();
         public static Vector2D New(Number x, Number y) => new Vector2D(x, y);
-        public Ara3D.DoublePrecision.Vector2D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Vector2D(Vector2D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Vector2D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Vector2D(Vector2D self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Vector2D self) => (self.X, self.Y);
         public static implicit operator Vector2D((Number, Number) value) => new Vector2D(value.Item1, value.Item2);
         public void Deconstruct(out Number x, out Number y) { x = X; y = Y; }
@@ -3800,8 +3800,8 @@ namespace Ara3D.SinglePrecision
         public Vector3D(Number x, Number y, Number z) => (X, Y, Z) = (x, y, z);
         public static Vector3D Default = new Vector3D();
         public static Vector3D New(Number x, Number y, Number z) => new Vector3D(x, y, z);
-        public Ara3D.DoublePrecision.Vector3D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Vector3D(Vector3D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Vector3D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Vector3D(Vector3D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Vector3D self) => (self.X, self.Y, self.Z);
         public static implicit operator Vector3D((Number, Number, Number) value) => new Vector3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number x, out Number y, out Number z) { x = X; y = Y; z = Z; }
@@ -3861,8 +3861,8 @@ namespace Ara3D.SinglePrecision
         public Vector4D(Number x, Number y, Number z, Number w) => (X, Y, Z, W) = (x, y, z, w);
         public static Vector4D Default = new Vector4D();
         public static Vector4D New(Number x, Number y, Number z, Number w) => new Vector4D(x, y, z, w);
-        public Ara3D.DoublePrecision.Vector4D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Ara3D.DoublePrecision.Vector4D(Vector4D self) => self.ChangePrecision();
+        public Plato.SinglePrecision.Vector4D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Vector4D(Vector4D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Vector4D self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Vector4D((Number, Number, Number, Number) value) => new Vector4D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -4337,8 +4337,8 @@ namespace Ara3D.SinglePrecision
         {
             get
             {
-                var _var0 = this;
-                return this.Range.Map((i) => i.FloatDivision(_var0));
+                var _var1 = this;
+                return this.Range.Map((i) => i.FloatDivision(_var1));
             }
         }
         public Array<Point2D> CirclePoints => this.Fractions.Map((x) => x.Turns.CirclePoint);
@@ -5151,21 +5151,21 @@ namespace Ara3D.SinglePrecision
         public static float ChangePrecision(this double self) => (float)self;
         public static string ChangePrecision(this string self) => self;
 
-        public static Number Cos(Angle x) => (float)System.Math.Cos(x.Value);
-        public static Number Sin(Angle x) => (float)System.Math.Sin(x.Value);
-        public static Number Tan(Angle x) => (float)System.Math.Tan(x.Value);
+        public static Number Cos(Angle x) => (double)System.Math.Cos(x.Value);
+        public static Number Sin(Angle x) => (double)System.Math.Sin(x.Value);
+        public static Number Tan(Angle x) => (double)System.Math.Tan(x.Value);
 
-        public static Number Ln(Number x) => (float)System.Math.Log(x.Value);
-        public static Number Exp(Number x) => (float)System.Math.Exp(x.Value);
+        public static Number Ln(Number x) => (double)System.Math.Log(x.Value);
+        public static Number Exp(Number x) => (double)System.Math.Exp(x.Value);
 
-        public static Angle Acos(Number x) => new Angle((float)System.Math.Acos(x));
-        public static Angle Asin(Number x) => new Angle((float)System.Math.Asin(x));
-        public static Angle Atan(Number x) => new Angle((float)System.Math.Atan(x));
+        public static Angle Acos(Number x) => new Angle((double)System.Math.Acos(x));
+        public static Angle Asin(Number x) => new Angle((double)System.Math.Asin(x));
+        public static Angle Atan(Number x) => new Angle((double)System.Math.Atan(x));
 
-        public static Number Pow(Number x, Number y) => (float)System.Math.Pow(x, y);
-        public static Number Log(Number x, Number y) => (float)System.Math.Log(x, y);
-        public static Number NaturalLog(Number x) => (float)System.Math.Log(x);
-        public static Number NaturalPower(Number x) => (float)System.Math.Pow(x, System.Math.E);
+        public static Number Pow(Number x, Number y) => (double)System.Math.Pow(x, y);
+        public static Number Log(Number x, Number y) => (double)System.Math.Log(x, y);
+        public static Number NaturalLog(Number x) => (double)System.Math.Log(x);
+        public static Number NaturalPower(Number x) => (double)System.Math.Pow(x, System.Math.E);
 
         public static Number Add(Number x, Number y) => x.Value + y.Value;
         public static Number Subtract(Number x, Number y) => x.Value - y.Value;
@@ -5287,10 +5287,10 @@ namespace Ara3D.SinglePrecision
     {
         public Number Zero => 0;
         public Number One => 1;
-        public Number MinValue => float.MinValue;
-        public Number MaxValue => float.MaxValue;
+        public Number MinValue => double.MinValue;
+        public Number MaxValue => double.MaxValue;
         public Integer Compare(Number other) => Value.CompareTo(other.Value);
-        public Number Unlerp(Number a, Number b) => (float)(this - a) / (float)(b - a);
+        public Number Unlerp(Number a, Number b) => (double)(this - a) / (double)(b - a);
     }
 
     public readonly partial struct Integer
@@ -5303,7 +5303,7 @@ namespace Ara3D.SinglePrecision
         public static implicit operator Number(Integer self) => self.Value;
         public Integer Compare(Integer other) => Value.CompareTo(other.Value);
         public Integer Lerp(Integer b, Number t) => (int)(Value * (1.0 - t) + b * t);
-        public Number Unlerp(Integer a, Integer b) => (float)(this - a) / (float)(b - a);
+        public Number Unlerp(Integer a, Integer b) => (double)(this - a) / (double)(b - a);
     }
 
     public readonly partial struct Character
@@ -5315,7 +5315,7 @@ namespace Ara3D.SinglePrecision
         public Number Magnitude => Value;
         public static implicit operator Number(Character self) => self.Value;
         public Integer Compare(Character other) => Value.CompareTo(other.Value);
-        public Number Unlerp(Character a, Character b) => (float)(this - a) / (float)(b - a);
+        public Number Unlerp(Character a, Character b) => (double)(this - a) / (double)(b - a);
         public Boolean Equals(Character x) => Value.Equals(x.Value);
         public Boolean NotEquals(Character x) => !Equals(x);
     }
