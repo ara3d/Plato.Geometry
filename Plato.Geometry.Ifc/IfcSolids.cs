@@ -48,8 +48,6 @@ namespace IfcGeometry
     // https://standards.buildingsmart.org/IFC/RELEASE/IFC2x3/TC1/HTML/ifcgeometricmodelresource/lexical/ifcextrudedareasolid.htm
     public class IfcExtrudedAreaSolid : IfcSweptAreaSolid
     {
-        public IfcCurve SweptArea { get; }
-        public IfcPlacement Position { get; }
         public Vector3D Extrusion { get; }
     }
 

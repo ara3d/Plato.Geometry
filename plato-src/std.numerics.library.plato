@@ -163,14 +163,26 @@ library Numerical
     Lerp(a: ScalarArithmetic, b: ScalarArithmetic, t: Number): ScalarArithmetic
         => a * t.FromOne + b * t;
           
+    Lerp(t: Number, a: ScalarArithmetic, b: ScalarArithmetic): ScalarArithmetic
+        => a.Lerp(b, t);
+          
     Between(self: Comparable, min: Comparable, max: Comparable): Boolean
         => self >= min && self <= max;
 
-    InverseLerp(a: Number, b: Number, v: Number): Number
-        => (v - a) / (b - a);
+    InverseLerp(v: ScalarArithmetic, a: Number, b: Number): Number
+        => (v - (a * v.One)) / (b - a);
 
-    Remap(aIn: Number, bIn: Number, aOut: Number, bOut: Number, v: Number): Number
-        => aOut.Lerp(bOut, aIn.InverseLerp(aOut, v));
+    Barycentric(v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic, u: Number, v: Number): ScalarArithmetic 
+        => v1 + (v2 - v1) * u + (v3 - v1) * v;   
+
+    Barycentric(uv: Vector2, v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic): ScalarArithmetic 
+        => v1.Barcentric(v2, v3, uv.X, uv.Y);
+
+    Remap(aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic, v: Number): Number
+        => v.Remap(aIn, bIn, aOut, bOut);
+
+    Remap(v: Number, aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic): Number
+        => v.InverseLerp(aIn, bIn).Lerp(aOut, bOut);
 
     M11(m: Matrix3D): Number => m.Column1.X;
     M12(m: Matrix3D): Number => m.Column2.X;
@@ -192,5 +204,5 @@ library Numerical
     Multiply(m: Matrix3D, v: Vector3D): Vector3D
         =>  (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31 + m.M41,
             v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32 + m.M42,
-            v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33 + m.M43);
+            v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33 + m.M43);                  
 }

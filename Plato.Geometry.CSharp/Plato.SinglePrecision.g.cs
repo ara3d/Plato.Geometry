@@ -1774,7 +1774,7 @@ namespace Plato.SinglePrecision
         public String TypeName => "TriFace";
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Index", (String)"VertexIndices");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Index), new Dynamic(VertexIndices));
-        // Unimplemented concept functions
+        // Unimplemented concept functions      
     }
     public readonly partial struct TriMesh: Mesh<TriFace, SimpleVertex>
     {

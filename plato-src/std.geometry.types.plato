@@ -378,10 +378,11 @@ type PolygonFace
 
 type TriFace
 {
-	Index: Integer;
-    VertexIndices: Integer3;
+    A: Integer;
+    B: Integer;
+    C: Integer;
 }
-
+    
 type TriMesh
     implements Mesh<TriFace, SimpleVertex>
 {   

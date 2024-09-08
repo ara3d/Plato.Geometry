@@ -109,13 +109,13 @@ namespace IfcGeometry
     {
         public double OverallHeight { get; }
         public double HeadWidth { get; }
-        public double Radius { get; }
+        public double? Radius { get; }
         public double HeadDepth2 { get; }
         public double HeadDepth3 { get; }
         public double WebThickness { get; }
         public double BaseDepth1 { get; }
         public double BaseDepth2 { get; }
-        public double CentreOfGravityInY { get; }
+        public double? CentreOfGravityInY { get; }
     }
 
     // https://standards.buildingsmart.org/IFC/RELEASE/IFC2x3/TC1/HTML/ifcprofileresource/lexical/ifccranerailashapeprofiledef.htm

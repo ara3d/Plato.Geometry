@@ -1,4 +1,4 @@
-using Ara3D.DoublePrecision;
+using Plato.DoublePrecision;
 
 namespace Plato.Geometry.Tests
 {

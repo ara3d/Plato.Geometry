@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using Ara3D.DoublePrecision;
+using Plato.DoublePrecision;
 
 namespace Plato.Geometry.Tests
 {

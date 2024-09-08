@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Autodesk.Navisworks.ComApi</name>
+  </assembly>
+  <members>
+    <member name="T:Autodesk.Navisworks.Api.ComApi.ComApiBridge">
+      <summary>
+Provides access to the Navisworks COM API from the Navisworks .Net API together with support
+for interop between the two.
+</summary>
+    </member>
+    <member name="P:Autodesk.Navisworks.Api.ComApi.ComApiBridge.State">
+      <summary>
+Returns the COM API state corresponding to
+<see cref="P:Autodesk.Navisworks.Api.Application.MainDocument">Application.MainDocument</see>
+in the .Net API
+</summary>
+      <exception cref="T:System.InvalidOperationException">
+Application::MainDocument is Null, COM API is not available
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ComApi.ComApiBridge.ToInwOaPath(Autodesk.Navisworks.Api.ModelItem)">
+      <summary>
+Helper for using COM Api from .NET Api.
+Translates from ModelItem to InwOaPath.
+</summary>
+      <exception cref="T:System.ArgumentNullException">
+The modelItem cannot be null
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ComApi.ComApiBridge.ToInwOpAnonView(Autodesk.Navisworks.Api.Viewpoint)">
+      <summary>
+Helper for using COM Api from .NET Api.
+Translates from Viewpoint to InwOpAnonView.
+Makes a copy of the underlying viewpoint.
+</summary>
+      <exception cref="T:System.ArgumentNullException">
+The viewpoint cannot be null
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ComApi.ComApiBridge.ToInwOpSelection(Autodesk.Navisworks.Api.ModelItemCollection)">
+      <summary>
+Helper for using COM Api from .NET Api.
+Translates from ModelItemCollection to InwOpSelection.
+Makes a copy of the underlying selection.
+</summary>
+      <exception cref="T:System.ArgumentNullException">
+The modelItemCollection cannot be null
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ComApi.ComApiBridge.ToModelItem(Autodesk.Navisworks.Api.Interop.ComApi.InwOaPath)">
+      <summary>
+Helper for using COM Api from .NET Api.
+Translates from InwOaPath to ModelItem.
+</summary>
+      <exception cref="T:System.ArgumentNullException">
+The path cannot be null
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ComApi.ComApiBridge.ToModelItemCollection(Autodesk.Navisworks.Api.Interop.ComApi.InwOpSelection)">
+      <summary>
+Helper for using COM Api from .NET Api.
+Translates from InwOpSelection to ModelItemCollection.
+Makes a copy of the underlying selection.
+</summary>
+      <exception cref="T:System.ArgumentNullException">
+The selection cannot be null
+</exception>
+    </member>
+    <member name="M:Autodesk.Navisworks.Api.ComApi.ComApiBridge.ToViewpoint(Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView)">
+      <summary>
+Helper for using COM Api from .NET Api.
+Translates from InwOpAnonView to Viewpoint.
+Makes a copy of the underlying viewpoint.
+</summary>
+      <exception cref="T:System.ArgumentNullException">
+The anonView cannot be null
+</exception>
+    </member>
+  </members>
+</doc>

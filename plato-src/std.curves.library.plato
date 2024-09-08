@@ -1,0 +1,108 @@
+library Curves
+{
+    // https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
+    Line(x: Number, m: Number, b: Number): Number
+        => m * x + b;
+
+    //  https://en.wikipedia.org/wiki/Quadratic_function
+    Quadratic(x: Number, a: Number, b: Number, c: Number): Number
+        => a * x.Sqr + b * x + c;
+
+    // https://en.wikipedia.org/wiki/Parabola
+    Parabola(x: Number): Number
+        => x.Sqr;
+
+    // https://mathworld.wolfram.com/StaircaseFunction.html
+    StaircaseFloor(x: Number, steps: Integer): Number
+        => (x * steps).Floor / steps;
+
+    // https://mathworld.wolfram.com/StaircaseFunction.html
+    StaircaseCeiling(x: Number, steps: Integer): Number
+        => (x * steps).Ceiling / steps;
+
+    // https://mathworld.wolfram.com/StaircaseFunction.html
+    StaircaseRound(x: Number, steps: Integer): Number
+        => (x * steps).Round / steps;
+
+    //==
+    // Curves 2D 
+    //==
+
+    Circle(t: Number): Vector2D
+        => t.Turns.Circle;
+
+    Circle(t: Angle): Vector2D
+        => (t.Sin, t.Cos);
+
+    // https://en.wikipedia.org/wiki/Lissajous_curve
+    Lissajous(t: Angle, kx: Number, ky: Number): Vector2D
+        => ((kx * t).Cos, (ky * t).Sin);
+
+    Lissajous(t: Number, kx: Number, ky: Number): Vector2D
+        => t.Turns.Lissajous(kx, ky);
+
+    // https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
+    ButterflyCurve(t: Number): : Vector2D
+        => (t.Turns / 6).ButterflyCurve;
+
+    ButterflyCurve(t: Angle): Vector2D
+        => ((t * (t.Cos.Exp - 2 * (4 * t).Cos - (t / 12).Sin.Pow(5))).Sin,
+            (t * (t.Cos.Exp - 2 * (4 * t).Cos - (t / 12).Sin.Pow(5))).Cos);
+    
+    //===
+    // 2D parametric functions, created from 1D 
+    //===
+
+    Parabola(t: Number): Vector2D
+        => (t, t.Parabola);
+
+    Line2D(t: Number, m: Number, b: Number)
+        => (t, t.Line(m, b))
+
+    SinCurve(t: Number): Vector2D
+        => (t, t.Sin);
+
+    CosCurve(t: Number): Vector2D
+        => (t, t.Cos);
+
+    TanCurve(t: Number): Vector2D
+        => (t, t.Tan);
+
+     Circle3D(t: Number): Vector2D
+        => t.Turns.Circle3D;
+
+    //==
+    // 3D Vector
+    //== 
+
+    Circle3D(t: Angle): Vector3D
+        => (t.Sin, t.Cos, 0);
+
+    // https://en.wikipedia.org/wiki/Torus_knot
+    TorusKnot(t: Angle, p: Number, q: Number): Vector3D
+    {
+        var r = (q * t).Cos + 2;
+        var x = r * (p * t).Cos;
+        var y = r * (p * t).Sin;    
+        var z = -(q * t).Sin;
+        return (x, y, z);
+    }
+
+    // https://en.wikipedia.org/wiki/Trefoil_knot
+    TrefoilKnot(t: Angle): Vector3D
+        => (t.Sin + (2f * t).Sin * 2f,
+            t.Cos + (2f * t).Cos * 2f,
+            -(t * 3f).Sin);
+
+    // https://en.wikipedia.org/wiki/Figure-eight_knot_(mathematics)
+    FigureEightKnot(t: Angle): Vector3D
+        => ((2 + (2 * t).Cos) * (3 * t).Cos,
+            (2 + (2 * t).Cos) * (3 * t).Sin,
+            (4 * t).Sin);
+
+    // https://en.wikipedia.org/wiki/Parametric_equation#Helix
+    Helix(t: Number, revs: Number): Vector3D
+        => ((t * revs).Turns.Sin, 
+            (t * revs).Turns.Cos,
+            t);
+}

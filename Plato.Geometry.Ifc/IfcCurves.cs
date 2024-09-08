@@ -1,4 +1,5 @@
-﻿using Ara3D.Mathematics;
+﻿using System.Collections.Generic;
+using Plato.DoublePrecision;
 
 namespace IfcGeometry
 {
@@ -6,6 +7,7 @@ namespace IfcGeometry
     public class IfcCurve
     {
     }
+
     // https://standards.buildingsmart.org/IFC/RELEASE/IFC2x3/TC1/HTML/ifcgeometryresource/lexical/ifcboundedcurve.htm
     public class IfcBoundedCurve : IfcCurve
     {
@@ -47,7 +49,7 @@ namespace IfcGeometry
     // https://standards.buildingsmart.org/IFC/RELEASE/IFC2x3/TC1/HTML/ifcgeometryresource/lexical/ifcpolyline.htm
     public class IfcPolyline : IfcBoundedCurve
     {
-        public List<Vector3> Points { get; }
+        public List<Vector3D> Points { get; }
     }
 
     // https://standards.buildingsmart.org/IFC/RELEASE/IFC2x3/TC1/HTML/ifcgeometryresource/lexical/ifctrimmedcurve.htm
@@ -71,7 +73,7 @@ namespace IfcGeometry
     // https://standards.buildingsmart.org/IFC/RELEASE/IFC2x3/TC1/HTML/ifcgeometryresource/lexical/ifctrimmingselect.htm
     public class IfcTrimmingSelect : IfcSelect
     {
-        public Vector3 Point { get; }
+        public Vector3D Point { get; }
         public double Parameter { get; }
     }
 
@@ -79,8 +81,7 @@ namespace IfcGeometry
     public class IfcBSplineCurve : IfcBoundedCurve
     {
         public int Degree { get; }
-        public List<Vector3> ControlPoints { get; }
-        public List<double> Weights { get; }
+        public List<Vector3D> ControlPoints { get; }
         public IfcBSplineCurveForm Form { get; }
         public bool Closed { get; }
         public bool SelfIntersect { get; }
