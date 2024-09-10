@@ -1,10 +1,4 @@
-// A positive whole number 
-type Count
-    implements WholeNumber
-{ 
-    Value: Integer;
-}
-
+            
 // An integer type in the range of 0 to N is used to return the number of items 
 // https://en.wikipedia.org/wiki/Cardinal_number
 type Cardinal
@@ -13,8 +7,8 @@ type Cardinal
     Value: Integer;
 }
 
-// An integer type in the range of -1 to N and is used for indexing arrays and collections 
-// The -1 value represent "not present". 
+// An integer type in the range of -1 to N and is commonly used for indexing arrays and collections 
+// The -1 value represents "not present". 
 type Index
     implements WholeNumber
 {
@@ -23,18 +17,19 @@ type Index
 
 // A numerical type that is normally in the range of 0 to 1. 
 type Unit
-    implements Real, Numerical
+    implements Real
 {
     Value: Number;
 }
 
-// A value in the range of 0 to 1 representing a chance of probability
+// A value in the range of 0 to 1 that represents the probability of an occurence
 type Probability
-    implements Real, Numerical
+    implements Measure
 {
     Value: Number;
 }
 
+// A two dimensional value, have has a real and imaginary component. 
 type Complex
     implements Vector
 {
@@ -191,6 +186,7 @@ type GeoCoordinateWithAltitude
     Altitude: Number;
 }
 
+// Two dimensional rectangular size
 type Size2D
     implements Value
 {
@@ -198,6 +194,7 @@ type Size2D
     Height: Number;
 }
 
+// Three dimensional box size
 type Size3D
     implements Value
 {
@@ -206,6 +203,15 @@ type Size3D
     Depth: Number;
 }
 
+// A fraction of two integer
+type Rational 
+	implements Value
+{
+	Numerator: Integer;
+	Denominator: Integer;
+}
+
+// An arbitrary fraction 
 type Fraction
     implements Value
 {
@@ -213,12 +219,14 @@ type Fraction
     Denominator: Number;
 }
 
+// An angle measurement 
 type Angle
     implements Measure
 {
     Radians: Number;
 }
 
+// A length measurement 
 type Length
     implements Measure
 {
@@ -243,30 +251,23 @@ type Time
     Seconds: Number;
 }
 
-type TimeRange
-    implements Interval<DateTime, Time>
-{
-    Min: DateTime;
-    Max: DateTime;
-}
-
 // Unix date-time representation: number of non-leap seconds elapsed since January 1st, 1970.
 // https://en.wikipedia.org/wiki/Unix_time
 type DateTime
-    implements Coordinate, Difference<Time>
+    implements Coordinate, AdditiveArithmetic<Time>
 {
     Value: Number; 
 }
 
 type AnglePair
-    implements Interval<Angle, Angle>
+    implements Interval<Angle>
 {
     Min: Angle;
     Max: Angle;
 }
 
 type NumberInterval
-    implements Interval<Number, Number>
+    implements Interval<Number>
 {
     Min: Number;
     Max: Number;
@@ -304,6 +305,7 @@ type UV
     V: Number;
 }
 
+// UV coordinates with an additional W dimension, used in some specialized rendering workflows like volumetric
 type UVW
     implements Vector
 {
@@ -312,6 +314,7 @@ type UVW
     W: Number;
 }
 
+// A 2-dimensional vector
 type Vector2D
     implements Vector
 {
@@ -319,6 +322,7 @@ type Vector2D
     Y: Number;
 }
 
+// A 3-dimensional vector
 type Vector3D
     implements Vector
 {
@@ -327,6 +331,7 @@ type Vector3D
     Z: Number;
 }
 
+// A 4-dimensional vector
 type Vector4D
     implements Vector
 {

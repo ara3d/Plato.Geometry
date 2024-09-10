@@ -22,7 +22,25 @@ library ArrayLibrary
     At(xs: ArrayImplementation<$T>, n: Integer): $T 
         => xs.Function.Invoke(n);
     
+    IsEmpty(xs: Array): Boolean
+        => xs.Count == 0;
+    
+    First(xs: Array<$T>): $T 
+        => xs[0];    
+    
+    Last(xs: Array<$T>): $T
+        => xs[xs.Count - 1];
+
+    Middle(xs: Array<$T>, n: Integer): $T
+		=> xs[xs.Count / 2];
+
+    MapRange(x: Integer, f: Function1<Integer, $T>): Array<$T>
+        => x.Range.Map(f);
+
     /*
+    PairwiseMap(xs: Array<$T1>, f: Function2<$T1, $T1, $T2>): Array<$T2> 
+		=> (xs.Count - 1).MapRange(i => f(xs.At(i), xs.At(i + 1)));
+
     Map(xs: ArrayImplementation<$T1>, f: Function1<$T1, $T2>): ArrayImplementation<$T2> 
         => ArrayImplementation(xs.Count, (i) => f.Invoke(xs.At(i)));
 
@@ -46,15 +64,6 @@ library ArrayLibrary
 
     Rest(xs: Array): Array 
         => xs.Skip(1);
-    
-    IsEmpty(xs: Array): Boolean
-        => xs.Count == 0;
-    
-    First(xs: Array): Any 
-        => xs.At(0);    
-    
-    Last(xs: Array): Any
-        => xs.At(xs.Count - 1);
     
     Slice(xs: Array, from: Integer, count: Integer): Array 
         => xs.Skip(from).Take(count);

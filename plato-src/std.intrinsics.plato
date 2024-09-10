@@ -12,7 +12,12 @@
     Ln(x: Number): Number;
     Exp(x: Number): Number;  
 
-    Add(x: Number, y: Number): Number;
+    Floor(x: Number): Number;
+    Ceiling(x: Number): Number;
+    Round(x: Number): Number;
+    Truncate(x: Number): Number;
+
+    Add(x: Number, y: Number): Number;  
     Subtract(x: Number, y: Number): Number;
     Divide(x: Number, y: Number): Number;
     Multiply(x: Number, y: Number): Number;
@@ -25,6 +30,7 @@
     Multiply(x: Integer, y: Integer): Integer;
     Modulo(x: Integer, y: Integer): Integer;
     Negative(x: Integer): Integer;
+    Reciprocal(x: Integer): Integer;
 
     And(x: Boolean, y: Boolean): Boolean;
     Or(x: Boolean, y: Boolean): Boolean;

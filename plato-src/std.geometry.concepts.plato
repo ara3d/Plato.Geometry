@@ -94,6 +94,8 @@ concept Procedural<TDomain, TRange>
     Eval(x: Self, amount: TDomain): TRange;
 }
 
+// Curves map a single number to a point in 1D, 2D, 3D, or higher space.
+// They are effectively functions. 
 concept Curve<TRange> 
     inherits Procedural<Number, TRange>, OpenClosedShape
 { 
@@ -107,12 +109,12 @@ concept Curve1D
 
 // A 2 dimensional shape with a topological space of 1 dimensions
 concept Curve2D
-    inherits Geometry2D, Curve<Point2D>
+    inherits Geometry2D, Curve<Vector2D>
 { }
 
 // A 3 dimensional shape with a topological space of 1 dimensions
 concept Curve3D
-    inherits Geometry3D, Curve<Point3D>
+    inherits Geometry3D, Curve<Vector3D>
 { }
 
 // Surfaces are 3 dimensional shapes with a topological space of 2 dimensions
@@ -123,8 +125,10 @@ concept Surface
 // Parametric surfaces are shapes defined from two variables (U and V)
 // They may be periodic in 0 (e.g., plane), 1 (e.g., tube), or 2 dimensions (e.g., torus). 
 // https://en.wikipedia.org/wiki/Surface_(mathematics)
+// They are effectively Bivariate functions. You can also think of them as curves that have 
+// two parameters. 
 concept ParametricSurface
-    inherits Procedural<UV, Point3D>, Surface 
+    inherits Procedural<UV, Vector3D>, Surface 
 {
     PeriodicU(x: Self): Boolean;
     PeriodicV(x: Self): Boolean;
@@ -142,13 +146,17 @@ concept DistanceField<TDomain>
 // A Vector or Scalar field in 2-Dimensions
 // https://en.wikipedia.org/wiki/Vector_field
 concept Field2D<T>
-    inherits Geometry2D, Procedural<Point2D, T>
+    inherits Geometry2D, Procedural<Vector2D, T>
 { }
 
 // A Vector or Scalar field in 3-Dimensions
 // https://en.wikipedia.org/wiki/Vector_field
+// This is effectively a Trivariate function. 
+// Given three arguments (x, y, z) it returns a single value. 
+// You can think of it as the extension of a curve or surface.
+// An example is a 3D-noise function 
 concept Field3D<T>
-    inherits Geometry3D, Procedural<Point3D, T>
+    inherits Geometry3D, Procedural<Vector3D, T>
 { }
 
 concept ScalarField2D    
@@ -199,36 +207,36 @@ concept ImplicitProcedural<TDomain>
 
 // An implicit surface, where we are either on the surface or not. 
 concept ImplicitSurface
-    inherits Surface, ImplicitProcedural<Point3D>
+    inherits Surface, ImplicitProcedural<Vector3D>
 { }
 
 // An implicitly defined curve
 concept ImplicitCurve2D
-    inherits Geometry2D, ImplicitProcedural<Point2D>
+    inherits Geometry2D, ImplicitProcedural<Vector2D>
 { }
 
 // An implicit solid/volume, where we are either inside (true) or outside (false).
 concept ImplicitVolume
-    inherits Geometry3D, ImplicitProcedural<Point3D>
+    inherits Geometry3D, ImplicitProcedural<Vector3D>
 { }
 
 // Any geometrical concept defined by a finite number of points 
 concept Points2D
     inherits Geometry2D
 { 
-    Points(x: Self): Array<Point2D>;
+    Points(x: Self): Array<Vector2D>;
 }
 
 // Any geometrical concept defined by a finite number of points 
 concept Points3D
     inherits Geometry3D
 { 
-    Points(x: Self): Array<Point3D>;
+    Points(x: Self): Array<Vector3D>;
 }
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_surface
 concept BezierPatch
-    inherits Points3D, Surface, Array2D<Point3D>    
+    inherits Points3D, Surface, Array2D<Vector3D>    
 { }
 
 concept PolyhederalFace
@@ -261,50 +269,47 @@ concept Mesh<FaceType, VertexType>
 }
 
 concept Grid2D
-    inherits Array2D<Point2D>
+    inherits Array2D<Vector2D>
 { }
 
 // Also known as quad strips. 
 concept QuadGrid
-    inherits Array2D<Point3D>
+    inherits Array2D<Vector3D>
 { 
     ClosedX(x: Self): Boolean;
     ClosedY(x: Self): Boolean;
 }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
-concept PolygonalChain2D
+// Also known as a PolygonalChain
+concept PolyLine2D
     inherits Points2D, OpenClosedShape
 { 
 }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
-// Also known as a a "PolyLine"
-// There are different interpretations of rate of change, so different curves can be defined from a chain.
-concept PolygonalChain3D
+// Also known as a PolygonalChain
+concept PolyLine3D
     inherits Points3D, OpenClosedShape
 { 
 }
 
-concept ClosedPolygonalChain2D
-    inherits PolygonalChain2D, ClosedShape2D
+concept ClosedPolyLine2D
+    inherits PolyLine2D, ClosedShape2D
 { 
 }
 
-concept ClosedPolygonalChain3D
-    inherits PolygonalChain3D
+concept ClosedPolyLine3D
+    inherits PolyLine3D
 { 
 }
 
 concept Polygon2D
-    inherits PolygonalChain2D
+    inherits PolyLine2D
 {
 }
 
 concept Polygon3D
-    inherits PolygonalChain3D
+    inherits PolyLine3D
 {
 }
-
-
-

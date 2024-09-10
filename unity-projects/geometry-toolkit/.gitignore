@@ -1,0 +1,38 @@
+# =============== #
+# Unity generated #
+# =============== #
+Temp/
+Library/
+Build/
+prints/
+#StreamingAssets/
+#StreamingAssets.meta
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+StreamingAssets/
+obj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+*.vsconfig
+*.vsidx
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

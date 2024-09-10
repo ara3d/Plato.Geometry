@@ -7,31 +7,49 @@ concept Any
     TypeName(x: Self): String;
 }
 
-// Values is a read-only type which has any only Values as members
+// A value is a read-only type which has the implicit rule that only Values are members
 concept Value 
     inherits Any, Equatable
 { 
 }
 
-// A numerical type represents things like floats, vectors, complex numbers, and measures
+// A numerical type represents things like reals, integers, vectors, complex numbers, and measures.
+// It is a generalization of real numbers to multiple dimensions, and with or without units of measure.
+// The NumComponents function returns the dimensionality of the numerical type. 
+// Individual components are returned via the Component type. 
 concept Numerical 
-    inherits Value, Betweenable, Equatable, Interpolatable
+    inherits Value, ScalarArithmetic, Betweenable
 {
     Zero(x: Self): Self;
     One(x: Self): Self;
     MinValue(x: Self): Self;
     MaxValue(x: Self): Self;
-}
+    NumComponents(x: Self): Integer;
+    Component(x: Self, d: Integer): Number;
+}   
 
 // Represents a continuous one dimensional value.
 // https://en.wikipedia.org/wiki/Real_number
-// Most things that are Real, are also Numerical except for Measures.
-// You can't do basic arithmetic on measures. 
-// Technically we could say that it is a Vector of size 1, but that would be too confusing.
+// The "Value" or a Real is the number itself, and is equal to the Magnitude 
 concept Real
-    inherits Numerical, Comparable, ScalarArithmetic, Difference<Number>
+    inherits Numerical, Comparable, Arithmetic
 {
-    Value(x: Self): Number;
+}
+
+// A measure is a numeric value with an intrinisic unit of measure. 
+// It resembles a numerical type except you cannot multiply or divide two measures without 
+// getting a new type. It does however support ScalarArithmetic 
+concept Measure
+    inherits Numerical, Comparable, AdditiveArithmeticSelf
+{
+}
+
+// Vectors are specialization of the Numerical type.
+// Unlike reals and measures they cannot be compared in any meaningful way 
+// They are also "array-like" in that they have a fixed number of components.
+concept Vector
+    inherits Numerical, Arithmetic, Array<Number>
+{ 
 }
 
 // Arrays are immutable types which can be indexed. 
@@ -61,30 +79,20 @@ concept Array3D<T>
     At(xs: Self, column: Integer, row: Integer, layer: Integer): T;
 }
 
-// A measure is a numeric value with an intrinisic unit of measure 
-// which is implied by the implementing type. 
-// It resembles a numerical type except you cannot multiply or divide two measures without 
-// getting a new type. It does however support ScalarArithmetic 
-concept Measure
-    inherits Real, Difference<Number>
-{ }
-
-// Vectors are arrays of numerical types. 
-concept Vector
-    inherits Array<Number>, Numerical, Arithmetic, ScalarArithmetic
-{ 
-    Magnitude(xs: Self): Number;
-}
-
-// A coordinate is a point in some cartesian space. This also includes 
-// a time line, so a DateTime is considered a Coordinate. 
+// A coordinate is a point in some space (e.g., a cartesian grid). 
+// This also includes a time line, so a DateTime is considered a Coordinate. 
+// Notice that coordinates do not provide arithmetic operators.  
+// We could have defined a Point2D and a Point3D types as kinds of coordinates,  
+// however, doing anything interesting with them involved converting them 
+// to vectors. This just added a lot of complexity without much benefit. 
 concept Coordinate
-    inherits Value, Interpolatable, Betweenable
+    inherits Value, Betweenable
 { }
 
-// Used for integer and cardinal types.
+// Used for integer and cardinal types. Somewhat counter intuitively, they are not considered Numerical types.
+// This is because they do not support scalar arithmetic. 
 concept WholeNumber 
-    inherits Numerical, Comparable, AdditiveArithmetic<Self>, MultiplicativeArithmetic<Self>, AdditiveInverse
+    inherits Value, Comparable, Arithmetic, Betweenable
 {
     Value(x: Self): Integer;
 }
@@ -102,49 +110,69 @@ concept Equatable
     NotEquals(a: Self, b: Self): Boolean;
 }
 
-concept Arithmetic 
-    inherits AdditiveArithmetic<Self>, MultiplicativeArithmetic<Self>, AdditiveInverse, MultiplicativeInverse
-{ }
-
+// A type that can be negated.
 concept AdditiveInverse
 {
     Negative(self: Self): Self;
 }
 
+// A type that has a reciprocal (e.g., 1/self).
 concept MultiplicativeInverse
 {
     Reciprocal(self: Self): Self;
 }
 
+// To specify that another type can be added to, or subtracted from this one.
 concept AdditiveArithmetic<T>
 {
     Add(self: Self, other: T): Self;    
+    Add(other: T, self: Self): Self;        
     Subtract(self: Self, other: T): Self;
-}
-
-concept Difference<T>
-    inherits AdditiveArithmetic<T>
-{
     Subtract(self: Self, other: Self): T;
 }
 
+// The formal term for this is an Abelian group over addition
+// https://en.wikipedia.org/wiki/Abelian_group
+concept AdditiveArithmeticSelf
+    inherits AdditiveInverse
+{
+    Add(a: Self, b: Self): Self;    
+    Subtract(a: Self, b: Self): Self;    
+}
+
+// A type which an be multiplied, divided, or have the modulo computed with regards to another type. 
 concept MultiplicativeArithmetic<T>
 {
     Multiply(self: Self, other: T): Self;
+    
+    // TODO: I think this was triggering an error in the generated C# code. 
+    // I Think what I do is I drop the first argument, even though it is an argument which should stay.
+    // Especially for static functions. 
+    // However, I have a nice work-around. Define on "T"
+    //Multiply(other: T, self: Self): Self;
+    
     Divide(self: Self, other: T): Self;    
     Modulo(self: Self, other: T): Self;
 }
 
+// Types implementing this concept can be multiplied or divided by a scalar value
 concept ScalarArithmetic
-    inherits AdditiveInverse, MultiplicativeInverse
+    inherits MultiplicativeArithmetic<Number>
 { 
-    Add(self: Self, other: Number): Self;    
-    Subtract(self: Self, other: Number): Self;
-    Multiply(self: Self, other: Number): Self;
-    Divide(self: Self, other: Number): Self;    
-    Modulo(self: Self, other: Number): Self;
 }
 
+// Basic arithmetic operators 
+concept Arithmetic 
+    inherits AdditiveInverse, MultiplicativeInverse
+{ 
+    Add(a: Self, b: Self): Self;    
+    Subtract(a: Self, b: Self): Self;
+    Multiply(a: Self, b: Self): Self;
+    Divide(a: Self, b: Self): Self;    
+    Modulo(a: Self, b: Self): Self;
+}
+
+// Basic boolean operations, which are also similar to set operations.  
 concept BooleanOperations
 {
     And(a: Self, b: Self): Self;
@@ -152,23 +180,19 @@ concept BooleanOperations
     Not(a: Self): Self;
 }
 
-concept Interval<TValue, TSize>    
-    where TValue: Interpolatable, 
-        TValue: Betweenable, 
-        TValue: Difference<TSize>,
-        TSize: ScalarArithmetic 
+// Represents a range of values. 
+// TODO: if T supports arithmetic, then the Size is implied and can be removed  
+concept Interval<T>    
+    where T: Numerical, T: Arithmetic
     inherits Equatable, Value
 {
-    Min(x: Self): TValue;
-    Max(x: Self): TValue;
-    Size(x: Self): TSize;
+    Min(x: Self): T;
+    Max(x: Self): T;    
+    Size(x: Self): T;
 }
     
-concept Interpolatable
-{
-    Lerp(a: Self, b: Self, amount: Number): Self;
-}
-
+// A type that can be clamped, and supports the concept of being between two values.
+// For vectors, being between two values is component-wise comparison 
 concept Betweenable
 {
     Between(x: Self, a: Self, b: Self): Boolean;

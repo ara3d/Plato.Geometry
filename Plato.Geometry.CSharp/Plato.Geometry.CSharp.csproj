@@ -4,4 +4,44 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Experimental\AABox.cs" />
+    <Compile Remove="Experimental\AABox2D.cs" />
+    <Compile Remove="Experimental\Angle.cs" />
+    <Compile Remove="Experimental\Constants.cs" />
+    <Compile Remove="Experimental\ContainmentType.cs" />
+    <Compile Remove="Experimental\Easings.cs" />
+    <Compile Remove="Experimental\IntegerExtensions.cs" />
+    <Compile Remove="Experimental\ITransformable.cs" />
+    <Compile Remove="Experimental\MathOps.cs" />
+    <Compile Remove="Experimental\MathOpsPartial.cs" />
+    <Compile Remove="Experimental\Matrix4x4.cs" />
+    <Compile Remove="Experimental\Plane.cs" />
+    <Compile Remove="Experimental\Quad.cs" />
+    <Compile Remove="Experimental\Quaternion.cs" />
+    <Compile Remove="Experimental\Ray.cs" />
+    <Compile Remove="Experimental\Sphere.cs" />
+    <Compile Remove="Experimental\StructsPartial.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Experimental\AABox.cs" />
+    <None Include="Experimental\AABox2D.cs" />
+    <None Include="Experimental\Angle.cs" />
+    <None Include="Experimental\Constants.cs" />
+    <None Include="Experimental\ContainmentType.cs" />
+    <None Include="Experimental\Easings.cs" />
+    <None Include="Experimental\IntegerExtensions.cs" />
+    <None Include="Experimental\ITransformable.cs" />
+    <None Include="Experimental\MathOps.cs" />
+    <None Include="Experimental\MathOpsPartial.cs" />
+    <None Include="Experimental\Matrix4x4.cs" />
+    <None Include="Experimental\Plane.cs" />
+    <None Include="Experimental\Quad.cs" />
+    <None Include="Experimental\Quaternion.cs" />
+    <None Include="Experimental\Ray.cs" />
+    <None Include="Experimental\Sphere.cs" />
+    <None Include="Experimental\StructsPartial.cs" />
+  </ItemGroup>
+
 </Project>

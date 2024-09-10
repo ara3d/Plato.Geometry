@@ -31,7 +31,7 @@ namespace Plato.Geometry.Unity
 
         //public static Matrix3D ToPlato(this Matrix4x4 m) =>  ((m.M))
 
-        public static Vector3[] ToUnityPositions(this Array<SimpleVertex> verts)
+        public static Vector3[] ToUnityPositions(this Array<Vertex> verts)
         {
             var r = new Vector3[verts.Count];
             for (var i = 0; i < verts.Count; ++i)
@@ -39,15 +39,27 @@ namespace Plato.Geometry.Unity
             return r;
         }
 
-        public static int[] ToUnityIndices(this Array<>)
+        public static int[] ToUnityIndices(this Array<TriFace> faces)
+        {
+            var r = new int[faces.Count * 3];
+            for (var i = 0; i < faces.Count; ++i)
+            {
+                var f = faces.At(i);
+                r[i * 3 + 0] = f.A;
+                r[i * 3 + 1] = f.B;
+                r[i * 3 + 2] = f.C;
+            }
+            return r;
+        }
 
         public static Mesh ToUnity(this TriMesh mesh)
         {
             var unityMesh = new Mesh();
             unityMesh.vertices = mesh.Vertices.ToUnityPositions();
             unityMesh.triangles = mesh.Faces.ToUnityIndices();
-            unityMesh.normals = mesh.Normals.ToUnity();
-            unityMesh.uv = mesh.UVs.ToUnity();
+            //unityMesh.normals = mesh.Vertices.ToUnityNormals();
+            //unityMesh.uv = mesh.UVs.ToUnity();
+            unityMesh.RecalculateNormals();
             return unityMesh;
         }
     }

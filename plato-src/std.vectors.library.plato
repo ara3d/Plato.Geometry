@@ -1,6 +1,12 @@
 
 library Vector
 {  
+    Length(a: Vector): Number
+    	=> a.Magnitude;
+
+    LengthSquared(a: Vector): Number
+    	=> a.MagnitudeSquared;
+
     Sum(v: Vector): Number 
         => v.Reduce(0.0, (a, b) => a + b);
 
@@ -57,4 +63,36 @@ library Vector
 
     Average(v: Vector): Number
         => v.Sum / v.Count;
+        
+    Normalize(x: Vector): Vector
+        => x / x.Magnitude;
+
+    Cross(a: Vector2D, b: Vector2D): Number
+		=> a.X * b.Y - a.Y * b.X;
+
+    Cross(a: Vector3D, b: Vector3D): Vector3D
+        => (a.Y * b.Z - a.Z * b.Y,
+            a.Z * b.X - a.X * b.Z,
+            a.X * b.Y - a.Y * b.X);
+
+    MixedProduct(a: Vector3D, b: Vector3D, c: Vector3D): Number
+		=> a.Cross(b).Dot(c);
+
+    // Returns the reflection of a vector off a surface that has the specified normal.
+    Reflect(v: Vector, normal: Vector): Vector
+        => v - normal * v.Dot(normal) * 2.0;
+
+    // Returns the projection of a vector onto another vector.
+    Project(v: Vector, other: Vector): Vector
+		=> other * v.Dot(other);
+
+    Distance(a: Vector, b: Vector): Number
+        => (b - a).Magnitude;
+
+    DistanceSquared(a: Vector, b: Vector): Number
+        => (b - a).Magnitude;
+
+    Angle(a: Vector, b: Vector): Angle
+        => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;
+     
 }

@@ -1,0 +1,164 @@
+//--------------------------------------------------------------------------------------
+// Includes
+//--------------------------------------------------------------------------------------
+ 
+//--------------------------------------------------------------------------------------
+// Pragmas
+//--------------------------------------------------------------------------------------
+#pragma kernel CSMainAABBCulling
+#pragma kernel CSMainArgsBufferReset
+ 
+ 
+//--------------------------------------------------------------------------------------
+// Constants
+//--------------------------------------------------------------------------------------
+#define THREAD_GROUP_SIZE_X 64
+#define THREAD_GROUP_SIZE_Y 1
+#define THREAD_GROUP_SIZE_Z 1
+ 
+ 
+//--------------------------------------------------------------------------------------
+// Structs
+//--------------------------------------------------------------------------------------
+ 
+struct AABBData
+{
+	float3 boundsCenter;
+	float3 boundsExtents;
+};
+  
+//--------------------------------------------------------------------------------------
+// Constant Buffers
+//--------------------------------------------------------------------------------------
+ 
+//Matrix4x4 v = Camera.main.worldToCameraMatrix;
+//Matrix4x4 p = Camera.main.projectionMatrix; //unity C# use opengl standard projection matrix
+//cullingComputeShader.SetMatrix("_VP_MATRIX", p * v); //set from C#
+ 
+float4x4 _VP_MATRIX;
+ 
+uint _GLOBAL_BOUNDS_BUFFER_COUNT; // SUM of all batches Bounds. eg : [A,A,A,A,B,B,C,D,D,E] = 10
+uint _TOTAL_BATCH_COUNT; // Contains all possible Batches Count.
+ 
+//--------------------------------------------------------------------------------------
+// Structured Buffers
+//--------------------------------------------------------------------------------------
+//Global Initial Data
+StructuredBuffer<AABBData> _GLOBAL_BOUNDS_BUFFER; // bounds from all possible DrawCalls.
+StructuredBuffer<IndexingData> _PER_ENTITY_INDEXING_DATA_BUFFER;
+ 
+//Global Surviving Data
+// ____BATCH___|___BATCH__
+RWStructuredBuffer<uint> _GLOBAL_INDIRECT_ARGUMENTS_BUFFER : register(u1); //[-,X,-,-,-,  -,X,-,-,-,....]
+RWStructuredBuffer<uint> _GLOBAL_VISIBLE_INDEXES_BUFFER; //Will contain visible indexes per batch
+ 
+//--------------------------------------------------------------------------------------
+// Kernels & Functions
+//--------------------------------------------------------------------------------------
+ 
+inline uint IsCameraOutsideObjBounds(float3 pos, float3 minPos, float3 maxPos)
+{
+	float boundsSize = distance(maxPos, minPos);
+	return ((distance(pos, maxPos) > boundsSize)
+    + (distance(pos, minPos) > boundsSize));
+}
+ 
+inline uint IsVisibleAfterFrustumCulling(float4 clipPos)
+{
+	return (clipPos.z > clipPos.w
+    || clipPos.x < -clipPos.w
+    || clipPos.x > clipPos.w
+    || clipPos.y < -clipPos.w
+    || clipPos.y > clipPos.w)
+        ? 0 : 1;
+}
+ 
+//--------------------------------------------------------------------------------------
+// Kernels
+//--------------------------------------------------------------------------------------
+ 
+ 
+//-----------------------------------------------------------------------------------------------------
+// Required Variables:
+// BUFFERS: _GLOBAL_INDIRECT_ARGUMENTS_BUFFER
+// VALUES:  _TOTAL_BATCH_COUNT
+//-----------------------------------------------------------------------------------------------------
+ 
+//Set args buffer count to zero.
+[numthreads(THREAD_GROUP_SIZE_X, THREAD_GROUP_SIZE_Y, THREAD_GROUP_SIZE_Z)]
+inline void CSMainArgsBufferReset(uint3 id : SV_DispatchThreadID)
+{
+	uint index = id.x;
+	if (index >= _TOTAL_BATCH_COUNT)
+	{
+		return;
+	}
+	_GLOBAL_INDIRECT_ARGUMENTS_BUFFER[0] = 0;
+}
+ 
+ 
+//-----------------------------------------------------------------------------------------------------
+// Required Variables:
+// BUFFERS: _GLOBAL_BOUNDS_BUFFER, _PER_ENTITY_INDEXING_DATA_BUFFER, _GLOBAL_VISIBLE_INDEXES_BUFFER
+// VALUES:  _GLOBAL_BOUNDS_BUFFER_COUNT, _VP_MATRIX
+//-----------------------------------------------------------------------------------------------------
+ 
+ 
+//Calculate Frustum Culling.
+[numthreads(THREAD_GROUP_SIZE_X, THREAD_GROUP_SIZE_Y, THREAD_GROUP_SIZE_Z)]
+inline void CSMainAABBCulling(uint3 id : SV_DispatchThreadID)
+{
+	uint index = id.x;
+   
+	if (index >= _GLOBAL_BOUNDS_BUFFER_COUNT)
+	{
+		return;
+	}
+   
+    // Get the instance AABBData
+	AABBData instance = _GLOBAL_BOUNDS_BUFFER[index];
+ 
+    // Check if the instance is visible
+	float3 minPos = instance.boundsCenter - instance.boundsExtents;
+	float3 maxPos = instance.boundsCenter + instance.boundsExtents;
+ 
+	float4 boxCorners[8];
+	boxCorners[0] = float4(minPos.x, minPos.y, minPos.z, 1.0);
+	boxCorners[1] = float4(minPos.x, minPos.y, maxPos.z, 1.0);
+	boxCorners[2] = float4(minPos.x, maxPos.y, minPos.z, 1.0);
+	boxCorners[3] = float4(minPos.x, maxPos.y, maxPos.z, 1.0);
+	boxCorners[4] = float4(maxPos.x, minPos.y, minPos.z, 1.0);
+	boxCorners[5] = float4(maxPos.x, minPos.y, maxPos.z, 1.0);
+	boxCorners[6] = float4(maxPos.x, maxPos.y, minPos.z, 1.0);
+	boxCorners[7] = float4(maxPos.x, maxPos.y, maxPos.z, 1.0);
+ 
+	float4 clipPos = mul(_VP_MATRIX, boxCorners[0]);
+	uint isInFrustum = IsVisibleAfterFrustumCulling(clipPos);
+ 
+	clipPos.xyz = clipPos.xyz / clipPos.w;
+ 
+    [unroll]
+	for (int i = 1; i < 8; i++)
+	{
+		clipPos = mul(_VP_MATRIX, boxCorners[i]);
+ 
+        // For Frustum
+		isInFrustum = saturate(isInFrustum + IsVisibleAfterFrustumCulling(clipPos));
+	}
+ 
+    //Set Frustum Result
+	if (isInFrustum == 1)
+	{
+      
+		IndexingData indexingData = _PER_ENTITY_INDEXING_DATA_BUFFER[index];
+       
+		uint countIndexInArgsBuffer = (indexingData.BatchIndex * 5) + 1;
+       
+		uint visibleCount;
+        
+		// Increament Visible count in ArgsBuffer + Get a new Free Index
+		InterlockedAdd(_GLOBAL_INDIRECT_ARGUMENTS_BUFFER[0], 1, visibleCount);
+		
+        _GLOBAL_VISIBLE_INDEXES_BUFFER[visibleCount] = index;
+	}
+}

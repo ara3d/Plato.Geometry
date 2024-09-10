@@ -1,5 +1,5 @@
 ﻿// In Plato, the primitive types are assumed to exist, by name, by the compiler.
-// This file is used to define the functionality and member data contained in those primitives.   
+// This file is used to define the relationships and member data contained in those primitives.   
 
 // A floating point representation of a real number 
 type Number 

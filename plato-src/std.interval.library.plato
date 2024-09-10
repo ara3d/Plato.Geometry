@@ -1,53 +1,53 @@
 library Interval
 {
-    Size(x: Interval<$Value, $Size>): $Size
+    Size(x: Interval<$T>): $T
         => x.Max - x.Min;
  
-    Lerp(x: Interval<$Value, $Size>, amount: Number): $Value
+    Lerp(x: Interval<$T>, amount: Number): $T
         => x.Min.Lerp(x.Max, amount);
     
-    Reverse(x: Interval<$Value, $Size>): Interval<$Value, $Size> 
+    Reverse(x: Interval<$T>): Interval<$T>  
         => (x.Max, x.Min);
         
-    Center(x: Interval<$Value, $Size>): $Value
+    Center(x: Interval<$T>): $T
         => x.Lerp(0.5);    
     
-    Contains(x: Interval<$Value, $Size>, value: $Value): Boolean 
+    Contains(x: Interval<$T>, value: $T): Boolean 
         => value.Between(x.Min, x.Max);
     
-    Contains(x: Interval<$Value, $Size>, y: Interval<$Value, $Size>): Boolean 
+    Contains(x: Interval<$T>, y: Interval<$T>): Boolean 
         => x.Contains(y.Min) && x.Contains(y.Max);
     
-    Overlaps(x: Interval<$Value, $Size>, y: Interval<$Value, $Size>): Boolean 
+    Overlaps(x: Interval<$T>, y: Interval<$T>): Boolean 
         => x.Contains(y.Min) || x.Contains(y.Max) || y.Contains(x.Min) || y.Contains(x.Max);
     
-    SplitAt(x: Interval<$Value, $Size>, t: Number): Tuple2<Interval<$Value, $Size>, Interval<$Value, $Size>> 
+    SplitAt(x: Interval<$T>, t: Number): Tuple2<Interval<$T>, Interval<$T>> 
         => (x.Left(t), x.Right(t));
     
-    Split(x: Interval<$Value, $Size>): Tuple2<Interval<$Value, $Size>, Interval<$Value, $Size>>
+    Split(x: Interval<$T>): Tuple2<Interval<$T>, Interval<$T>>
         => x.SplitAt(0.5);
 
-    Left(x: Interval<$Value, $Size>, t: Number): Interval<$Value, $Size>
+    Left(x: Interval<$T>, t: Number): Interval<$T>
         => (x.Min, x.Lerp(t));
     
-    Right(x: Interval<$Value, $Size>, t: Number): Interval<$Value, $Size>
+    Right(x: Interval<$T>, t: Number): Interval<$T>
         => (x.Lerp(t), x.Max);
 
-    MoveTo(x: Interval<$Value, $Size>, v: $Value): Interval<$Value, $Size>
+    MoveTo(x: Interval<$T>, v: $T): Interval<$T>
         => (v, v + x.Size);
     
-    LeftHalf(x: Interval<$Value, $Size>): Interval<$Value, $Size> 
+    LeftHalf(x: Interval<$T>): Interval<$T> 
         => x.Left(0.5);
     
-    RightHalf(x: Interval<$Value, $Size>): Interval<$Value, $Size> 
+    RightHalf(x: Interval<$T>): Interval<$T> 
         => x.Right(0.5);
     
-    Recenter(x: Interval<$Value, $Size>, c: $Value): Interval<$Value, $Size> 
+    Recenter(x: Interval<$T>, c: $T): Interval<$T> 
         => (c - x.Size.Half, c + x.Size.Half);
     
-    Clamp(x: Interval<$Value, $Size>, y: Interval<$Value, $Size>): Interval<$Value, $Size>
+    Clamp(x: Interval<$T>, y: Interval<$T>): Interval<$T>
         => (x.Clamp(y.Min), x.Clamp(y.Max));
     
-    Clamp(x: Interval<$Value, $Size>, value: $Value): $Value
+    Clamp(x: Interval<$T>, value: $T): $T
         => value.Clamp(x.Min, x.Max);
 }

@@ -1,5 +1,10 @@
 library Numerical
 {
+    //==
+    // Constants
+
+    // TODO: these could be added to all "ScalarArithmetic" types.
+
     Pi(): Number 
         => 3.1415926535897;
     
@@ -14,7 +19,7 @@ library Numerical
     
     FeetPerMeter(): Number 
         => 3.280839895;
-    
+
     FeetPerMile(): Number 
         => 5280;
     
@@ -41,19 +46,16 @@ library Numerical
     
     GregorianYearDays(): Number 
         => 365.2425;
-    
-    Hundred(x: Number): Number 
-        => x * 100;  
-    
-    Thousand(x: Number): Number 
-        => x * 1000;
-    
-    Million(x: Number): Number 
-        => x.Thousand.Thousand;
-    
-    Billion(x: Number): Number 
-        => x.Thousand.Million;
-        
+
+    RadiansPerDegree(): Number 
+		=> Pi / 180.0;
+
+    DegreesPerRadian(): Number
+        => 180.0 / Pi;
+
+    //==
+    // Some helpful conversion functions
+
     OunceToGram(x: Number): Number 
         => x * 28.349523125;
     
@@ -66,9 +68,24 @@ library Numerical
     Mole(x: Number): Number 
         => x * 6.02214076e+23;
 
-    Magnitude(x: Real): Number
-        => x.Value;
+    //==
+    // Very common numbers 
+    
+    Hundred(x: Number): Number 
+        => x * 100;  
+    
+    Thousand(x: Number): Number 
+        => x * 1000;
+    
+    Million(x: Number): Number 
+        => x.Thousand.Thousand;
+    
+    Billion(x: Number): Number 
+        => x.Thousand.Million;
 
+    //==
+    // Number operations 
+        
     Inverse(x: Number): Number
         => 1.0 / x;
 
@@ -83,6 +100,22 @@ library Numerical
 
     SmoothStep(x: Number): Number
         => x.Square * (3.0 - x.Twice);    
+
+    MultiplyEpsilon(x: Number, y: Number): Number
+        => x.Abs.Greater(y.Abs) * Epsilon;
+
+    // https://stackoverflow.com/a/2411661
+    AlmostEqual(x: Number, y: Number): Boolean
+        => (x-y).Abs <= x.MultiplyEpsilon(y);
+
+    AlmostZero(x: Number): Boolean
+        => x.Abs < Epsilon;
+
+    AlmostZeroOrOne(x: Number): Boolean
+        => AlmostEqual(x, 0) || AlmostEqual(x, 1);
+   
+    //==
+    // Arithmetic operations 
 
     Pow2(x: Arithmetic): Arithmetic 
         => x * x;
@@ -99,8 +132,11 @@ library Numerical
     Square(x: Arithmetic): Arithmetic 
         => x.Pow2;
 
-    ClampOne(x: Real): Real
-        => x.Clamp(x.Zero, x.One);
+    Cube(x: Arithmetic): Arithmetic 
+        => x.Pow3;
+
+    //==
+    // Numerical Operations 
 
     PlusOne(x: Numerical): Numerical 
         => x + x.One;
@@ -110,6 +146,30 @@ library Numerical
     
     FromOne(x: Numerical): Numerical 
         => x.One - x;
+
+    //==
+    // WholeNumber Operations 
+
+
+    //==
+    // Integer operations
+
+    // TODO: can these be promoted to a concept? 
+
+    FloatDivision(x: Integer, y: Integer): Number
+		=> x.ToNumber / y.ToNumber;
+
+	Fractions(x: Integer): Array<Number>
+		=> x.Range.Map((i) => i.FloatDivision(x));
+
+    //==
+    // Real Operations 
+   
+    Magnitude(x: Real): Number
+        => x.Value;
+
+    ClampOne(x: Real): Real
+        => x.Clamp(x.Zero, x.One);
 
     GtZ(x : Real): Boolean
         => x > x.Zero;
@@ -135,6 +195,9 @@ library Numerical
     Abs(x: Real): Real 
         => x.LtZ ? -x: x;
     
+    //==
+    // ScalarArithmetic operations 
+
     Half(x: ScalarArithmetic): ScalarArithmetic
         => x / 2.0;
         
@@ -146,43 +209,42 @@ library Numerical
     
     Twice(x: ScalarArithmetic): ScalarArithmetic 
         => x * 2.0;
-    
-    MultiplyEpsilon(x: Number, y: Number): Number
-        => x.Abs.Greater(y.Abs) * Epsilon;
-
-    // https://stackoverflow.com/a/2411661
-    AlmostEqual(x: Number, y: Number): Boolean
-        => (x-y).Abs <= x.MultiplyEpsilon(y);
-
-    AlmostZero(x: Number): Boolean
-        => x.Abs < Epsilon;
-
-    AlmostZeroOrOne(x: Number): Boolean
-        => AlmostEqual(x, 0) || AlmostEqual(x, 1);
-
+           
     Lerp(a: ScalarArithmetic, b: ScalarArithmetic, t: Number): ScalarArithmetic
         => a * t.FromOne + b * t;
           
+    /* Does not work in C# due to type inference issues. We need to specify the type of the arguments to ScalarArithmetic.
     Lerp(t: Number, a: ScalarArithmetic, b: ScalarArithmetic): ScalarArithmetic
         => a.Lerp(b, t);
-          
+    */      
+    
     Between(self: Comparable, min: Comparable, max: Comparable): Boolean
         => self >= min && self <= max;
-
-    InverseLerp(v: ScalarArithmetic, a: Number, b: Number): Number
-        => (v - (a * v.One)) / (b - a);
 
     Barycentric(v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic, u: Number, v: Number): ScalarArithmetic 
         => v1 + (v2 - v1) * u + (v3 - v1) * v;   
 
-    Barycentric(uv: Vector2, v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic): ScalarArithmetic 
-        => v1.Barcentric(v2, v3, uv.X, uv.Y);
+    /* Does not work in C# due to type inference issues. We need to specify the type of the arguments to ScalarArithmetic.
+    Barycentric(uv: Vector2D, v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic): ScalarArithmetic 
+        => v1.Barycentric(v2, v3, uv.X, uv.Y);
+    */
 
-    Remap(aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic, v: Number): Number
-        => v.Remap(aIn, bIn, aOut, bOut);
+    /* TODO: we are going to need to drewrite this for 1, 2, 3, and 4 dimensions
 
-    Remap(v: Number, aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic): Number
+    InverseLerp(v: ScalarArithmetic, a: ScalarArithmetic, b: ScalarArithmetic): Number
+        => (v - (a * v.One)) / (b - a);
+
+    Remap(aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic, v: Number): ScalarArithmetic
+        => aOut.Lerp(bOut, v.InverseLerp(aIn, bIn));
+    */
+
+    /* Does not work in C# due to type inference issues. We need to specify the type of the arguments to ScalarArithmetic.
+    Remap(v: Number, aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic): ScalarArithmetic
         => v.InverseLerp(aIn, bIn).Lerp(aOut, bOut);
+    */
+
+    //==
+    // Matrix operations
 
     M11(m: Matrix3D): Number => m.Column1.X;
     M12(m: Matrix3D): Number => m.Column2.X;
@@ -205,4 +267,37 @@ library Numerical
         =>  (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31 + m.M41,
             v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32 + m.M42,
             v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33 + m.M43);                  
+            
+    // TODO: Rows and more.
+
+    //==
+	// Angle conversion functions 
+
+	Turns(x: Number): Angle
+		=> (x * TwoPi).Radians;
+
+	Degrees(x: Number): Angle
+		=> (x / 360.0).Turns;
+
+	Gradians(x: Number): Angle
+		=> (x / 400.0).Turns;
+
+	Radians(x: Number): Angle
+		=> x;
+
+	Turns(x: Angle): Number
+		=> x.Radians / TwoPi;
+
+	Degrees(x: Angle): Number
+		=> x.Turns * 360.0;
+
+	Gradians(x: Angle): Number
+		=> x.Turns * 400.0;
+
+    //==
+    // DateTime
+
+    // NOTE: currently this function can't be auto-generated. 
+    Add(x: Time, y: DateTime): DateTime
+		=> y + x;
 }

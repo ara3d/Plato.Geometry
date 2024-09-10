@@ -1,12 +1,5 @@
 //# 2D Shapes
 
-type Point2D
-    implements Coordinate, Difference<Vector2D>
-{
-    X: Number;
-    Y: Number;
-}
-
 type Transform2D
     implements Value
 {
@@ -24,61 +17,47 @@ type Pose2D
 
 // Axis-Aligned bounding box 
 type Bounds2D
-    implements Interval<Point2D, Vector2D>
+    implements Interval<Vector2D>
 {
-    Min: Point2D;
-    Max: Point2D;
+    Min: Vector2D;
+    Max: Vector2D;
 }
 
 type Ray2D
     implements Value
 {
     Direction: Vector2D;
-    Position: Point2D;
-}
-
-type Sphere
-    implements Value
-{
-    Center: Point3D;
-    Radius: Number;
-}
-
-type Plane
-    implements Value
-{
-    Normal: Vector3D;
-    D: Number;
+    Position: Vector2D;
 }
 
 type Triangle2D
-    implements Value, Array<Point2D>
+    implements Value, Array<Vector2D>
 {
-    A: Point2D;
-    B: Point2D;
-    C: Point2D;
+    A: Vector2D;
+    B: Vector2D;
+    C: Vector2D;
 }
 
 type Quad2D
-    implements Value, Array<Point2D>
+    implements Value, Array<Vector2D>
 {
-    A: Point2D;
-    B: Point2D;
-    C: Point2D;
-    D: Point2D;
+    A: Vector2D;
+    B: Vector2D;
+    C: Vector2D;
+    D: Vector2D;
 }
 
 type Line2D
-    implements PolygonalChain2D, Array<Point2D>
+    implements PolyLine2D, Array<Vector2D>
 {
-    A: Point2D;
-    B: Point2D;
+    A: Vector2D;
+    B: Vector2D;
 }
 
 type Circle
     implements ClosedShape2D
 {
-    Center: Point2D;
+    Center: Vector2D;
     Radius: Number;
 }
 
@@ -93,21 +72,21 @@ type Lens
 type Rect2D
     implements Polygon2D
 {
-    Center: Point2D;
+    Center: Vector2D;
     Size: Size2D;
 }
 
 type Ellipse
     implements Curve2D
 {
-    Center: Point2D;
+    Center: Vector2D;
     Size: Size2D;
 }
 
 type Ring
     implements ClosedShape2D
 {
-    Center: Point2D;
+    Center: Vector2D;
     InnerRadius: Number;
     OuterRadius: Number;
 }
@@ -146,20 +125,27 @@ type RegularPolygon
 type Box2D
     implements Shape2D
 {
-    Center: Point2D;
+    Center: Vector2D;
     Rotation: Angle;
     Extent: Size2D;
 }
 
 //# 3D Shapes
 
-type Point3D
-    implements Coordinate, Difference<Vector3D>, Array<Number>
+type Sphere
+    implements Value
 {
-    X: Number;
-    Y: Number;
-    Z: Number;
+    Center: Vector3D;
+    Radius: Number;
 }
+
+type Plane
+    implements Value
+{
+    Normal: Vector3D;
+    D: Number;
+}
+
 
 type Transform3D
     implements Value
@@ -185,41 +171,41 @@ type Frame3D
 
 // Axis-Aligned bounding box 
 type Bounds3D
-    implements Interval<Point3D, Vector3D>
+    implements Interval<Vector3D>
 {
-    Min: Point3D;
-    Max: Point3D;
+    Min: Vector3D;
+    Max: Vector3D;
 }
 
 type Line3D
-    implements PolygonalChain3D, Array<Point3D>
+    implements PolyLine3D, Array<Vector3D>
 {
-    A: Point3D;
-    B: Point3D;
+    A: Vector3D;
+    B: Vector3D;
 }
 
 type Ray3D
     implements Value
 {
     Direction: Vector3D;
-    Position: Point3D;
+    Position: Vector3D;
 }
 
 type Triangle3D
-    implements Value, Array<Point3D>
+    implements Value, Array<Vector3D>
 {
-    A: Point3D;
-    B: Point3D;
-    C: Point3D;
+    A: Vector3D;
+    B: Vector3D;
+    C: Vector3D;
 }
 
 type Quad3D
-    implements Value, Array<Point3D>
+    implements Value, Array<Vector3D>
 {
-    A: Point3D;
-    B: Point3D;
-    C: Point3D;
-    D: Point3D;
+    A: Vector3D;
+    B: Vector3D;
+    C: Vector3D;
+    D: Vector3D;
 }
 
 type Capsule
@@ -262,53 +248,54 @@ type ConeSegment
 type Box3D
     implements Shape3D
 {
-    Center: Point3D;
+    Center: Vector3D;
     Rotation: Rotation3D;
     Extent: Size3D;
 }
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve    
 type CubicBezier2D
-    implements Array<Point2D>
+    implements Array<Vector2D>
 {
-    A: Point2D;
-    B: Point2D;
-    C: Point2D;
-    D: Point2D;
+    A: Vector2D;
+    B: Vector2D;
+    C: Vector2D;
+    D: Vector2D;
 }   
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type CubicBezier3D
-    implements Array<Point3D>
+    implements Array<Vector3D>
 {
-    A: Point3D;
-    B: Point3D;
-    C: Point3D;
-    D: Point3D;
+    A: Vector3D;
+    B: Vector3D;
+    C: Vector3D;
+    D: Vector3D;
 }
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier2D
-    implements Array<Point2D>
+    implements Array<Vector2D>
 {
-    A: Point2D;
-    B: Point2D;
-    C: Point2D;
+    A: Vector2D;
+    B: Vector2D;
+    C: Vector2D;
 }
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier3D
-    implements Array<Point3D>
+    implements Array<Vector3D>
 {
-    A: Point3D;
-    B: Point3D;
-    C: Point3D;
+    A: Vector3D;
+    B: Vector3D;
+    C: Vector3D;
 }
 
 //# 3D Rotation 
 
+// TODO: decide exactly what a quaternion is. 
 type Quaternion
-    implements Vector
+    implements Value 
 {
     X: Number;
     Y: Number;
@@ -345,20 +332,11 @@ type Orientation3D
 
 //# 4D Shapes 
 
-type Point4D
-    implements Coordinate, Difference<Vector4D>, Array<Number>
-{
-    X: Number;
-    Y: Number;
-    Z: Number;
-    W: Number;
-}
-
 type Line4D
-    implements Value, Array<Point4D>
+    implements Value, Array<Vector4D>
 {
-    A: Point4D;
-    B: Point4D;
+    A: Vector4D;
+    B: Vector4D;
 }
 
 type Quadray
@@ -380,21 +358,19 @@ type TriFace
 {
     A: Integer;
     B: Integer;
-    C: Integer;
+    C: Integer; 
 }
     
 type TriMesh
-    implements Mesh<TriFace, SimpleVertex>
+    implements Mesh<TriFace, Vertex>
 {   
-    Vertices: Array<SimpleVertex>;
+    Vertices: Array<Vertex>;
     Faces: Array<TriFace>;
 }
 
-type SimpleVertex
+type Vertex
 {  
-    Index: Integer;
-	Position: Point3D;
+	Position: Vector3D;
 	Normal: Vector3D;
 	UV: UV;
-    Color: Color;
 }
