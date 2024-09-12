@@ -3,125 +3,66 @@ library Geometry
     //==
 	// 2D Lines
 	
-	Closed(x: Line2D): Boolean
-		=> false;
-
-	Points(x: Line2D): Array<Vector2D>
-		=> x;
-
-	Length(x: Line2D): Number
-		=> (x.B - x.A).Length;
+	Closed(x: Line2D): Boolean => false;
+	Points(x: Line2D): Array<Vector2D> => x;
+	Length(x: Line2D): Number => (x.B - x.A).Length;
+	Direction(x: Line2D): Vector2D => (x.B - x.A);
+	Implicit(x: Line2D): Ray2D => (x.A, x.Direction);
 
 	//== 
 	// 3D Lines
 	 
-	Closed(x: Line3D): Boolean
-		=> false;
-
-	Points(x: Line3D): Array<Vector3D>
-		=> x;
-
-	Length(x: Line3D): Number
-		=> (x.B - x.A).Length;
+	Closed(x: Line3D): Boolean => false;
+	Points(x: Line3D): Array<Vector3D> => x;
+	Length(x: Line3D): Number => (x.B - x.A).Length;
+	Direction(x: Line3D): Vector3D => (x.B - x.A);
+	Implicit(x: Line3D): Ray3D => (x.A, x.Direction);
 
 	//==
 	// 3D Rays
 
-	Angle(a: Ray3D, b: Ray3D): Angle
-		=> a.Direction.Angle(b.Direction);
-
-	//==
-
-	Closed(x: ClosedShape2D): Boolean
-		=> true;
-
-	Closed(x: ClosedShape3D): Boolean
-		=> true;
-
-	Closed(x: OpenShape2D): Boolean
-		=> false;
+	Angle(a: Ray3D, b: Ray3D): Angle => a.Direction.Angle(b.Direction);
 
 	//==
 	// Rect2D functions 
 
-	Width(x: Rect2D): Number
-		=> x.Size.Width;
-
-	Height(x: Rect2D): Number
-		=> x.Size.Height;
-
-	HalfWidth(x: Rect2D): Number
-		=> x.Width.Half;
-
-	HalfHeight(x: Rect2D): Number
-		=> x.Height.Half;
-
-	Top(x: Rect2D): Number
-		=> x.Center.Y + HalfHeight;
-
-	Bottom(x: Rect2D): Number
-		=> x.Top + x.Height;
-
-	Left(x: Rect2D): Number
-		=> x.Center.X - HalfWidth;
-
-	Right(x: Rect2D): Number
-		=> x.Left + x.Width;
-
-	TopLeft(x: Rect2D): Vector2D
-		=> (x.Left, x.Top);
-
-	TopRight(x: Rect2D): Vector2D
-		=> (x.Right, x.Top);
-
-	BottomRight(x: Rect2D): Vector2D
-		=> (x.Right, x.Bottom);
-
-	BottomLeft(x: Rect2D): Vector2D
-		=> (x.Left, x.Bottom);
-
-	Points(x: Rect2D): Array<Vector2D>
-		=> [x.TopLeft, x.TopRight, x.BottomRight, x.BottomLeft];
+	Width(x: Rect2D): Number => x.Size.Width;
+	Height(x: Rect2D): Number => x.Size.Height;
+	HalfWidth(x: Rect2D): Number => x.Width.Half;
+	HalfHeight(x: Rect2D): Number => x.Height.Half;
+	Top(x: Rect2D): Number => x.Center.Y + HalfHeight;
+	Bottom(x: Rect2D): Number => x.Top + x.Height;
+	Left(x: Rect2D): Number => x.Center.X - HalfWidth;
+	Right(x: Rect2D): Number => x.Left + x.Width;
+	TopLeft(x: Rect2D): Vector2D => (x.Left, x.Top);
+	TopRight(x: Rect2D): Vector2D => (x.Right, x.Top);
+	BottomRight(x: Rect2D): Vector2D => (x.Right, x.Bottom);
+	BottomLeft(x: Rect2D): Vector2D => (x.Left, x.Bottom);
+	Points(x: Rect2D): Array<Vector2D> => [x.TopLeft, x.TopRight, x.BottomRight, x.BottomLeft];
 
 	//==
+	// Ellipse functions 
 
-    CirclePoints(n: Integer): Array<Vector2D>
-		=> n.Fractions.Map((x) => x.Turns.Circle);
+	Closed(x: Ellipse): Boolean => true;
+	Eval(x: Ellipse, t: Number): Vector2D => t.Circle * x.Size + x.Center;
+	
+	//==
+	// Triangle 2D functions 
 
-	Points(x: RegularPolygon): Array<Vector2D>
-		=> x.NumPoints.CirclePoints;
+	Points(x: Triangle2D): Array<Vector2D> => [x.A, x.B, x.C];
+	Area(t: Triangle2D): Number => (t.A.X * (t.C.Y - t.B.Y) + t.B.X * (t.A.Y - t.C.Y) + t.C.X * (t.B.Y - t.A.Y)).Half;
+	Flip(t: Triangle2D): Triangle2D => (t.C, t.B, t.A);
+    Center(t: Triangle2D): Vector2D => (t.A + t.B + t.C) / 3.0;
+	Barycentric(t: Triangle2D, uv: Vector2D): Vector2D => t.A.Barycentric(t.B, t.C, uv);
 
-	Closed(x: Ellipse): Boolean
-		=> true;
+	//==
+    // Triangle3D functions
 
-	Eval(x: Ellipse, t: Number): Vector2D
-		=> t.Circle * x.Size + x.Center;
-
-	Closed(x: Polygon2D): Boolean
-		=> true;
-
-	Closed(x: Polygon3D): Boolean
-		=> true;
-
-	Implicit(a: Size2D): Vector2D
-		=> (a.Width, a.Height);
-
-	Points(x: Triangle2D): Array<Vector2D>
-		=> CirclePoints(3);
-
-	/* TODO: I really want to have a PairwiseMap function, but it is not working.
- 
-	Sides(x: Polygon2D): Array<Line2D>
-    	=> x.Points.PairwiseMap((a, b) => Line2D(a, b));
-
-	Perimeter(x: Polygon2D): Number
-		=> x.Sides.Map(a => a.Length).Sum;
-	*/
-
-	Area(tri: Triangle2D): Number  
-	    => (tri.A.X * (tri.C.Y - tri.B.Y) 
-		    + tri.B.X * (tri.A.Y - tri.C.Y) 
-		+ tri.C.X * (tri.B.Y - tri.A.Y)).Half;
+    Flip(t: Triangle3D): Triangle3D => (t.C, t.B, t.A);        
+    Normal(t: Triangle3D): Vector3D => (t.B - t.A).Cross(t.C - t.A).Normalize;
+    Center(t: Triangle3D): Vector3D => (t.A + t.B + t.C) / 3.0;
+    Implicit(t: Triangle3D): Plane => (t.Normal, t.Normal.Dot(t.A));
+	Barycentric(t: Triangle3D, uv: Vector2D): Vector3D => t.A.Barycentric(t.B, t.C, uv);
 
 	/* TODO: there is a problem in resolving variable names. 
 	 *
@@ -148,7 +89,31 @@ library Geometry
     }
 	*/
 
-	Transform(x: Deformable3D, m: Matrix3D): Deformable3D
-		=> x.Deform(v => m * v);
+	//==
+	// Plane functions
 
+    Project(p: Plane, v: Vector3D): Vector3D => v - p.Normal * p.Normal.Dot(v);
+	
+	//==
+	// Polygon functions 
+
+	Closed(x: Polygon2D): Boolean => true;
+	Closed(x: Polygon3D): Boolean => true;
+	Closed(x: ClosedShape2D): Boolean => true;
+	Closed(x: ClosedShape3D): Boolean => true;
+	Closed(x: OpenShape2D): Boolean => false;
+
+	
+	/* TODO: I really want to have a PairwiseMap function, but it is not working. 
+	Sides(x: Polygon2D): Array<Line2D> => x.Points.PairwiseMap((a, b) => Line2D(a, b));
+	Perimeter(x: Polygon2D): Number => x.Sides.Map(a => a.Length).Sum;
+	*/
+
+	//== 
+	// Misc functions 
+
+	Transform(x: Deformable3D, m: Matrix4x4): Deformable3D => x.Deform(v => m * v);
+	Implicit(a: Size2D): Vector2D => (a.Width, a.Height);
+    CirclePoints(n: Integer): Array<Vector2D> => n.Fractions.Map((x) => x.Turns.Circle);
+	Points(x: RegularPolygon): Array<Vector2D> => x.NumPoints.CirclePoints;
 }

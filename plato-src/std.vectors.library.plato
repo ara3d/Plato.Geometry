@@ -1,6 +1,15 @@
 
 library Vector
 {  
+    Implicit(v: Vector2D): Vector3D
+    	=> (v.X, v.Y, 0);
+
+    Implicit(v: Vector3D): Vector4D
+		=> (v.X, v.Y, v.Z, 0);
+
+    To2D(v: Vector3D): Vector2D
+		=> (v.X, v.Y);
+
     Length(a: Vector): Number
     	=> a.Magnitude;
 
@@ -10,12 +19,6 @@ library Vector
     Sum(v: Vector): Number 
         => v.Reduce(0.0, (a, b) => a + b);
 
-    Count(v: UV): Integer
-        => 2;
-   
-    Count(v: UVW): Integer
-        => 3;
-   
     Count(c: Complex): Integer
         => 2;
    
@@ -27,12 +30,6 @@ library Vector
     
     Count(v: Vector4D): Integer
         => 4;
-
-    At(v: UV, n: Integer): Number
-        => n == 0 ? v.U : v.V;
-   
-    At(v: UVW, n: Integer): Number
-        => n == 0 ? v.U : n == 1 ? v.V : v.W;       
    
     At(c: Complex, n: Integer): Number
         => n == 0 ? c.Real : c.Imaginary;
@@ -58,14 +55,11 @@ library Vector
     Dot(v1: Vector, v2: Vector): Number
         => (v1 * v2).Sum;
 
-    Normal(v: Vector): Vector
-        => v / v.Magnitude;
-
     Average(v: Vector): Number
         => v.Sum / v.Count;
         
     Normalize(x: Vector): Vector
-        => x / x.Magnitude;
+        => x.MagnitudeSquared > 0 ? x / x.Magnitude : x.Zero;
 
     Cross(a: Vector2D, b: Vector2D): Number
 		=> a.X * b.Y - a.Y * b.X;

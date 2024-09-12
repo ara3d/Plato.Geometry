@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Plato.DoublePrecision;
+using Plato.Geometry.CSharp;
 
 namespace Plato.Geometry.Tests
 {
@@ -17,32 +18,7 @@ namespace Plato.Geometry.Tests
 
     public static class BSPExtensions
     {
-        public static Triangle3D Flip(this Triangle3D t)
-            => (t.C, t.B, t.A);
-
-        public static Vector3D Cross(this Vector3D a, Vector3D b)
-            => (
-                a.Y * b.Z - a.Z * b.Y,
-                a.Z * b.X - a.X * b.Z,
-                a.X * b.Y - a.Y * b.X);
-
-        public static Vector3D Normalized(this Vector3D v)
-        {
-            var m = v.Magnitude;
-            return new Vector3D(v.X / m, v.Y / m, v.Z / m);
-        }
-
-        public static Vector3D Normal(this Triangle3D t)
-            => (t.B - t.A).Cross(t.C - t.A).Normalized();
-
-        public static Point3D Center(this Triangle3D t)
-            => (t.A + t.B + t.C).ToVector / 3.0;
-
-        public static Plane Plane(this Triangle3D t)
-        {
-            var n = t.Normal();
-            return new Plane(n, n.Dot(t.A));
-        }
+       
 
         public static PlaneClassification Classify(this Plane p, Vector3D v)
         {

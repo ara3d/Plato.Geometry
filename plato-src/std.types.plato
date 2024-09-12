@@ -1,20 +1,4 @@
             
-// An integer type in the range of 0 to N is used to return the number of items 
-// https://en.wikipedia.org/wiki/Cardinal_number
-type Cardinal
-    implements WholeNumber
-{
-    Value: Integer;
-}
-
-// An integer type in the range of -1 to N and is commonly used for indexing arrays and collections 
-// The -1 value represents "not present". 
-type Index
-    implements WholeNumber
-{
-    Value: Integer;
-}
-
 // A numerical type that is normally in the range of 0 to 1. 
 type Unit
     implements Real
@@ -254,7 +238,7 @@ type Time
 // Unix date-time representation: number of non-leap seconds elapsed since January 1st, 1970.
 // https://en.wikipedia.org/wiki/Unix_time
 type DateTime
-    implements Coordinate, AdditiveArithmetic<Time>
+    implements Coordinate
 {
     Value: Number; 
 }
@@ -273,47 +257,6 @@ type NumberInterval
     Max: Number;
 }
 
-// Affine 2D transformation matrix 
-// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
-type Matrix2D 
-    implements Value, Array<Vector3D>
-{
-    Column1: Vector3D;   
-    Column2: Vector3D;   
-    Column3: Vector3D;   
-}
-
-// Affine 3D transformation matrix 
-// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
-// https://mindcontrol.org/~hplus/graphics/matrix-layout.html
-// Column major layout in memory 
-// Translation component is in Column4.XYZ    
-type Matrix3D
-    implements Value, Array<Vector4D>
-{
-    Column1: Vector4D;
-    Column2: Vector4D;
-    Column3: Vector4D;
-    Column4: Vector4D;
-}
-
-// https://en.wikipedia.org/wiki/UV_mapping    
-type UV
-    implements Vector
-{
-    U: Number;
-    V: Number;
-}
-
-// UV coordinates with an additional W dimension, used in some specialized rendering workflows like volumetric
-type UVW
-    implements Vector
-{
-    U: Number;
-    V: Number;
-    W: Number;
-}
-
 // A 2-dimensional vector
 type Vector2D
     implements Vector
@@ -322,7 +265,7 @@ type Vector2D
     Y: Number;
 }
 
-// A 3-dimensional vector
+// A 3-dimensional vector    
 type Vector3D
     implements Vector
 {
@@ -339,4 +282,28 @@ type Vector4D
     Y: Number;
     Z: Number;
     W: Number;
+}
+
+// Affine 2D transformation matrix 
+// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
+type Matrix3x3 
+    implements Value, Array<Vector3D>
+{
+    Column1: Vector3D;   
+    Column2: Vector3D;   
+    Column3: Vector3D;   
+}
+
+// Affine 3D transformation matrix 
+// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
+// https://mindcontrol.org/~hplus/graphics/matrix-layout.html
+// Column major layout in memory 
+// Translation component is in Column4.XYZ    
+type Matrix4x4
+    implements Value, Array<Vector4D>
+{
+    Column1: Vector4D;
+    Column2: Vector4D;
+    Column3: Vector4D;
+    Column4: Vector4D;
 }

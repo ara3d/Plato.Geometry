@@ -14,9 +14,6 @@ namespace Plato.Geometry.Unity
         public static Vector3 ToUnity(this Size3D v) => new Vector3(v.Width, v.Height, v.Depth);
         public static Vector2 ToUnity(this Size2D v) => new Vector2(v.Width, v.Height);
 
-        public static Vector3 ToUnity(this Point3D v) => new Vector3(v.X, v.Y, v.Z);
-        public static Vector2 ToUnity(this Point2D v) => new Vector2(v.X, v.Y);
-
         public static UQuaternion ToUnity(this Quaternion q) => new UQuaternion(q.X, q.Y, q.Z, q.W);
 
         public static Matrix4x4 ToUnity(this Matrix3D m) => new Matrix4x4(

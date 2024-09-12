@@ -3,8 +3,6 @@ library Numerical
     //==
     // Constants
 
-    // TODO: these could be added to all "ScalarArithmetic" types.
-
     Pi(): Number 
         => 3.1415926535897;
     
@@ -213,62 +211,36 @@ library Numerical
     Lerp(a: ScalarArithmetic, b: ScalarArithmetic, t: Number): ScalarArithmetic
         => a * t.FromOne + b * t;
           
-    /* Does not work in C# due to type inference issues. We need to specify the type of the arguments to ScalarArithmetic.
-    Lerp(t: Number, a: ScalarArithmetic, b: ScalarArithmetic): ScalarArithmetic
-        => a.Lerp(b, t);
-    */      
-    
-    Between(self: Comparable, min: Comparable, max: Comparable): Boolean
+    Between(self: Number, min: Number, max: Number): Boolean
         => self >= min && self <= max;
 
-    Barycentric(v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic, u: Number, v: Number): ScalarArithmetic 
-        => v1 + (v2 - v1) * u + (v3 - v1) * v;   
-
-    /* Does not work in C# due to type inference issues. We need to specify the type of the arguments to ScalarArithmetic.
-    Barycentric(uv: Vector2D, v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic): ScalarArithmetic 
-        => v1.Barycentric(v2, v3, uv.X, uv.Y);
-    */
-
-    /* TODO: we are going to need to drewrite this for 1, 2, 3, and 4 dimensions
-
-    InverseLerp(v: ScalarArithmetic, a: ScalarArithmetic, b: ScalarArithmetic): Number
-        => (v - (a * v.One)) / (b - a);
-
-    Remap(aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic, v: Number): ScalarArithmetic
-        => aOut.Lerp(bOut, v.InverseLerp(aIn, bIn));
-    */
-
-    /* Does not work in C# due to type inference issues. We need to specify the type of the arguments to ScalarArithmetic.
-    Remap(v: Number, aIn: ScalarArithmetic, bIn: ScalarArithmetic, aOut: ScalarArithmetic, bOut: ScalarArithmetic): ScalarArithmetic
-        => v.InverseLerp(aIn, bIn).Lerp(aOut, bOut);
-    */
+    Barycentric(v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic, uv: Vector2D): ScalarArithmetic 
+        => v1 + (v2 - v1) * uv.X + (v3 - v1) * uv.Y;   
 
     //==
     // Matrix operations
 
-    M11(m: Matrix3D): Number => m.Column1.X;
-    M12(m: Matrix3D): Number => m.Column2.X;
-    M13(m: Matrix3D): Number => m.Column3.X;
-    M14(m: Matrix3D): Number => m.Column4.X;
-    M21(m: Matrix3D): Number => m.Column1.Y;
-    M22(m: Matrix3D): Number => m.Column2.Y;
-    M23(m: Matrix3D): Number => m.Column3.Y;
-    M24(m: Matrix3D): Number => m.Column4.Y;
-    M31(m: Matrix3D): Number => m.Column1.Z;
-    M32(m: Matrix3D): Number => m.Column2.Z;
-    M33(m: Matrix3D): Number => m.Column3.Z;
-    M34(m: Matrix3D): Number => m.Column4.Z;
-    M41(m: Matrix3D): Number => m.Column1.W;
-    M42(m: Matrix3D): Number => m.Column2.W;
-    M43(m: Matrix3D): Number => m.Column3.W;
-    M44(m: Matrix3D): Number => m.Column4.W;
+    M11(m: Matrix4x4): Number => m.Column1.X;
+    M12(m: Matrix4x4): Number => m.Column2.X;
+    M13(m: Matrix4x4): Number => m.Column3.X;
+    M14(m: Matrix4x4): Number => m.Column4.X;
+    M21(m: Matrix4x4): Number => m.Column1.Y;
+    M22(m: Matrix4x4): Number => m.Column2.Y;
+    M23(m: Matrix4x4): Number => m.Column3.Y;
+    M24(m: Matrix4x4): Number => m.Column4.Y;
+    M31(m: Matrix4x4): Number => m.Column1.Z;
+    M32(m: Matrix4x4): Number => m.Column2.Z;
+    M33(m: Matrix4x4): Number => m.Column3.Z;
+    M34(m: Matrix4x4): Number => m.Column4.Z;
+    M41(m: Matrix4x4): Number => m.Column1.W;
+    M42(m: Matrix4x4): Number => m.Column2.W;
+    M43(m: Matrix4x4): Number => m.Column3.W;
+    M44(m: Matrix4x4): Number => m.Column4.W;
 
-    Multiply(m: Matrix3D, v: Vector3D): Vector3D
+    Multiply(m: Matrix4x4, v: Vector3D): Vector3D
         =>  (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31 + m.M41,
             v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32 + m.M42,
             v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33 + m.M43);                  
-            
-    // TODO: Rows and more.
 
     //==
 	// Angle conversion functions 
@@ -295,9 +267,32 @@ library Numerical
 		=> x.Turns * 400.0;
 
     //==
-    // DateTime
+    // Numerical functions
 
-    // NOTE: currently this function can't be auto-generated. 
-    Add(x: Time, y: DateTime): DateTime
-		=> y + x;
+    Component(x: Numerical, n: Integer): Number
+        => x.Components[n];
+
+    NumComponents(x: Numerical): Integer
+        => x.Components.Count;
+
+    MapComponents(x: Numerical, f: Function1<Number, Number>): Numerical
+        => x.FromComponents(x.Components.Map(f));
+
+    Zero(x: Numerical): Numerical
+        => x.MapComponents((i) => 0.0);
+
+    One(x: Numerical): Numerical
+        => x.MapComponents((i) => 1.0);
+
+    MinValue(x: Numerical): Numerical
+        => x.MapComponents((x) => x.MinNumber);
+
+    MaxValue(x: Numerical): Numerical
+        => x.MapComponents((x) => x.MaxNumber);
+
+    AllComponents(x: Numerical, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.All(predicate);
+
+    AnyComponent(x: Numerical, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.Any(predicate);
 }

@@ -291,9 +291,10 @@ type QuadraticBezier3D
     C: Vector3D;
 }
 
-//# 3D Rotation 
+//==
+// 3D Rotation 
+//==
 
-// TODO: decide exactly what a quaternion is. 
 type Quaternion
     implements Value 
 {
@@ -330,7 +331,9 @@ type Orientation3D
     Value: Rotation3D;
 }
 
-//# 4D Shapes 
+//==
+// 4D Shapes 
+//==
 
 type Line4D
     implements Value, Array<Vector4D>
@@ -339,38 +342,27 @@ type Line4D
     B: Vector4D;
 }
 
-type Quadray
-    implements Vector
-{
-    X: Number;
-    Y: Number;
-    Z: Number;
-    W: Number;
-}
-
-type PolygonFace
-{
-    Index: Integer;
-    VertexIndices: Array<Integer>;
-}
-
-type TriFace
-{
-    A: Integer;
-    B: Integer;
-    C: Integer; 
-}
-    
-type TriMesh
-    implements Mesh<TriFace, Vertex>
-{   
-    Vertices: Array<Vertex>;
-    Faces: Array<TriFace>;
-}
+//==
+// Mesh related types
+//==
 
 type Vertex
 {  
 	Position: Vector3D;
 	Normal: Vector3D;
-	UV: UV;
+	UV: Vector2D;
+}
+
+type TriMesh
+    implements Mesh<Integer3, Vertex>
+{   
+    Vertices: Array<Vertex>;
+    Faces: Array<Integer3>;
+}
+
+type QuadMesh
+    implements Mesh<Integer4, Vertex>
+{   
+    Vertices: Array<Vertex>;
+    Faces: Array<Integer4>;
 }

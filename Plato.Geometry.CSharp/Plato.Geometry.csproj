@@ -1,0 +1,142 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Experimental\AABox.cs" />
+    <Compile Remove="Experimental\AABox2D.cs" />
+    <Compile Remove="Experimental\Angle.cs" />
+    <Compile Remove="Experimental\ArrayOps.cs" />
+    <Compile Remove="Experimental\Bounded.cs" />
+    <Compile Remove="Experimental\BoundedSurface.cs" />
+    <Compile Remove="Experimental\CloneOperations.cs" />
+    <Compile Remove="Experimental\Constants.cs" />
+    <Compile Remove="Experimental\ContainmentType.cs" />
+    <Compile Remove="Experimental\Curve.cs" />
+    <Compile Remove="Experimental\CurveFunctions1D.cs" />
+    <Compile Remove="Experimental\CurveFunctions2D.cs" />
+    <Compile Remove="Experimental\CurveFunctions3D.cs" />
+    <Compile Remove="Experimental\CurveOperations.cs" />
+    <Compile Remove="Experimental\Curves2D.cs" />
+    <Compile Remove="Experimental\Deformable.cs" />
+    <Compile Remove="Experimental\Derivatives.cs" />
+    <Compile Remove="Experimental\Easings.cs" />
+    <Compile Remove="Experimental\GeometryUtil.cs" />
+    <Compile Remove="Experimental\GridMesh.cs" />
+    <Compile Remove="Experimental\HeightFieldFunctions.cs" />
+    <Compile Remove="Experimental\IntegerExtensions.cs" />
+    <Compile Remove="Experimental\Interfaces.cs" />
+    <Compile Remove="Experimental\ITransformable.cs" />
+    <Compile Remove="Experimental\IVertexNeighbourhood.cs" />
+    <Compile Remove="Experimental\KdTree.cs" />
+    <Compile Remove="Experimental\LineSegment.cs" />
+    <Compile Remove="Experimental\MathOps.cs" />
+    <Compile Remove="Experimental\MathOpsPartial.cs" />
+    <Compile Remove="Experimental\Matrix4x4.cs" />
+    <Compile Remove="Experimental\Meshes.cs" />
+    <Compile Remove="Experimental\MeshExtensions.cs" />
+    <Compile Remove="Experimental\Modifiers.cs" />
+    <Compile Remove="Experimental\ParametricSurface.cs" />
+    <Compile Remove="Experimental\ParametricSurfaces.cs" />
+    <Compile Remove="Experimental\Plane.cs" />
+    <Compile Remove="Experimental\PlatonicSolids.cs" />
+    <Compile Remove="Experimental\PointNormal.cs" />
+    <Compile Remove="Experimental\PointsGeometry.cs" />
+    <Compile Remove="Experimental\PolarFunctions.cs" />
+    <Compile Remove="Experimental\Polygons.cs" />
+    <Compile Remove="Experimental\PolyLine.cs" />
+    <Compile Remove="Experimental\PolyLineCurve.cs" />
+    <Compile Remove="Experimental\Prisms.cs" />
+    <Compile Remove="Experimental\Procedurals.cs" />
+    <Compile Remove="Experimental\Quad.cs" />
+    <Compile Remove="Experimental\QuadMesh.cs" />
+    <Compile Remove="Experimental\Quadray.cs" />
+    <Compile Remove="Experimental\Quaternion.cs" />
+    <Compile Remove="Experimental\Ray.cs" />
+    <Compile Remove="Experimental\Sphere.cs" />
+    <Compile Remove="Experimental\StandardPlane.cs" />
+    <Compile Remove="Experimental\StructsPartial.cs" />
+    <Compile Remove="Experimental\SurfaceDiscretization.cs" />
+    <Compile Remove="Experimental\SurfaceFunctions.cs" />
+    <Compile Remove="Experimental\SurfaceOperations.cs" />
+    <Compile Remove="Experimental\SurfacePoint.cs" />
+    <Compile Remove="Experimental\TessellatedMesh.cs" />
+    <Compile Remove="Experimental\Topology.cs" />
+    <Compile Remove="Experimental\TriMesh.cs" />
+    <Compile Remove="Experimental\TriMeshBuilder.cs" />
+    <Compile Remove="Experimental\VertexCurvatureAnalysis.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Geometry\LICENSE" Link="Experimental\LICENSE" />
+    <None Include="..\..\Geometry\README.md" Link="Experimental\README.md">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Include="Experimental\AABox.cs" />
+    <None Include="Experimental\AABox2D.cs" />
+    <None Include="Experimental\Angle.cs" />
+    <None Include="Experimental\ArrayOps.cs" />
+    <None Include="Experimental\Bounded.cs" />
+    <None Include="Experimental\BoundedSurface.cs" />
+    <None Include="Experimental\CloneOperations.cs" />
+    <None Include="Experimental\Constants.cs" />
+    <None Include="Experimental\ContainmentType.cs" />
+    <None Include="Experimental\Curve.cs" />
+    <None Include="Experimental\CurveFunctions1D.cs" />
+    <None Include="Experimental\CurveFunctions2D.cs" />
+    <None Include="Experimental\CurveFunctions3D.cs" />
+    <None Include="Experimental\CurveOperations.cs" />
+    <None Include="Experimental\Curves2D.cs" />
+    <None Include="Experimental\Deformable.cs" />
+    <None Include="Experimental\Derivatives.cs" />
+    <None Include="Experimental\Easings.cs" />
+    <None Include="GeometryUtil.cs" />
+    <None Include="Experimental\GridMesh.cs" />
+    <None Include="Experimental\HeightFieldFunctions.cs" />
+    <None Include="Experimental\IntegerExtensions.cs" />
+    <None Include="Experimental\Interfaces.cs" />
+    <None Include="Experimental\ITransformable.cs" />
+    <None Include="Experimental\IVertexNeighbourhood.cs" />
+    <None Include="Experimental\KdTree.cs" />
+    <None Include="Experimental\LineSegment.cs" />
+    <None Include="Experimental\MathOps.cs" />
+    <None Include="Experimental\MathOpsPartial.cs" />
+    <None Include="Experimental\Matrix4x4.cs" />
+    <None Include="Experimental\Meshes.cs" />
+    <None Include="Experimental\MeshExtensions.cs" />
+    <None Include="Experimental\Modifiers.cs" />
+    <None Include="Experimental\ParametricSurface.cs" />
+    <None Include="Experimental\ParametricSurfaces.cs" />
+    <None Include="Experimental\Plane.cs" />
+    <None Include="Experimental\PlatonicSolids.cs" />
+    <None Include="Experimental\PointNormal.cs" />
+    <None Include="Experimental\PointsGeometry.cs" />
+    <None Include="Experimental\PolarFunctions.cs" />
+    <None Include="Experimental\Polygons.cs" />
+    <None Include="Experimental\PolyLine.cs" />
+    <None Include="Experimental\PolyLineCurve.cs" />
+    <None Include="Experimental\Prisms.cs" />
+    <None Include="Experimental\Procedurals.cs" />
+    <None Include="Experimental\Quad.cs" />
+    <None Include="Experimental\QuadMesh.cs" />
+    <None Include="Experimental\Quadray.cs" />
+    <None Include="Experimental\Quaternion.cs" />
+    <None Include="Experimental\Ray.cs" />
+    <None Include="Experimental\Sphere.cs" />
+    <None Include="Experimental\StandardPlane.cs" />
+    <None Include="Experimental\StructsPartial.cs" />
+    <None Include="SurfaceDiscretization.cs" />
+    <None Include="Experimental\SurfaceFunctions.cs" />
+    <None Include="Experimental\SurfaceOperations.cs" />
+    <None Include="Experimental\SurfacePoint.cs" />
+    <None Include="Experimental\TessellatedMesh.cs" />
+    <None Include="Experimental\Topology.cs" />
+    <None Include="Experimental\TriMesh.cs" />
+    <None Include="Experimental\TriMeshBuilder.cs" />
+    <None Include="Experimental\VertexCurvatureAnalysis.cs" />
+  </ItemGroup>
+
+</Project>

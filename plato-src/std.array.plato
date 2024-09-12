@@ -1,26 +1,49 @@
-type ArrayImplementation<T>
+type LazyArray<T>
     implements Array<T>
 {
     Count: Integer;
     Function: Function1<Integer, T>;
 }
 
+type LazyArray2D<T>
+    implements Array2D<T>
+{
+	ColumnCount: Integer;
+	RowCount: Integer;
+	Function: Function2<Integer, Integer, T>;
+}
+
+type LazyArray3D<T>
+	implements Array3D<T>
+{
+	ColumnCount: Integer;
+	RowCount: Integer;
+	LayerCount: Integer;
+	Function: Function3<Integer, Integer, Integer, T>;
+}
+
 library ArrayLibrary
 {
+    Map(n: Integer, f: Function1<Integer, $T>): Array<$T>
+        => new LazyArray<Integer>(n, f);
+
+    Range(n: Integer): Array<Integer>
+        => n.Map((i) => i);
+
     Count(xs: Array2D<$T>): Integer 
         => xs.RowCount * xs.ColumnCount;
-    
-    At(xs: Array2D<$T>, i: Integer): $T 
-        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount);
 
     Count(xs: Array3D<$T>): Integer 
         => xs.RowCount * xs.ColumnCount * xs.LayerCount;
     
-    At(xs: Array3D<$T>, i: Integer): $T 
+    At(xs: LazyArray<$T>, n: Integer): $T 
+        => xs.Function(n);
+    
+    At(xs: LazyArray2D<$T>, i: Integer): $T 
+        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount);
+    
+    At(xs: LazyArray3D<$T>, i: Integer): $T 
         => xs.At(i % xs.ColumnCount, i / xs.ColumnCount, i / xs.LayerCount);
-
-    At(xs: ArrayImplementation<$T>, n: Integer): $T 
-        => xs.Function.Invoke(n);
     
     IsEmpty(xs: Array): Boolean
         => xs.Count == 0;
@@ -34,49 +57,60 @@ library ArrayLibrary
     Middle(xs: Array<$T>, n: Integer): $T
 		=> xs[xs.Count / 2];
 
-    MapRange(x: Integer, f: Function1<Integer, $T>): Array<$T>
-        => x.Range.Map(f);
+    Slice(xs: Array<$T>, from: Integer, to: Integer): Array<$T>
+       => xs.Subarray(from, to - from);
 
-    /*
+    Subarray(xs: Array<$T>, from: Integer, count: Integer): Array<$T>
+        => count.Map((i) => xs.At(i + from));
+
+    Skip(xs: Array<$T>, n: Integer): Array<$T>
+		=> xs.Subarray(n, xs.Count - n);
+
+    Take(xs: Array<$T>, n: Integer): Array<$T>
+        => xs.Subarray(0, n);
+
+    Drop(xs: Array<$T>, n: Integer): Array<$T>
+		=> xs.Take(xs.Count - n);
+
+    SkipDrop(xs: Array<$T>, n1: Integer, n2: Integer): Array<$T>
+        => xs.Skip(n1).Drop(n2);
+
+    Rest(xs: Array<$T>): Array<$T>
+		=> xs.Skip(1);
+
+    Reduce(xs: Array<$T>, acc: $U, f: Function2<$T, $U, $U>): $U
+    {
+        var r = acc;
+        for (var i=0; i < xs.Count; i = i + 1)
+			r = f(xs.At(i), r);
+        return r;
+    }
+
+    All(xs: Array<$T>, f: Function1<$T, Boolean>): Boolean
+    {
+        for (var i=0; i < xs.Count; i = i + 1)
+			if (!f(xs.At(i)))
+				return false;
+		return true;
+	}
+
+    Any(xs: Array<$T>, f: Function1<$T, Boolean>): Boolean
+    {
+        for (var i=0; i < xs.Count; i = i + 1)
+			if (f(xs.At(i)))
+				return true;
+		return false;
+	}
+
+    Map(xs: LazyArray<$T1>, f: Function1<$T1, $T2>): LazyArray<$T2> 
+        => xs.Count.Map((i) => f(xs.At(i)));
+
     PairwiseMap(xs: Array<$T1>, f: Function2<$T1, $T1, $T2>): Array<$T2> 
-		=> (xs.Count - 1).MapRange(i => f(xs.At(i), xs.At(i + 1)));
+		=> (xs.Count - 1).Map(i => f(xs[i], xs[i + 1]));
 
-    Map(xs: ArrayImplementation<$T1>, f: Function1<$T1, $T2>): ArrayImplementation<$T2> 
-        => ArrayImplementation(xs.Count, (i) => f.Invoke(xs.At(i)));
+    PairwiseMapModulo(xs: Array<$T1>, f: Function2<$T1, $T1, $T2>): Array<$T2> 
+		=> xs.Count.Map(i => f(xs[i], xs[i + 1 % xs.Count]));
 
-    Reverse(xs: Array<$T>): Array<$T>
-        => ArrayImplementation(xs.Count, (i) => xs.At(xs.Count - 1 - i));
-
-    Zip(xs: Array, ys: Array, f: Function2<): Array 
-        => (xs.Count, (i) => f(At(i), ys.At(i)));  
-
-    Zip(xs: Array, ys: Array, zs: Array, f: Function3): Array 
-        => (xs.Count, (i) => f(At(i), ys.At(i), zs.At(i)));
-    
-    Skip(xs: Array, n: Integer): Array
-        => (xs.Count - n, (i) => At(i - n));
-    
-    Take(xs: Array, n: Integer): Array
-        => (n, (i) => At(i));   
-    
-    Aggregate(xs: Array, init: Any, f: Function2): Any 
-        => xs.IsEmpty ? init : f(init, xs.Rest);
-
-    Rest(xs: Array): Array 
-        => xs.Skip(1);
-    
-    Slice(xs: Array, from: Integer, count: Integer): Array 
-        => xs.Skip(from).Take(count);
-    
-    Join(xs: Array, sep: String): String 
-        => xs.IsEmpty ? "" 
-            : xs.First.ToString 
-            + xs.Rest.Aggregate("", (acc, cur) => $"{acc}{sep}{cur}");
-    
-    All(xs: Array, f: Function1): Boolean 
-        => xs.IsEmpty ? true : f(xs.First) && f(xs.Rest);
-
-    All(xs: Array): Boolean 
-        => xs.All((b) => b);
-    */
+    Zip(xs: Array<$T1>, ys: Array<$T2>, f: Function2<$T1, $T2, $T3>): Array<$T3> 
+        => (xs.Count.Min(ys.Count)).Map((i) => f(xs[i], ys[i]));  
 } 

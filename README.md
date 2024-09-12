@@ -2,8 +2,7 @@
 
 **Plato.Geometry** is a C# geometry library with a multi-language geometry kernel at it's core. In
 other words it is a math and geometry library that is appropriate for usage in 
-3D Computer Aided Design (CAD), Computer Aided Engineering (CAE), and 
-Digital Content Creation (DCC) software. 
+3D Computer Aided Design (CAD), Computer Aided Engineering (CAE), and Digital Content Creation (DCC) software. 
 
 Plato.Geometry is delivered as a cross-platform C# library, but the roadmap includes C++ and JavaScript support. 
 All algorithms and data structures are written in a high-level programming language called Plato
@@ -16,9 +15,6 @@ Do not edit the C# source files with the extension ".g.cs" directly.
 
 The tool for building C# source files from Plato source files is in a separate repository (https://github.com/cdiggins/plato), and is 
 called `PlatoWinFormsEditor`. 
-
-It is not a tool that is intended for public consumption. You can use it if you want, but there is very little documentation and some of the 
-error messages may be cryptic. 
 
 ## About the C# Library 
 
@@ -93,11 +89,6 @@ All functions in libraries are implicitly can be called using _dot syntax_ with 
 the left of the dot. This is similar to how [extension methods work in C#](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods).
 
 There are also no _properties_. A method with only one argument can be invoked without including the parameters. 
-
-## Learning More
-
-At this point, the only thing left to do is to start reading the code. 
-We would welcome question submitted as issues so we can improve the documentation.   
 
 # FAQ (Frequently Asked Questions)
 

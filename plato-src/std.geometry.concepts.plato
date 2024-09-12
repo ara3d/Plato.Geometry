@@ -10,12 +10,12 @@ concept Bounded3D
 
 concept Transformable2D 
 {
-    Transform(x: Self, matrix: Matrix2D): Self;
+    Transform(x: Self, matrix: Matrix3x3): Self;
 }
 
 concept Transformable3D 
 {
-    Transform(x: Self, matrix: Matrix3D): Self;
+    Transform(x: Self, matrix: Matrix4x4): Self;
 }
 
 concept Deformable2D 
@@ -128,7 +128,7 @@ concept Surface
 // They are effectively Bivariate functions. You can also think of them as curves that have 
 // two parameters. 
 concept ParametricSurface
-    inherits Procedural<UV, Vector3D>, Surface 
+    inherits Procedural<Vector2D, Vector3D>, Surface 
 {
     PeriodicU(x: Self): Boolean;
     PeriodicV(x: Self): Boolean;
@@ -136,7 +136,7 @@ concept ParametricSurface
 
 // Explicit surfaces are defined 
 concept ExplicitSurface 
-    inherits Procedural<UV, Number>, Surface
+    inherits Procedural<Vector2D, Number>, Surface
 { }
 
 concept DistanceField<TDomain>
