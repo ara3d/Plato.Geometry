@@ -16,6 +16,17 @@ namespace Plato.Geometry.Tests
         Spanning = 3,
     };
 
+    public class Test
+    {
+        public static class Extensions
+        {
+            public static int Add(this Test test)
+            {
+
+            }
+        }
+    }
+
     public static class BSPExtensions
     {
        

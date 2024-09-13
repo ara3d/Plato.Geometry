@@ -12,7 +12,7 @@ namespace Plato.Geometry
             => Array(items.Length, i => items[i]);
 
         public static Array<T> Array<T>(Integer n, Func<Integer, T> f)
-            => new ArrayImplementation<T>(n, f);
+            => new LazyArray<T>(n, f);
 
         public static Array2D<T> Array<T>(Integer nCols, Integer nRows, Func<Integer, Integer, T> f)
             => new LazyArray2D<T>(nCols, nRows, f);

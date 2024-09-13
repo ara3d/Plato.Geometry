@@ -27,7 +27,7 @@ type Ray2D
     implements Value
 {
     Direction: Vector2D;
-    Position: Vector2D;
+    Origin: Vector2D;
 }
 
 type Triangle2D

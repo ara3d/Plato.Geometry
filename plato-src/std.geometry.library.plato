@@ -7,7 +7,8 @@ library Geometry
 	Points(x: Line2D): Array<Vector2D> => x;
 	Length(x: Line2D): Number => (x.B - x.A).Length;
 	Direction(x: Line2D): Vector2D => (x.B - x.A);
-	Implicit(x: Line2D): Ray2D => (x.A, x.Direction);
+	Ray2D(x: Line2D): Ray2D => (x.A, x.Direction);
+	Line3D(x: Line2D): Line3D => (x.A, x.B);
 
 	//== 
 	// 3D Lines
@@ -16,11 +17,12 @@ library Geometry
 	Points(x: Line3D): Array<Vector3D> => x;
 	Length(x: Line3D): Number => (x.B - x.A).Length;
 	Direction(x: Line3D): Vector3D => (x.B - x.A);
-	Implicit(x: Line3D): Ray3D => (x.A, x.Direction);
+	Ray3D(x: Line3D): Ray3D => (x.A, x.Direction);
 
 	//==
 	// 3D Rays
 
+	Ray3D(ray: Ray2D): Ray3D => (ray.Origin, ray.Direction);
 	Angle(a: Ray3D, b: Ray3D): Angle => a.Direction.Angle(b.Direction);
 
 	//==
@@ -61,7 +63,7 @@ library Geometry
     Flip(t: Triangle3D): Triangle3D => (t.C, t.B, t.A);        
     Normal(t: Triangle3D): Vector3D => (t.B - t.A).Cross(t.C - t.A).Normalize;
     Center(t: Triangle3D): Vector3D => (t.A + t.B + t.C) / 3.0;
-    Implicit(t: Triangle3D): Plane => (t.Normal, t.Normal.Dot(t.A));
+    Plane(t: Triangle3D): Plane => (t.Normal, t.Normal.Dot(t.A));
 	Barycentric(t: Triangle3D, uv: Vector2D): Vector3D => t.A.Barycentric(t.B, t.C, uv);
 
 	/* TODO: there is a problem in resolving variable names. 
@@ -113,7 +115,8 @@ library Geometry
 	// Misc functions 
 
 	Transform(x: Deformable3D, m: Matrix4x4): Deformable3D => x.Deform(v => m * v);
-	Implicit(a: Size2D): Vector2D => (a.Width, a.Height);
+	Vector2D(a: Size2D): Vector2D => (a.Width, a.Height);
+	Vector3D(a: Size3D): Vector3D => (a.Width, a.Height, a.Depth);
     CirclePoints(n: Integer): Array<Vector2D> => n.Fractions.Map((x) => x.Turns.Circle);
 	Points(x: RegularPolygon): Array<Vector2D> => x.NumPoints.CirclePoints;
 }

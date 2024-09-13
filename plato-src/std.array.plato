@@ -1,32 +1,32 @@
-type LazyArray<T>
-    implements Array<T>
+
+// Arrays provide a count and support the indexing operator [] 
+concept Array<T>
 {
-    Count: Integer;
-    Function: Function1<Integer, T>;
+    Count(xs: Self): Integer;
+    At(xs: Self, n: Integer): T;
 }
 
-type LazyArray2D<T>
-    implements Array2D<T>
-{
-	ColumnCount: Integer;
-	RowCount: Integer;
-	Function: Function2<Integer, Integer, T>;
+// Extends the Array concept with rows and columns. 
+concept Array2D<T>
+    inherits Array<T>
+{ 
+    RowCount(xs: Self): Integer;
+    ColumnCount(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer): T;
 }
 
-type LazyArray3D<T>
-	implements Array3D<T>
-{
-	ColumnCount: Integer;
-	RowCount: Integer;
-	LayerCount: Integer;
-	Function: Function3<Integer, Integer, Integer, T>;
+// Extends the Array concept with rows, columns, and layers. 
+concept Array3D<T>
+    inherits Array<T>
+{ 
+    RowCount(xs: Self): Integer;
+    ColumnCount(xs: Self): Integer;
+    LayerCount(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer, layer: Integer): T;
 }
 
 library ArrayLibrary
 {
-    Map(n: Integer, f: Function1<Integer, $T>): Array<$T>
-        => new LazyArray<Integer>(n, f);
-
     Range(n: Integer): Array<Integer>
         => n.Map((i) => i);
 
@@ -36,16 +36,13 @@ library ArrayLibrary
     Count(xs: Array3D<$T>): Integer 
         => xs.RowCount * xs.ColumnCount * xs.LayerCount;
     
-    At(xs: LazyArray<$T>, n: Integer): $T 
-        => xs.Function(n);
-    
-    At(xs: LazyArray2D<$T>, i: Integer): $T 
+    At(xs: Array2D<$T>, i: Integer): $T 
         => xs.At(i % xs.ColumnCount, i / xs.ColumnCount);
     
-    At(xs: LazyArray3D<$T>, i: Integer): $T 
-        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount, i / xs.LayerCount);
-    
-    IsEmpty(xs: Array): Boolean
+    At(xs: Array3D<$T>, i: Integer): $T 
+        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount, i / xs.LayerCount);    
+        
+    IsEmpty(xs: Array<$T>): Boolean
         => xs.Count == 0;
     
     First(xs: Array<$T>): $T 
@@ -102,15 +99,18 @@ library ArrayLibrary
 		return false;
 	}
 
-    Map(xs: LazyArray<$T1>, f: Function1<$T1, $T2>): LazyArray<$T2> 
+    Map(xs: Array<$T1>, f: Function1<$T1, $T2>): Array<$T2> 
         => xs.Count.Map((i) => f(xs.At(i)));
 
     PairwiseMap(xs: Array<$T1>, f: Function2<$T1, $T1, $T2>): Array<$T2> 
 		=> (xs.Count - 1).Map(i => f(xs[i], xs[i + 1]));
 
     PairwiseMapModulo(xs: Array<$T1>, f: Function2<$T1, $T1, $T2>): Array<$T2> 
-		=> xs.Count.Map(i => f(xs[i], xs[i + 1 % xs.Count]));
+		=> xs.Count.Map(i => f(xs[i], xs[(i + 1) % xs.Count]));
 
     Zip(xs: Array<$T1>, ys: Array<$T2>, f: Function2<$T1, $T2, $T3>): Array<$T3> 
-        => (xs.Count.Min(ys.Count)).Map((i) => f(xs[i], ys[i]));  
+        => xs.Count.Lesser(ys.Count).Map((i) => f(xs[i], ys[i]));  
+
+    Zip(xs: Array<$T1>, ys: Array<$T2>, zs: Array<$T3>, f: Function3<$T1, $T2, $T3, $T4>): Array<$T4> 
+        => xs.Count.Lesser(ys.Count).Lesser(zs.Count).Map((i) => f(xs[i], ys[i], zs[i]));  
 } 

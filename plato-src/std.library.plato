@@ -166,9 +166,6 @@ library Numerical
     Magnitude(x: Real): Number
         => x.Value;
 
-    ClampOne(x: Real): Real
-        => x.Clamp(x.Zero, x.One);
-
     GtZ(x : Real): Boolean
         => x > x.Zero;
 
@@ -285,14 +282,53 @@ library Numerical
         => x.MapComponents((i) => 1.0);
 
     MinValue(x: Numerical): Numerical
-        => x.MapComponents((x) => x.MinNumber);
+        => x.MapComponents((x) => x.MinValue);
 
     MaxValue(x: Numerical): Numerical
-        => x.MapComponents((x) => x.MaxNumber);
+        => x.MapComponents((x) => x.MaxValue);
 
     AllComponents(x: Numerical, predicate: Function1<Number, Boolean>): Boolean
 		=> x.Components.All(predicate);
 
     AnyComponent(x: Numerical, predicate: Function1<Number, Boolean>): Boolean
 		=> x.Components.Any(predicate);
+
+    Between(x: Numerical, a: Numerical, b: Numerical): Boolean
+        => x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All(x => x);
+
+    BetweenZeroOne(x: Numerical): Boolean
+        => x.Between(x.Zero, x.One);
+
+    Clamp(x: Numerical, a: Numerical, b: Numerical): Numerical
+        => x.FromComponents(x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
+
+    ClampOne(x: Numerical): Numerical
+        => x.Clamp(x.Zero, x.One);
+
+    //==
+    // Comparable functions
+    
+    Equals(a: Comparable, b: Comparable): Boolean 
+        => a.Compare(b) == 0;
+    
+    NotEquals(a: Comparable, b: Comparable): Boolean 
+        => a.Compare(b) != 0;
+    
+    LessThan(a: Comparable, b: Comparable): Boolean 
+        => a.Compare(b) < 0;
+    
+    LessThanOrEquals(a: Comparable, b: Comparable): Boolean
+        => a.Compare(b) <= 0;   
+    
+    GreaterThan(a: Comparable, b: Comparable): Boolean 
+        => a.Compare(b) > 0;
+    
+    GreaterThanOrEquals(a: Comparable, b: Comparable): Boolean 
+        => a.Compare(b) >= 0;
+       
+    Lesser(a: Comparable, b: Comparable): Comparable 
+        => a <= b ? a : b;
+    
+    Greater(a: Comparable, b: Comparable): Comparable 
+        => a >= b ? a : b;
 }

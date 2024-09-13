@@ -41,9 +41,7 @@
 
     ToNumber(x: Integer): Number;
 
-    //Range(x: Integer): Array<Integer>;
-    //Reduce(xs: Array<$T>, init: $TAcc, f: Function2<$TAcc, $T, $TAcc>): $TAcc;
-    //Map(xs: Array<$T>, f: Function1<$T, $U>): Array<$U>;
+    Map(x: Integer, f: Function1<Integer, $T>): Array<$T>;
 
     Invoke(f: Function0<$TR>): $TR;
     Invoke(f: Function1<$T0, $TR>, a0: $T0): $TR;
@@ -52,4 +50,7 @@
     Invoke(f: Function4<$T0, $T1, $T2, $T3, $TR>, a0: $T0, a1: $T1, a2: $T2, a3: $T3): $TR;
 
     New(t: Type, args: Array<Any>): Any;
+
+    At(x: String, y: Integer): Character;
+    Count(x: String): Integer;
 }

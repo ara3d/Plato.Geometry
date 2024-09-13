@@ -6,6 +6,9 @@ namespace Plato.Geometry
 {
     public static class SurfaceFunctions
     {
+        public static Array<Integer> Range(this int n)
+            => ((Integer)n).Range;
+
         public static Vector3D Sphere(this Vector2D uv)
             => Sphere(uv.X.Turns, uv.Y.Turns);
 
@@ -168,6 +171,7 @@ namespace Plato.Geometry
         public static ParametricSurface Torus()
             => new SurfaceImpl(uv => uv.Torus(3, 5), true, true);
 
+        /*
         public static QuadMesh ToQuadMesh(this ParametricSurface s)
         {
 
@@ -176,6 +180,7 @@ namespace Plato.Geometry
         public static TriMesh ToTriMesh(this QuadMesh q)
         {
 
-        }
+        }*/
+
     }
 }

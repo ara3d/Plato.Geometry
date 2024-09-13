@@ -3,7 +3,7 @@
 
 // A floating point representation of a real number 
 type Number 
-    implements Real, Numerical, Arithmetic, Comparable
+    implements Real
 { }
 
 // A positive or negative whole number 

@@ -14,7 +14,7 @@ namespace Plato.Geometry
         public Array2D<Vector2D> Uvs { get; }
         public bool ClosedX { get; }
         public bool ClosedY { get; }
-        public Array2D<QuadFace> Indices { get; }
+        public Array2D<Integer4> Indices { get; }
 
         public SurfaceDiscretization(int nColumns, int nRows, bool closedX, bool closedY)
         {
@@ -32,7 +32,7 @@ namespace Plato.Geometry
             Indices = nRows.Range().CartesianProduct(nColumns.Range(), (x, y) => QuadMeshFaceVertices(x, y, nx, ny));
         }
 
-        public static QuadFace QuadMeshFaceVertices(int col, int row, int nx, int ny)
+        public static Integer4 QuadMeshFaceVertices(int col, int row, int nx, int ny)
         {
             var a = row * nx + col;
             var b = row * nx + (col + 1) % nx;

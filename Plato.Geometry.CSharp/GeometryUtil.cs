@@ -12,22 +12,6 @@ namespace Plato.Geometry
         Yz,
     }
 
-    public class LazyArray2D<T> : Array2D<T>
-    {
-        public Func<Integer, Integer, T> Func { get; }
-        public LazyArray2D(Integer columnCount, Integer rowCount, Func<Integer, Integer, T> f)
-        {
-            ColumnCount = columnCount;
-            RowCount = rowCount;
-            Func = f;
-        }
-        public Integer Count => ColumnCount * RowCount;
-        public T At(Integer n) => At(n % ColumnCount, n / ColumnCount);
-        public Integer RowCount { get; }
-        public Integer ColumnCount { get; }
-        public T At(Integer column, Integer row) => Func(column, row);
-    }
-
     public static class GeometryUtil
     {
         public static Array2D<V> CartesianProduct<T, U, V>(this Array<T> self, Array<U> other, Func<U, T, V> func)
@@ -38,12 +22,6 @@ namespace Plato.Geometry
 
         public static Vector2D LerpAlong(this Line2D self, double t)
             => self.A.Lerp(self.B, t);
-
-            public static Array<Integer> Range(this int n)
-            => ((Integer)n).Range;
-
-        public static Array<T> MapRange<T>(this int n, Func<Integer, T> f)
-            => n.Range().Map(f);
 
         public static T ModuloAt<T>(this Array<T> a, Integer i)
             => a.At(i % a.Count);
@@ -110,12 +88,12 @@ namespace Plato.Geometry
                 ? New.Array<double>()
                 : count == 1
                     ? New.Array(0.0)
-                    : count.MapRange(i => i / (double)(count - 1));
+                    : count.Map(i => i / (double)(count - 1));
 
         public static Array<double> InterpolateExclusive(this int count)
             => count <= 0
                 ? New.Array<double>()
-                : count.MapRange(i => i / (double)count);
+                : count.Map(i => i / (double)count);
 
         public static Array<Vector3D> InterpolateInclusive(this int count, Func<double, Vector3D> function)
             => count.InterpolateInclusive().Map(function);
@@ -249,10 +227,11 @@ namespace Plato.Geometry
             return (p - closestPoint).Length;
         }
         
+        /*
         public static Array<Vector2D> Offset(this Array<Vector2D> points, double offset, bool closed)
         {
-            if (points.Count < 2) return Array.Empty<double>();
-            var lines = points.ToLines(closed).Select(line => line.ParallelOffset(offset));
+            if (points.Count < 2) return Intrinsics.MakeArray<Vector2D>();
+            var lines = points.ToLines(closed).Map(line => line.ParallelOffset(offset));
             var r = new List<Vector2D>();
             var n = lines.Count - (closed ? 0 : 1);
 
@@ -289,10 +268,11 @@ namespace Plato.Geometry
                 r.Add(lines.Last().B);
             }
 
-            return r.ToIArray();
+            return Intrinsics.MakeArray(r.ToArray());
         }
+        */
 
         public static Array<Line2D> ToLines(this Array<Vector2D> points, bool closed)
-            => (points.Count - (closed ? 0 : 1)).MapRange(i => new Line2D(points.At(i), points.ModuloAt(i + 1)));
+            => (points.Count - (closed ? 0 : 1)).Map(i => new Line2D(points.At(i), points.ModuloAt(i + 1)));
     }
 }

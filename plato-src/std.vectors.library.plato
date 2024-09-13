@@ -1,10 +1,10 @@
 
 library Vector
 {  
-    Implicit(v: Vector2D): Vector3D
+    Vector3D(v: Vector2D): Vector3D
     	=> (v.X, v.Y, 0);
 
-    Implicit(v: Vector3D): Vector4D
+    Vector4D(v: Vector3D): Vector4D
 		=> (v.X, v.Y, v.Z, 0);
 
     To2D(v: Vector3D): Vector2D
@@ -87,6 +87,5 @@ library Vector
         => (b - a).Magnitude;
 
     Angle(a: Vector, b: Vector): Angle
-        => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;
-     
+        => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
 }

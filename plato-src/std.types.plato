@@ -23,7 +23,7 @@ type Complex
 
 // A pair of integers 
 type Integer2
-    implements Array<Integer>
+    implements Value, Array<Integer>
 {
     A: Integer;
     B: Integer;
@@ -31,7 +31,7 @@ type Integer2
 
 // A tuple of 3 integers 
 type Integer3
-    implements Array<Integer>
+    implements Value, Array<Integer>
 {
     A: Integer;
     B: Integer;
@@ -40,7 +40,7 @@ type Integer3
 
 // A tuple of 4 integers 
 type Integer4
-    implements Array<Integer>
+    implements Value, Array<Integer>
 {
     A: Integer;
     B: Integer;
@@ -172,7 +172,7 @@ type GeoCoordinateWithAltitude
 
 // Two dimensional rectangular size
 type Size2D
-    implements Value
+    implements Value, Array<Number>
 {
     Width: Number;
     Height: Number;
@@ -180,7 +180,7 @@ type Size2D
 
 // Three dimensional box size
 type Size3D
-    implements Value
+    implements Value, Array<Integer>
 {
     Width: Number;
     Height: Number;

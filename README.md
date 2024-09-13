@@ -74,11 +74,14 @@ Plato has three types of top-level structures that a user can define:
 * **Type** - a concrete data type (e.g., a struct)
 * **Concept** - an abstract data type (e.g., an interface or trait)
 
-## Concepts - Zero Cost Abstractions 
+## Concepts - Low Cost Abstractions 
 
 If a function is defined with a concept as its first parameter, an implementation is automatically 
 generated for each type that implements that concept. 
-This is similar to how [C++ templates work](https://en.cppreference.com/w/cpp/language/templates).  
+This is similar to how [C++ templates work](https://en.cppreference.com/w/cpp/language/templates).
+
+This is more efficient than interfaces or abstract functions, because what would normally require 
+a virtual table lookup in many cases can be avoided altogether. The trade-off is increased code size. 
 
 ## Object Syntax but not an OOPL
 
