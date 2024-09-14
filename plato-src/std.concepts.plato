@@ -52,7 +52,7 @@ concept Vector
 // Somewhat counter intuitively, they are not considered Numerical types.
 // They do however support arithmetic operations.
 concept WholeNumber 
-    inherits Comparable, Arithmetic
+    inherits Value, Comparable, Arithmetic
 {
 }
 
@@ -76,7 +76,6 @@ concept Comparable
 concept Equatable
 {
     Equals(a: Self, b: Self): Boolean;
-    NotEquals(a: Self, b: Self): Boolean;
 }
 
 // The formal term for this is an Abelian group over addition

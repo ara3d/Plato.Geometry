@@ -180,7 +180,7 @@ type Size2D
 
 // Three dimensional box size
 type Size3D
-    implements Value, Array<Integer>
+    implements Value, Array<Number>
 {
     Width: Number;
     Height: Number;

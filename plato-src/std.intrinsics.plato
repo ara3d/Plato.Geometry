@@ -33,7 +33,6 @@
     Multiply(x: Integer, y: Integer): Integer;
     Modulo(x: Integer, y: Integer): Integer;
     Negative(x: Integer): Integer;
-    Reciprocal(x: Integer): Integer;
 
     And(x: Boolean, y: Boolean): Boolean;
     Or(x: Boolean, y: Boolean): Boolean;
@@ -49,8 +48,20 @@
     Invoke(f: Function3<$T0, $T1, $T2, $TR>, a0: $T0, a1: $T1, a2: $T2): $TR;
     Invoke(f: Function4<$T0, $T1, $T2, $T3, $TR>, a0: $T0, a1: $T1, a2: $T2, a3: $T3): $TR;
 
-    New(t: Type, args: Array<Any>): Any;
+    New(t: Type, args: Array<Any>): Dynamic;
 
     At(x: String, y: Integer): Character;
     Count(x: String): Integer;
+
+    Compare(x: Integer, y: Integer): Integer;
+    Compare(x: Number, y: Number): Integer;
+    Compare(x: Character, y: Character): Integer;
+    Compare(x: String, y: String): Integer;
+    Compare(x: Boolean, y: Boolean): Integer;
+
+    Equals(x: Integer, y: Integer): Boolean;
+    Equals(x: Number, y: Number): Boolean;
+    Equals(x: Character, y: Character): Boolean;
+    Equals(x: String, y: String): Boolean;
+    Equals(x: Boolean, y: Boolean): Boolean        ;
 }

@@ -13,12 +13,12 @@ type Integer
 
 // Text
 type String
-    implements Array<Character>, Comparable, Equatable
+    implements Value, Array<Character>, Comparable
 { }
 
 // Truth value (true or false)
 type Boolean 
-    implements BooleanOperations
+    implements Value, Comparable, BooleanOperations
 { }
 
 // A single character of text 

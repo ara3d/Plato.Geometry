@@ -306,13 +306,16 @@ library Numerical
         => x.Clamp(x.Zero, x.One);
 
     //==
+    // Equatable functions
+
+    Equals(a: Equatable, b: Equatable): Boolean
+        => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All(x => x);
+
+    NotEquals(a: Equatable, b: Equatable): Boolean
+        => !a.Equals(b);
+
+    //==
     // Comparable functions
-    
-    Equals(a: Comparable, b: Comparable): Boolean 
-        => a.Compare(b) == 0;
-    
-    NotEquals(a: Comparable, b: Comparable): Boolean 
-        => a.Compare(b) != 0;
     
     LessThan(a: Comparable, b: Comparable): Boolean 
         => a.Compare(b) < 0;
@@ -331,4 +334,5 @@ library Numerical
     
     Greater(a: Comparable, b: Comparable): Comparable 
         => a >= b ? a : b;
+   
 }

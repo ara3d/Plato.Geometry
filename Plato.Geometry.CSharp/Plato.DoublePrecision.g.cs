@@ -94,6 +94,22 @@ namespace Plato.DoublePrecision
                 return ((int)rol5 + h1) ^ h2;
             }
         }     
+
+        // TODO: I need to implemnt this. 
+        public static Dynamic New(Type type, Array<Any> args) 
+            => throw new System.NotImplementedException("");
+
+        public static Integer Compare(this Number a, Number b) => a.Value.CompareTo(b.Value);
+        public static Integer Compare(this Character a, Character b) => a.Value.CompareTo(b.Value);
+        public static Integer Compare(this Integer a, Integer b) => a.Value.CompareTo(b.Value);
+        public static Integer Compare(this Boolean a, Boolean b) => a.Value.CompareTo(b.Value);
+        public static Integer Compare(this String a, String b) => a.Value.CompareTo(b.Value);
+    
+        public static Boolean Equals(this Number a, Number b) => a.Value.Equals(b.Value);
+        public static Boolean Equals(this Character a, Character b) => a.Value.Equals(b.Value);
+        public static Boolean Equals(this Integer a, Integer b) => a.Value.Equals(b.Value);
+        public static Boolean Equals(this Boolean a, Boolean b) => a.Value.Equals(b.Value);
+        public static Boolean Equals(this String a, String b) => a.Value.Equals(b.Value);
     }
     
     public readonly partial struct Number
@@ -253,7 +269,7 @@ namespace Plato.DoublePrecision
     public interface Vector<Self>: Numerical<Self>, ScalarArithmetic<Self>, Arithmetic<Self>, Array<Number>
     {
     }
-    public interface WholeNumber<Self>: Comparable<Self>, Arithmetic<Self>
+    public interface WholeNumber<Self>: Value<Self>, Comparable<Self>, Arithmetic<Self>
     {
     }
     public interface Coordinate<Self>: Value<Self>
@@ -266,7 +282,6 @@ namespace Plato.DoublePrecision
     public interface Equatable<Self>
     {
         Boolean Equals(Self b);
-        Boolean NotEquals(Self b);
     }
     public interface AdditiveArithmetic<Self>
     {
@@ -513,11 +528,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Translation", (String)"Rotation", (String)"Scale");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Translation), new Dynamic(Rotation), new Dynamic(Scale));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Transform2D a, Transform2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Transform2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Transform2D a, Transform2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Transform2D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Transform2D a, Transform2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Transform2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Transform2D a, Transform2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Transform2D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Pose2D: Value<Pose2D>
     {
@@ -540,11 +555,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Position", (String)"Orientation");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Orientation));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Pose2D a, Pose2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Pose2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Pose2D a, Pose2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Pose2D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Pose2D a, Pose2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Pose2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Pose2D a, Pose2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Pose2D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Bounds2D: Interval<Bounds2D, Vector2D>
     {
@@ -586,14 +601,14 @@ namespace Plato.DoublePrecision
         public Bounds2D Recenter(Vector2D c) => c.Subtract(this.Size.Half).Tuple2(c.Add(this.Size.Half));
         public Bounds2D Clamp(Bounds2D y) => this.Clamp(y.Min).Tuple2(this.Clamp(y.Max));
         public Vector2D Clamp(Vector2D value) => value.Clamp(this.Min, this.Max);
+        public static Boolean operator ==(Bounds2D a, Bounds2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Bounds2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Bounds2D a, Bounds2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Bounds2D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector2D this[Integer n] => throw new System.NotImplementedException();
-        public Vector2D At(Integer n) => throw new System.NotImplementedException();
-        public static Boolean operator ==(Bounds2D a, Bounds2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Bounds2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Bounds2D a, Bounds2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Bounds2D b) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Vector2D this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
+        public Vector2D At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Ray2D: Value<Ray2D>
     {
@@ -618,11 +633,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public static implicit operator Ray3D(Ray2D ray) => ray.Origin.Tuple2(ray.Direction);
         public Ray3D Ray3D => this.Origin.Tuple2(this.Direction);
+        public static Boolean operator ==(Ray2D a, Ray2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Ray2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Ray2D a, Ray2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Ray2D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Ray2D a, Ray2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Ray2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Ray2D a, Ray2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Ray2D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Triangle2D: Value<Triangle2D>, Array<Vector2D>
     {
@@ -652,14 +667,14 @@ namespace Plato.DoublePrecision
         public Triangle2D Flip => this.C.Tuple3(this.B, this.A);
         public Vector2D Center => this.A.Add(this.B.Add(this.C)).Divide(((Number)3));
         public Vector2D Barycentric(Vector2D uv) => this.A.Barycentric(this.B, this.C, uv);
+        public static Boolean operator ==(Triangle2D a, Triangle2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Triangle2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Triangle2D a, Triangle2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Triangle2D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Triangle2D a, Triangle2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Triangle2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Triangle2D a, Triangle2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Triangle2D b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector2D this[Integer n] => throw new System.NotImplementedException();
-        public Vector2D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 3;
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Quad2D: Value<Quad2D>, Array<Vector2D>
     {
@@ -686,14 +701,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Quad2D a, Quad2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Quad2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Quad2D a, Quad2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Quad2D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Quad2D a, Quad2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Quad2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Quad2D a, Quad2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Quad2D b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector2D this[Integer n] => throw new System.NotImplementedException();
-        public Vector2D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 4;
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Line2D: PolyLine2D, Array<Vector2D>
     {
@@ -725,9 +740,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Line3D(Line2D x) => x.A.Tuple2(x.B);
         public Line3D Line3D => this.A.Tuple2(this.B);
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector2D this[Integer n] => throw new System.NotImplementedException();
-        public Vector2D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Circle: ClosedShape2D
     {
@@ -1020,11 +1035,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Radius");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Radius));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Sphere a, Sphere b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Sphere b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Sphere a, Sphere b) => a.Equals(b).Not;
+        public Boolean NotEquals(Sphere b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Sphere a, Sphere b) => throw new System.NotImplementedException();
-        public Boolean Equals(Sphere b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Sphere a, Sphere b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Sphere b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Plane: Value<Plane>
     {
@@ -1048,11 +1063,11 @@ namespace Plato.DoublePrecision
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Normal), new Dynamic(D));
         // Implemented concept functions and type functions
         public Vector3D Project(Vector3D v) => v.Subtract(this.Normal.Multiply(this.Normal.Dot(v)));
+        public static Boolean operator ==(Plane a, Plane b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Plane b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Plane a, Plane b) => a.Equals(b).Not;
+        public Boolean NotEquals(Plane b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Plane a, Plane b) => throw new System.NotImplementedException();
-        public Boolean Equals(Plane b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Plane a, Plane b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Plane b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Transform3D: Value<Transform3D>
     {
@@ -1077,11 +1092,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Translation", (String)"Rotation", (String)"Scale");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Translation), new Dynamic(Rotation), new Dynamic(Scale));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Transform3D a, Transform3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Transform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Transform3D a, Transform3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Transform3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Transform3D a, Transform3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Transform3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Transform3D a, Transform3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Transform3D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Pose3D: Value<Pose3D>
     {
@@ -1104,11 +1119,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Position", (String)"Orientation");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Orientation));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Pose3D a, Pose3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Pose3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Pose3D a, Pose3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Pose3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Pose3D a, Pose3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Pose3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Pose3D a, Pose3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Pose3D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Frame3D
     {
@@ -1175,14 +1190,14 @@ namespace Plato.DoublePrecision
         public Bounds3D Recenter(Vector3D c) => c.Subtract(this.Size.Half).Tuple2(c.Add(this.Size.Half));
         public Bounds3D Clamp(Bounds3D y) => this.Clamp(y.Min).Tuple2(this.Clamp(y.Max));
         public Vector3D Clamp(Vector3D value) => value.Clamp(this.Min, this.Max);
+        public static Boolean operator ==(Bounds3D a, Bounds3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Bounds3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Bounds3D a, Bounds3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Bounds3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector3D this[Integer n] => throw new System.NotImplementedException();
-        public Vector3D At(Integer n) => throw new System.NotImplementedException();
-        public static Boolean operator ==(Bounds3D a, Bounds3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Bounds3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Bounds3D a, Bounds3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Bounds3D b) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Vector3D this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
+        public Vector3D At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Line3D: PolyLine3D, Array<Vector3D>
     {
@@ -1212,9 +1227,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Ray3D(Line3D x) => x.A.Tuple2(x.Direction);
         public Ray3D Ray3D => this.A.Tuple2(this.Direction);
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector3D this[Integer n] => throw new System.NotImplementedException();
-        public Vector3D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Ray3D: Value<Ray3D>
     {
@@ -1238,11 +1253,11 @@ namespace Plato.DoublePrecision
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Direction), new Dynamic(Position));
         // Implemented concept functions and type functions
         public Angle Angle(Ray3D b) => this.Direction.Angle(b.Direction);
+        public static Boolean operator ==(Ray3D a, Ray3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Ray3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Ray3D a, Ray3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Ray3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Ray3D a, Ray3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Ray3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Ray3D a, Ray3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Ray3D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Triangle3D: Value<Triangle3D>, Array<Vector3D>
     {
@@ -1273,14 +1288,14 @@ namespace Plato.DoublePrecision
         public static implicit operator Plane(Triangle3D t) => t.Normal.Tuple2(t.Normal.Dot(t.A));
         public Plane Plane => this.Normal.Tuple2(this.Normal.Dot(this.A));
         public Vector3D Barycentric(Vector2D uv) => this.A.Barycentric(this.B, this.C, uv);
+        public static Boolean operator ==(Triangle3D a, Triangle3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Triangle3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Triangle3D a, Triangle3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Triangle3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Triangle3D a, Triangle3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Triangle3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Triangle3D a, Triangle3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Triangle3D b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector3D this[Integer n] => throw new System.NotImplementedException();
-        public Vector3D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 3;
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Quad3D: Value<Quad3D>, Array<Vector3D>
     {
@@ -1307,14 +1322,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Quad3D a, Quad3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Quad3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Quad3D a, Quad3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Quad3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Quad3D a, Quad3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Quad3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Quad3D a, Quad3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Quad3D b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector3D this[Integer n] => throw new System.NotImplementedException();
-        public Vector3D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 4;
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Capsule: Shape3D
     {
@@ -1486,9 +1501,9 @@ namespace Plato.DoublePrecision
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector2D this[Integer n] => throw new System.NotImplementedException();
-        public Vector2D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 4;
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct CubicBezier3D: Array<Vector3D>
     {
@@ -1516,9 +1531,9 @@ namespace Plato.DoublePrecision
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector3D this[Integer n] => throw new System.NotImplementedException();
-        public Vector3D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 4;
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct QuadraticBezier2D: Array<Vector2D>
     {
@@ -1544,9 +1559,9 @@ namespace Plato.DoublePrecision
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector2D this[Integer n] => throw new System.NotImplementedException();
-        public Vector2D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 3;
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct QuadraticBezier3D: Array<Vector3D>
     {
@@ -1572,9 +1587,9 @@ namespace Plato.DoublePrecision
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector3D this[Integer n] => throw new System.NotImplementedException();
-        public Vector3D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 3;
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Quaternion: Value<Quaternion>
     {
@@ -1601,11 +1616,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"X", (String)"Y", (String)"Z", (String)"W");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(X), new Dynamic(Y), new Dynamic(Z), new Dynamic(W));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Quaternion a, Quaternion b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Quaternion b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Quaternion a, Quaternion b) => a.Equals(b).Not;
+        public Boolean NotEquals(Quaternion b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Quaternion a, Quaternion b) => throw new System.NotImplementedException();
-        public Boolean Equals(Quaternion b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Quaternion a, Quaternion b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Quaternion b) => throw new System.NotImplementedException();
     }
     public readonly partial struct AxisAngle: Value<AxisAngle>
     {
@@ -1628,11 +1643,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Axis", (String)"Angle");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Axis), new Dynamic(Angle));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(AxisAngle a, AxisAngle b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(AxisAngle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(AxisAngle a, AxisAngle b) => a.Equals(b).Not;
+        public Boolean NotEquals(AxisAngle b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(AxisAngle a, AxisAngle b) => throw new System.NotImplementedException();
-        public Boolean Equals(AxisAngle b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(AxisAngle a, AxisAngle b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(AxisAngle b) => throw new System.NotImplementedException();
     }
     public readonly partial struct EulerAngles: Value<EulerAngles>
     {
@@ -1657,11 +1672,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Yaw", (String)"Pitch", (String)"Roll");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Yaw), new Dynamic(Pitch), new Dynamic(Roll));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(EulerAngles a, EulerAngles b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(EulerAngles b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(EulerAngles a, EulerAngles b) => a.Equals(b).Not;
+        public Boolean NotEquals(EulerAngles b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(EulerAngles a, EulerAngles b) => throw new System.NotImplementedException();
-        public Boolean Equals(EulerAngles b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(EulerAngles a, EulerAngles b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(EulerAngles b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Rotation3D: Value<Rotation3D>
     {
@@ -1681,11 +1696,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Quaternion");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Quaternion));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Rotation3D a, Rotation3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Rotation3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Rotation3D a, Rotation3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Rotation3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Rotation3D a, Rotation3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Rotation3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Rotation3D a, Rotation3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Rotation3D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Orientation3D: Value<Orientation3D>
     {
@@ -1705,11 +1720,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Value");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Orientation3D a, Orientation3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Orientation3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Orientation3D a, Orientation3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Orientation3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Orientation3D a, Orientation3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Orientation3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Orientation3D a, Orientation3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Orientation3D b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Line4D: Value<Line4D>, Array<Vector4D>
     {
@@ -1732,14 +1747,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Line4D a, Line4D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Line4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Line4D a, Line4D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Line4D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Line4D a, Line4D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Line4D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Line4D a, Line4D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Line4D b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector4D this[Integer n] => throw new System.NotImplementedException();
-        public Vector4D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Vector4D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
+        public Vector4D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Vertex
     {
@@ -1853,29 +1868,32 @@ namespace Plato.DoublePrecision
         public Vector2D CosCurve => this.Tuple2(this.Turns.Cos);
         public Vector2D TanCurve => this.Tuple2(this.Turns.Tan);
         public Vector3D Helix(Number revs) => this.Multiply(revs).Turns.Sin.Tuple3(this.Multiply(revs).Turns.Cos, this);
-        public Angle Acos => throw new System.NotImplementedException();
-        public Angle Asin => throw new System.NotImplementedException();
-        public Angle Atan => throw new System.NotImplementedException();
-        public Number Pow(Number y) => throw new System.NotImplementedException();
-        public Number Log(Number y) => throw new System.NotImplementedException();
-        public Number Ln => throw new System.NotImplementedException();
-        public Number Exp => throw new System.NotImplementedException();
-        public Number Floor => throw new System.NotImplementedException();
-        public Number Ceiling => throw new System.NotImplementedException();
-        public Number Round => throw new System.NotImplementedException();
-        public Number Truncate => throw new System.NotImplementedException();
-        public static Number operator +(Number x, Number y) => throw new System.NotImplementedException();
-        public Number Add(Number y) => throw new System.NotImplementedException();
-        public static Number operator -(Number x, Number y) => throw new System.NotImplementedException();
-        public Number Subtract(Number y) => throw new System.NotImplementedException();
-        public static Number operator /(Number x, Number y) => throw new System.NotImplementedException();
-        public Number Divide(Number y) => throw new System.NotImplementedException();
-        public static Number operator *(Number x, Number y) => throw new System.NotImplementedException();
-        public Number Multiply(Number y) => throw new System.NotImplementedException();
-        public static Number operator %(Number x, Number y) => throw new System.NotImplementedException();
-        public Number Modulo(Number y) => throw new System.NotImplementedException();
-        public static Number operator -(Number x) => throw new System.NotImplementedException();
-        public Number Negative => throw new System.NotImplementedException();
+        public Angle Acos => Intrinsics.Acos(this);
+        public Angle Asin => Intrinsics.Asin(this);
+        public Angle Atan => Intrinsics.Atan(this);
+        public Number Pow(Number y) => Intrinsics.Pow(this, y);
+        public Number Log(Number y) => Intrinsics.Log(this, y);
+        public Number Ln => Intrinsics.Ln(this);
+        public Number Exp => Intrinsics.Exp(this);
+        public Number Floor => Intrinsics.Floor(this);
+        public Number Ceiling => Intrinsics.Ceiling(this);
+        public Number Round => Intrinsics.Round(this);
+        public Number Truncate => Intrinsics.Truncate(this);
+        public static Number operator +(Number x, Number y) => x.Add(y);
+        public Number Add(Number y) => Intrinsics.Add(this, y);
+        public static Number operator -(Number x, Number y) => x.Subtract(y);
+        public Number Subtract(Number y) => Intrinsics.Subtract(this, y);
+        public static Number operator /(Number x, Number y) => x.Divide(y);
+        public Number Divide(Number y) => Intrinsics.Divide(this, y);
+        public static Number operator *(Number x, Number y) => x.Multiply(y);
+        public Number Multiply(Number y) => Intrinsics.Multiply(this, y);
+        public static Number operator %(Number x, Number y) => x.Modulo(y);
+        public Number Modulo(Number y) => Intrinsics.Modulo(this, y);
+        public static Number operator -(Number x) => x.Negative;
+        public Number Negative => Intrinsics.Negative(this);
+        public Integer Compare(Number y) => Intrinsics.Compare(this, y);
+        public static Boolean operator ==(Number x, Number y) => x.Equals(y);
+        public Boolean Equals(Number y) => Intrinsics.Equals(this, y);
         public Number OunceToGram => this.Multiply(((Number)28.349523125));
         public Number TroyOunceToGram => this.Multiply(((Number)31.1034768));
         public Number GrainToMilligram => this.Multiply(((Number)64.79891));
@@ -1922,16 +1940,14 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Number Clamp(Number a, Number b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Number ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator !=(Number a, Number b) => a.Equals(b).Not;
+        public Boolean NotEquals(Number b) => this.Equals(b).Not;
         public Number Half => this.Divide(((Number)2));
         public Number Quarter => this.Divide(((Number)4));
         public Number Tenth => this.Divide(((Number)10));
         public Number Twice => this.Multiply(((Number)2));
         public Number Lerp(Number b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Number Barycentric(Number v2, Number v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Number a, Number b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Number b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Number a, Number b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Number b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Number a, Number b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Number b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Number a, Number b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -1949,7 +1965,6 @@ namespace Plato.DoublePrecision
         public Number Square => this.Pow2;
         public Number Cube => this.Pow3;
         // Unimplemented concept functions
-        public Integer Compare(Number y) => throw new System.NotImplementedException();
     }
     public readonly partial struct Integer: WholeNumber<Integer>
     {
@@ -1971,21 +1986,23 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Array<Integer> Range => this.Map((i) => i);
         public Array<Vector2D> CirclePoints => this.Fractions.Map((x) => x.Turns.Circle);
-        public static Integer operator +(Integer x, Integer y) => throw new System.NotImplementedException();
-        public Integer Add(Integer y) => throw new System.NotImplementedException();
-        public static Integer operator -(Integer x, Integer y) => throw new System.NotImplementedException();
-        public Integer Subtract(Integer y) => throw new System.NotImplementedException();
-        public static Integer operator /(Integer x, Integer y) => throw new System.NotImplementedException();
-        public Integer Divide(Integer y) => throw new System.NotImplementedException();
-        public static Integer operator *(Integer x, Integer y) => throw new System.NotImplementedException();
-        public Integer Multiply(Integer y) => throw new System.NotImplementedException();
-        public static Integer operator %(Integer x, Integer y) => throw new System.NotImplementedException();
-        public Integer Modulo(Integer y) => throw new System.NotImplementedException();
-        public static Integer operator -(Integer x) => throw new System.NotImplementedException();
-        public Integer Negative => throw new System.NotImplementedException();
-        public Integer Reciprocal => throw new System.NotImplementedException();
-        public Number ToNumber => throw new System.NotImplementedException();
-        public Array<TR> Map<TR>(System.Func<Integer, TR> f) => throw new System.NotImplementedException();
+        public static Integer operator +(Integer x, Integer y) => x.Add(y);
+        public Integer Add(Integer y) => Intrinsics.Add(this, y);
+        public static Integer operator -(Integer x, Integer y) => x.Subtract(y);
+        public Integer Subtract(Integer y) => Intrinsics.Subtract(this, y);
+        public static Integer operator /(Integer x, Integer y) => x.Divide(y);
+        public Integer Divide(Integer y) => Intrinsics.Divide(this, y);
+        public static Integer operator *(Integer x, Integer y) => x.Multiply(y);
+        public Integer Multiply(Integer y) => Intrinsics.Multiply(this, y);
+        public static Integer operator %(Integer x, Integer y) => x.Modulo(y);
+        public Integer Modulo(Integer y) => Intrinsics.Modulo(this, y);
+        public static Integer operator -(Integer x) => x.Negative;
+        public Integer Negative => Intrinsics.Negative(this);
+        public Number ToNumber => Intrinsics.ToNumber(this);
+        public Array<TR> Map<TR>(System.Func<Integer, TR> f) => Intrinsics.Map(this, f);
+        public Integer Compare(Integer y) => Intrinsics.Compare(this, y);
+        public static Boolean operator ==(Integer x, Integer y) => x.Equals(y);
+        public Boolean Equals(Integer y) => Intrinsics.Equals(this, y);
         public Number FloatDivision(Integer y) => this.ToNumber.Divide(y.ToNumber);
         public Array<Number> Fractions
         {
@@ -1995,10 +2012,8 @@ namespace Plato.DoublePrecision
                 return this.Range.Map((i) => i.FloatDivision(_var0));
             }
         }
-        public static Boolean operator ==(Integer a, Integer b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Integer b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Integer a, Integer b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Integer b) => this.Compare(b).NotEquals(((Integer)0));
+        public static Boolean operator !=(Integer a, Integer b) => a.Equals(b).Not;
+        public Boolean NotEquals(Integer b) => this.Equals(b).Not;
         public static Boolean operator <(Integer a, Integer b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Integer b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Integer a, Integer b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -2016,9 +2031,8 @@ namespace Plato.DoublePrecision
         public Integer Square => this.Pow2;
         public Integer Cube => this.Pow3;
         // Unimplemented concept functions
-        public Integer Compare(Integer y) => throw new System.NotImplementedException();
     }
-    public readonly partial struct String: Array<Character>, Comparable<String>, Equatable<String>
+    public readonly partial struct String: Value<String>, Array<Character>, Comparable<String>
     {
         public readonly string Value;
         public String WithValue(string value) => (value);
@@ -2036,13 +2050,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Value");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         // Implemented concept functions and type functions
-        public Character this[Integer y] => throw new System.NotImplementedException();
-        public Character At(Integer y) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public static Boolean operator ==(String a, String b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(String b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(String a, String b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(String b) => this.Compare(b).NotEquals(((Integer)0));
+        public Character this[Integer y] => throw new System.IndexOutOfRangeException();
+        public Character At(Integer y) => throw new System.IndexOutOfRangeException();
+        public Integer Count => 0;
+        public Integer Compare(String y) => Intrinsics.Compare(this, y);
+        public static Boolean operator ==(String x, String y) => x.Equals(y);
+        public Boolean Equals(String y) => Intrinsics.Equals(this, y);
+        public static Boolean operator !=(String a, String b) => a.Equals(b).Not;
+        public Boolean NotEquals(String b) => this.Equals(b).Not;
         public static Boolean operator <(String a, String b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(String b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(String a, String b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -2054,9 +2069,8 @@ namespace Plato.DoublePrecision
         public String Lesser(String b) => this.LessThanOrEquals(b) ? this : b;
         public String Greater(String b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public Integer Compare(String y) => throw new System.NotImplementedException();
     }
-    public readonly partial struct Boolean: BooleanOperations<Boolean>
+    public readonly partial struct Boolean: Value<Boolean>, Comparable<Boolean>, BooleanOperations<Boolean>
     {
         public readonly bool Value;
         public Boolean WithValue(bool value) => (value);
@@ -2074,12 +2088,27 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Value");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         // Implemented concept functions and type functions
-        public static Boolean operator &(Boolean x, Boolean y) => throw new System.NotImplementedException();
-        public Boolean And(Boolean y) => throw new System.NotImplementedException();
-        public static Boolean operator |(Boolean x, Boolean y) => throw new System.NotImplementedException();
-        public Boolean Or(Boolean y) => throw new System.NotImplementedException();
-        public static Boolean operator !(Boolean x) => throw new System.NotImplementedException();
-        public Boolean Not => throw new System.NotImplementedException();
+        public static Boolean operator &(Boolean x, Boolean y) => x.And(y);
+        public Boolean And(Boolean y) => Intrinsics.And(this, y);
+        public static Boolean operator |(Boolean x, Boolean y) => x.Or(y);
+        public Boolean Or(Boolean y) => Intrinsics.Or(this, y);
+        public static Boolean operator !(Boolean x) => x.Not;
+        public Boolean Not => Intrinsics.Not(this);
+        public Integer Compare(Boolean y) => Intrinsics.Compare(this, y);
+        public static Boolean operator ==(Boolean x, Boolean y) => x.Equals(y);
+        public Boolean Equals(Boolean y) => Intrinsics.Equals(this, y);
+        public static Boolean operator !=(Boolean a, Boolean b) => a.Equals(b).Not;
+        public Boolean NotEquals(Boolean b) => this.Equals(b).Not;
+        public static Boolean operator <(Boolean a, Boolean b) => a.Compare(b).LessThan(((Integer)0));
+        public Boolean LessThan(Boolean b) => this.Compare(b).LessThan(((Integer)0));
+        public static Boolean operator <=(Boolean a, Boolean b) => a.Compare(b).LessThanOrEquals(((Integer)0));
+        public Boolean LessThanOrEquals(Boolean b) => this.Compare(b).LessThanOrEquals(((Integer)0));
+        public static Boolean operator >(Boolean a, Boolean b) => a.Compare(b).GreaterThan(((Integer)0));
+        public Boolean GreaterThan(Boolean b) => this.Compare(b).GreaterThan(((Integer)0));
+        public static Boolean operator >=(Boolean a, Boolean b) => a.Compare(b).GreaterThanOrEquals(((Integer)0));
+        public Boolean GreaterThanOrEquals(Boolean b) => this.Compare(b).GreaterThanOrEquals(((Integer)0));
+        public Boolean Lesser(Boolean b) => this.LessThanOrEquals(b) ? this : b;
+        public Boolean Greater(Boolean b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
     }
     public readonly partial struct Character: Value<Character>
@@ -2100,11 +2129,12 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Value");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         // Implemented concept functions and type functions
+        public Integer Compare(Character y) => Intrinsics.Compare(this, y);
+        public static Boolean operator ==(Character x, Character y) => x.Equals(y);
+        public Boolean Equals(Character y) => Intrinsics.Equals(this, y);
+        public static Boolean operator !=(Character a, Character b) => a.Equals(b).Not;
+        public Boolean NotEquals(Character b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Character a, Character b) => throw new System.NotImplementedException();
-        public Boolean Equals(Character b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Character a, Character b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Character b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Type
     {
@@ -2124,7 +2154,7 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Value");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         // Implemented concept functions and type functions
-        public Any New(Array<Any> args) => throw new System.NotImplementedException();
+        public Dynamic New(Array<Any> args) => Intrinsics.New(this, args);
         // Unimplemented concept functions
     }
     public readonly partial struct Error
@@ -2432,7 +2462,7 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>();
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
         // Implemented concept functions and type functions
-        public TR Invoke(T0 a0, T1 a1, T2 a2, T3 a3) => throw new System.NotImplementedException();
+        public TR Invoke(T0 a0, T1 a1, T2 a2, T3 a3) => Intrinsics.Invoke(this, a0, a1, a2, a3);
         // Unimplemented concept functions
     }
     public readonly partial struct Function5<T0, T1, T2, T3, T4, TR>
@@ -2566,16 +2596,16 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Unit Clamp(Unit a, Unit b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Unit ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Unit a, Unit b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Unit b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Unit a, Unit b) => a.Equals(b).Not;
+        public Boolean NotEquals(Unit b) => this.Equals(b).Not;
         public Unit Half => this.Divide(((Number)2));
         public Unit Quarter => this.Divide(((Number)4));
         public Unit Tenth => this.Divide(((Number)10));
         public Unit Twice => this.Multiply(((Number)2));
         public Unit Lerp(Unit b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Unit Barycentric(Unit v2, Unit v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Unit a, Unit b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Unit b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Unit a, Unit b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Unit b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Unit a, Unit b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Unit b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Unit a, Unit b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -2593,27 +2623,31 @@ namespace Plato.DoublePrecision
         public Unit Square => this.Pow2;
         public Unit Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Unit operator *(Unit a, Unit b) => throw new System.NotImplementedException();
+        public static Unit operator *(Unit a, Unit b) => a.Multiply(b);
         public Unit Multiply(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator /(Unit a, Unit b) => throw new System.NotImplementedException();
+        public static Unit operator /(Unit a, Unit b) => a.Divide(b);
         public Unit Divide(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator %(Unit a, Unit b) => throw new System.NotImplementedException();
+        public static Unit operator %(Unit a, Unit b) => a.Modulo(b);
         public Unit Modulo(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator +(Unit a, Unit b) => throw new System.NotImplementedException();
+        public static Unit operator +(Unit a, Unit b) => a.Add(b);
         public Unit Add(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator -(Unit a, Unit b) => throw new System.NotImplementedException();
+        public static Unit operator -(Unit a, Unit b) => a.Subtract(b);
         public Unit Subtract(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator -(Unit self) => throw new System.NotImplementedException();
+        public static Unit operator -(Unit self) => self.Negative;
         public Unit Negative => throw new System.NotImplementedException();
         public Integer Compare(Unit y) => throw new System.NotImplementedException();
-        public static Unit operator *(Unit self, Number other) => throw new System.NotImplementedException();
+        public static Unit operator *(Unit self, Number other) => self.Multiply(other);
         public Unit Multiply(Number other) => throw new System.NotImplementedException();
-        public static Unit operator *(Number other, Unit self) => throw new System.NotImplementedException();
+        public static Unit operator *(Number other, Unit self) => other.Multiply(self);
         public static Unit Multiply(Number other, Unit self) => throw new System.NotImplementedException();
-        public static Unit operator /(Unit self, Number other) => throw new System.NotImplementedException();
+        public static Unit operator /(Unit self, Number other) => self.Divide(other);
         public Unit Divide(Number other) => throw new System.NotImplementedException();
-        public static Unit operator %(Unit self, Number other) => throw new System.NotImplementedException();
+        public static Unit operator %(Unit self, Number other) => self.Modulo(other);
         public Unit Modulo(Number other) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Unit Multiply(this Number other, Unit self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Probability: Measure<Probability>
     {
@@ -2653,16 +2687,16 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Probability Clamp(Probability a, Probability b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Probability ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Probability a, Probability b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Probability b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Probability a, Probability b) => a.Equals(b).Not;
+        public Boolean NotEquals(Probability b) => this.Equals(b).Not;
         public Probability Half => this.Divide(((Number)2));
         public Probability Quarter => this.Divide(((Number)4));
         public Probability Tenth => this.Divide(((Number)10));
         public Probability Twice => this.Multiply(((Number)2));
         public Probability Lerp(Probability b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Probability Barycentric(Probability v2, Probability v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Probability a, Probability b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Probability b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Probability a, Probability b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Probability b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Probability a, Probability b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Probability b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Probability a, Probability b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -2674,21 +2708,25 @@ namespace Plato.DoublePrecision
         public Probability Lesser(Probability b) => this.LessThanOrEquals(b) ? this : b;
         public Probability Greater(Probability b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Probability operator +(Probability a, Probability b) => throw new System.NotImplementedException();
+        public static Probability operator +(Probability a, Probability b) => a.Add(b);
         public Probability Add(Probability b) => throw new System.NotImplementedException();
-        public static Probability operator -(Probability a, Probability b) => throw new System.NotImplementedException();
+        public static Probability operator -(Probability a, Probability b) => a.Subtract(b);
         public Probability Subtract(Probability b) => throw new System.NotImplementedException();
-        public static Probability operator -(Probability self) => throw new System.NotImplementedException();
+        public static Probability operator -(Probability self) => self.Negative;
         public Probability Negative => throw new System.NotImplementedException();
         public Integer Compare(Probability y) => throw new System.NotImplementedException();
-        public static Probability operator *(Probability self, Number other) => throw new System.NotImplementedException();
+        public static Probability operator *(Probability self, Number other) => self.Multiply(other);
         public Probability Multiply(Number other) => throw new System.NotImplementedException();
-        public static Probability operator *(Number other, Probability self) => throw new System.NotImplementedException();
+        public static Probability operator *(Number other, Probability self) => other.Multiply(self);
         public static Probability Multiply(Number other, Probability self) => throw new System.NotImplementedException();
-        public static Probability operator /(Probability self, Number other) => throw new System.NotImplementedException();
+        public static Probability operator /(Probability self, Number other) => self.Divide(other);
         public Probability Divide(Number other) => throw new System.NotImplementedException();
-        public static Probability operator %(Probability self, Number other) => throw new System.NotImplementedException();
+        public static Probability operator %(Probability self, Number other) => self.Modulo(other);
         public Probability Modulo(Number other) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Probability Multiply(this Number other, Probability self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Complex: Vector<Complex>
     {
@@ -2747,6 +2785,10 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Complex Clamp(Complex a, Complex b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Complex ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Complex a, Complex b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Complex b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Complex a, Complex b) => a.Equals(b).Not;
+        public Boolean NotEquals(Complex b) => this.Equals(b).Not;
         public Complex Half => this.Divide(((Number)2));
         public Complex Quarter => this.Divide(((Number)4));
         public Complex Tenth => this.Divide(((Number)10));
@@ -2760,30 +2802,30 @@ namespace Plato.DoublePrecision
         public Complex Square => this.Pow2;
         public Complex Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Complex operator *(Complex a, Complex b) => throw new System.NotImplementedException();
+        public static Complex operator *(Complex a, Complex b) => a.Multiply(b);
         public Complex Multiply(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator /(Complex a, Complex b) => throw new System.NotImplementedException();
+        public static Complex operator /(Complex a, Complex b) => a.Divide(b);
         public Complex Divide(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator %(Complex a, Complex b) => throw new System.NotImplementedException();
+        public static Complex operator %(Complex a, Complex b) => a.Modulo(b);
         public Complex Modulo(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator +(Complex a, Complex b) => throw new System.NotImplementedException();
+        public static Complex operator +(Complex a, Complex b) => a.Add(b);
         public Complex Add(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator -(Complex a, Complex b) => throw new System.NotImplementedException();
+        public static Complex operator -(Complex a, Complex b) => a.Subtract(b);
         public Complex Subtract(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator -(Complex self) => throw new System.NotImplementedException();
+        public static Complex operator -(Complex self) => self.Negative;
         public Complex Negative => throw new System.NotImplementedException();
-        public static Complex operator *(Complex self, Number other) => throw new System.NotImplementedException();
+        public static Complex operator *(Complex self, Number other) => self.Multiply(other);
         public Complex Multiply(Number other) => throw new System.NotImplementedException();
-        public static Complex operator *(Number other, Complex self) => throw new System.NotImplementedException();
+        public static Complex operator *(Number other, Complex self) => other.Multiply(self);
         public static Complex Multiply(Number other, Complex self) => throw new System.NotImplementedException();
-        public static Complex operator /(Complex self, Number other) => throw new System.NotImplementedException();
+        public static Complex operator /(Complex self, Number other) => self.Divide(other);
         public Complex Divide(Number other) => throw new System.NotImplementedException();
-        public static Complex operator %(Complex self, Number other) => throw new System.NotImplementedException();
+        public static Complex operator %(Complex self, Number other) => self.Modulo(other);
         public Complex Modulo(Number other) => throw new System.NotImplementedException();
-        public static Boolean operator ==(Complex a, Complex b) => throw new System.NotImplementedException();
-        public Boolean Equals(Complex b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Complex a, Complex b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Complex b) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Complex Multiply(this Number other, Complex self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Integer2: Value<Integer2>, Array<Integer>
     {
@@ -2806,14 +2848,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Integer2 a, Integer2 b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Integer2 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Integer2 a, Integer2 b) => a.Equals(b).Not;
+        public Boolean NotEquals(Integer2 b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Integer2 a, Integer2 b) => throw new System.NotImplementedException();
-        public Boolean Equals(Integer2 b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Integer2 a, Integer2 b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Integer2 b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Integer this[Integer n] => throw new System.NotImplementedException();
-        public Integer At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
+        public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Integer3: Value<Integer3>, Array<Integer>
     {
@@ -2838,14 +2880,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Integer3 a, Integer3 b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Integer3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Integer3 a, Integer3 b) => a.Equals(b).Not;
+        public Boolean NotEquals(Integer3 b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Integer3 a, Integer3 b) => throw new System.NotImplementedException();
-        public Boolean Equals(Integer3 b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Integer3 a, Integer3 b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Integer3 b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Integer this[Integer n] => throw new System.NotImplementedException();
-        public Integer At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 3;
+        public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Integer4: Value<Integer4>, Array<Integer>
     {
@@ -2872,14 +2914,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Integer4 a, Integer4 b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Integer4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Integer4 a, Integer4 b) => a.Equals(b).Not;
+        public Boolean NotEquals(Integer4 b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Integer4 a, Integer4 b) => throw new System.NotImplementedException();
-        public Boolean Equals(Integer4 b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Integer4 a, Integer4 b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Integer4 b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Integer this[Integer n] => throw new System.NotImplementedException();
-        public Integer At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 4;
+        public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Color: Coordinate<Color>
     {
@@ -2906,11 +2948,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"R", (String)"G", (String)"B", (String)"A");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(R), new Dynamic(G), new Dynamic(B), new Dynamic(A));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Color a, Color b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Color b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Color a, Color b) => a.Equals(b).Not;
+        public Boolean NotEquals(Color b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Color a, Color b) => throw new System.NotImplementedException();
-        public Boolean Equals(Color b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Color a, Color b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Color b) => throw new System.NotImplementedException();
     }
     public readonly partial struct ColorLUV: Coordinate<ColorLUV>
     {
@@ -2935,11 +2977,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Lightness", (String)"U", (String)"V");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lightness), new Dynamic(U), new Dynamic(V));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(ColorLUV a, ColorLUV b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(ColorLUV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(ColorLUV a, ColorLUV b) => a.Equals(b).Not;
+        public Boolean NotEquals(ColorLUV b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(ColorLUV a, ColorLUV b) => throw new System.NotImplementedException();
-        public Boolean Equals(ColorLUV b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(ColorLUV a, ColorLUV b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(ColorLUV b) => throw new System.NotImplementedException();
     }
     public readonly partial struct ColorLAB: Coordinate<ColorLAB>
     {
@@ -2964,11 +3006,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Lightness", (String)"A", (String)"B");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lightness), new Dynamic(A), new Dynamic(B));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(ColorLAB a, ColorLAB b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(ColorLAB b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(ColorLAB a, ColorLAB b) => a.Equals(b).Not;
+        public Boolean NotEquals(ColorLAB b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(ColorLAB a, ColorLAB b) => throw new System.NotImplementedException();
-        public Boolean Equals(ColorLAB b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(ColorLAB a, ColorLAB b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(ColorLAB b) => throw new System.NotImplementedException();
     }
     public readonly partial struct ColorLCh: Coordinate<ColorLCh>
     {
@@ -2991,11 +3033,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Lightness", (String)"ChromaHue");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lightness), new Dynamic(ChromaHue));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(ColorLCh a, ColorLCh b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(ColorLCh b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(ColorLCh a, ColorLCh b) => a.Equals(b).Not;
+        public Boolean NotEquals(ColorLCh b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(ColorLCh a, ColorLCh b) => throw new System.NotImplementedException();
-        public Boolean Equals(ColorLCh b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(ColorLCh a, ColorLCh b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(ColorLCh b) => throw new System.NotImplementedException();
     }
     public readonly partial struct ColorHSV: Coordinate<ColorHSV>
     {
@@ -3020,11 +3062,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Hue", (String)"S", (String)"V");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Hue), new Dynamic(S), new Dynamic(V));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(ColorHSV a, ColorHSV b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(ColorHSV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(ColorHSV a, ColorHSV b) => a.Equals(b).Not;
+        public Boolean NotEquals(ColorHSV b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(ColorHSV a, ColorHSV b) => throw new System.NotImplementedException();
-        public Boolean Equals(ColorHSV b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(ColorHSV a, ColorHSV b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(ColorHSV b) => throw new System.NotImplementedException();
     }
     public readonly partial struct ColorHSL: Coordinate<ColorHSL>
     {
@@ -3049,11 +3091,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Hue", (String)"Saturation", (String)"Luminance");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Hue), new Dynamic(Saturation), new Dynamic(Luminance));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(ColorHSL a, ColorHSL b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(ColorHSL b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(ColorHSL a, ColorHSL b) => a.Equals(b).Not;
+        public Boolean NotEquals(ColorHSL b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(ColorHSL a, ColorHSL b) => throw new System.NotImplementedException();
-        public Boolean Equals(ColorHSL b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(ColorHSL a, ColorHSL b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(ColorHSL b) => throw new System.NotImplementedException();
     }
     public readonly partial struct ColorYCbCr: Coordinate<ColorYCbCr>
     {
@@ -3078,11 +3120,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Y", (String)"Cb", (String)"Cr");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Y), new Dynamic(Cb), new Dynamic(Cr));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(ColorYCbCr a, ColorYCbCr b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(ColorYCbCr b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(ColorYCbCr a, ColorYCbCr b) => a.Equals(b).Not;
+        public Boolean NotEquals(ColorYCbCr b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(ColorYCbCr a, ColorYCbCr b) => throw new System.NotImplementedException();
-        public Boolean Equals(ColorYCbCr b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(ColorYCbCr a, ColorYCbCr b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(ColorYCbCr b) => throw new System.NotImplementedException();
     }
     public readonly partial struct SphericalCoordinate: Coordinate<SphericalCoordinate>
     {
@@ -3107,11 +3149,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius", (String)"Azimuth", (String)"Polar");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Azimuth), new Dynamic(Polar));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(SphericalCoordinate a, SphericalCoordinate b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(SphericalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(SphericalCoordinate a, SphericalCoordinate b) => a.Equals(b).Not;
+        public Boolean NotEquals(SphericalCoordinate b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(SphericalCoordinate a, SphericalCoordinate b) => throw new System.NotImplementedException();
-        public Boolean Equals(SphericalCoordinate b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(SphericalCoordinate a, SphericalCoordinate b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(SphericalCoordinate b) => throw new System.NotImplementedException();
     }
     public readonly partial struct PolarCoordinate: Coordinate<PolarCoordinate>
     {
@@ -3134,11 +3176,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius", (String)"Angle");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Angle));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(PolarCoordinate a, PolarCoordinate b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(PolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(PolarCoordinate a, PolarCoordinate b) => a.Equals(b).Not;
+        public Boolean NotEquals(PolarCoordinate b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(PolarCoordinate a, PolarCoordinate b) => throw new System.NotImplementedException();
-        public Boolean Equals(PolarCoordinate b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(PolarCoordinate a, PolarCoordinate b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(PolarCoordinate b) => throw new System.NotImplementedException();
     }
     public readonly partial struct LogPolarCoordinate: Coordinate<LogPolarCoordinate>
     {
@@ -3161,11 +3203,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Rho", (String)"Azimuth");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Rho), new Dynamic(Azimuth));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(LogPolarCoordinate a, LogPolarCoordinate b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(LogPolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(LogPolarCoordinate a, LogPolarCoordinate b) => a.Equals(b).Not;
+        public Boolean NotEquals(LogPolarCoordinate b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(LogPolarCoordinate a, LogPolarCoordinate b) => throw new System.NotImplementedException();
-        public Boolean Equals(LogPolarCoordinate b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(LogPolarCoordinate a, LogPolarCoordinate b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(LogPolarCoordinate b) => throw new System.NotImplementedException();
     }
     public readonly partial struct CylindricalCoordinate: Coordinate<CylindricalCoordinate>
     {
@@ -3190,11 +3232,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"RadialDistance", (String)"Azimuth", (String)"Height");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(RadialDistance), new Dynamic(Azimuth), new Dynamic(Height));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(CylindricalCoordinate a, CylindricalCoordinate b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(CylindricalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(CylindricalCoordinate a, CylindricalCoordinate b) => a.Equals(b).Not;
+        public Boolean NotEquals(CylindricalCoordinate b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(CylindricalCoordinate a, CylindricalCoordinate b) => throw new System.NotImplementedException();
-        public Boolean Equals(CylindricalCoordinate b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(CylindricalCoordinate a, CylindricalCoordinate b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(CylindricalCoordinate b) => throw new System.NotImplementedException();
     }
     public readonly partial struct HorizontalCoordinate: Coordinate<HorizontalCoordinate>
     {
@@ -3219,11 +3261,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius", (String)"Azimuth", (String)"Height");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Azimuth), new Dynamic(Height));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(HorizontalCoordinate a, HorizontalCoordinate b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(HorizontalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(HorizontalCoordinate a, HorizontalCoordinate b) => a.Equals(b).Not;
+        public Boolean NotEquals(HorizontalCoordinate b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(HorizontalCoordinate a, HorizontalCoordinate b) => throw new System.NotImplementedException();
-        public Boolean Equals(HorizontalCoordinate b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(HorizontalCoordinate a, HorizontalCoordinate b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(HorizontalCoordinate b) => throw new System.NotImplementedException();
     }
     public readonly partial struct GeoCoordinate: Coordinate<GeoCoordinate>
     {
@@ -3246,11 +3288,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Latitude", (String)"Longitude");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Latitude), new Dynamic(Longitude));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(GeoCoordinate a, GeoCoordinate b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(GeoCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(GeoCoordinate a, GeoCoordinate b) => a.Equals(b).Not;
+        public Boolean NotEquals(GeoCoordinate b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(GeoCoordinate a, GeoCoordinate b) => throw new System.NotImplementedException();
-        public Boolean Equals(GeoCoordinate b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(GeoCoordinate a, GeoCoordinate b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(GeoCoordinate b) => throw new System.NotImplementedException();
     }
     public readonly partial struct GeoCoordinateWithAltitude: Coordinate<GeoCoordinateWithAltitude>
     {
@@ -3273,11 +3315,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Coordinate", (String)"Altitude");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Coordinate), new Dynamic(Altitude));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(GeoCoordinateWithAltitude b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => a.Equals(b).Not;
+        public Boolean NotEquals(GeoCoordinateWithAltitude b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => throw new System.NotImplementedException();
-        public Boolean Equals(GeoCoordinateWithAltitude b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(GeoCoordinateWithAltitude b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Size2D: Value<Size2D>, Array<Number>
     {
@@ -3302,16 +3344,16 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public static implicit operator Vector2D(Size2D a) => a.Width.Tuple2(a.Height);
         public Vector2D Vector2D => this.Width.Tuple2(this.Height);
+        public static Boolean operator ==(Size2D a, Size2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Size2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Size2D a, Size2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Size2D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Size2D a, Size2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Size2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Size2D a, Size2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Size2D b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Number this[Integer n] => throw new System.NotImplementedException();
-        public Number At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Number this[Integer n] => n == 0 ? Width : n == 1 ? Height : throw new System.IndexOutOfRangeException();
+        public Number At(Integer n) => n == 0 ? Width : n == 1 ? Height : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Size3D: Value<Size3D>, Array<Integer>
+    public readonly partial struct Size3D: Value<Size3D>, Array<Number>
     {
         public readonly Number Width;
         public readonly Number Height;
@@ -3336,14 +3378,14 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public static implicit operator Vector3D(Size3D a) => a.Width.Tuple3(a.Height, a.Depth);
         public Vector3D Vector3D => this.Width.Tuple3(this.Height, this.Depth);
+        public static Boolean operator ==(Size3D a, Size3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Size3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Size3D a, Size3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Size3D b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Size3D a, Size3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Size3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Size3D a, Size3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Size3D b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Integer this[Integer n] => throw new System.NotImplementedException();
-        public Integer At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 3;
+        public Number this[Integer n] => n == 0 ? Width : n == 1 ? Height : n == 2 ? Depth : throw new System.IndexOutOfRangeException();
+        public Number At(Integer n) => n == 0 ? Width : n == 1 ? Height : n == 2 ? Depth : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Rational: Value<Rational>
     {
@@ -3366,11 +3408,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Numerator", (String)"Denominator");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Numerator), new Dynamic(Denominator));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Rational a, Rational b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Rational b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Rational a, Rational b) => a.Equals(b).Not;
+        public Boolean NotEquals(Rational b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Rational a, Rational b) => throw new System.NotImplementedException();
-        public Boolean Equals(Rational b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Rational a, Rational b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Rational b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Fraction: Value<Fraction>
     {
@@ -3393,11 +3435,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Numerator", (String)"Denominator");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Numerator), new Dynamic(Denominator));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Fraction a, Fraction b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Fraction b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Fraction a, Fraction b) => a.Equals(b).Not;
+        public Boolean NotEquals(Fraction b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Fraction a, Fraction b) => throw new System.NotImplementedException();
-        public Boolean Equals(Fraction b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Fraction a, Fraction b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Fraction b) => throw new System.NotImplementedException();
     }
     public readonly partial struct Angle: Measure<Angle>
     {
@@ -3434,9 +3476,9 @@ namespace Plato.DoublePrecision
         }
         public Vector3D TrefoilKnot => this.Sin.Add(this.Multiply(((Number)2)).Sin.Multiply(((Number)2))).Tuple3(this.Cos.Add(this.Multiply(((Number)2)).Cos.Multiply(((Number)2))), this.Multiply(((Number)3)).Sin.Negative);
         public Vector3D FigureEightKnot => ((Number)2).Add(this.Multiply(((Number)2)).Cos).Multiply(this.Multiply(((Number)3)).Cos).Tuple3(((Number)2).Add(this.Multiply(((Number)2)).Cos).Multiply(this.Multiply(((Number)3)).Sin), this.Multiply(((Number)4)).Sin);
-        public Number Cos => throw new System.NotImplementedException();
-        public Number Sin => throw new System.NotImplementedException();
-        public Number Tan => throw new System.NotImplementedException();
+        public Number Cos => Intrinsics.Cos(this);
+        public Number Sin => Intrinsics.Sin(this);
+        public Number Tan => Intrinsics.Tan(this);
         public Number Turns => this.Radians.Divide(Constants.TwoPi);
         public Number Degrees => this.Turns.Multiply(((Number)360));
         public Number Gradians => this.Turns.Multiply(((Number)400));
@@ -3456,16 +3498,16 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Angle Clamp(Angle a, Angle b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Angle ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Angle a, Angle b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Angle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Angle a, Angle b) => a.Equals(b).Not;
+        public Boolean NotEquals(Angle b) => this.Equals(b).Not;
         public Angle Half => this.Divide(((Number)2));
         public Angle Quarter => this.Divide(((Number)4));
         public Angle Tenth => this.Divide(((Number)10));
         public Angle Twice => this.Multiply(((Number)2));
         public Angle Lerp(Angle b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Angle Barycentric(Angle v2, Angle v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Angle a, Angle b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Angle b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Angle a, Angle b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Angle b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Angle a, Angle b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Angle b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Angle a, Angle b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -3477,21 +3519,25 @@ namespace Plato.DoublePrecision
         public Angle Lesser(Angle b) => this.LessThanOrEquals(b) ? this : b;
         public Angle Greater(Angle b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Angle operator +(Angle a, Angle b) => throw new System.NotImplementedException();
+        public static Angle operator +(Angle a, Angle b) => a.Add(b);
         public Angle Add(Angle b) => throw new System.NotImplementedException();
-        public static Angle operator -(Angle a, Angle b) => throw new System.NotImplementedException();
+        public static Angle operator -(Angle a, Angle b) => a.Subtract(b);
         public Angle Subtract(Angle b) => throw new System.NotImplementedException();
-        public static Angle operator -(Angle self) => throw new System.NotImplementedException();
+        public static Angle operator -(Angle self) => self.Negative;
         public Angle Negative => throw new System.NotImplementedException();
         public Integer Compare(Angle y) => throw new System.NotImplementedException();
-        public static Angle operator *(Angle self, Number other) => throw new System.NotImplementedException();
+        public static Angle operator *(Angle self, Number other) => self.Multiply(other);
         public Angle Multiply(Number other) => throw new System.NotImplementedException();
-        public static Angle operator *(Number other, Angle self) => throw new System.NotImplementedException();
+        public static Angle operator *(Number other, Angle self) => other.Multiply(self);
         public static Angle Multiply(Number other, Angle self) => throw new System.NotImplementedException();
-        public static Angle operator /(Angle self, Number other) => throw new System.NotImplementedException();
+        public static Angle operator /(Angle self, Number other) => self.Divide(other);
         public Angle Divide(Number other) => throw new System.NotImplementedException();
-        public static Angle operator %(Angle self, Number other) => throw new System.NotImplementedException();
+        public static Angle operator %(Angle self, Number other) => self.Modulo(other);
         public Angle Modulo(Number other) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Angle Multiply(this Number other, Angle self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Length: Measure<Length>
     {
@@ -3531,16 +3577,16 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Length Clamp(Length a, Length b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Length ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Length a, Length b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Length b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Length a, Length b) => a.Equals(b).Not;
+        public Boolean NotEquals(Length b) => this.Equals(b).Not;
         public Length Half => this.Divide(((Number)2));
         public Length Quarter => this.Divide(((Number)4));
         public Length Tenth => this.Divide(((Number)10));
         public Length Twice => this.Multiply(((Number)2));
         public Length Lerp(Length b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Length Barycentric(Length v2, Length v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Length a, Length b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Length b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Length a, Length b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Length b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Length a, Length b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Length b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Length a, Length b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -3552,21 +3598,25 @@ namespace Plato.DoublePrecision
         public Length Lesser(Length b) => this.LessThanOrEquals(b) ? this : b;
         public Length Greater(Length b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Length operator +(Length a, Length b) => throw new System.NotImplementedException();
+        public static Length operator +(Length a, Length b) => a.Add(b);
         public Length Add(Length b) => throw new System.NotImplementedException();
-        public static Length operator -(Length a, Length b) => throw new System.NotImplementedException();
+        public static Length operator -(Length a, Length b) => a.Subtract(b);
         public Length Subtract(Length b) => throw new System.NotImplementedException();
-        public static Length operator -(Length self) => throw new System.NotImplementedException();
+        public static Length operator -(Length self) => self.Negative;
         public Length Negative => throw new System.NotImplementedException();
         public Integer Compare(Length y) => throw new System.NotImplementedException();
-        public static Length operator *(Length self, Number other) => throw new System.NotImplementedException();
+        public static Length operator *(Length self, Number other) => self.Multiply(other);
         public Length Multiply(Number other) => throw new System.NotImplementedException();
-        public static Length operator *(Number other, Length self) => throw new System.NotImplementedException();
+        public static Length operator *(Number other, Length self) => other.Multiply(self);
         public static Length Multiply(Number other, Length self) => throw new System.NotImplementedException();
-        public static Length operator /(Length self, Number other) => throw new System.NotImplementedException();
+        public static Length operator /(Length self, Number other) => self.Divide(other);
         public Length Divide(Number other) => throw new System.NotImplementedException();
-        public static Length operator %(Length self, Number other) => throw new System.NotImplementedException();
+        public static Length operator %(Length self, Number other) => self.Modulo(other);
         public Length Modulo(Number other) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Length Multiply(this Number other, Length self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Mass: Measure<Mass>
     {
@@ -3606,16 +3656,16 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Mass Clamp(Mass a, Mass b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Mass ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Mass a, Mass b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Mass b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Mass a, Mass b) => a.Equals(b).Not;
+        public Boolean NotEquals(Mass b) => this.Equals(b).Not;
         public Mass Half => this.Divide(((Number)2));
         public Mass Quarter => this.Divide(((Number)4));
         public Mass Tenth => this.Divide(((Number)10));
         public Mass Twice => this.Multiply(((Number)2));
         public Mass Lerp(Mass b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Mass Barycentric(Mass v2, Mass v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Mass a, Mass b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Mass b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Mass a, Mass b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Mass b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Mass a, Mass b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Mass b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Mass a, Mass b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -3627,21 +3677,25 @@ namespace Plato.DoublePrecision
         public Mass Lesser(Mass b) => this.LessThanOrEquals(b) ? this : b;
         public Mass Greater(Mass b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Mass operator +(Mass a, Mass b) => throw new System.NotImplementedException();
+        public static Mass operator +(Mass a, Mass b) => a.Add(b);
         public Mass Add(Mass b) => throw new System.NotImplementedException();
-        public static Mass operator -(Mass a, Mass b) => throw new System.NotImplementedException();
+        public static Mass operator -(Mass a, Mass b) => a.Subtract(b);
         public Mass Subtract(Mass b) => throw new System.NotImplementedException();
-        public static Mass operator -(Mass self) => throw new System.NotImplementedException();
+        public static Mass operator -(Mass self) => self.Negative;
         public Mass Negative => throw new System.NotImplementedException();
         public Integer Compare(Mass y) => throw new System.NotImplementedException();
-        public static Mass operator *(Mass self, Number other) => throw new System.NotImplementedException();
+        public static Mass operator *(Mass self, Number other) => self.Multiply(other);
         public Mass Multiply(Number other) => throw new System.NotImplementedException();
-        public static Mass operator *(Number other, Mass self) => throw new System.NotImplementedException();
+        public static Mass operator *(Number other, Mass self) => other.Multiply(self);
         public static Mass Multiply(Number other, Mass self) => throw new System.NotImplementedException();
-        public static Mass operator /(Mass self, Number other) => throw new System.NotImplementedException();
+        public static Mass operator /(Mass self, Number other) => self.Divide(other);
         public Mass Divide(Number other) => throw new System.NotImplementedException();
-        public static Mass operator %(Mass self, Number other) => throw new System.NotImplementedException();
+        public static Mass operator %(Mass self, Number other) => self.Modulo(other);
         public Mass Modulo(Number other) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Mass Multiply(this Number other, Mass self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Temperature: Measure<Temperature>
     {
@@ -3681,16 +3735,16 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Temperature Clamp(Temperature a, Temperature b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Temperature ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Temperature a, Temperature b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Temperature b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Temperature a, Temperature b) => a.Equals(b).Not;
+        public Boolean NotEquals(Temperature b) => this.Equals(b).Not;
         public Temperature Half => this.Divide(((Number)2));
         public Temperature Quarter => this.Divide(((Number)4));
         public Temperature Tenth => this.Divide(((Number)10));
         public Temperature Twice => this.Multiply(((Number)2));
         public Temperature Lerp(Temperature b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Temperature Barycentric(Temperature v2, Temperature v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Temperature a, Temperature b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Temperature b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Temperature a, Temperature b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Temperature b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Temperature a, Temperature b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Temperature b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Temperature a, Temperature b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -3702,21 +3756,25 @@ namespace Plato.DoublePrecision
         public Temperature Lesser(Temperature b) => this.LessThanOrEquals(b) ? this : b;
         public Temperature Greater(Temperature b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Temperature operator +(Temperature a, Temperature b) => throw new System.NotImplementedException();
+        public static Temperature operator +(Temperature a, Temperature b) => a.Add(b);
         public Temperature Add(Temperature b) => throw new System.NotImplementedException();
-        public static Temperature operator -(Temperature a, Temperature b) => throw new System.NotImplementedException();
+        public static Temperature operator -(Temperature a, Temperature b) => a.Subtract(b);
         public Temperature Subtract(Temperature b) => throw new System.NotImplementedException();
-        public static Temperature operator -(Temperature self) => throw new System.NotImplementedException();
+        public static Temperature operator -(Temperature self) => self.Negative;
         public Temperature Negative => throw new System.NotImplementedException();
         public Integer Compare(Temperature y) => throw new System.NotImplementedException();
-        public static Temperature operator *(Temperature self, Number other) => throw new System.NotImplementedException();
+        public static Temperature operator *(Temperature self, Number other) => self.Multiply(other);
         public Temperature Multiply(Number other) => throw new System.NotImplementedException();
-        public static Temperature operator *(Number other, Temperature self) => throw new System.NotImplementedException();
+        public static Temperature operator *(Number other, Temperature self) => other.Multiply(self);
         public static Temperature Multiply(Number other, Temperature self) => throw new System.NotImplementedException();
-        public static Temperature operator /(Temperature self, Number other) => throw new System.NotImplementedException();
+        public static Temperature operator /(Temperature self, Number other) => self.Divide(other);
         public Temperature Divide(Number other) => throw new System.NotImplementedException();
-        public static Temperature operator %(Temperature self, Number other) => throw new System.NotImplementedException();
+        public static Temperature operator %(Temperature self, Number other) => self.Modulo(other);
         public Temperature Modulo(Number other) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Temperature Multiply(this Number other, Temperature self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Time: Measure<Time>
     {
@@ -3756,16 +3814,16 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Time Clamp(Time a, Time b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Time ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Time a, Time b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Time b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Time a, Time b) => a.Equals(b).Not;
+        public Boolean NotEquals(Time b) => this.Equals(b).Not;
         public Time Half => this.Divide(((Number)2));
         public Time Quarter => this.Divide(((Number)4));
         public Time Tenth => this.Divide(((Number)10));
         public Time Twice => this.Multiply(((Number)2));
         public Time Lerp(Time b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Time Barycentric(Time v2, Time v3, Vector2D uv) => this.Add(v2.Subtract(this).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y)));
-        public static Boolean operator ==(Time a, Time b) => a.Compare(b).Equals(((Integer)0));
-        public Boolean Equals(Time b) => this.Compare(b).Equals(((Integer)0));
-        public static Boolean operator !=(Time a, Time b) => a.Compare(b).NotEquals(((Integer)0));
-        public Boolean NotEquals(Time b) => this.Compare(b).NotEquals(((Integer)0));
         public static Boolean operator <(Time a, Time b) => a.Compare(b).LessThan(((Integer)0));
         public Boolean LessThan(Time b) => this.Compare(b).LessThan(((Integer)0));
         public static Boolean operator <=(Time a, Time b) => a.Compare(b).LessThanOrEquals(((Integer)0));
@@ -3777,21 +3835,25 @@ namespace Plato.DoublePrecision
         public Time Lesser(Time b) => this.LessThanOrEquals(b) ? this : b;
         public Time Greater(Time b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Time operator +(Time a, Time b) => throw new System.NotImplementedException();
+        public static Time operator +(Time a, Time b) => a.Add(b);
         public Time Add(Time b) => throw new System.NotImplementedException();
-        public static Time operator -(Time a, Time b) => throw new System.NotImplementedException();
+        public static Time operator -(Time a, Time b) => a.Subtract(b);
         public Time Subtract(Time b) => throw new System.NotImplementedException();
-        public static Time operator -(Time self) => throw new System.NotImplementedException();
+        public static Time operator -(Time self) => self.Negative;
         public Time Negative => throw new System.NotImplementedException();
         public Integer Compare(Time y) => throw new System.NotImplementedException();
-        public static Time operator *(Time self, Number other) => throw new System.NotImplementedException();
+        public static Time operator *(Time self, Number other) => self.Multiply(other);
         public Time Multiply(Number other) => throw new System.NotImplementedException();
-        public static Time operator *(Number other, Time self) => throw new System.NotImplementedException();
+        public static Time operator *(Number other, Time self) => other.Multiply(self);
         public static Time Multiply(Number other, Time self) => throw new System.NotImplementedException();
-        public static Time operator /(Time self, Number other) => throw new System.NotImplementedException();
+        public static Time operator /(Time self, Number other) => self.Divide(other);
         public Time Divide(Number other) => throw new System.NotImplementedException();
-        public static Time operator %(Time self, Number other) => throw new System.NotImplementedException();
+        public static Time operator %(Time self, Number other) => self.Modulo(other);
         public Time Modulo(Number other) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Time Multiply(this Number other, Time self) => throw new System.NotImplementedException();
     }
     public readonly partial struct DateTime: Coordinate<DateTime>
     {
@@ -3812,11 +3874,11 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Value");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(DateTime a, DateTime b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(DateTime b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(DateTime a, DateTime b) => a.Equals(b).Not;
+        public Boolean NotEquals(DateTime b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(DateTime a, DateTime b) => throw new System.NotImplementedException();
-        public Boolean Equals(DateTime b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(DateTime a, DateTime b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(DateTime b) => throw new System.NotImplementedException();
     }
     public readonly partial struct AnglePair: Interval<AnglePair, Angle>
     {
@@ -3858,14 +3920,14 @@ namespace Plato.DoublePrecision
         public AnglePair Recenter(Angle c) => c.Subtract(this.Size.Half).Tuple2(c.Add(this.Size.Half));
         public AnglePair Clamp(AnglePair y) => this.Clamp(y.Min).Tuple2(this.Clamp(y.Max));
         public Angle Clamp(Angle value) => value.Clamp(this.Min, this.Max);
+        public static Boolean operator ==(AnglePair a, AnglePair b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(AnglePair b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(AnglePair a, AnglePair b) => a.Equals(b).Not;
+        public Boolean NotEquals(AnglePair b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Angle this[Integer n] => throw new System.NotImplementedException();
-        public Angle At(Integer n) => throw new System.NotImplementedException();
-        public static Boolean operator ==(AnglePair a, AnglePair b) => throw new System.NotImplementedException();
-        public Boolean Equals(AnglePair b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(AnglePair a, AnglePair b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(AnglePair b) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Angle this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
+        public Angle At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct NumberInterval: Interval<NumberInterval, Number>
     {
@@ -3907,14 +3969,14 @@ namespace Plato.DoublePrecision
         public NumberInterval Recenter(Number c) => c.Subtract(this.Size.Half).Tuple2(c.Add(this.Size.Half));
         public NumberInterval Clamp(NumberInterval y) => this.Clamp(y.Min).Tuple2(this.Clamp(y.Max));
         public Number Clamp(Number value) => value.Clamp(this.Min, this.Max);
+        public static Boolean operator ==(NumberInterval a, NumberInterval b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(NumberInterval b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(NumberInterval a, NumberInterval b) => a.Equals(b).Not;
+        public Boolean NotEquals(NumberInterval b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public Integer Count => throw new System.NotImplementedException();
-        public Number this[Integer n] => throw new System.NotImplementedException();
-        public Number At(Integer n) => throw new System.NotImplementedException();
-        public static Boolean operator ==(NumberInterval a, NumberInterval b) => throw new System.NotImplementedException();
-        public Boolean Equals(NumberInterval b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(NumberInterval a, NumberInterval b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(NumberInterval b) => throw new System.NotImplementedException();
+        public Integer Count => 2;
+        public Number this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
+        public Number At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Vector2D: Vector<Vector2D>
     {
@@ -3976,6 +4038,10 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector2D Clamp(Vector2D a, Vector2D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector2D ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Vector2D a, Vector2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Vector2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Vector2D a, Vector2D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Vector2D b) => this.Equals(b).Not;
         public Vector2D Half => this.Divide(((Number)2));
         public Vector2D Quarter => this.Divide(((Number)4));
         public Vector2D Tenth => this.Divide(((Number)10));
@@ -3989,30 +4055,30 @@ namespace Plato.DoublePrecision
         public Vector2D Square => this.Pow2;
         public Vector2D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector2D operator *(Vector2D a, Vector2D b) => throw new System.NotImplementedException();
+        public static Vector2D operator *(Vector2D a, Vector2D b) => a.Multiply(b);
         public Vector2D Multiply(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator /(Vector2D a, Vector2D b) => throw new System.NotImplementedException();
+        public static Vector2D operator /(Vector2D a, Vector2D b) => a.Divide(b);
         public Vector2D Divide(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator %(Vector2D a, Vector2D b) => throw new System.NotImplementedException();
+        public static Vector2D operator %(Vector2D a, Vector2D b) => a.Modulo(b);
         public Vector2D Modulo(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator +(Vector2D a, Vector2D b) => throw new System.NotImplementedException();
+        public static Vector2D operator +(Vector2D a, Vector2D b) => a.Add(b);
         public Vector2D Add(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator -(Vector2D a, Vector2D b) => throw new System.NotImplementedException();
+        public static Vector2D operator -(Vector2D a, Vector2D b) => a.Subtract(b);
         public Vector2D Subtract(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator -(Vector2D self) => throw new System.NotImplementedException();
+        public static Vector2D operator -(Vector2D self) => self.Negative;
         public Vector2D Negative => throw new System.NotImplementedException();
-        public static Vector2D operator *(Vector2D self, Number other) => throw new System.NotImplementedException();
+        public static Vector2D operator *(Vector2D self, Number other) => self.Multiply(other);
         public Vector2D Multiply(Number other) => throw new System.NotImplementedException();
-        public static Vector2D operator *(Number other, Vector2D self) => throw new System.NotImplementedException();
+        public static Vector2D operator *(Number other, Vector2D self) => other.Multiply(self);
         public static Vector2D Multiply(Number other, Vector2D self) => throw new System.NotImplementedException();
-        public static Vector2D operator /(Vector2D self, Number other) => throw new System.NotImplementedException();
+        public static Vector2D operator /(Vector2D self, Number other) => self.Divide(other);
         public Vector2D Divide(Number other) => throw new System.NotImplementedException();
-        public static Vector2D operator %(Vector2D self, Number other) => throw new System.NotImplementedException();
+        public static Vector2D operator %(Vector2D self, Number other) => self.Modulo(other);
         public Vector2D Modulo(Number other) => throw new System.NotImplementedException();
-        public static Boolean operator ==(Vector2D a, Vector2D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Vector2D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Vector2D a, Vector2D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Vector2D b) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Vector2D Multiply(this Number other, Vector2D self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Vector3D: Vector<Vector3D>
     {
@@ -4078,6 +4144,10 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector3D Clamp(Vector3D a, Vector3D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector3D ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Vector3D a, Vector3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Vector3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Vector3D a, Vector3D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Vector3D b) => this.Equals(b).Not;
         public Vector3D Half => this.Divide(((Number)2));
         public Vector3D Quarter => this.Divide(((Number)4));
         public Vector3D Tenth => this.Divide(((Number)10));
@@ -4091,30 +4161,30 @@ namespace Plato.DoublePrecision
         public Vector3D Square => this.Pow2;
         public Vector3D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector3D operator *(Vector3D a, Vector3D b) => throw new System.NotImplementedException();
+        public static Vector3D operator *(Vector3D a, Vector3D b) => a.Multiply(b);
         public Vector3D Multiply(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator /(Vector3D a, Vector3D b) => throw new System.NotImplementedException();
+        public static Vector3D operator /(Vector3D a, Vector3D b) => a.Divide(b);
         public Vector3D Divide(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator %(Vector3D a, Vector3D b) => throw new System.NotImplementedException();
+        public static Vector3D operator %(Vector3D a, Vector3D b) => a.Modulo(b);
         public Vector3D Modulo(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator +(Vector3D a, Vector3D b) => throw new System.NotImplementedException();
+        public static Vector3D operator +(Vector3D a, Vector3D b) => a.Add(b);
         public Vector3D Add(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator -(Vector3D a, Vector3D b) => throw new System.NotImplementedException();
+        public static Vector3D operator -(Vector3D a, Vector3D b) => a.Subtract(b);
         public Vector3D Subtract(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator -(Vector3D self) => throw new System.NotImplementedException();
+        public static Vector3D operator -(Vector3D self) => self.Negative;
         public Vector3D Negative => throw new System.NotImplementedException();
-        public static Vector3D operator *(Vector3D self, Number other) => throw new System.NotImplementedException();
+        public static Vector3D operator *(Vector3D self, Number other) => self.Multiply(other);
         public Vector3D Multiply(Number other) => throw new System.NotImplementedException();
-        public static Vector3D operator *(Number other, Vector3D self) => throw new System.NotImplementedException();
+        public static Vector3D operator *(Number other, Vector3D self) => other.Multiply(self);
         public static Vector3D Multiply(Number other, Vector3D self) => throw new System.NotImplementedException();
-        public static Vector3D operator /(Vector3D self, Number other) => throw new System.NotImplementedException();
+        public static Vector3D operator /(Vector3D self, Number other) => self.Divide(other);
         public Vector3D Divide(Number other) => throw new System.NotImplementedException();
-        public static Vector3D operator %(Vector3D self, Number other) => throw new System.NotImplementedException();
+        public static Vector3D operator %(Vector3D self, Number other) => self.Modulo(other);
         public Vector3D Modulo(Number other) => throw new System.NotImplementedException();
-        public static Boolean operator ==(Vector3D a, Vector3D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Vector3D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Vector3D a, Vector3D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Vector3D b) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Vector3D Multiply(this Number other, Vector3D self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Vector4D: Vector<Vector4D>
     {
@@ -4177,6 +4247,10 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector4D Clamp(Vector4D a, Vector4D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector4D ClampOne => this.Clamp(this.Zero, this.One);
+        public static Boolean operator ==(Vector4D a, Vector4D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Vector4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Vector4D a, Vector4D b) => a.Equals(b).Not;
+        public Boolean NotEquals(Vector4D b) => this.Equals(b).Not;
         public Vector4D Half => this.Divide(((Number)2));
         public Vector4D Quarter => this.Divide(((Number)4));
         public Vector4D Tenth => this.Divide(((Number)10));
@@ -4190,30 +4264,30 @@ namespace Plato.DoublePrecision
         public Vector4D Square => this.Pow2;
         public Vector4D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector4D operator *(Vector4D a, Vector4D b) => throw new System.NotImplementedException();
+        public static Vector4D operator *(Vector4D a, Vector4D b) => a.Multiply(b);
         public Vector4D Multiply(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator /(Vector4D a, Vector4D b) => throw new System.NotImplementedException();
+        public static Vector4D operator /(Vector4D a, Vector4D b) => a.Divide(b);
         public Vector4D Divide(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator %(Vector4D a, Vector4D b) => throw new System.NotImplementedException();
+        public static Vector4D operator %(Vector4D a, Vector4D b) => a.Modulo(b);
         public Vector4D Modulo(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator +(Vector4D a, Vector4D b) => throw new System.NotImplementedException();
+        public static Vector4D operator +(Vector4D a, Vector4D b) => a.Add(b);
         public Vector4D Add(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator -(Vector4D a, Vector4D b) => throw new System.NotImplementedException();
+        public static Vector4D operator -(Vector4D a, Vector4D b) => a.Subtract(b);
         public Vector4D Subtract(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator -(Vector4D self) => throw new System.NotImplementedException();
+        public static Vector4D operator -(Vector4D self) => self.Negative;
         public Vector4D Negative => throw new System.NotImplementedException();
-        public static Vector4D operator *(Vector4D self, Number other) => throw new System.NotImplementedException();
+        public static Vector4D operator *(Vector4D self, Number other) => self.Multiply(other);
         public Vector4D Multiply(Number other) => throw new System.NotImplementedException();
-        public static Vector4D operator *(Number other, Vector4D self) => throw new System.NotImplementedException();
+        public static Vector4D operator *(Number other, Vector4D self) => other.Multiply(self);
         public static Vector4D Multiply(Number other, Vector4D self) => throw new System.NotImplementedException();
-        public static Vector4D operator /(Vector4D self, Number other) => throw new System.NotImplementedException();
+        public static Vector4D operator /(Vector4D self, Number other) => self.Divide(other);
         public Vector4D Divide(Number other) => throw new System.NotImplementedException();
-        public static Vector4D operator %(Vector4D self, Number other) => throw new System.NotImplementedException();
+        public static Vector4D operator %(Vector4D self, Number other) => self.Modulo(other);
         public Vector4D Modulo(Number other) => throw new System.NotImplementedException();
-        public static Boolean operator ==(Vector4D a, Vector4D b) => throw new System.NotImplementedException();
-        public Boolean Equals(Vector4D b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Vector4D a, Vector4D b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Vector4D b) => throw new System.NotImplementedException();
+    }
+    public static partial class Extensions
+    {
+        public static Vector4D Multiply(this Number other, Vector4D self) => throw new System.NotImplementedException();
     }
     public readonly partial struct Matrix3x3: Value<Matrix3x3>, Array<Vector3D>
     {
@@ -4238,14 +4312,14 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Column1", (String)"Column2", (String)"Column3");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Column1), new Dynamic(Column2), new Dynamic(Column3));
         // Implemented concept functions and type functions
+        public static Boolean operator ==(Matrix3x3 a, Matrix3x3 b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Matrix3x3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Matrix3x3 a, Matrix3x3 b) => a.Equals(b).Not;
+        public Boolean NotEquals(Matrix3x3 b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Matrix3x3 a, Matrix3x3 b) => throw new System.NotImplementedException();
-        public Boolean Equals(Matrix3x3 b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Matrix3x3 a, Matrix3x3 b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Matrix3x3 b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector3D this[Integer n] => throw new System.NotImplementedException();
-        public Vector3D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 3;
+        public Vector3D this[Integer n] => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : throw new System.IndexOutOfRangeException();
+        public Vector3D At(Integer n) => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : throw new System.IndexOutOfRangeException();
     }
     public readonly partial struct Matrix4x4: Value<Matrix4x4>, Array<Vector4D>
     {
@@ -4290,14 +4364,14 @@ namespace Plato.DoublePrecision
         public Number M44 => this.Column4.W;
         public static Vector3D operator *(Matrix4x4 m, Vector3D v) => v.X.Multiply(m.M11).Add(v.Y.Multiply(m.M21).Add(v.Z.Multiply(m.M31).Add(m.M41))).Tuple3(v.X.Multiply(m.M12).Add(v.Y.Multiply(m.M22).Add(v.Z.Multiply(m.M32).Add(m.M42))), v.X.Multiply(m.M13).Add(v.Y.Multiply(m.M23).Add(v.Z.Multiply(m.M33).Add(m.M43))));
         public Vector3D Multiply(Vector3D v) => v.X.Multiply(this.M11).Add(v.Y.Multiply(this.M21).Add(v.Z.Multiply(this.M31).Add(this.M41))).Tuple3(v.X.Multiply(this.M12).Add(v.Y.Multiply(this.M22).Add(v.Z.Multiply(this.M32).Add(this.M42))), v.X.Multiply(this.M13).Add(v.Y.Multiply(this.M23).Add(v.Z.Multiply(this.M33).Add(this.M43))));
+        public static Boolean operator ==(Matrix4x4 a, Matrix4x4 b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public Boolean Equals(Matrix4x4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator !=(Matrix4x4 a, Matrix4x4 b) => a.Equals(b).Not;
+        public Boolean NotEquals(Matrix4x4 b) => this.Equals(b).Not;
         // Unimplemented concept functions
-        public static Boolean operator ==(Matrix4x4 a, Matrix4x4 b) => throw new System.NotImplementedException();
-        public Boolean Equals(Matrix4x4 b) => throw new System.NotImplementedException();
-        public static Boolean operator !=(Matrix4x4 a, Matrix4x4 b) => throw new System.NotImplementedException();
-        public Boolean NotEquals(Matrix4x4 b) => throw new System.NotImplementedException();
-        public Integer Count => throw new System.NotImplementedException();
-        public Vector4D this[Integer n] => throw new System.NotImplementedException();
-        public Vector4D At(Integer n) => throw new System.NotImplementedException();
+        public Integer Count => 4;
+        public Vector4D this[Integer n] => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : n == 3 ? Column4 : throw new System.IndexOutOfRangeException();
+        public Vector4D At(Integer n) => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : n == 3 ? Column4 : throw new System.IndexOutOfRangeException();
     }
     public static class Constants
     {
