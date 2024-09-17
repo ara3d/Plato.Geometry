@@ -335,4 +335,60 @@ library Numerical
     Greater(a: Comparable, b: Comparable): Comparable 
         => a >= b ? a : b;
    
+    //==
+    // Number-like
+
+    ToNumber(x: NumberLike): Number
+        => x.GetComponent(0);
+
+    FromNumber(x: NumberLike, n: Number): NumberLike
+        => x.FromComponents([n]);
+
+    Compare(a: NumberLike, b: NumberLike): Integer
+        => a.ToNumber.Compare(b.ToNumber);
+
+    //==
+    // Numerical implementation of ScalarArithmetic 
+
+    Multiply(x: Numerical, s: Number): Numerical
+        => x.MapComponents((i) => i * s);
+
+    Multiply(s: Number, x: Numerical): Numerical
+        => x.MapComponents((i) => s * i);
+
+    Divide(x: Numerical, s: Number): Numerical
+        => x.MapComponents((i) => i / s);
+
+    Modulo(x: Numerical, s: Number): Numerical
+        => x.MapComponents((i) => i % s);       
+
+    //==
+    // Numerical implementation of AdditiveArithmetic
+
+    Add(x: Numerical, y: Numerical): Numerical
+        => x.ZipComponents(y, (a, b) => a + b);
+
+    Subtract(x: Numerical, y: Numerical): Numerical
+        => x.ZipComponents(y, (a, b) => a - b);
+
+    Negative(x: Numerical): Numerical
+        => x.MapComponents((a) => -a);
+
+    //==
+    // Vector implementation of Multiplicative arithmetic
+    // This is component wise, and doesn't make sense for measurements (which have components)
+        
+    Multiply(x: Vector, y: Vector): Vector
+        => x.ZipComponents(y, (a, b) => a * b);
+
+    Divide(x: Vector, y: Vector): Vector
+        => x.ZipComponents(y, (a, b) => a / b);
+
+    Modulo(x: Vector, y: Vector): Vector
+        => x.ZipComponents(y, (a, b) => a % b);
+
+    //==
+    // NOTE:
+    // There are many other operations that make sense on Numerical types. 
+    // For example, everything that works on a single value. MinValue/MaxValue/Negate/Reciprocal/Inverse/Clamp/SmoothStep/Step/Sign/IsZero/IsOne/IsPositive/IsNegative/IsEven/IsOdd/IsPowerOfTwo/IsPowerOfTen/IsPowerOfTwo/IsPowerOfTen/IsPrime/IsComposite/IsPerfect/IsDeficient/IsAbundant/IsSquare/IsCube/IsPowerOf/IsRootOf/IsFactorOf/IsMultipleOf/IsDivisorOf/IsDivisibleBy
 }

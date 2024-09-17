@@ -18,17 +18,26 @@ concept Value
 // The NumComponents function returns the dimensionality of the numerical type. 
 // Individual components are returned via the Component type. 
 concept Numerical 
-    inherits Value
+    inherits Value, ScalarArithmetic, AdditiveArithmetic
 {
     Components(x: Self): Array<Number>;
     FromComponents(x: Self, xs: Array<Number>): Self;
 }   
 
+// These are things that can be converted to and from numbers. It includes measures, and reals.
+// Whole numbers are not included because converting to/from a number would change the result.
+concept NumberLike
+    inherits Numerical, Comparable
+{
+	ToNumber(x: Self): Number;
+    FromNumber(x: Self, n: Number): Self;
+}
+
 // Represents a continuous one dimensional value.
 // https://en.wikipedia.org/wiki/Real_number
 // The "Value" or a Real is the number itself, and is equal to the Magnitude  
 concept Real
-    inherits Numerical, ScalarArithmetic, Comparable, Arithmetic
+    inherits NumberLike, Arithmetic
 {
 }
 
@@ -36,7 +45,7 @@ concept Real
 // It resembles a Real except you cannot multiply or divide two measures without 
 // getting a new type. It does however support AdditiveArithmetic on itself.
 concept Measure
-    inherits Numerical, ScalarArithmetic, Comparable, AdditiveArithmetic
+    inherits NumberLike, AdditiveArithmetic
 {
 }
 
@@ -44,7 +53,7 @@ concept Measure
 // Unlike reals and measures they cannot be compared in any meaningful way 
 // They are also "array-like" in that they have a fixed number of components.
 concept Vector
-    inherits Numerical, ScalarArithmetic, Arithmetic, Array<Number>
+    inherits Numerical, Arithmetic, Array<Number>
 { 
 }
 
