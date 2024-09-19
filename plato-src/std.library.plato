@@ -161,8 +161,20 @@ library Numerical
 		=> x.Range.Map((i) => i.FloatDivision(x));
 
     //==
-    // Real Operations 
+    // NumberLike Operations 
+
+    Multiply(x: NumberLike, y: NumberLike): NumberLike
+		=> x.FromNumber(x.ToNumber * y.ToNumber);
    
+    Divide(x: NumberLike, y: NumberLike): NumberLike
+		=> x.FromNumber(x.ToNumber / y.ToNumber);
+   
+    Modulo(x: NumberLike, y: NumberLike): NumberLike
+		=> x.FromNumber(x.ToNumber % y.ToNumber);
+   
+    //==
+    // Real Operations 
+
     Magnitude(x: Real): Number
         => x.Value;
 

@@ -2058,9 +2058,9 @@ namespace Plato.DoublePrecision
         public Array<String> FieldNames => Intrinsics.MakeArray<String>((String)"Value");
         public Array<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         // Implemented concept functions and type functions
-        public Character this[Integer y] => throw new System.IndexOutOfRangeException();
-        public Character At(Integer y) => throw new System.IndexOutOfRangeException();
-        public Integer Count => 0;
+        public Character this[Integer y] => Intrinsics.At(this, y);
+        public Character At(Integer y) => Intrinsics.At(this, y);
+        public Integer Count => Intrinsics.Count(this);
         public Integer Compare(String y) => Intrinsics.Compare(this, y);
         public static Boolean operator ==(String x, String y) => x.Equals(y);
         public Boolean Equals(String y) => Intrinsics.Equals(this, y);
@@ -2588,6 +2588,12 @@ namespace Plato.DoublePrecision
         public Boolean IsNegative => this.LtZ;
         public Integer Sign => this.LtZ ? ((Integer)1).Negative : this.GtZ ? ((Integer)1) : ((Integer)0);
         public Unit Abs => this.LtZ ? this.Negative : this;
+        public static Unit operator *(Unit x, Unit y) => x.FromNumber(x.ToNumber.Multiply(y.ToNumber));
+        public Unit Multiply(Unit y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
+        public static Unit operator /(Unit x, Unit y) => x.FromNumber(x.ToNumber.Divide(y.ToNumber));
+        public Unit Divide(Unit y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
+        public static Unit operator %(Unit x, Unit y) => x.FromNumber(x.ToNumber.Modulo(y.ToNumber));
+        public Unit Modulo(Unit y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
         public Number ToNumber => this.Component(((Integer)0));
         public Unit FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Unit b) => this.ToNumber.Compare(b.ToNumber);
@@ -2671,18 +2677,8 @@ namespace Plato.DoublePrecision
         public Unit Square => this.Pow2;
         public Unit Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Unit operator *(Unit a, Unit b) => a.Multiply(b);
-        public Unit Multiply(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator /(Unit a, Unit b) => a.Divide(b);
-        public Unit Divide(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator %(Unit a, Unit b) => a.Modulo(b);
-        public Unit Modulo(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator *(Number other, Unit self) => other.Multiply(self);
-        public static Unit Multiply(Number other, Unit self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Unit Multiply(this Number other, Unit self) => throw new System.NotImplementedException();
+        public static Unit Multiply(Number other, Unit self) => self.Multiply(other);
+        public static Unit operator *(Number other, Unit self) => Multiply(other, self);
     }
     public readonly partial struct Probability: Measure<Probability>
     {
@@ -2706,6 +2702,12 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Value);
         public Probability FromComponents(Array<Number> numbers) => new Probability(numbers[0]);
         // Implemented concept functions and type functions
+        public static Probability operator *(Probability x, Probability y) => x.FromNumber(x.ToNumber.Multiply(y.ToNumber));
+        public Probability Multiply(Probability y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
+        public static Probability operator /(Probability x, Probability y) => x.FromNumber(x.ToNumber.Divide(y.ToNumber));
+        public Probability Divide(Probability y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
+        public static Probability operator %(Probability x, Probability y) => x.FromNumber(x.ToNumber.Modulo(y.ToNumber));
+        public Probability Modulo(Probability y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
         public Number ToNumber => this.Component(((Integer)0));
         public Probability FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Probability b) => this.ToNumber.Compare(b.ToNumber);
@@ -2783,12 +2785,8 @@ namespace Plato.DoublePrecision
         public Probability Lesser(Probability b) => this.LessThanOrEquals(b) ? this : b;
         public Probability Greater(Probability b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Probability operator *(Number other, Probability self) => other.Multiply(self);
-        public static Probability Multiply(Number other, Probability self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Probability Multiply(this Number other, Probability self) => throw new System.NotImplementedException();
+        public static Probability Multiply(Number other, Probability self) => self.Multiply(other);
+        public static Probability operator *(Number other, Probability self) => Multiply(other, self);
     }
     public readonly partial struct Complex: Vector<Complex>
     {
@@ -2907,12 +2905,8 @@ namespace Plato.DoublePrecision
         public Complex Square => this.Pow2;
         public Complex Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Complex operator *(Number other, Complex self) => other.Multiply(self);
-        public static Complex Multiply(Number other, Complex self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Complex Multiply(this Number other, Complex self) => throw new System.NotImplementedException();
+        public static Complex Multiply(Number other, Complex self) => self.Multiply(other);
+        public static Complex operator *(Number other, Complex self) => Multiply(other, self);
     }
     public readonly partial struct Integer2: Value<Integer2>, Array<Integer>
     {
@@ -3569,6 +3563,12 @@ namespace Plato.DoublePrecision
         public Number Turns => this.Radians.Divide(Constants.TwoPi);
         public Number Degrees => this.Turns.Multiply(((Number)360));
         public Number Gradians => this.Turns.Multiply(((Number)400));
+        public static Angle operator *(Angle x, Angle y) => x.FromNumber(x.ToNumber.Multiply(y.ToNumber));
+        public Angle Multiply(Angle y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
+        public static Angle operator /(Angle x, Angle y) => x.FromNumber(x.ToNumber.Divide(y.ToNumber));
+        public Angle Divide(Angle y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
+        public static Angle operator %(Angle x, Angle y) => x.FromNumber(x.ToNumber.Modulo(y.ToNumber));
+        public Angle Modulo(Angle y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
         public Number ToNumber => this.Component(((Integer)0));
         public Angle FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Angle b) => this.ToNumber.Compare(b.ToNumber);
@@ -3646,12 +3646,8 @@ namespace Plato.DoublePrecision
         public Angle Lesser(Angle b) => this.LessThanOrEquals(b) ? this : b;
         public Angle Greater(Angle b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Angle operator *(Number other, Angle self) => other.Multiply(self);
-        public static Angle Multiply(Number other, Angle self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Angle Multiply(this Number other, Angle self) => throw new System.NotImplementedException();
+        public static Angle Multiply(Number other, Angle self) => self.Multiply(other);
+        public static Angle operator *(Number other, Angle self) => Multiply(other, self);
     }
     public readonly partial struct Length: Measure<Length>
     {
@@ -3675,6 +3671,12 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Meters);
         public Length FromComponents(Array<Number> numbers) => new Length(numbers[0]);
         // Implemented concept functions and type functions
+        public static Length operator *(Length x, Length y) => x.FromNumber(x.ToNumber.Multiply(y.ToNumber));
+        public Length Multiply(Length y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
+        public static Length operator /(Length x, Length y) => x.FromNumber(x.ToNumber.Divide(y.ToNumber));
+        public Length Divide(Length y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
+        public static Length operator %(Length x, Length y) => x.FromNumber(x.ToNumber.Modulo(y.ToNumber));
+        public Length Modulo(Length y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
         public Number ToNumber => this.Component(((Integer)0));
         public Length FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Length b) => this.ToNumber.Compare(b.ToNumber);
@@ -3752,12 +3754,8 @@ namespace Plato.DoublePrecision
         public Length Lesser(Length b) => this.LessThanOrEquals(b) ? this : b;
         public Length Greater(Length b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Length operator *(Number other, Length self) => other.Multiply(self);
-        public static Length Multiply(Number other, Length self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Length Multiply(this Number other, Length self) => throw new System.NotImplementedException();
+        public static Length Multiply(Number other, Length self) => self.Multiply(other);
+        public static Length operator *(Number other, Length self) => Multiply(other, self);
     }
     public readonly partial struct Mass: Measure<Mass>
     {
@@ -3781,6 +3779,12 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Kilograms);
         public Mass FromComponents(Array<Number> numbers) => new Mass(numbers[0]);
         // Implemented concept functions and type functions
+        public static Mass operator *(Mass x, Mass y) => x.FromNumber(x.ToNumber.Multiply(y.ToNumber));
+        public Mass Multiply(Mass y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
+        public static Mass operator /(Mass x, Mass y) => x.FromNumber(x.ToNumber.Divide(y.ToNumber));
+        public Mass Divide(Mass y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
+        public static Mass operator %(Mass x, Mass y) => x.FromNumber(x.ToNumber.Modulo(y.ToNumber));
+        public Mass Modulo(Mass y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
         public Number ToNumber => this.Component(((Integer)0));
         public Mass FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Mass b) => this.ToNumber.Compare(b.ToNumber);
@@ -3858,12 +3862,8 @@ namespace Plato.DoublePrecision
         public Mass Lesser(Mass b) => this.LessThanOrEquals(b) ? this : b;
         public Mass Greater(Mass b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Mass operator *(Number other, Mass self) => other.Multiply(self);
-        public static Mass Multiply(Number other, Mass self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Mass Multiply(this Number other, Mass self) => throw new System.NotImplementedException();
+        public static Mass Multiply(Number other, Mass self) => self.Multiply(other);
+        public static Mass operator *(Number other, Mass self) => Multiply(other, self);
     }
     public readonly partial struct Temperature: Measure<Temperature>
     {
@@ -3887,6 +3887,12 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Celsius);
         public Temperature FromComponents(Array<Number> numbers) => new Temperature(numbers[0]);
         // Implemented concept functions and type functions
+        public static Temperature operator *(Temperature x, Temperature y) => x.FromNumber(x.ToNumber.Multiply(y.ToNumber));
+        public Temperature Multiply(Temperature y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
+        public static Temperature operator /(Temperature x, Temperature y) => x.FromNumber(x.ToNumber.Divide(y.ToNumber));
+        public Temperature Divide(Temperature y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
+        public static Temperature operator %(Temperature x, Temperature y) => x.FromNumber(x.ToNumber.Modulo(y.ToNumber));
+        public Temperature Modulo(Temperature y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
         public Number ToNumber => this.Component(((Integer)0));
         public Temperature FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Temperature b) => this.ToNumber.Compare(b.ToNumber);
@@ -3964,12 +3970,8 @@ namespace Plato.DoublePrecision
         public Temperature Lesser(Temperature b) => this.LessThanOrEquals(b) ? this : b;
         public Temperature Greater(Temperature b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Temperature operator *(Number other, Temperature self) => other.Multiply(self);
-        public static Temperature Multiply(Number other, Temperature self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Temperature Multiply(this Number other, Temperature self) => throw new System.NotImplementedException();
+        public static Temperature Multiply(Number other, Temperature self) => self.Multiply(other);
+        public static Temperature operator *(Number other, Temperature self) => Multiply(other, self);
     }
     public readonly partial struct Time: Measure<Time>
     {
@@ -3993,6 +3995,12 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Seconds);
         public Time FromComponents(Array<Number> numbers) => new Time(numbers[0]);
         // Implemented concept functions and type functions
+        public static Time operator *(Time x, Time y) => x.FromNumber(x.ToNumber.Multiply(y.ToNumber));
+        public Time Multiply(Time y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
+        public static Time operator /(Time x, Time y) => x.FromNumber(x.ToNumber.Divide(y.ToNumber));
+        public Time Divide(Time y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
+        public static Time operator %(Time x, Time y) => x.FromNumber(x.ToNumber.Modulo(y.ToNumber));
+        public Time Modulo(Time y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
         public Number ToNumber => this.Component(((Integer)0));
         public Time FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Time b) => this.ToNumber.Compare(b.ToNumber);
@@ -4070,12 +4078,8 @@ namespace Plato.DoublePrecision
         public Time Lesser(Time b) => this.LessThanOrEquals(b) ? this : b;
         public Time Greater(Time b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Time operator *(Number other, Time self) => other.Multiply(self);
-        public static Time Multiply(Number other, Time self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Time Multiply(this Number other, Time self) => throw new System.NotImplementedException();
+        public static Time Multiply(Number other, Time self) => self.Multiply(other);
+        public static Time operator *(Number other, Time self) => Multiply(other, self);
     }
     public readonly partial struct DateTime: Coordinate<DateTime>
     {
@@ -4320,12 +4324,8 @@ namespace Plato.DoublePrecision
         public Vector2D Square => this.Pow2;
         public Vector2D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector2D operator *(Number other, Vector2D self) => other.Multiply(self);
-        public static Vector2D Multiply(Number other, Vector2D self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Vector2D Multiply(this Number other, Vector2D self) => throw new System.NotImplementedException();
+        public static Vector2D Multiply(Number other, Vector2D self) => self.Multiply(other);
+        public static Vector2D operator *(Number other, Vector2D self) => Multiply(other, self);
     }
     public readonly partial struct Vector3D: Vector<Vector3D>
     {
@@ -4451,12 +4451,8 @@ namespace Plato.DoublePrecision
         public Vector3D Square => this.Pow2;
         public Vector3D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector3D operator *(Number other, Vector3D self) => other.Multiply(self);
-        public static Vector3D Multiply(Number other, Vector3D self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Vector3D Multiply(this Number other, Vector3D self) => throw new System.NotImplementedException();
+        public static Vector3D Multiply(Number other, Vector3D self) => self.Multiply(other);
+        public static Vector3D operator *(Number other, Vector3D self) => Multiply(other, self);
     }
     public readonly partial struct Vector4D: Vector<Vector4D>
     {
@@ -4579,12 +4575,8 @@ namespace Plato.DoublePrecision
         public Vector4D Square => this.Pow2;
         public Vector4D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector4D operator *(Number other, Vector4D self) => other.Multiply(self);
-        public static Vector4D Multiply(Number other, Vector4D self) => throw new System.NotImplementedException();
-    }
-    public static partial class Extensions
-    {
-        public static Vector4D Multiply(this Number other, Vector4D self) => throw new System.NotImplementedException();
+        public static Vector4D Multiply(Number other, Vector4D self) => self.Multiply(other);
+        public static Vector4D operator *(Number other, Vector4D self) => Multiply(other, self);
     }
     public readonly partial struct Matrix3x3: Value<Matrix3x3>, Array<Vector3D>
     {
