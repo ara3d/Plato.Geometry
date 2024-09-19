@@ -8,7 +8,7 @@ Inherits: .
 
 Implemented by: Number, Integer, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Real, Measure, Vector, WholeNumber, Arithmetic.
+Inherited by: Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Arithmetic.
 
 Functions: Add, Negative, Subtract.
 
@@ -20,7 +20,7 @@ Inherits: .
 
 Implemented by: Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D, Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4.
 
-Inherited by: Value, Numerical, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
+Inherited by: Value, Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
 
 Functions: FieldNames, FieldValues, TypeName.
 
@@ -176,7 +176,7 @@ Inherits: .
 
 Implemented by: Number, Integer, String, Boolean, Unit, Probability, Angle, Length, Mass, Temperature, Time.
 
-Inherited by: Real, Measure, WholeNumber.
+Inherited by: NumberLike, Real, Measure, WholeNumber.
 
 Functions: Compare.
 
@@ -320,7 +320,7 @@ Inherits: .
 
 Implemented by: Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D, Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4.
 
-Inherited by: Value, Numerical, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
+Inherited by: Value, Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
 
 Functions: Equals.
 
@@ -472,7 +472,7 @@ Fields: .
 
 ## Concept Measure
 
-Inherits: AdditiveArithmetic, Any, Comparable, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Inherits: AdditiveArithmetic, AdditiveArithmetic, Any, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 Implemented by: Probability, Angle, Length, Mass, Temperature, Time.
 
@@ -500,19 +500,31 @@ Inherits: .
 
 Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Real, Measure, Vector, ScalarArithmetic.
+Inherited by: Numerical, NumberLike, Real, Measure, Vector, ScalarArithmetic.
 
 Functions: Divide, Modulo, Multiply, Multiply.
 
 Fields: .
 
+## Concept NumberLike
+
+Inherits: AdditiveArithmetic, Any, Comparable, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+
+Implemented by: Number, Unit, Probability, Angle, Length, Mass, Temperature, Time.
+
+Inherited by: Real, Measure.
+
+Functions: FromNumber, ToNumber.
+
+Fields: .
+
 ## Concept Numerical
 
-Inherits: Any, Equatable, Value.
+Inherits: AdditiveArithmetic, Any, Equatable, MultiplicativeArithmetic, ScalarArithmetic, Value.
 
 Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Real, Measure, Vector.
+Inherited by: NumberLike, Real, Measure, Vector.
 
 Functions: Components, FromComponents.
 
@@ -688,7 +700,7 @@ Fields: .
 
 ## Concept Real
 
-Inherits: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Inherits: AdditiveArithmetic, AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 Implemented by: Number, Unit.
 
@@ -704,7 +716,7 @@ Inherits: MultiplicativeArithmetic.
 
 Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Real, Measure, Vector.
+Inherited by: Numerical, NumberLike, Real, Measure, Vector.
 
 Functions: .
 
@@ -812,7 +824,7 @@ Inherits: Any, Equatable.
 
 Implemented by: Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D, Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4.
 
-Inherited by: Numerical, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
+Inherited by: Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
 
 Functions: .
 
@@ -820,7 +832,7 @@ Fields: .
 
 ## Concept Vector
 
-Inherits: AdditiveArithmetic, Any, Arithmetic, Array, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Inherits: AdditiveArithmetic, AdditiveArithmetic, Any, Arithmetic, Array, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
 
 Implemented by: Complex, Vector2D, Vector3D, Vector4D.
 
@@ -909,7 +921,7 @@ Types are implemented as structs.
 
 Fields: Radians:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 ## Type AnglePair
 
@@ -1221,7 +1233,7 @@ Implements: Any, Array, Equatable, Value.
 
 Fields: Meters:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 ## Type Lens
 
@@ -1257,7 +1269,7 @@ Implements: Any, Coordinate, Equatable, Value.
 
 Fields: Kilograms:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 ## Type Matrix3x3
 
@@ -1275,7 +1287,7 @@ Implements: Any, Array, Equatable, Value.
 
 Fields: .
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, Numerical, Real, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, Real, ScalarArithmetic, Value.
 
 ## Type NumberInterval
 
@@ -1317,7 +1329,7 @@ Implements: Any, Equatable, Value.
 
 Fields: Value:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 ## Type Quad2D
 
@@ -1443,13 +1455,13 @@ Implements: Any, Array, Comparable, Equatable, Value.
 
 Fields: Celsius:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 ## Type Time
 
 Fields: Seconds:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
 
 ## Type Transform2D
 
@@ -1551,7 +1563,7 @@ Implements: .
 
 Fields: Value:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, Numerical, Real, ScalarArithmetic, Value.
+Implements: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, Real, ScalarArithmetic, Value.
 
 ## Type Vector2D
 

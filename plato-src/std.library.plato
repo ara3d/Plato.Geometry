@@ -275,6 +275,9 @@ library Numerical
     MapComponents(x: Numerical, f: Function1<Number, Number>): Numerical
         => x.FromComponents(x.Components.Map(f));
 
+    ZipComponents(x: Numerical, y: Numerical, f: Function2<Number, Number, Number>): Numerical
+        => x.FromComponents(x.Components.Zip(y.Components, f));
+
     Zero(x: Numerical): Numerical
         => x.MapComponents((i) => 0.0);
 
@@ -339,7 +342,7 @@ library Numerical
     // Number-like
 
     ToNumber(x: NumberLike): Number
-        => x.GetComponent(0);
+        => x.Component(0);
 
     FromNumber(x: NumberLike, n: Number): NumberLike
         => x.FromComponents([n]);
@@ -352,9 +355,6 @@ library Numerical
 
     Multiply(x: Numerical, s: Number): Numerical
         => x.MapComponents((i) => i * s);
-
-    Multiply(s: Number, x: Numerical): Numerical
-        => x.MapComponents((i) => s * i);
 
     Divide(x: Numerical, s: Number): Numerical
         => x.MapComponents((i) => i / s);

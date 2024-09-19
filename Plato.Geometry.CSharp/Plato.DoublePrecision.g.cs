@@ -255,18 +255,23 @@ namespace Plato.DoublePrecision
     public interface Value<Self>: Any, Equatable<Self>
     {
     }
-    public interface Numerical<Self>: Value<Self>
+    public interface Numerical<Self>: Value<Self>, ScalarArithmetic<Self>, AdditiveArithmetic<Self>
     {
         Array<Number> Components { get; }
         Self FromComponents(Array<Number> xs);
     }
-    public interface Real<Self>: Numerical<Self>, ScalarArithmetic<Self>, Comparable<Self>, Arithmetic<Self>
+    public interface NumberLike<Self>: Numerical<Self>, Comparable<Self>
+    {
+        Number ToNumber { get; }
+        Self FromNumber(Number n);
+    }
+    public interface Real<Self>: NumberLike<Self>, Arithmetic<Self>
     {
     }
-    public interface Measure<Self>: Numerical<Self>, ScalarArithmetic<Self>, Comparable<Self>, AdditiveArithmetic<Self>
+    public interface Measure<Self>: NumberLike<Self>, AdditiveArithmetic<Self>
     {
     }
-    public interface Vector<Self>: Numerical<Self>, ScalarArithmetic<Self>, Arithmetic<Self>, Array<Number>
+    public interface Vector<Self>: Numerical<Self>, Arithmetic<Self>, Array<Number>
     {
     }
     public interface WholeNumber<Self>: Value<Self>, Comparable<Self>, Arithmetic<Self>
@@ -1925,12 +1930,15 @@ namespace Plato.DoublePrecision
         public Boolean IsNegative => this.LtZ;
         public Integer Sign => this.LtZ ? ((Integer)1).Negative : this.GtZ ? ((Integer)1) : ((Integer)0);
         public Number Abs => this.LtZ ? this.Negative : this;
+        public Number ToNumber => this.Component(((Integer)0));
+        public Number FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Number PlusOne => this.Add(this.One);
         public Number MinusOne => this.Subtract(this.One);
         public Number FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Number MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Number ZipComponents(Number y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Number Zero => this.MapComponents((i) => ((Number)0));
         public Number One => this.MapComponents((i) => ((Number)1));
         public Number MinValue => this.MapComponents((x) => x.MinValue);
@@ -2580,12 +2588,16 @@ namespace Plato.DoublePrecision
         public Boolean IsNegative => this.LtZ;
         public Integer Sign => this.LtZ ? ((Integer)1).Negative : this.GtZ ? ((Integer)1) : ((Integer)0);
         public Unit Abs => this.LtZ ? this.Negative : this;
+        public Number ToNumber => this.Component(((Integer)0));
+        public Unit FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
+        public Integer Compare(Unit b) => this.ToNumber.Compare(b.ToNumber);
         public Unit PlusOne => this.Add(this.One);
         public Unit MinusOne => this.Subtract(this.One);
         public Unit FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Unit MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Unit ZipComponents(Unit y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Unit Zero => this.MapComponents((i) => ((Number)0));
         public Unit One => this.MapComponents((i) => ((Number)1));
         public Unit MinValue => this.MapComponents((x) => x.MinValue);
@@ -2596,6 +2608,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Unit Clamp(Unit a, Unit b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Unit ClampOne => this.Clamp(this.Zero, this.One);
+        public static Unit operator *(Unit x, Number s)
+        {
+            var _var1 = s;
+            return x.MapComponents((i) => i.Multiply(_var1));
+        }
+        public Unit Multiply(Number s)
+        {
+            var _var2 = s;
+            return this.MapComponents((i) => i.Multiply(_var2));
+        }
+        public static Unit operator /(Unit x, Number s)
+        {
+            var _var3 = s;
+            return x.MapComponents((i) => i.Divide(_var3));
+        }
+        public Unit Divide(Number s)
+        {
+            var _var4 = s;
+            return this.MapComponents((i) => i.Divide(_var4));
+        }
+        public static Unit operator %(Unit x, Number s)
+        {
+            var _var5 = s;
+            return x.MapComponents((i) => i.Modulo(_var5));
+        }
+        public Unit Modulo(Number s)
+        {
+            var _var6 = s;
+            return this.MapComponents((i) => i.Modulo(_var6));
+        }
+        public static Unit operator +(Unit x, Unit y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Unit Add(Unit y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Unit operator -(Unit x, Unit y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Unit Subtract(Unit y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Unit operator -(Unit x) => x.MapComponents((a) => a.Negative);
+        public Unit Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Unit a, Unit b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Unit b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Unit a, Unit b) => a.Equals(b).Not;
@@ -2629,21 +2677,8 @@ namespace Plato.DoublePrecision
         public Unit Divide(Unit b) => throw new System.NotImplementedException();
         public static Unit operator %(Unit a, Unit b) => a.Modulo(b);
         public Unit Modulo(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator +(Unit a, Unit b) => a.Add(b);
-        public Unit Add(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator -(Unit a, Unit b) => a.Subtract(b);
-        public Unit Subtract(Unit b) => throw new System.NotImplementedException();
-        public static Unit operator -(Unit self) => self.Negative;
-        public Unit Negative => throw new System.NotImplementedException();
-        public Integer Compare(Unit y) => throw new System.NotImplementedException();
-        public static Unit operator *(Unit self, Number other) => self.Multiply(other);
-        public Unit Multiply(Number other) => throw new System.NotImplementedException();
         public static Unit operator *(Number other, Unit self) => other.Multiply(self);
         public static Unit Multiply(Number other, Unit self) => throw new System.NotImplementedException();
-        public static Unit operator /(Unit self, Number other) => self.Divide(other);
-        public Unit Divide(Number other) => throw new System.NotImplementedException();
-        public static Unit operator %(Unit self, Number other) => self.Modulo(other);
-        public Unit Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -2671,12 +2706,16 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Value);
         public Probability FromComponents(Array<Number> numbers) => new Probability(numbers[0]);
         // Implemented concept functions and type functions
+        public Number ToNumber => this.Component(((Integer)0));
+        public Probability FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
+        public Integer Compare(Probability b) => this.ToNumber.Compare(b.ToNumber);
         public Probability PlusOne => this.Add(this.One);
         public Probability MinusOne => this.Subtract(this.One);
         public Probability FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Probability MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Probability ZipComponents(Probability y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Probability Zero => this.MapComponents((i) => ((Number)0));
         public Probability One => this.MapComponents((i) => ((Number)1));
         public Probability MinValue => this.MapComponents((x) => x.MinValue);
@@ -2687,6 +2726,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Probability Clamp(Probability a, Probability b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Probability ClampOne => this.Clamp(this.Zero, this.One);
+        public static Probability operator *(Probability x, Number s)
+        {
+            var _var7 = s;
+            return x.MapComponents((i) => i.Multiply(_var7));
+        }
+        public Probability Multiply(Number s)
+        {
+            var _var8 = s;
+            return this.MapComponents((i) => i.Multiply(_var8));
+        }
+        public static Probability operator /(Probability x, Number s)
+        {
+            var _var9 = s;
+            return x.MapComponents((i) => i.Divide(_var9));
+        }
+        public Probability Divide(Number s)
+        {
+            var _var10 = s;
+            return this.MapComponents((i) => i.Divide(_var10));
+        }
+        public static Probability operator %(Probability x, Number s)
+        {
+            var _var11 = s;
+            return x.MapComponents((i) => i.Modulo(_var11));
+        }
+        public Probability Modulo(Number s)
+        {
+            var _var12 = s;
+            return this.MapComponents((i) => i.Modulo(_var12));
+        }
+        public static Probability operator +(Probability x, Probability y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Probability Add(Probability y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Probability operator -(Probability x, Probability y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Probability Subtract(Probability y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Probability operator -(Probability x) => x.MapComponents((a) => a.Negative);
+        public Probability Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Probability a, Probability b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Probability b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Probability a, Probability b) => a.Equals(b).Not;
@@ -2708,21 +2783,8 @@ namespace Plato.DoublePrecision
         public Probability Lesser(Probability b) => this.LessThanOrEquals(b) ? this : b;
         public Probability Greater(Probability b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Probability operator +(Probability a, Probability b) => a.Add(b);
-        public Probability Add(Probability b) => throw new System.NotImplementedException();
-        public static Probability operator -(Probability a, Probability b) => a.Subtract(b);
-        public Probability Subtract(Probability b) => throw new System.NotImplementedException();
-        public static Probability operator -(Probability self) => self.Negative;
-        public Probability Negative => throw new System.NotImplementedException();
-        public Integer Compare(Probability y) => throw new System.NotImplementedException();
-        public static Probability operator *(Probability self, Number other) => self.Multiply(other);
-        public Probability Multiply(Number other) => throw new System.NotImplementedException();
         public static Probability operator *(Number other, Probability self) => other.Multiply(self);
         public static Probability Multiply(Number other, Probability self) => throw new System.NotImplementedException();
-        public static Probability operator /(Probability self, Number other) => self.Divide(other);
-        public Probability Divide(Number other) => throw new System.NotImplementedException();
-        public static Probability operator %(Probability self, Number other) => self.Modulo(other);
-        public Probability Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -2755,6 +2817,12 @@ namespace Plato.DoublePrecision
         public Integer Count => ((Integer)2);
         public Number this[Integer n] => n.Equals(((Integer)0)) ? this.Real : this.Imaginary;
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.Real : this.Imaginary;
+        public static Complex operator *(Complex x, Complex y) => x.ZipComponents(y, (a, b) => a.Multiply(b));
+        public Complex Multiply(Complex y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
+        public static Complex operator /(Complex x, Complex y) => x.ZipComponents(y, (a, b) => a.Divide(b));
+        public Complex Divide(Complex y) => this.ZipComponents(y, (a, b) => a.Divide(b));
+        public static Complex operator %(Complex x, Complex y) => x.ZipComponents(y, (a, b) => a.Modulo(b));
+        public Complex Modulo(Complex y) => this.ZipComponents(y, (a, b) => a.Modulo(b));
         public Number Length => this.Magnitude;
         public Number LengthSquared => this.MagnitudeSquared;
         public Number Sum => this.Reduce(((Number)0), (a, b) => a.Add(b));
@@ -2775,6 +2843,7 @@ namespace Plato.DoublePrecision
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Complex MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Complex ZipComponents(Complex y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Complex Zero => this.MapComponents((i) => ((Number)0));
         public Complex One => this.MapComponents((i) => ((Number)1));
         public Complex MinValue => this.MapComponents((x) => x.MinValue);
@@ -2785,6 +2854,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Complex Clamp(Complex a, Complex b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Complex ClampOne => this.Clamp(this.Zero, this.One);
+        public static Complex operator *(Complex x, Number s)
+        {
+            var _var13 = s;
+            return x.MapComponents((i) => i.Multiply(_var13));
+        }
+        public Complex Multiply(Number s)
+        {
+            var _var14 = s;
+            return this.MapComponents((i) => i.Multiply(_var14));
+        }
+        public static Complex operator /(Complex x, Number s)
+        {
+            var _var15 = s;
+            return x.MapComponents((i) => i.Divide(_var15));
+        }
+        public Complex Divide(Number s)
+        {
+            var _var16 = s;
+            return this.MapComponents((i) => i.Divide(_var16));
+        }
+        public static Complex operator %(Complex x, Number s)
+        {
+            var _var17 = s;
+            return x.MapComponents((i) => i.Modulo(_var17));
+        }
+        public Complex Modulo(Number s)
+        {
+            var _var18 = s;
+            return this.MapComponents((i) => i.Modulo(_var18));
+        }
+        public static Complex operator +(Complex x, Complex y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Complex Add(Complex y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Complex operator -(Complex x, Complex y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Complex Subtract(Complex y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Complex operator -(Complex x) => x.MapComponents((a) => a.Negative);
+        public Complex Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Complex a, Complex b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Complex b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Complex a, Complex b) => a.Equals(b).Not;
@@ -2802,26 +2907,8 @@ namespace Plato.DoublePrecision
         public Complex Square => this.Pow2;
         public Complex Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Complex operator *(Complex a, Complex b) => a.Multiply(b);
-        public Complex Multiply(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator /(Complex a, Complex b) => a.Divide(b);
-        public Complex Divide(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator %(Complex a, Complex b) => a.Modulo(b);
-        public Complex Modulo(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator +(Complex a, Complex b) => a.Add(b);
-        public Complex Add(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator -(Complex a, Complex b) => a.Subtract(b);
-        public Complex Subtract(Complex b) => throw new System.NotImplementedException();
-        public static Complex operator -(Complex self) => self.Negative;
-        public Complex Negative => throw new System.NotImplementedException();
-        public static Complex operator *(Complex self, Number other) => self.Multiply(other);
-        public Complex Multiply(Number other) => throw new System.NotImplementedException();
         public static Complex operator *(Number other, Complex self) => other.Multiply(self);
         public static Complex Multiply(Number other, Complex self) => throw new System.NotImplementedException();
-        public static Complex operator /(Complex self, Number other) => self.Divide(other);
-        public Complex Divide(Number other) => throw new System.NotImplementedException();
-        public static Complex operator %(Complex self, Number other) => self.Modulo(other);
-        public Complex Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -3482,12 +3569,16 @@ namespace Plato.DoublePrecision
         public Number Turns => this.Radians.Divide(Constants.TwoPi);
         public Number Degrees => this.Turns.Multiply(((Number)360));
         public Number Gradians => this.Turns.Multiply(((Number)400));
+        public Number ToNumber => this.Component(((Integer)0));
+        public Angle FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
+        public Integer Compare(Angle b) => this.ToNumber.Compare(b.ToNumber);
         public Angle PlusOne => this.Add(this.One);
         public Angle MinusOne => this.Subtract(this.One);
         public Angle FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Angle MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Angle ZipComponents(Angle y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Angle Zero => this.MapComponents((i) => ((Number)0));
         public Angle One => this.MapComponents((i) => ((Number)1));
         public Angle MinValue => this.MapComponents((x) => x.MinValue);
@@ -3498,6 +3589,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Angle Clamp(Angle a, Angle b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Angle ClampOne => this.Clamp(this.Zero, this.One);
+        public static Angle operator *(Angle x, Number s)
+        {
+            var _var19 = s;
+            return x.MapComponents((i) => i.Multiply(_var19));
+        }
+        public Angle Multiply(Number s)
+        {
+            var _var20 = s;
+            return this.MapComponents((i) => i.Multiply(_var20));
+        }
+        public static Angle operator /(Angle x, Number s)
+        {
+            var _var21 = s;
+            return x.MapComponents((i) => i.Divide(_var21));
+        }
+        public Angle Divide(Number s)
+        {
+            var _var22 = s;
+            return this.MapComponents((i) => i.Divide(_var22));
+        }
+        public static Angle operator %(Angle x, Number s)
+        {
+            var _var23 = s;
+            return x.MapComponents((i) => i.Modulo(_var23));
+        }
+        public Angle Modulo(Number s)
+        {
+            var _var24 = s;
+            return this.MapComponents((i) => i.Modulo(_var24));
+        }
+        public static Angle operator +(Angle x, Angle y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Angle Add(Angle y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Angle operator -(Angle x, Angle y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Angle Subtract(Angle y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Angle operator -(Angle x) => x.MapComponents((a) => a.Negative);
+        public Angle Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Angle a, Angle b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Angle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Angle a, Angle b) => a.Equals(b).Not;
@@ -3519,21 +3646,8 @@ namespace Plato.DoublePrecision
         public Angle Lesser(Angle b) => this.LessThanOrEquals(b) ? this : b;
         public Angle Greater(Angle b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Angle operator +(Angle a, Angle b) => a.Add(b);
-        public Angle Add(Angle b) => throw new System.NotImplementedException();
-        public static Angle operator -(Angle a, Angle b) => a.Subtract(b);
-        public Angle Subtract(Angle b) => throw new System.NotImplementedException();
-        public static Angle operator -(Angle self) => self.Negative;
-        public Angle Negative => throw new System.NotImplementedException();
-        public Integer Compare(Angle y) => throw new System.NotImplementedException();
-        public static Angle operator *(Angle self, Number other) => self.Multiply(other);
-        public Angle Multiply(Number other) => throw new System.NotImplementedException();
         public static Angle operator *(Number other, Angle self) => other.Multiply(self);
         public static Angle Multiply(Number other, Angle self) => throw new System.NotImplementedException();
-        public static Angle operator /(Angle self, Number other) => self.Divide(other);
-        public Angle Divide(Number other) => throw new System.NotImplementedException();
-        public static Angle operator %(Angle self, Number other) => self.Modulo(other);
-        public Angle Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -3561,12 +3675,16 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Meters);
         public Length FromComponents(Array<Number> numbers) => new Length(numbers[0]);
         // Implemented concept functions and type functions
+        public Number ToNumber => this.Component(((Integer)0));
+        public Length FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
+        public Integer Compare(Length b) => this.ToNumber.Compare(b.ToNumber);
         public Length PlusOne => this.Add(this.One);
         public Length MinusOne => this.Subtract(this.One);
         public Length FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Length MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Length ZipComponents(Length y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Length Zero => this.MapComponents((i) => ((Number)0));
         public Length One => this.MapComponents((i) => ((Number)1));
         public Length MinValue => this.MapComponents((x) => x.MinValue);
@@ -3577,6 +3695,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Length Clamp(Length a, Length b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Length ClampOne => this.Clamp(this.Zero, this.One);
+        public static Length operator *(Length x, Number s)
+        {
+            var _var25 = s;
+            return x.MapComponents((i) => i.Multiply(_var25));
+        }
+        public Length Multiply(Number s)
+        {
+            var _var26 = s;
+            return this.MapComponents((i) => i.Multiply(_var26));
+        }
+        public static Length operator /(Length x, Number s)
+        {
+            var _var27 = s;
+            return x.MapComponents((i) => i.Divide(_var27));
+        }
+        public Length Divide(Number s)
+        {
+            var _var28 = s;
+            return this.MapComponents((i) => i.Divide(_var28));
+        }
+        public static Length operator %(Length x, Number s)
+        {
+            var _var29 = s;
+            return x.MapComponents((i) => i.Modulo(_var29));
+        }
+        public Length Modulo(Number s)
+        {
+            var _var30 = s;
+            return this.MapComponents((i) => i.Modulo(_var30));
+        }
+        public static Length operator +(Length x, Length y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Length Add(Length y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Length operator -(Length x, Length y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Length Subtract(Length y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Length operator -(Length x) => x.MapComponents((a) => a.Negative);
+        public Length Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Length a, Length b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Length b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Length a, Length b) => a.Equals(b).Not;
@@ -3598,21 +3752,8 @@ namespace Plato.DoublePrecision
         public Length Lesser(Length b) => this.LessThanOrEquals(b) ? this : b;
         public Length Greater(Length b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Length operator +(Length a, Length b) => a.Add(b);
-        public Length Add(Length b) => throw new System.NotImplementedException();
-        public static Length operator -(Length a, Length b) => a.Subtract(b);
-        public Length Subtract(Length b) => throw new System.NotImplementedException();
-        public static Length operator -(Length self) => self.Negative;
-        public Length Negative => throw new System.NotImplementedException();
-        public Integer Compare(Length y) => throw new System.NotImplementedException();
-        public static Length operator *(Length self, Number other) => self.Multiply(other);
-        public Length Multiply(Number other) => throw new System.NotImplementedException();
         public static Length operator *(Number other, Length self) => other.Multiply(self);
         public static Length Multiply(Number other, Length self) => throw new System.NotImplementedException();
-        public static Length operator /(Length self, Number other) => self.Divide(other);
-        public Length Divide(Number other) => throw new System.NotImplementedException();
-        public static Length operator %(Length self, Number other) => self.Modulo(other);
-        public Length Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -3640,12 +3781,16 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Kilograms);
         public Mass FromComponents(Array<Number> numbers) => new Mass(numbers[0]);
         // Implemented concept functions and type functions
+        public Number ToNumber => this.Component(((Integer)0));
+        public Mass FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
+        public Integer Compare(Mass b) => this.ToNumber.Compare(b.ToNumber);
         public Mass PlusOne => this.Add(this.One);
         public Mass MinusOne => this.Subtract(this.One);
         public Mass FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Mass MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Mass ZipComponents(Mass y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Mass Zero => this.MapComponents((i) => ((Number)0));
         public Mass One => this.MapComponents((i) => ((Number)1));
         public Mass MinValue => this.MapComponents((x) => x.MinValue);
@@ -3656,6 +3801,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Mass Clamp(Mass a, Mass b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Mass ClampOne => this.Clamp(this.Zero, this.One);
+        public static Mass operator *(Mass x, Number s)
+        {
+            var _var31 = s;
+            return x.MapComponents((i) => i.Multiply(_var31));
+        }
+        public Mass Multiply(Number s)
+        {
+            var _var32 = s;
+            return this.MapComponents((i) => i.Multiply(_var32));
+        }
+        public static Mass operator /(Mass x, Number s)
+        {
+            var _var33 = s;
+            return x.MapComponents((i) => i.Divide(_var33));
+        }
+        public Mass Divide(Number s)
+        {
+            var _var34 = s;
+            return this.MapComponents((i) => i.Divide(_var34));
+        }
+        public static Mass operator %(Mass x, Number s)
+        {
+            var _var35 = s;
+            return x.MapComponents((i) => i.Modulo(_var35));
+        }
+        public Mass Modulo(Number s)
+        {
+            var _var36 = s;
+            return this.MapComponents((i) => i.Modulo(_var36));
+        }
+        public static Mass operator +(Mass x, Mass y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Mass Add(Mass y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Mass operator -(Mass x, Mass y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Mass Subtract(Mass y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Mass operator -(Mass x) => x.MapComponents((a) => a.Negative);
+        public Mass Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Mass a, Mass b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Mass b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Mass a, Mass b) => a.Equals(b).Not;
@@ -3677,21 +3858,8 @@ namespace Plato.DoublePrecision
         public Mass Lesser(Mass b) => this.LessThanOrEquals(b) ? this : b;
         public Mass Greater(Mass b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Mass operator +(Mass a, Mass b) => a.Add(b);
-        public Mass Add(Mass b) => throw new System.NotImplementedException();
-        public static Mass operator -(Mass a, Mass b) => a.Subtract(b);
-        public Mass Subtract(Mass b) => throw new System.NotImplementedException();
-        public static Mass operator -(Mass self) => self.Negative;
-        public Mass Negative => throw new System.NotImplementedException();
-        public Integer Compare(Mass y) => throw new System.NotImplementedException();
-        public static Mass operator *(Mass self, Number other) => self.Multiply(other);
-        public Mass Multiply(Number other) => throw new System.NotImplementedException();
         public static Mass operator *(Number other, Mass self) => other.Multiply(self);
         public static Mass Multiply(Number other, Mass self) => throw new System.NotImplementedException();
-        public static Mass operator /(Mass self, Number other) => self.Divide(other);
-        public Mass Divide(Number other) => throw new System.NotImplementedException();
-        public static Mass operator %(Mass self, Number other) => self.Modulo(other);
-        public Mass Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -3719,12 +3887,16 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Celsius);
         public Temperature FromComponents(Array<Number> numbers) => new Temperature(numbers[0]);
         // Implemented concept functions and type functions
+        public Number ToNumber => this.Component(((Integer)0));
+        public Temperature FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
+        public Integer Compare(Temperature b) => this.ToNumber.Compare(b.ToNumber);
         public Temperature PlusOne => this.Add(this.One);
         public Temperature MinusOne => this.Subtract(this.One);
         public Temperature FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Temperature MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Temperature ZipComponents(Temperature y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Temperature Zero => this.MapComponents((i) => ((Number)0));
         public Temperature One => this.MapComponents((i) => ((Number)1));
         public Temperature MinValue => this.MapComponents((x) => x.MinValue);
@@ -3735,6 +3907,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Temperature Clamp(Temperature a, Temperature b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Temperature ClampOne => this.Clamp(this.Zero, this.One);
+        public static Temperature operator *(Temperature x, Number s)
+        {
+            var _var37 = s;
+            return x.MapComponents((i) => i.Multiply(_var37));
+        }
+        public Temperature Multiply(Number s)
+        {
+            var _var38 = s;
+            return this.MapComponents((i) => i.Multiply(_var38));
+        }
+        public static Temperature operator /(Temperature x, Number s)
+        {
+            var _var39 = s;
+            return x.MapComponents((i) => i.Divide(_var39));
+        }
+        public Temperature Divide(Number s)
+        {
+            var _var40 = s;
+            return this.MapComponents((i) => i.Divide(_var40));
+        }
+        public static Temperature operator %(Temperature x, Number s)
+        {
+            var _var41 = s;
+            return x.MapComponents((i) => i.Modulo(_var41));
+        }
+        public Temperature Modulo(Number s)
+        {
+            var _var42 = s;
+            return this.MapComponents((i) => i.Modulo(_var42));
+        }
+        public static Temperature operator +(Temperature x, Temperature y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Temperature Add(Temperature y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Temperature operator -(Temperature x, Temperature y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Temperature Subtract(Temperature y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Temperature operator -(Temperature x) => x.MapComponents((a) => a.Negative);
+        public Temperature Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Temperature a, Temperature b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Temperature b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Temperature a, Temperature b) => a.Equals(b).Not;
@@ -3756,21 +3964,8 @@ namespace Plato.DoublePrecision
         public Temperature Lesser(Temperature b) => this.LessThanOrEquals(b) ? this : b;
         public Temperature Greater(Temperature b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Temperature operator +(Temperature a, Temperature b) => a.Add(b);
-        public Temperature Add(Temperature b) => throw new System.NotImplementedException();
-        public static Temperature operator -(Temperature a, Temperature b) => a.Subtract(b);
-        public Temperature Subtract(Temperature b) => throw new System.NotImplementedException();
-        public static Temperature operator -(Temperature self) => self.Negative;
-        public Temperature Negative => throw new System.NotImplementedException();
-        public Integer Compare(Temperature y) => throw new System.NotImplementedException();
-        public static Temperature operator *(Temperature self, Number other) => self.Multiply(other);
-        public Temperature Multiply(Number other) => throw new System.NotImplementedException();
         public static Temperature operator *(Number other, Temperature self) => other.Multiply(self);
         public static Temperature Multiply(Number other, Temperature self) => throw new System.NotImplementedException();
-        public static Temperature operator /(Temperature self, Number other) => self.Divide(other);
-        public Temperature Divide(Number other) => throw new System.NotImplementedException();
-        public static Temperature operator %(Temperature self, Number other) => self.Modulo(other);
-        public Temperature Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -3798,12 +3993,16 @@ namespace Plato.DoublePrecision
         public Array<Number> Components => Intrinsics.MakeArray<Number>(Seconds);
         public Time FromComponents(Array<Number> numbers) => new Time(numbers[0]);
         // Implemented concept functions and type functions
+        public Number ToNumber => this.Component(((Integer)0));
+        public Time FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
+        public Integer Compare(Time b) => this.ToNumber.Compare(b.ToNumber);
         public Time PlusOne => this.Add(this.One);
         public Time MinusOne => this.Subtract(this.One);
         public Time FromOne => this.One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Time MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Time ZipComponents(Time y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Time Zero => this.MapComponents((i) => ((Number)0));
         public Time One => this.MapComponents((i) => ((Number)1));
         public Time MinValue => this.MapComponents((x) => x.MinValue);
@@ -3814,6 +4013,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Time Clamp(Time a, Time b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Time ClampOne => this.Clamp(this.Zero, this.One);
+        public static Time operator *(Time x, Number s)
+        {
+            var _var43 = s;
+            return x.MapComponents((i) => i.Multiply(_var43));
+        }
+        public Time Multiply(Number s)
+        {
+            var _var44 = s;
+            return this.MapComponents((i) => i.Multiply(_var44));
+        }
+        public static Time operator /(Time x, Number s)
+        {
+            var _var45 = s;
+            return x.MapComponents((i) => i.Divide(_var45));
+        }
+        public Time Divide(Number s)
+        {
+            var _var46 = s;
+            return this.MapComponents((i) => i.Divide(_var46));
+        }
+        public static Time operator %(Time x, Number s)
+        {
+            var _var47 = s;
+            return x.MapComponents((i) => i.Modulo(_var47));
+        }
+        public Time Modulo(Number s)
+        {
+            var _var48 = s;
+            return this.MapComponents((i) => i.Modulo(_var48));
+        }
+        public static Time operator +(Time x, Time y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Time Add(Time y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Time operator -(Time x, Time y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Time Subtract(Time y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Time operator -(Time x) => x.MapComponents((a) => a.Negative);
+        public Time Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Time a, Time b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Time b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Time a, Time b) => a.Equals(b).Not;
@@ -3835,21 +4070,8 @@ namespace Plato.DoublePrecision
         public Time Lesser(Time b) => this.LessThanOrEquals(b) ? this : b;
         public Time Greater(Time b) => this.GreaterThanOrEquals(b) ? this : b;
         // Unimplemented concept functions
-        public static Time operator +(Time a, Time b) => a.Add(b);
-        public Time Add(Time b) => throw new System.NotImplementedException();
-        public static Time operator -(Time a, Time b) => a.Subtract(b);
-        public Time Subtract(Time b) => throw new System.NotImplementedException();
-        public static Time operator -(Time self) => self.Negative;
-        public Time Negative => throw new System.NotImplementedException();
-        public Integer Compare(Time y) => throw new System.NotImplementedException();
-        public static Time operator *(Time self, Number other) => self.Multiply(other);
-        public Time Multiply(Number other) => throw new System.NotImplementedException();
         public static Time operator *(Number other, Time self) => other.Multiply(self);
         public static Time Multiply(Number other, Time self) => throw new System.NotImplementedException();
-        public static Time operator /(Time self, Number other) => self.Divide(other);
-        public Time Divide(Number other) => throw new System.NotImplementedException();
-        public static Time operator %(Time self, Number other) => self.Modulo(other);
-        public Time Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -4008,6 +4230,12 @@ namespace Plato.DoublePrecision
         public Number this[Integer n] => n.Equals(((Integer)0)) ? this.X : this.Y;
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : this.Y;
         public Number Cross(Vector2D b) => this.X.Multiply(b.Y).Subtract(this.Y.Multiply(b.X));
+        public static Vector2D operator *(Vector2D x, Vector2D y) => x.ZipComponents(y, (a, b) => a.Multiply(b));
+        public Vector2D Multiply(Vector2D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
+        public static Vector2D operator /(Vector2D x, Vector2D y) => x.ZipComponents(y, (a, b) => a.Divide(b));
+        public Vector2D Divide(Vector2D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
+        public static Vector2D operator %(Vector2D x, Vector2D y) => x.ZipComponents(y, (a, b) => a.Modulo(b));
+        public Vector2D Modulo(Vector2D y) => this.ZipComponents(y, (a, b) => a.Modulo(b));
         public Number Length => this.Magnitude;
         public Number LengthSquared => this.MagnitudeSquared;
         public Number Sum => this.Reduce(((Number)0), (a, b) => a.Add(b));
@@ -4028,6 +4256,7 @@ namespace Plato.DoublePrecision
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Vector2D MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Vector2D ZipComponents(Vector2D y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Vector2D Zero => this.MapComponents((i) => ((Number)0));
         public Vector2D One => this.MapComponents((i) => ((Number)1));
         public Vector2D MinValue => this.MapComponents((x) => x.MinValue);
@@ -4038,6 +4267,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector2D Clamp(Vector2D a, Vector2D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector2D ClampOne => this.Clamp(this.Zero, this.One);
+        public static Vector2D operator *(Vector2D x, Number s)
+        {
+            var _var49 = s;
+            return x.MapComponents((i) => i.Multiply(_var49));
+        }
+        public Vector2D Multiply(Number s)
+        {
+            var _var50 = s;
+            return this.MapComponents((i) => i.Multiply(_var50));
+        }
+        public static Vector2D operator /(Vector2D x, Number s)
+        {
+            var _var51 = s;
+            return x.MapComponents((i) => i.Divide(_var51));
+        }
+        public Vector2D Divide(Number s)
+        {
+            var _var52 = s;
+            return this.MapComponents((i) => i.Divide(_var52));
+        }
+        public static Vector2D operator %(Vector2D x, Number s)
+        {
+            var _var53 = s;
+            return x.MapComponents((i) => i.Modulo(_var53));
+        }
+        public Vector2D Modulo(Number s)
+        {
+            var _var54 = s;
+            return this.MapComponents((i) => i.Modulo(_var54));
+        }
+        public static Vector2D operator +(Vector2D x, Vector2D y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Vector2D Add(Vector2D y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Vector2D operator -(Vector2D x, Vector2D y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Vector2D Subtract(Vector2D y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Vector2D operator -(Vector2D x) => x.MapComponents((a) => a.Negative);
+        public Vector2D Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Vector2D a, Vector2D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Vector2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Vector2D a, Vector2D b) => a.Equals(b).Not;
@@ -4055,26 +4320,8 @@ namespace Plato.DoublePrecision
         public Vector2D Square => this.Pow2;
         public Vector2D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector2D operator *(Vector2D a, Vector2D b) => a.Multiply(b);
-        public Vector2D Multiply(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator /(Vector2D a, Vector2D b) => a.Divide(b);
-        public Vector2D Divide(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator %(Vector2D a, Vector2D b) => a.Modulo(b);
-        public Vector2D Modulo(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator +(Vector2D a, Vector2D b) => a.Add(b);
-        public Vector2D Add(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator -(Vector2D a, Vector2D b) => a.Subtract(b);
-        public Vector2D Subtract(Vector2D b) => throw new System.NotImplementedException();
-        public static Vector2D operator -(Vector2D self) => self.Negative;
-        public Vector2D Negative => throw new System.NotImplementedException();
-        public static Vector2D operator *(Vector2D self, Number other) => self.Multiply(other);
-        public Vector2D Multiply(Number other) => throw new System.NotImplementedException();
         public static Vector2D operator *(Number other, Vector2D self) => other.Multiply(self);
         public static Vector2D Multiply(Number other, Vector2D self) => throw new System.NotImplementedException();
-        public static Vector2D operator /(Vector2D self, Number other) => self.Divide(other);
-        public Vector2D Divide(Number other) => throw new System.NotImplementedException();
-        public static Vector2D operator %(Vector2D self, Number other) => self.Modulo(other);
-        public Vector2D Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -4114,6 +4361,12 @@ namespace Plato.DoublePrecision
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : n.Equals(((Integer)1)) ? this.Y : this.Z;
         public Vector3D Cross(Vector3D b) => this.Y.Multiply(b.Z).Subtract(this.Z.Multiply(b.Y)).Tuple3(this.Z.Multiply(b.X).Subtract(this.X.Multiply(b.Z)), this.X.Multiply(b.Y).Subtract(this.Y.Multiply(b.X)));
         public Number MixedProduct(Vector3D b, Vector3D c) => this.Cross(b).Dot(c);
+        public static Vector3D operator *(Vector3D x, Vector3D y) => x.ZipComponents(y, (a, b) => a.Multiply(b));
+        public Vector3D Multiply(Vector3D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
+        public static Vector3D operator /(Vector3D x, Vector3D y) => x.ZipComponents(y, (a, b) => a.Divide(b));
+        public Vector3D Divide(Vector3D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
+        public static Vector3D operator %(Vector3D x, Vector3D y) => x.ZipComponents(y, (a, b) => a.Modulo(b));
+        public Vector3D Modulo(Vector3D y) => this.ZipComponents(y, (a, b) => a.Modulo(b));
         public Number Length => this.Magnitude;
         public Number LengthSquared => this.MagnitudeSquared;
         public Number Sum => this.Reduce(((Number)0), (a, b) => a.Add(b));
@@ -4134,6 +4387,7 @@ namespace Plato.DoublePrecision
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Vector3D MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Vector3D ZipComponents(Vector3D y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Vector3D Zero => this.MapComponents((i) => ((Number)0));
         public Vector3D One => this.MapComponents((i) => ((Number)1));
         public Vector3D MinValue => this.MapComponents((x) => x.MinValue);
@@ -4144,6 +4398,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector3D Clamp(Vector3D a, Vector3D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector3D ClampOne => this.Clamp(this.Zero, this.One);
+        public static Vector3D operator *(Vector3D x, Number s)
+        {
+            var _var55 = s;
+            return x.MapComponents((i) => i.Multiply(_var55));
+        }
+        public Vector3D Multiply(Number s)
+        {
+            var _var56 = s;
+            return this.MapComponents((i) => i.Multiply(_var56));
+        }
+        public static Vector3D operator /(Vector3D x, Number s)
+        {
+            var _var57 = s;
+            return x.MapComponents((i) => i.Divide(_var57));
+        }
+        public Vector3D Divide(Number s)
+        {
+            var _var58 = s;
+            return this.MapComponents((i) => i.Divide(_var58));
+        }
+        public static Vector3D operator %(Vector3D x, Number s)
+        {
+            var _var59 = s;
+            return x.MapComponents((i) => i.Modulo(_var59));
+        }
+        public Vector3D Modulo(Number s)
+        {
+            var _var60 = s;
+            return this.MapComponents((i) => i.Modulo(_var60));
+        }
+        public static Vector3D operator +(Vector3D x, Vector3D y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Vector3D Add(Vector3D y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Vector3D operator -(Vector3D x, Vector3D y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Vector3D Subtract(Vector3D y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Vector3D operator -(Vector3D x) => x.MapComponents((a) => a.Negative);
+        public Vector3D Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Vector3D a, Vector3D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Vector3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Vector3D a, Vector3D b) => a.Equals(b).Not;
@@ -4161,26 +4451,8 @@ namespace Plato.DoublePrecision
         public Vector3D Square => this.Pow2;
         public Vector3D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector3D operator *(Vector3D a, Vector3D b) => a.Multiply(b);
-        public Vector3D Multiply(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator /(Vector3D a, Vector3D b) => a.Divide(b);
-        public Vector3D Divide(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator %(Vector3D a, Vector3D b) => a.Modulo(b);
-        public Vector3D Modulo(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator +(Vector3D a, Vector3D b) => a.Add(b);
-        public Vector3D Add(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator -(Vector3D a, Vector3D b) => a.Subtract(b);
-        public Vector3D Subtract(Vector3D b) => throw new System.NotImplementedException();
-        public static Vector3D operator -(Vector3D self) => self.Negative;
-        public Vector3D Negative => throw new System.NotImplementedException();
-        public static Vector3D operator *(Vector3D self, Number other) => self.Multiply(other);
-        public Vector3D Multiply(Number other) => throw new System.NotImplementedException();
         public static Vector3D operator *(Number other, Vector3D self) => other.Multiply(self);
         public static Vector3D Multiply(Number other, Vector3D self) => throw new System.NotImplementedException();
-        public static Vector3D operator /(Vector3D self, Number other) => self.Divide(other);
-        public Vector3D Divide(Number other) => throw new System.NotImplementedException();
-        public static Vector3D operator %(Vector3D self, Number other) => self.Modulo(other);
-        public Vector3D Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
@@ -4217,6 +4489,12 @@ namespace Plato.DoublePrecision
         public Integer Count => ((Integer)4);
         public Number this[Integer n] => n.Equals(((Integer)0)) ? this.X : n.Equals(((Integer)1)) ? this.Y : n.Equals(((Integer)2)) ? this.Z : this.W;
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : n.Equals(((Integer)1)) ? this.Y : n.Equals(((Integer)2)) ? this.Z : this.W;
+        public static Vector4D operator *(Vector4D x, Vector4D y) => x.ZipComponents(y, (a, b) => a.Multiply(b));
+        public Vector4D Multiply(Vector4D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
+        public static Vector4D operator /(Vector4D x, Vector4D y) => x.ZipComponents(y, (a, b) => a.Divide(b));
+        public Vector4D Divide(Vector4D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
+        public static Vector4D operator %(Vector4D x, Vector4D y) => x.ZipComponents(y, (a, b) => a.Modulo(b));
+        public Vector4D Modulo(Vector4D y) => this.ZipComponents(y, (a, b) => a.Modulo(b));
         public Number Length => this.Magnitude;
         public Number LengthSquared => this.MagnitudeSquared;
         public Number Sum => this.Reduce(((Number)0), (a, b) => a.Add(b));
@@ -4237,6 +4515,7 @@ namespace Plato.DoublePrecision
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Vector4D MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
+        public Vector4D ZipComponents(Vector4D y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Vector4D Zero => this.MapComponents((i) => ((Number)0));
         public Vector4D One => this.MapComponents((i) => ((Number)1));
         public Vector4D MinValue => this.MapComponents((x) => x.MinValue);
@@ -4247,6 +4526,42 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector4D Clamp(Vector4D a, Vector4D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector4D ClampOne => this.Clamp(this.Zero, this.One);
+        public static Vector4D operator *(Vector4D x, Number s)
+        {
+            var _var61 = s;
+            return x.MapComponents((i) => i.Multiply(_var61));
+        }
+        public Vector4D Multiply(Number s)
+        {
+            var _var62 = s;
+            return this.MapComponents((i) => i.Multiply(_var62));
+        }
+        public static Vector4D operator /(Vector4D x, Number s)
+        {
+            var _var63 = s;
+            return x.MapComponents((i) => i.Divide(_var63));
+        }
+        public Vector4D Divide(Number s)
+        {
+            var _var64 = s;
+            return this.MapComponents((i) => i.Divide(_var64));
+        }
+        public static Vector4D operator %(Vector4D x, Number s)
+        {
+            var _var65 = s;
+            return x.MapComponents((i) => i.Modulo(_var65));
+        }
+        public Vector4D Modulo(Number s)
+        {
+            var _var66 = s;
+            return this.MapComponents((i) => i.Modulo(_var66));
+        }
+        public static Vector4D operator +(Vector4D x, Vector4D y) => x.ZipComponents(y, (a, b) => a.Add(b));
+        public Vector4D Add(Vector4D y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Vector4D operator -(Vector4D x, Vector4D y) => x.ZipComponents(y, (a, b) => a.Subtract(b));
+        public Vector4D Subtract(Vector4D y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Vector4D operator -(Vector4D x) => x.MapComponents((a) => a.Negative);
+        public Vector4D Negative => this.MapComponents((a) => a.Negative);
         public static Boolean operator ==(Vector4D a, Vector4D b) => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public Boolean Equals(Vector4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator !=(Vector4D a, Vector4D b) => a.Equals(b).Not;
@@ -4264,26 +4579,8 @@ namespace Plato.DoublePrecision
         public Vector4D Square => this.Pow2;
         public Vector4D Cube => this.Pow3;
         // Unimplemented concept functions
-        public static Vector4D operator *(Vector4D a, Vector4D b) => a.Multiply(b);
-        public Vector4D Multiply(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator /(Vector4D a, Vector4D b) => a.Divide(b);
-        public Vector4D Divide(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator %(Vector4D a, Vector4D b) => a.Modulo(b);
-        public Vector4D Modulo(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator +(Vector4D a, Vector4D b) => a.Add(b);
-        public Vector4D Add(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator -(Vector4D a, Vector4D b) => a.Subtract(b);
-        public Vector4D Subtract(Vector4D b) => throw new System.NotImplementedException();
-        public static Vector4D operator -(Vector4D self) => self.Negative;
-        public Vector4D Negative => throw new System.NotImplementedException();
-        public static Vector4D operator *(Vector4D self, Number other) => self.Multiply(other);
-        public Vector4D Multiply(Number other) => throw new System.NotImplementedException();
         public static Vector4D operator *(Number other, Vector4D self) => other.Multiply(self);
         public static Vector4D Multiply(Number other, Vector4D self) => throw new System.NotImplementedException();
-        public static Vector4D operator /(Vector4D self, Number other) => self.Divide(other);
-        public Vector4D Divide(Number other) => throw new System.NotImplementedException();
-        public static Vector4D operator %(Vector4D self, Number other) => self.Modulo(other);
-        public Vector4D Modulo(Number other) => throw new System.NotImplementedException();
     }
     public static partial class Extensions
     {
