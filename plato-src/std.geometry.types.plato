@@ -366,3 +366,23 @@ type QuadMesh
     Vertices: Array<Vertex>;
     Faces: Array<Integer4>;
 }
+
+type ParametricCurve2D
+    implements Curve2D
+{
+    Evaluator: Function1<Number, Vector2D>;
+}
+
+type ParametricCurve3D
+    implements Curve3D
+{
+    Evaluator: Function1<Number, Vector3D>;
+}
+
+type ParametricSurface
+    implements ProceduralSurface
+{
+    Evaluator: Function1<Number, Vector3D>;
+    PeriodicX: Boolean;
+    PeriodicY: Boolean;
+}

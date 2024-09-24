@@ -18,7 +18,7 @@ concept Value
 // The NumComponents function returns the dimensionality of the numerical type. 
 // Individual components are returned via the Component type. 
 concept Numerical 
-    inherits Value, ScalarArithmetic, AdditiveArithmetic
+    inherits Value, ScalarArithmetic, Additive
 {
     Components(x: Self): Array<Number>;
     FromComponents(x: Self, xs: Array<Number>): Self;
@@ -27,7 +27,7 @@ concept Numerical
 // These are things that can be converted to and from numbers. It includes measures, and reals.
 // Whole numbers are not included because converting to/from a number would change the result.
 concept NumberLike
-    inherits Numerical, Comparable
+    inherits Numerical, Orderable
 {
 	ToNumber(x: Self): Number;
     FromNumber(x: Self, n: Number): Self;
@@ -37,15 +37,23 @@ concept NumberLike
 // https://en.wikipedia.org/wiki/Real_number
 // The "Value" or a Real is the number itself, and is equal to the Magnitude  
 concept Real
-    inherits NumberLike, Arithmetic
+    inherits NumberLike, Algebraic, Arithmetic
+{
+}
+
+// Used for integer and cardinal types. 
+// Somewhat counter intuitively, they are not considered Numerical types.
+// They do however support arithmetic operations.
+concept WholeNumber 
+    inherits Value, Orderable, Arithmetic
 {
 }
 
 // A measure is a numeric value with an intrinisic unit of measure. 
 // It resembles a Real except you cannot multiply or divide two measures without 
-// getting a new type. It does however support AdditiveArithmetic on itself.
+// getting a new type. It does however support Additive on itself.
 concept Measure
-    inherits NumberLike, AdditiveArithmetic
+    inherits NumberLike, Additive
 {
 }
 
@@ -55,14 +63,6 @@ concept Measure
 concept Vector
     inherits Numerical, Arithmetic, Array<Number>
 { 
-}
-
-// Used for integer and cardinal types. 
-// Somewhat counter intuitively, they are not considered Numerical types.
-// They do however support arithmetic operations.
-concept WholeNumber 
-    inherits Value, Comparable, Arithmetic
-{
 }
 
 // A coordinate is a point in some space (e.g., a cartesian grid). 
@@ -75,10 +75,11 @@ concept Coordinate
     inherits Value
 { }
 
-// The compare function return a negative integer if x < y, a positive integer if x > y, or zero otherwise. 
-concept Comparable
+// The less than function return true if the first value is strictly less than the other. 
+concept Orderable 
+    inherits Equatable
 {
-    Compare(x: Self, y: Self): Integer;
+	LessThanOrEquals(x: Self, y: Self): Boolean;
 }
 
 // Supported for when two values are equal 
@@ -88,36 +89,65 @@ concept Equatable
 }
 
 // The formal term for this is an Abelian group over addition
-// https://en.wikipedia.org/wiki/Abelian_group
-concept AdditiveArithmetic
+concept Additive
 {
     Add(a: Self, b: Self): Self;    
     Subtract(a: Self, b: Self): Self;    
     Negative(self: Self): Self;
 }
 
-// A type which an be multiplied, divided, or have the modulo computed with regards to another type. 
-concept MultiplicativeArithmetic<T>
-{
-    Multiply(self: Self, other: T): Self;    
-    Multiply(other: T, self: Self): Self;    
-    Divide(self: Self, other: T): Self;    
-    Modulo(self: Self, other: T): Self;
-}
-
 // Types implementing this concept can be multiplied or divided by a scalar value
 concept ScalarArithmetic
-    inherits MultiplicativeArithmetic<Number>
 { 
+    Modulo(self: Self, other: Number): Self;    
+    Divide(self: Self, other: Number): Self;    
+    Multiply(self: Self, other: Number): Self;    
+    Multiply(other: Number, self: Self): Self;    
+}
+
+// A type which can be multiplied by itself
+// Abelian semigroup over multiplication
+concept Multiplicative
+{
+    Multiply(a: Self, b: Self): Self;
+}
+
+// Multiplicative inverse
+concept Invertible
+{
+    Inverse(self: Self): Self;  
+}
+
+// Represents an Abelian group under multiplication 
+concept MultiplicativeWithInverse
+    inherits Multiplicative, Invertible
+{
+}
+
+// A type which can be multiplied and added, and supports scalara arithmetic  
+concept Algebraic
+    inherits Additive, MultiplicativeWithInverse, ScalarArithmetic
+{
+}
+
+// A type which can be divided by itself 
+concept Divisible
+{ 
+    Divide(a: Self, b: Self): Self;    
+}
+
+// A type which supports modulo arithmetic
+concept ModuloOperation
+{
+    Modulo(a: Self, b: Self): Self;
 }
 
 // Basic arithmetic operators 
+// Technically this is an arithmetic field + modulo operation
+// https://en.wikipedia.org/wiki/Field_(mathematics)
 concept Arithmetic 
-    inherits AdditiveArithmetic
+    inherits Additive, Multiplicative, Divisible, ModuloOperation
 { 
-    Multiply(a: Self, b: Self): Self;
-    Divide(a: Self, b: Self): Self;    
-    Modulo(a: Self, b: Self): Self;
 }
 
 // Basic boolean operations, which are also similar to set operations.  

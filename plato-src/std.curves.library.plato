@@ -1,55 +1,55 @@
 library Curves
 {
     // https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
-    Line(x: Number, m: Number, b: Number): Number
+    LinearFunction(x: Algebraic, m: Number, b: Number): Algebraic
         => m * x + b;
 
     //  https://en.wikipedia.org/wiki/Quadratic_function
-    Quadratic(x: Number, a: Number, b: Number, c: Number): Number
+    QuadraticFunction(x: Algebraic, a: Number, b: Number, c: Number): Algebraic
         => a * x.Square + b * x + c;
 
     //  https://en.wikipedia.org/wiki/Cubic_function
-    Cubic(x: Number, a: Number, b: Number, c: Number, d: Number): Number
+    CubicFunction(x: Algebraic, a: Number, b: Number, c: Number, d: Number): Algebraic
         => a * x.Cube + b * x.Square + c * x + d;
 
     // https://en.wikipedia.org/wiki/Parabola
-    Parabola(x: Number): Number
+    ParabolaFunction(x: Multiplicative): Multiplicative
         => x.Square;
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
-    StaircaseFloor(x: Number, steps: Integer): Number
+    StaircaseFloorFunction(x: Number, steps: Integer): Number
         => (x * steps).Floor / steps;
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
-    StaircaseCeiling(x: Number, steps: Integer): Number
+    StaircaseCeilingFunction(x: Number, steps: Integer): Number
         => (x * steps).Ceiling / steps;
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
-    StaircaseRound(x: Number, steps: Integer): Number
+    StaircaseRoundFunction(x: Number, steps: Integer): Number
         => (x * steps).Round / steps;
 
     //==
     // Curves 2D 
     //==
 
-    Circle(t: Number): Vector2D
-        => t.Turns.Circle;
+    CircleFunction(t: Number): Vector2D
+        => t.Turns.CircleFunction;
 
-    Circle(t: Angle): Vector2D
-        => (t.Sin, t.Cos);
+    CircleFunction(t: Angle): Vector2D
+        => (t.Cos, t.Sin);
 
     // https://en.wikipedia.org/wiki/Lissajous_curve
-    Lissajous(t: Angle, kx: Number, ky: Number): Vector2D
+    LissajousFunction(t: Angle, kx: Number, ky: Number): Vector2D
         => ((t * kx).Cos, (t * ky).Sin);
 
-    Lissajous(t: Number, kx: Number, ky: Number): Vector2D
-        => t.Turns.Lissajous(kx, ky);
+    LissajousFunction(t: Number, kx: Number, ky: Number): Vector2D
+        => t.Turns.LissajousFunction(kx, ky);
 
     // https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
-    ButterflyCurve(t: Number): Vector2D
-        => (t.Turns / 6.0).ButterflyCurve;
+    ButterflyCurveFunction(t: Number): Vector2D
+        => (t.Turns / 6.0).ButterflyCurveFunction;
 
-    ButterflyCurve(t: Angle): Vector2D
+    ButterflyCurveFunction(t: Angle): Vector2D
         => ((t * (t.Cos.Exp - 2.0 * (t * 4.0).Cos - (t / 12.0).Sin.Pow(5.0))).Sin,
             (t * (t.Cos.Exp - 2.0 * (t * 4.0).Cos - (t / 12.0).Sin.Pow(5.0))).Cos);
     
@@ -57,19 +57,19 @@ library Curves
     // 2D parametric functions, created from 1D 
     //===
 
-    Parabola2D(t: Number): Vector2D
-        => (t, t.Parabola);
+    ParabolaFunction2D(t: Number): Vector2D
+        => (t, t.ParabolaFunction);
 
-    Line2D(t: Number, m: Number, b: Number): Vector2D
-        => (t, t.Line(m, b));
+    LineFunction2D(t: Number, m: Number, b: Number): Vector2D
+        => (t, t.LinearFunction(m, b));
 
-    SinCurve(t: Number): Vector2D
+    SinFunction2D(t: Number): Vector2D
         => (t, t.Turns.Sin);
 
-    CosCurve(t: Number): Vector2D
+    CosFunction2D(t: Number): Vector2D
         => (t, t.Turns.Cos);
 
-    TanCurve(t: Number): Vector2D
+    TanFunction2D(t: Number): Vector2D
         => (t, t.Turns.Tan);
 
     //==
@@ -77,7 +77,7 @@ library Curves
     //== 
 
     // https://en.wikipedia.org/wiki/Torus_knot
-    TorusKnot(t: Angle, p: Number, q: Number): Vector3D
+    TorusKnotFunction(t: Angle, p: Number, q: Number): Vector3D
     {
         var r = (t * q).Cos + 2.0;
         var x = r * (t * p).Cos;
@@ -87,20 +87,25 @@ library Curves
     }
 
     // https://en.wikipedia.org/wiki/Trefoil_knot
-    TrefoilKnot(t: Angle): Vector3D
+    TrefoilKnotFunction(t: Angle): Vector3D
         => (t.Sin + (t * 2.0).Sin * 2.0,
             t.Cos + (t * 2.0).Cos * 2.0,
             -(t * 3.0).Sin);
 
     // https://en.wikipedia.org/wiki/Figure-eight_knot_(mathematics)
-    FigureEightKnot(t: Angle): Vector3D
+    FigureEightKnotFunction(t: Angle): Vector3D
         => ((2.0 + (t * 2.0).Cos) * (t * 3.0).Cos,
             (2.0 + (t * 2.0).Cos) * (t * 3.0).Sin,
             (t * 4.0).Sin);
 
     // https://en.wikipedia.org/wiki/Parametric_equation#Helix
-    Helix(t: Number, revs: Number): Vector3D
+    HelixFunction(t: Number, revs: Number): Vector3D
         => ((t * revs).Turns.Sin, 
             (t * revs).Turns.Cos,
             t);
+
+    //==
+    // TODO:
+    // https://en.wikipedia.org/wiki/Rose_(mathematics)
+    // Other polar coordinate based functions
 }

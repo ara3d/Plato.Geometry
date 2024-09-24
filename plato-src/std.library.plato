@@ -332,24 +332,24 @@ library Numerical
     //==
     // Comparable functions
     
-    LessThan(a: Comparable, b: Comparable): Boolean 
-        => a.Compare(b) < 0;
+    LessThan(a: Orderable, b: Orderable): Boolean 
+        => a <= b && a != b;
     
-    LessThanOrEquals(a: Comparable, b: Comparable): Boolean
-        => a.Compare(b) <= 0;   
+    GreaterThan(a: Orderable, b: Orderable): Boolean 
+        => b < a;
     
-    GreaterThan(a: Comparable, b: Comparable): Boolean 
-        => a.Compare(b) > 0;
-    
-    GreaterThanOrEquals(a: Comparable, b: Comparable): Boolean 
-        => a.Compare(b) >= 0;
+    GreaterThanOrEquals(a: Orderable, b: Orderable): Boolean 
+        => b <= a;
        
-    Lesser(a: Comparable, b: Comparable): Comparable 
+    Lesser(a: Orderable, b: Orderable): Orderable 
         => a <= b ? a : b;
     
-    Greater(a: Comparable, b: Comparable): Comparable 
+    Greater(a: Orderable, b: Orderable): Orderable 
         => a >= b ? a : b;
    
+    CompareTo(a: Orderable, b: Orderable): Integer
+		=> a <= b ? (a == b ? 0 : - 1) : 1;
+    
     //==
     // Number-like
 
@@ -361,6 +361,12 @@ library Numerical
 
     Compare(a: NumberLike, b: NumberLike): Integer
         => a.ToNumber.Compare(b.ToNumber);
+
+    Add(x: NumberLike, y: Number): NumberLike
+		=> x.FromNumber(x.ToNumber + y);
+
+    Subract(x: NumberLike, y: Number): NumberLike
+		=> x.FromNumber(x.ToNumber - y);
 
     //==
     // Numerical implementation of ScalarArithmetic 
@@ -403,4 +409,5 @@ library Numerical
     // NOTE:
     // There are many other operations that make sense on Numerical types. 
     // For example, everything that works on a single value. MinValue/MaxValue/Negate/Reciprocal/Inverse/Clamp/SmoothStep/Step/Sign/IsZero/IsOne/IsPositive/IsNegative/IsEven/IsOdd/IsPowerOfTwo/IsPowerOfTen/IsPowerOfTwo/IsPowerOfTen/IsPrime/IsComposite/IsPerfect/IsDeficient/IsAbundant/IsSquare/IsCube/IsPowerOf/IsRootOf/IsFactorOf/IsMultipleOf/IsDivisorOf/IsDivisibleBy
+
 }

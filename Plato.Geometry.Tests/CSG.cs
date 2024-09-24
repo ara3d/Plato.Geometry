@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Plato.DoublePrecision;
-using Plato.Geometry.CSharp;
 
 namespace Plato.Geometry.Tests
 {
@@ -14,23 +13,10 @@ namespace Plato.Geometry.Tests
         Front = 1,
         Back = 2,
         Spanning = 3,
-    };
-
-    public class Test
-    {
-        public static class Extensions
-        {
-            public static int Add(this Test test)
-            {
-
-            }
-        }
     }
 
     public static class BSPExtensions
     {
-       
-
         public static PlaneClassification Classify(this Plane p, Vector3D v)
         {
             var d = p.Normal.Dot(v) - p.D;
@@ -70,7 +56,7 @@ namespace Plato.Geometry.Tests
                 if (triangles.Count == 0)
                     return;
 
-                var plane = triangles.First().Plane();
+                var plane = triangles.First().Plane;
                 SplitPolygons(plane, triangles, Coplanar, Front, Back);
             }
 
@@ -110,7 +96,7 @@ namespace Plato.Geometry.Tests
                 switch ((PlaneClassification)polygonType)
                 {
                     case PlaneClassification.Coplanar:
-                        (p.Normal.Dot(tri.Normal()) > 0 ? coplanarFront : coplanarBack).Add(tri);
+                        (p.Normal.Dot(tri.Normal) > 0 ? coplanarFront : coplanarBack).Add(tri);
                         break;
 
                     case PlaneClassification.Front:

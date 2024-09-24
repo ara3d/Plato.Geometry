@@ -28,19 +28,16 @@ namespace Plato.Geometry
             => uv;
 
         public static Vector2D Disc(this Vector2D uv)
-            => uv.X.Turns.Circle * uv.Y;
+            => uv.X.Turns.CircleFunction * uv.Y;
 
         public static Vector3D Disc3D(this Vector2D uv)
             => uv.Disc();
 
         public static Vector3D Cylinder(this Vector2D uv)
-            => ((Vector3D)uv.X.Turns.Circle).WithZ(uv.Y);
+            => ((Vector3D)uv.X.Turns.CircleFunction).WithZ(uv.Y);
 
         public static Vector3D ConicalSection(this Vector2D uv, Number r1, Number r2)
-            => (uv.X.Circle * r1.Lerp(r2, uv.Y)).Vector3D.WithZ(uv.Y);
-
-        public static Vector3D Trefoil(this Vector2D uv, float r)
-            => Trefoil(uv.X.Turns, uv.Y.Turns, r);
+            => (uv.X.CircleFunction * r1.Lerp(r2, uv.Y)).Vector3D.WithZ(uv.Y);
 
         public static Vector3D Capsule(this Vector2D uv)
         {
@@ -54,10 +51,7 @@ namespace Plato.Geometry
             => ((Number)n).Turns;
 
         // https://commons.wikimedia.org/wiki/File:Parametric_surface_illustration_(trefoil_knot).png
-        public static Vector3D Trefoil(Angle u, Angle v, float r)
-            => (r * (u * 3).Sin / (2 + v.Cos),
-                r * (u.Sin + 2 * (u * 2).Sin) / (2 + (v + 1.Turns() / 3).Cos),
-                r / 2 * (u.Cos - 2 * (u * 2).Cos) * (2 + v.Cos) * (2 + (v + 1.Turns() / 3).Cos) / 4);
+      
 
         //===
         // Height fields converted into surface functions 
@@ -81,6 +75,7 @@ namespace Plato.Geometry
         */
     }
 
+    /*
     public class SurfaceImpl : ParametricSurface
     {
         private Func<Vector2D, Vector3D> Func;
@@ -98,6 +93,7 @@ namespace Plato.Geometry
         public Boolean PeriodicU { get; }
         public Boolean PeriodicV { get; }
     }
+    */
 
     /// <summary>
     /// Usually the result of sampling a parametric surface.
@@ -167,10 +163,6 @@ namespace Plato.Geometry
     {
         //==
         // Surface constructors
-
-        public static ParametricSurface Torus()
-            => new SurfaceImpl(uv => uv.Torus(3, 5), true, true);
-
         /*
         public static QuadMesh ToQuadMesh(this ParametricSurface s)
         {

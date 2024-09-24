@@ -53,11 +53,11 @@
     At(x: String, y: Integer): Character;
     Count(x: String): Integer;
 
-    Compare(x: Integer, y: Integer): Integer;
-    Compare(x: Number, y: Number): Integer;
-    Compare(x: Character, y: Character): Integer;
-    Compare(x: String, y: String): Integer;
-    Compare(x: Boolean, y: Boolean): Integer;
+    LessThanOrEquals(x: Integer, y: Integer): Boolean;
+    LessThanOrEquals(x: Number, y: Number): Boolean;
+    LessThanOrEquals(x: Character, y: Character): Boolean;
+    LessThanOrEquals(x: String, y: String): Boolean;
+    LessThanOrEquals(x: Boolean, y: Boolean): Boolean;
 
     Equals(x: Integer, y: Integer): Boolean;
     Equals(x: Number, y: Number): Boolean;

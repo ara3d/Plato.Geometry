@@ -127,14 +127,14 @@ concept Surface
 // https://en.wikipedia.org/wiki/Surface_(mathematics)
 // They are effectively Bivariate functions. You can also think of them as curves that have 
 // two parameters. 
-concept ParametricSurface
+concept ProceduralSurface
     inherits Procedural<Vector2D, Vector3D>, Surface 
 {
-    PeriodicU(x: Self): Boolean;
-    PeriodicV(x: Self): Boolean;
+    PeriodicX(x: Self): Boolean;
+    PeriodicY(x: Self): Boolean;
 }
 
-// Explicit surfaces are defined 
+// Explicit surfaces are defined as functions from UV space to a z value (height)
 concept ExplicitSurface 
     inherits Procedural<Vector2D, Number>, Surface
 { }

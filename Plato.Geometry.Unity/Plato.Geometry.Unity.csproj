@@ -11,10 +11,16 @@
   <ItemGroup>
     <Reference Include="Unity.Mathematics">
       <HintPath>..\vendor\Unity\Unity.Mathematics.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\vendor\Unity\2021.3.15f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="cd C:\Users\cdigg\git\studio\devops&#xD;&#xA;call copy-dlls.bat" />
+  </Target>
 
 </Project>

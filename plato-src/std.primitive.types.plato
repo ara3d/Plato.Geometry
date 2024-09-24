@@ -13,17 +13,17 @@ type Integer
 
 // Text
 type String
-    implements Value, Array<Character>, Comparable
+    implements Value, Orderable, Array<Character>
 { }
 
 // Truth value (true or false)
 type Boolean 
-    implements Value, Comparable, BooleanOperations
+    implements Value, Orderable, BooleanOperations
 { }
 
 // A single character of text 
 type Character
-    implements Value
+    implements Value, Orderable
 { }
 
 // A run-time checked value. 

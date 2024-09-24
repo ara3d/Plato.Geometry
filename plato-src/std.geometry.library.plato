@@ -46,7 +46,7 @@ library Geometry
 	// Ellipse functions 
 
 	Closed(x: Ellipse): Boolean => true;
-	Eval(x: Ellipse, t: Number): Vector2D => t.Circle * x.Size + x.Center;
+	Eval(x: Ellipse, t: Number): Vector2D => t.CircleFunction * x.Size + x.Center;
 	
 	//==
 	// Triangle 2D functions 
@@ -104,7 +104,6 @@ library Geometry
 	Closed(x: ClosedShape2D): Boolean => true;
 	Closed(x: ClosedShape3D): Boolean => true;
 	Closed(x: OpenShape2D): Boolean => false;
-
 	
 	/* TODO: I really want to have a PairwiseMap function, but it is not working. 
 	Sides(x: Polygon2D): Array<Line2D> => x.Points.PairwiseMap((a, b) => Line2D(a, b));
@@ -117,6 +116,6 @@ library Geometry
 	Transform(x: Deformable3D, m: Matrix4x4): Deformable3D => x.Deform(v => m * v);
 	Vector2D(a: Size2D): Vector2D => (a.Width, a.Height);
 	Vector3D(a: Size3D): Vector3D => (a.Width, a.Height, a.Depth);
-    CirclePoints(n: Integer): Array<Vector2D> => n.Fractions.Map((x) => x.Turns.Circle);
+    CirclePoints(n: Integer): Array<Vector2D> => n.Fractions.Map((x) => x.Turns.CircleFunction);
 	Points(x: RegularPolygon): Array<Vector2D> => x.NumPoints.CirclePoints;
 }

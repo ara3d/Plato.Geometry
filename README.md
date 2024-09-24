@@ -8,7 +8,21 @@ Plato.Geometry is delivered as a cross-platform C# library, but the roadmap incl
 All algorithms and data structures are written in a high-level programming language called Plato
 which makes porting to different languages easier. 
 
-## Rebuilding the C# Source Files from Plato
+# Status
+
+This library is a refactoring and redesign of the following libraries:
+
+* [Ara3D.Geometry](https://github.com/ara3d/geometry)
+* [Ara3D.Mathematics](https://github.com/ara3d/mathematics)
+* [Ara3D.Geometry-Toolkit](https://github.com/ara3d/geometry-toolkit)
+
+The goal is to create a single library that is more efficient, maintainable, and portable 
+that supports both single and double precision floating point math. 
+
+## Compiling and Building Sources
+
+This repository is provided as a convenience, it is intended to used as sub-module of the [Ara3D 
+mono-repository](https://github.com/ara3d/ara3d).
 
 The C# source files in this repository are generated from the Plato source files in the `plato-src` directory.
 Do not edit the C# source files with the extension ".g.cs" directly. 

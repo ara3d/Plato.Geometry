@@ -2,15 +2,27 @@
 
 Concepts are implemented as interfaces. Functions defined on a concept are available on every type that implements the concept.
 
-## Concept AdditiveArithmetic
+## Concept Additive
 
 Inherits: .
 
 Implemented by: Number, Integer, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Arithmetic.
+Inherited by: Numerical, NumberLike, Real, WholeNumber, Measure, Vector, Algebraic, Arithmetic.
 
 Functions: Add, Negative, Subtract.
+
+Fields: .
+
+## Concept Algebraic
+
+Inherits: Additive, Invertible, Multiplicative, MultiplicativeWithInverse, ScalarArithmetic.
+
+Implemented by: Number, Unit.
+
+Inherited by: Real.
+
+Functions: .
 
 Fields: .
 
@@ -20,7 +32,7 @@ Inherits: .
 
 Implemented by: Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D, Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4.
 
-Inherited by: Value, Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
+Inherited by: Value, Numerical, NumberLike, Real, WholeNumber, Measure, Vector, Coordinate, Interval.
 
 Functions: FieldNames, FieldValues, TypeName.
 
@@ -28,13 +40,13 @@ Fields: .
 
 ## Concept Arithmetic
 
-Inherits: AdditiveArithmetic.
+Inherits: Additive, Divisible, ModuloOperation, Multiplicative.
 
 Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Real, Vector, WholeNumber.
+Inherited by: Real, WholeNumber, Vector.
 
-Functions: Divide, Modulo, Multiply.
+Functions: .
 
 Fields: .
 
@@ -170,18 +182,6 @@ Functions: .
 
 Fields: .
 
-## Concept Comparable
-
-Inherits: .
-
-Implemented by: Number, Integer, String, Boolean, Unit, Probability, Angle, Length, Mass, Temperature, Time.
-
-Inherited by: NumberLike, Real, Measure, WholeNumber.
-
-Functions: Compare.
-
-Fields: .
-
 ## Concept ConvexPolyhedron
 
 Inherits: Geometry, Geometry, Geometry3D, Geometry3D, Points3D, Polyhedron, Surface.
@@ -210,7 +210,7 @@ Fields: .
 
 Inherits: OpenClosedShape, Procedural.
 
-Implemented by: Ellipse.
+Implemented by: Ellipse, ParametricCurve2D, ParametricCurve3D.
 
 Inherited by: Curve1D, Curve2D, Curve3D.
 
@@ -234,7 +234,7 @@ Fields: .
 
 Inherits: Curve, Geometry, Geometry2D, OpenClosedShape, Procedural.
 
-Implemented by: Ellipse.
+Implemented by: Ellipse, ParametricCurve2D.
 
 Inherited by: .
 
@@ -246,7 +246,7 @@ Fields: .
 
 Inherits: Curve, Geometry, Geometry3D, OpenClosedShape, Procedural.
 
-Implemented by: .
+Implemented by: ParametricCurve3D.
 
 Inherited by: .
 
@@ -314,13 +314,25 @@ Functions: .
 
 Fields: .
 
+## Concept Divisible
+
+Inherits: .
+
+Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
+
+Inherited by: Real, WholeNumber, Vector, Arithmetic.
+
+Functions: Divide.
+
+Fields: .
+
 ## Concept Equatable
 
 Inherits: .
 
 Implemented by: Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D, Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4.
 
-Inherited by: Value, Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
+Inherited by: Value, Numerical, NumberLike, Real, WholeNumber, Measure, Vector, Coordinate, Orderable, Interval.
 
 Functions: Equals.
 
@@ -366,9 +378,9 @@ Fields: .
 
 Inherits: .
 
-Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, TriMesh, QuadMesh.
+Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, TriMesh, QuadMesh, ParametricCurve2D, ParametricCurve3D, ParametricSurface.
 
-Inherited by: Geometry2D, Geometry3D, Shape2D, Shape3D, OpenShape2D, ClosedShape2D, OpenShape3D, ClosedShape3D, Curve2D, Curve3D, Surface, ParametricSurface, ExplicitSurface, Field2D, Field3D, ScalarField2D, ScalarField3D, DistanceField2D, DistanceField3D, Vector3Field2D, Vector4Field2D, Vector2Field3D, Vector3Field3D, Vector4Field3D, ImplicitSurface, ImplicitCurve2D, ImplicitVolume, Points2D, Points3D, BezierPatch, Polyhedron, ConvexPolyhedron, SolidPolyhedron, Mesh, PolyLine2D, PolyLine3D, ClosedPolyLine2D, ClosedPolyLine3D, Polygon2D, Polygon3D.
+Inherited by: Geometry2D, Geometry3D, Shape2D, Shape3D, OpenShape2D, ClosedShape2D, OpenShape3D, ClosedShape3D, Curve2D, Curve3D, Surface, ProceduralSurface, ExplicitSurface, Field2D, Field3D, ScalarField2D, ScalarField3D, DistanceField2D, DistanceField3D, Vector3Field2D, Vector4Field2D, Vector2Field3D, Vector3Field3D, Vector4Field3D, ImplicitSurface, ImplicitCurve2D, ImplicitVolume, Points2D, Points3D, BezierPatch, Polyhedron, ConvexPolyhedron, SolidPolyhedron, Mesh, PolyLine2D, PolyLine3D, ClosedPolyLine2D, ClosedPolyLine3D, Polygon2D, Polygon3D.
 
 Functions: .
 
@@ -378,7 +390,7 @@ Fields: .
 
 Inherits: Geometry.
 
-Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D.
+Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, ParametricCurve2D.
 
 Inherited by: Shape2D, OpenShape2D, ClosedShape2D, Curve2D, Field2D, ScalarField2D, DistanceField2D, Vector3Field2D, Vector4Field2D, ImplicitCurve2D, Points2D, PolyLine2D, ClosedPolyLine2D, Polygon2D.
 
@@ -390,9 +402,9 @@ Fields: .
 
 Inherits: Geometry.
 
-Implemented by: Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, TriMesh, QuadMesh.
+Implemented by: Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, TriMesh, QuadMesh, ParametricCurve3D, ParametricSurface.
 
-Inherited by: Shape3D, OpenShape3D, ClosedShape3D, Curve3D, Surface, ParametricSurface, ExplicitSurface, Field3D, ScalarField3D, DistanceField3D, Vector2Field3D, Vector3Field3D, Vector4Field3D, ImplicitSurface, ImplicitVolume, Points3D, BezierPatch, Polyhedron, ConvexPolyhedron, SolidPolyhedron, Mesh, PolyLine3D, ClosedPolyLine3D, Polygon3D.
+Inherited by: Shape3D, OpenShape3D, ClosedShape3D, Curve3D, Surface, ProceduralSurface, ExplicitSurface, Field3D, ScalarField3D, DistanceField3D, Vector2Field3D, Vector3Field3D, Vector4Field3D, ImplicitSurface, ImplicitVolume, Points3D, BezierPatch, Polyhedron, ConvexPolyhedron, SolidPolyhedron, Mesh, PolyLine3D, ClosedPolyLine3D, Polygon3D.
 
 Functions: .
 
@@ -470,9 +482,21 @@ Functions: Max, Min, Size.
 
 Fields: .
 
+## Concept Invertible
+
+Inherits: .
+
+Implemented by: Number, Unit.
+
+Inherited by: Real, MultiplicativeWithInverse, Algebraic.
+
+Functions: Inverse.
+
+Fields: .
+
 ## Concept Measure
 
-Inherits: AdditiveArithmetic, AdditiveArithmetic, Any, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Inherits: Additive, Additive, Any, Equatable, Equatable, NumberLike, Numerical, Orderable, ScalarArithmetic, Value.
 
 Implemented by: Probability, Angle, Length, Mass, Temperature, Time.
 
@@ -494,21 +518,45 @@ Functions: Faces, Vertices.
 
 Fields: .
 
-## Concept MultiplicativeArithmetic
+## Concept ModuloOperation
 
 Inherits: .
 
-Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
+Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Numerical, NumberLike, Real, Measure, Vector, ScalarArithmetic.
+Inherited by: Real, WholeNumber, Vector, Arithmetic.
 
-Functions: Divide, Modulo, Multiply, Multiply.
+Functions: Modulo.
+
+Fields: .
+
+## Concept Multiplicative
+
+Inherits: .
+
+Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
+
+Inherited by: Real, WholeNumber, Vector, MultiplicativeWithInverse, Algebraic, Arithmetic.
+
+Functions: Multiply.
+
+Fields: .
+
+## Concept MultiplicativeWithInverse
+
+Inherits: Invertible, Multiplicative.
+
+Implemented by: Number, Unit.
+
+Inherited by: Real, Algebraic.
+
+Functions: .
 
 Fields: .
 
 ## Concept NumberLike
 
-Inherits: AdditiveArithmetic, Any, Comparable, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Inherits: Additive, Any, Equatable, Equatable, Numerical, Orderable, ScalarArithmetic, Value.
 
 Implemented by: Number, Unit, Probability, Angle, Length, Mass, Temperature, Time.
 
@@ -520,7 +568,7 @@ Fields: .
 
 ## Concept Numerical
 
-Inherits: AdditiveArithmetic, Any, Equatable, MultiplicativeArithmetic, ScalarArithmetic, Value.
+Inherits: Additive, Any, Equatable, ScalarArithmetic, Value.
 
 Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
 
@@ -534,7 +582,7 @@ Fields: .
 
 Inherits: .
 
-Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Line3D.
+Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Line3D, ParametricCurve2D, ParametricCurve3D.
 
 Inherited by: OpenShape2D, ClosedShape2D, OpenShape3D, ClosedShape3D, Curve, Curve1D, Curve2D, Curve3D, PolyLine2D, PolyLine3D, ClosedPolyLine2D, ClosedPolyLine3D, Polygon2D, Polygon3D.
 
@@ -566,15 +614,15 @@ Functions: .
 
 Fields: .
 
-## Concept ParametricSurface
+## Concept Orderable
 
-Inherits: Geometry, Geometry3D, Procedural, Surface.
+Inherits: Equatable.
 
-Implemented by: .
+Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Angle, Length, Mass, Temperature, Time.
 
-Inherited by: .
+Inherited by: NumberLike, Real, WholeNumber, Measure.
 
-Functions: PeriodicU, PeriodicV.
+Functions: LessThanOrEquals.
 
 Fields: .
 
@@ -678,11 +726,23 @@ Fields: .
 
 Inherits: .
 
-Implemented by: Ellipse.
+Implemented by: Ellipse, ParametricCurve2D, ParametricCurve3D, ParametricSurface.
 
-Inherited by: Curve, Curve1D, Curve2D, Curve3D, ParametricSurface, ExplicitSurface, DistanceField, Field2D, Field3D, ScalarField2D, ScalarField3D, DistanceField2D, DistanceField3D, Vector3Field2D, Vector4Field2D, Vector2Field3D, Vector3Field3D, Vector4Field3D.
+Inherited by: Curve, Curve1D, Curve2D, Curve3D, ProceduralSurface, ExplicitSurface, DistanceField, Field2D, Field3D, ScalarField2D, ScalarField3D, DistanceField2D, DistanceField3D, Vector3Field2D, Vector4Field2D, Vector2Field3D, Vector3Field3D, Vector4Field3D.
 
 Functions: Eval.
+
+Fields: .
+
+## Concept ProceduralSurface
+
+Inherits: Geometry, Geometry3D, Procedural, Surface.
+
+Implemented by: ParametricSurface.
+
+Inherited by: .
+
+Functions: PeriodicX, PeriodicY.
 
 Fields: .
 
@@ -700,7 +760,7 @@ Fields: .
 
 ## Concept Real
 
-Inherits: AdditiveArithmetic, AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Inherits: Additive, Additive, Additive, Algebraic, Any, Arithmetic, Divisible, Equatable, Equatable, Invertible, ModuloOperation, Multiplicative, Multiplicative, MultiplicativeWithInverse, NumberLike, Numerical, Orderable, ScalarArithmetic, ScalarArithmetic, Value.
 
 Implemented by: Number, Unit.
 
@@ -712,13 +772,13 @@ Fields: .
 
 ## Concept ScalarArithmetic
 
-Inherits: MultiplicativeArithmetic.
+Inherits: .
 
 Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
 
-Inherited by: Numerical, NumberLike, Real, Measure, Vector.
+Inherited by: Numerical, NumberLike, Real, Measure, Vector, Algebraic.
 
-Functions: .
+Functions: Divide, Modulo, Multiply, Multiply.
 
 Fields: .
 
@@ -786,9 +846,9 @@ Fields: .
 
 Inherits: Geometry, Geometry3D.
 
-Implemented by: .
+Implemented by: ParametricSurface.
 
-Inherited by: ParametricSurface, ExplicitSurface, ImplicitSurface, BezierPatch, Polyhedron, ConvexPolyhedron, SolidPolyhedron.
+Inherited by: ProceduralSurface, ExplicitSurface, ImplicitSurface, BezierPatch, Polyhedron, ConvexPolyhedron, SolidPolyhedron.
 
 Functions: .
 
@@ -824,7 +884,7 @@ Inherits: Any, Equatable.
 
 Implemented by: Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D, Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4.
 
-Inherited by: Numerical, NumberLike, Real, Measure, Vector, WholeNumber, Coordinate, Interval.
+Inherited by: Numerical, NumberLike, Real, WholeNumber, Measure, Vector, Coordinate, Interval.
 
 Functions: .
 
@@ -832,7 +892,7 @@ Fields: .
 
 ## Concept Vector
 
-Inherits: AdditiveArithmetic, AdditiveArithmetic, Any, Arithmetic, Array, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value.
+Inherits: Additive, Additive, Any, Arithmetic, Array, Divisible, Equatable, ModuloOperation, Multiplicative, Numerical, ScalarArithmetic, Value.
 
 Implemented by: Complex, Vector2D, Vector3D, Vector4D.
 
@@ -904,7 +964,7 @@ Fields: .
 
 ## Concept WholeNumber
 
-Inherits: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, Value.
+Inherits: Additive, Any, Arithmetic, Divisible, Equatable, Equatable, ModuloOperation, Multiplicative, Orderable, Value.
 
 Implemented by: Integer.
 
@@ -921,7 +981,7 @@ Types are implemented as structs.
 
 Fields: Radians:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Implements: Additive, Any, Equatable, Measure, NumberLike, Numerical, Orderable, ScalarArithmetic, Value.
 
 ## Type AnglePair
 
@@ -945,7 +1005,7 @@ Implements: Any, Equatable, Value.
 
 Fields: .
 
-Implements: Any, BooleanOperations, Comparable, Equatable, Value.
+Implements: Any, BooleanOperations, Equatable, Orderable, Value.
 
 ## Type Bounds2D
 
@@ -981,7 +1041,7 @@ Implements: Geometry, Geometry3D, Shape3D.
 
 Fields: .
 
-Implements: Any, Equatable, Value.
+Implements: Any, Equatable, Orderable, Value.
 
 ## Type Chord
 
@@ -1041,7 +1101,7 @@ Implements: Any, Coordinate, Equatable, Value.
 
 Fields: Imaginary:ConcreteType:Number, Real:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Array, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value, Vector.
+Implements: Additive, Any, Arithmetic, Array, Divisible, Equatable, ModuloOperation, Multiplicative, Numerical, ScalarArithmetic, Value, Vector.
 
 ## Type Cone
 
@@ -1209,7 +1269,7 @@ Implements: Any, Coordinate, Equatable, Value.
 
 Fields: .
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, Value, WholeNumber.
+Implements: Additive, Any, Arithmetic, Divisible, Equatable, ModuloOperation, Multiplicative, Orderable, Value, WholeNumber.
 
 ## Type Integer2
 
@@ -1233,7 +1293,7 @@ Implements: Any, Array, Equatable, Value.
 
 Fields: Meters:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Implements: Additive, Any, Equatable, Measure, NumberLike, Numerical, Orderable, ScalarArithmetic, Value.
 
 ## Type Lens
 
@@ -1269,7 +1329,7 @@ Implements: Any, Coordinate, Equatable, Value.
 
 Fields: Kilograms:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Implements: Additive, Any, Equatable, Measure, NumberLike, Numerical, Orderable, ScalarArithmetic, Value.
 
 ## Type Matrix3x3
 
@@ -1287,7 +1347,7 @@ Implements: Any, Array, Equatable, Value.
 
 Fields: .
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, Real, ScalarArithmetic, Value.
+Implements: Additive, Algebraic, Any, Arithmetic, Divisible, Equatable, Invertible, ModuloOperation, Multiplicative, MultiplicativeWithInverse, NumberLike, Numerical, Orderable, Real, ScalarArithmetic, Value.
 
 ## Type NumberInterval
 
@@ -1300,6 +1360,24 @@ Implements: Any, Array, Equatable, Interval, Value.
 Fields: Value:ConcreteType:Rotation3D.
 
 Implements: Any, Equatable, Value.
+
+## Type ParametricCurve2D
+
+Fields: Evaluator:ConcreteType:Function1<ConcreteType:Number,ConcreteType:Vector2D>.
+
+Implements: Curve, Curve2D, Geometry, Geometry2D, OpenClosedShape, Procedural.
+
+## Type ParametricCurve3D
+
+Fields: Evaluator:ConcreteType:Function1<ConcreteType:Number,ConcreteType:Vector3D>.
+
+Implements: Curve, Curve3D, Geometry, Geometry3D, OpenClosedShape, Procedural.
+
+## Type ParametricSurface
+
+Fields: Evaluator:ConcreteType:Function1<ConcreteType:Number,ConcreteType:Vector3D>, PeriodicX:ConcreteType:Boolean, PeriodicY:ConcreteType:Boolean.
+
+Implements: Geometry, Geometry3D, Procedural, ProceduralSurface, Surface.
 
 ## Type Plane
 
@@ -1329,7 +1407,7 @@ Implements: Any, Equatable, Value.
 
 Fields: Value:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Implements: Additive, Any, Equatable, Measure, NumberLike, Numerical, Orderable, ScalarArithmetic, Value.
 
 ## Type Quad2D
 
@@ -1449,19 +1527,19 @@ Implements: Any, Coordinate, Equatable, Value.
 
 Fields: .
 
-Implements: Any, Array, Comparable, Equatable, Value.
+Implements: Any, Array, Equatable, Orderable, Value.
 
 ## Type Temperature
 
 Fields: Celsius:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Implements: Additive, Any, Equatable, Measure, NumberLike, Numerical, Orderable, ScalarArithmetic, Value.
 
 ## Type Time
 
 Fields: Seconds:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Comparable, Equatable, Measure, MultiplicativeArithmetic, NumberLike, Numerical, ScalarArithmetic, Value.
+Implements: Additive, Any, Equatable, Measure, NumberLike, Numerical, Orderable, ScalarArithmetic, Value.
 
 ## Type Transform2D
 
@@ -1563,25 +1641,25 @@ Implements: .
 
 Fields: Value:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Comparable, Equatable, MultiplicativeArithmetic, NumberLike, Numerical, Real, ScalarArithmetic, Value.
+Implements: Additive, Algebraic, Any, Arithmetic, Divisible, Equatable, Invertible, ModuloOperation, Multiplicative, MultiplicativeWithInverse, NumberLike, Numerical, Orderable, Real, ScalarArithmetic, Value.
 
 ## Type Vector2D
 
 Fields: X:ConcreteType:Number, Y:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Array, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value, Vector.
+Implements: Additive, Any, Arithmetic, Array, Divisible, Equatable, ModuloOperation, Multiplicative, Numerical, ScalarArithmetic, Value, Vector.
 
 ## Type Vector3D
 
 Fields: X:ConcreteType:Number, Y:ConcreteType:Number, Z:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Array, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value, Vector.
+Implements: Additive, Any, Arithmetic, Array, Divisible, Equatable, ModuloOperation, Multiplicative, Numerical, ScalarArithmetic, Value, Vector.
 
 ## Type Vector4D
 
 Fields: W:ConcreteType:Number, X:ConcreteType:Number, Y:ConcreteType:Number, Z:ConcreteType:Number.
 
-Implements: AdditiveArithmetic, Any, Arithmetic, Array, Equatable, MultiplicativeArithmetic, Numerical, ScalarArithmetic, Value, Vector.
+Implements: Additive, Any, Arithmetic, Array, Divisible, Equatable, ModuloOperation, Multiplicative, Numerical, ScalarArithmetic, Value, Vector.
 
 ## Type Vertex
 
