@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plato.Geometry.CSharp\Plato.Geometry.CSharp.csproj" />
+    <ProjectReference Include="..\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
   </ItemGroup>
 
 </Project>
