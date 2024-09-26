@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -137,6 +138,11 @@
     <None Include="Experimental\TriMesh.cs" />
     <None Include="Experimental\TriMeshBuilder.cs" />
     <None Include="Experimental\VertexCurvatureAnalysis.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="IO\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
 
 </Project>

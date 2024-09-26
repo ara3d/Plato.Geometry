@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using Plato.Geometry.Scenes;
 using UnityEngine;
 
 namespace Plato.Geometry.Unity
@@ -52,15 +52,15 @@ namespace Plato.Geometry.Unity
     /// </summary>
     public class PlatoLineDrawer : PlatoSceneComponent
     {
-        public PlatoLineData LineData;
+        public LineObject LineObject;
 
         public void Start()
         {
             var lr = gameObject.AddComponent<LineRenderer>();
-            lr.startWidth = (float)LineData.Width;
+            lr.startWidth = (float)LineObject.Width;
             lr.endWidth = lr.startWidth;
             lr.useWorldSpace = false;
-            lr.startColor = LineData.Color.ToUnity();
+            lr.startColor = LineObject.Material.Color.ToUnity();
             lr.endColor = lr.startColor;
             lr.material = Root.LineMaterial;
             UpdatePositions();
@@ -69,14 +69,14 @@ namespace Plato.Geometry.Unity
         public void UpdatePositions()
         {
             var lr = GetComponent<LineRenderer>();
-            lr.positionCount = LineData.Points.Count;
+            lr.positionCount = LineObject.Points.Count;
             var i = 0;
-            foreach (var point in LineData.Points)
+            foreach (var point in LineObject.Points)
             {
                 lr.SetPosition(i++, point.ToUnity());
             }
 
-            if (LineData.Closed)
+            if (LineObject.Closed)
             {
                 lr.loop = true;
             }

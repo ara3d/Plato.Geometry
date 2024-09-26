@@ -274,5 +274,19 @@ namespace Plato.Geometry
 
         public static Array<Line2D> ToLines(this Array<Vector2D> points, bool closed)
             => (points.Count - (closed ? 0 : 1)).Map(i => new Line2D(points.At(i), points.ModuloAt(i + 1)));
+
+        public static Plane ToPlane(this Ray3D self)
+            => new Plane(self.Direction, -self.Direction.Dot(self.Position));
+
+        public static Ray3D ToRay(this Line3D self)
+            => (self.A, self.B - self.A);
+
+        /*
+        public static Triangle3D GetTriangle(this TriMesh self, int i)
+            => new Triangle3D(self.Vertices[self.Faces[i].A], self.Vertices[self.Faces[i].B], self.Vertices[self.Faces[i].C]);
+
+        public static Triangle3D GetTriangle(this TriMesh self, Integer3 f)
+            => new Triangle3D(self.Vertices[f.A], self.Vertices[f.B], self.Vertices[f.C]);
+        */
     }
 }

@@ -261,11 +261,12 @@ concept SolidPolyhedron
     inherits Polyhedron 
 { }
 
-concept Mesh<FaceType, VertexType>
+concept IndexedGeometry3D
 	inherits Geometry3D
 {
-	Faces(x: Self): Array<FaceType>;
-	Vertices(x: Self): Array<VertexType>;
+    PrimitiveSize: Integer;
+	Indices(x: Self): Array<Integer>;
+	Vertices(x: Self): Array<Vector3D>;
 }
 
 concept Grid2D

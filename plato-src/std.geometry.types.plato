@@ -342,30 +342,7 @@ type Line4D
     B: Vector4D;
 }
 
-//==
-// Mesh related types
-//==
 
-type Vertex
-{  
-	Position: Vector3D;
-	Normal: Vector3D;
-	UV: Vector2D;
-}
-
-type TriMesh
-    implements Mesh<Integer3, Vertex>
-{   
-    Vertices: Array<Vertex>;
-    Faces: Array<Integer3>;
-}
-
-type QuadMesh
-    implements Mesh<Integer4, Vertex>
-{   
-    Vertices: Array<Vertex>;
-    Faces: Array<Integer4>;
-}
 
 type ParametricCurve2D
     implements Curve2D

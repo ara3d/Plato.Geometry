@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="RevitAPI">
+      <HintPath>..\vendor\Revit\2023\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIIFC">
+      <HintPath>..\vendor\Revit\2023\RevitAPIIFC.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\vendor\Revit\2023\RevitAPIUI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitNET">
+      <HintPath>..\vendor\Revit\2023\RevitNET.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Plato.Geometry.Scenes;
 using UnityEngine;
 
 namespace Plato.Geometry.Unity
@@ -14,23 +15,20 @@ namespace Plato.Geometry.Unity
                 Object.DestroyImmediate(obj.gameObject);
         }
 
-        public static void SetScene(PlatoScene scene)
+        public static void SetScene(IScene scene)
         {
             ClearScene();
             AddScene(scene);
         }
 
-        public static void AddScene(PlatoScene scene)
+        public static void AddScene(IScene scene)
         {
             var po = new GameObject("PlatoSceneRoot");
             po.AddComponent<PlatoSceneRoot>();
-            foreach (var so in scene.Objects)
-            {
-                Create(so, po);
-            }
+            Create(scene.Root, po);
         }
 
-        public static GameObject Create(PlatoSceneObject obj, GameObject parent)
+        public static GameObject Create(ISceneObject obj, GameObject parent)
         {
             var r = new GameObject();
             r.name = obj.Name;
@@ -45,11 +43,15 @@ namespace Plato.Geometry.Unity
                 Create(child, r);
             }
 
-            foreach (var line in obj.Lines)
+            if (obj is LineObject lo)
             {
                 var ld = r.AddComponent<PlatoLineDrawer>();
-                ld.LineData = line;
+                ld.LineObject = lo;
             }
+
+            // TODO: add a PlatoMeshDrawer
+            // TODO: figure out how to represent and render instances efficiently. 
+            // TODO: properly map materials. 
 
             return r;
         }
