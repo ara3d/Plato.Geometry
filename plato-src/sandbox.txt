@@ -1,0 +1,28 @@
+The following was in geometry.concepts.plato 
+
+// https://en.wikipedia.org/wiki/B%C3%A9zier_surface
+concept BezierPatch
+    inherits IPoints3D, ISurface, IArray2D<Vector3D>    
+{ }
+
+concept PolyhederalFace
+{
+    FaceIndex(x: Self): Integer;
+    VertexIndices(x: Self): IArray<Integer>;
+    Polyhedron(x: Self): Polyhedron;
+}
+
+// https://en.wikipedia.org/wiki/Polyhedron
+concept Polyhedron 
+    inherits ISurface, IPoints3D
+{
+    Faces(x: Self): IArray<PolyhederalFace>;
+}
+
+concept ConvexPolyhedron
+    inherits Polyhedron 
+{ }
+
+concept SolidPolyhedron
+    inherits Polyhedron 
+{ }

@@ -48,14 +48,14 @@ type Quad2D
 }
 
 type Line2D
-    implements PolyLine2D, IArray<Vector2D>
+    implements IPolyLine2D, IArray<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
 }
 
 type Circle
-    implements ClosedShape2D
+    implements IClosedShape2D
 {
     Center: Vector2D;
     Radius: Number;
@@ -63,28 +63,28 @@ type Circle
 
 // https://en.wikipedia.org/wiki/Lens_(geometry)
 type Lens
-    implements ClosedShape2D
+    implements IClosedShape2D
 {
     A: Circle;
     B: Circle;
 }
 
 type Rect2D
-    implements Polygon2D
+    implements IPolygon2D
 {
     Center: Vector2D;
     Size: Size2D;
 }
 
 type Ellipse
-    implements Curve2D
+    implements ICurve2D
 {
     Center: Vector2D;
     Size: Size2D;
 }
 
 type Ring
-    implements ClosedShape2D
+    implements IClosedShape2D
 {
     Center: Vector2D;
     InnerRadius: Number;
@@ -92,38 +92,38 @@ type Ring
 }
 
 type Arc
-    implements OpenShape2D
+    implements IOpenShape2D
 {
     Angles: AnglePair;
     Circle: Circle;
 }
 
 type Sector
-    implements ClosedShape2D
+    implements IClosedShape2D
 {
     Arc: Arc;
 }
 
 type Chord
-    implements ClosedShape2D
+    implements IClosedShape2D
 {
     Arc: Arc;
 }
 
 type Segment
-    implements ClosedShape2D
+    implements IClosedShape2D
 {
     Arc: Arc;
 }
 
 type RegularPolygon
-    implements Polygon2D
+    implements IPolygon2D
 {
     NumPoints: Integer;
 }
 
 type Box2D
-    implements Shape2D
+    implements IShape2D
 {
     Center: Vector2D;
     Rotation: Angle;
@@ -178,7 +178,7 @@ type Bounds3D
 }
 
 type Line3D
-    implements PolyLine3D, IArray<Vector3D>
+    implements IPolyLine3D, IArray<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
@@ -209,28 +209,28 @@ type Quad3D
 }
 
 type Capsule
-    implements Shape3D
+    implements IShape3D
 {
     Line: Line3D;
     Radius: Number;
 }
 
 type Cylinder
-    implements Shape3D
+    implements IShape3D
 {
     Line: Line3D;
     Radius: Number;
 }
 
 type Cone
-    implements Shape3D
+    implements IShape3D
 {
     Line: Line3D;
     Radius: Number;
 }
 
 type Tube
-    implements Shape3D
+    implements IShape3D
 {
     Line: Line3D;
     InnerRadius: Number;
@@ -238,7 +238,7 @@ type Tube
 }
 
 type ConeSegment
-    implements Shape3D
+    implements IShape3D
 {
     Line: Line3D;
     Radius1: Number;
@@ -246,7 +246,7 @@ type ConeSegment
 }
 
 type Box3D
-    implements Shape3D
+    implements IShape3D
 {
     Center: Vector3D;
     Rotation: Rotation3D;
@@ -345,19 +345,19 @@ type Line4D
 
 
 type ParametricCurve2D
-    implements Curve2D
+    implements ICurve2D
 {
     Evaluator: Function1<Number, Vector2D>;
 }
 
 type ParametricCurve3D
-    implements Curve3D
+    implements ICurve3D
 {
     Evaluator: Function1<Number, Vector3D>;
 }
 
 type ParametricSurface
-    implements ProceduralSurface
+    implements IProceduralSurface
 {
     Evaluator: Function1<Number, Vector3D>;
     PeriodicX: Boolean;

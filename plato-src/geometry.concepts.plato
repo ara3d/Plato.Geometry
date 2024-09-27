@@ -3,123 +3,110 @@
     Bounds(x: Self): Bounds2D;
 }
 
-concept Bounded3D
+concept IBounded3D
 {
     Bounds(x: Self): Bounds3D;
 }
 
-concept Transformable2D 
+concept ITransformable2D 
 {
     Transform(x: Self, matrix: Matrix3x3): Self;
 }
 
-concept Transformable3D 
+concept ITransformable3D 
 {
     Transform(x: Self, matrix: Matrix4x4): Self;
 }
 
-concept Deformable2D 
+concept IDeformable2D 
 {
     Deform(x: Self, f: Function1<Vector2D, Vector2D>): Self;
 }
 
-concept OpenClosedShape
+concept IOpenClosedShape
 { 
     Closed(x: Self): Boolean;
 }
 
-concept Deformable3D 
-    inherits Transformable3D
+concept IDeformable3D 
+    inherits ITransformable3D
 {
     Deform(x: Self, f: Function1<Vector3D, Vector3D>): Self;
 }
 
 // The set of all geometric objects: figures, shapes, points, fields, lines, and meshes. 
 
-concept Geometry 
+concept IGeometry 
 { }
 
 // The set of all 2D geometric objects
-concept Geometry2D
-    inherits Geometry
+concept IGeometry2D
+    inherits IGeometry
 { }
 
 // The set of all 3D geometric objects
-concept Geometry3D
-    inherits Geometry
+concept IGeometry3D
+    inherits IGeometry
 { }
 
-concept Shape2D 
-    inherits Geometry2D 
+concept IShape2D 
+    inherits IGeometry2D 
 { } 
 
-concept Shape3D
-    inherits Geometry3D
+concept IShape3D
+    inherits IGeometry3D
 { }
 
 //=== 
 // Open and closed shapes
 
-concept OpenShape2D 
-    inherits Geometry2D, OpenClosedShape
-{ 
-    // TODO: make a decision in the future. 
-    // Outline(x: Self): Curve2D;
-}
+concept IOpenShape2D 
+    inherits IGeometry2D, IOpenClosedShape
+{ }
 
-concept ClosedShape2D 
-    inherits Geometry2D, OpenClosedShape
-{ 
-    // TODO: make a decision in the future. 
-    // Outline(x: Self): Curve2D;
-}
+concept IClosedShape2D 
+    inherits IGeometry2D, IOpenClosedShape
+{ }
 
-concept OpenShape3D 
-    inherits Geometry3D, OpenClosedShape
-{ 
-    // TODO: make a decision in the future. 
-    // Surface(x: Self): Curve3D;
-}
+concept IOpenShape3D 
+    inherits IGeometry3D, IOpenClosedShape
+{ }
 
-concept ClosedShape3D 
-    inherits Geometry3D, OpenClosedShape
-{ 
-    // TODO: make a decision in the future. 
-    // Surface(x: Self): Curve2D;
-}
+concept IClosedShape3D 
+    inherits IGeometry3D, IOpenClosedShape
+{ }
 
 // A parametric geometry in any number of dimensions
-concept Procedural<TDomain, TRange>
+concept IProcedural<TDomain, TRange>
 {
     Eval(x: Self, amount: TDomain): TRange;
 }
 
 // Curves map a single number to a point in 1D, 2D, 3D, or higher space.
 // They are effectively functions. 
-concept Curve<TRange> 
-    inherits Procedural<Number, TRange>, OpenClosedShape
-{ 
-}
+concept ICurve<TRange> 
+    inherits IProcedural<Number, TRange>, IOpenClosedShape
+{ }
 
 // A 1 dimensional shape with a topological space of 1 dimensions
 // Basically a simple function 
-concept Curve1D 
-    inherits Curve<Number>
+concept ICurve1D 
+    inherits ICurve<Number>
 { }
 
 // A 2 dimensional shape with a topological space of 1 dimensions
-concept Curve2D
-    inherits Geometry2D, Curve<Vector2D>
+concept ICurve2D
+    inherits IGeometry2D, ICurve<Vector2D>
 { }
 
 // A 3 dimensional shape with a topological space of 1 dimensions
-concept Curve3D
-    inherits Geometry3D, Curve<Vector3D>
+concept ICurve3D
+    inherits IGeometry3D, ICurve<Vector3D>
 { }
 
 // Surfaces are 3 dimensional shapes with a topological space of 2 dimensions
-concept Surface
-    inherits Geometry3D 
+concept ISurface
+    inherits IGeometry3D 
 { }
 
 // Parametric surfaces are shapes defined from two variables (U and V)
@@ -127,26 +114,26 @@ concept Surface
 // https://en.wikipedia.org/wiki/Surface_(mathematics)
 // They are effectively Bivariate functions. You can also think of them as curves that have 
 // two parameters. 
-concept ProceduralSurface
-    inherits Procedural<Vector2D, Vector3D>, Surface 
+concept IProceduralSurface
+    inherits IProcedural<Vector2D, Vector3D>, ISurface 
 {
     PeriodicX(x: Self): Boolean;
     PeriodicY(x: Self): Boolean;
 }
 
 // Explicit surfaces are defined as functions from UV space to a z value (height)
-concept ExplicitSurface 
-    inherits Procedural<Vector2D, Number>, Surface
+concept IExplicitSurface 
+    inherits IProcedural<Vector2D, Number>, ISurface
 { }
 
-concept DistanceField<TDomain>
-    inherits Procedural<TDomain, Number>
+concept IDistanceField<TDomain>
+    inherits IProcedural<TDomain, Number>
 { }
 
 // A IVector or Scalar field in 2-Dimensions
 // https://en.wikipedia.org/wiki/Vector_field
-concept Field2D<T>
-    inherits Geometry2D, Procedural<Vector2D, T>
+concept IField2D<T>
+    inherits IGeometry2D, IProcedural<Vector2D, T>
 { }
 
 // A IVector or Scalar field in 3-Dimensions
@@ -154,127 +141,90 @@ concept Field2D<T>
 // This is effectively a Trivariate function. 
 // Given three arguments (x, y, z) it returns a single value. 
 // You can think of it as the extension of a curve or surface.
-// An example is a 3D-noise function 
-concept Field3D<T>
-    inherits Geometry3D, Procedural<Vector3D, T>
+// An example is a 3D-noise function, or a signed distance field 
+concept IField3D<T>
+    inherits IGeometry3D, IProcedural<Vector3D, T>
 { }
 
-concept ScalarField2D    
-    inherits Field2D<Number> 
+concept IScalarField2D    
+    inherits IField2D<Number> 
 { }
 
-concept ScalarField3D
-    inherits Field3D<Number>
+concept IScalarField3D
+    inherits IField3D<Number>
 { }
 
-concept DistanceField2D 
-    inherits ScalarField2D
+concept IVector3Field2D 
+    inherits IField2D<Vector3D> 
 { }
 
-concept DistanceField3D
-    inherits ScalarField3D
-{ }
-
-concept Vector3Field2D 
-    inherits Field2D<Vector3D> 
-{ }
-
-concept Vector4Field2D 
-    inherits Field2D<Vector4D> 
+concept IVector4Field2D 
+    inherits IField2D<Vector4D> 
 { }
 
 // A 3D field of 2D Vectors 
-concept Vector2Field3D 
-    inherits Field3D<Vector2D> 
+concept IVector2Field3D 
+    inherits IField3D<Vector2D> 
 { }
     
 // A 3D field of 3D Vectors (e.g., colors without alpha, or force vectors)
-concept Vector3Field3D 
-    inherits Field3D<Vector3D> 
+concept IVector3Field3D 
+    inherits IField3D<Vector3D> 
 { }
 
 // A 3D field of 4D Vectors (e.g., colors with alpha, or rotations)
-concept Vector4Field3D 
-    inherits Field3D<Vector4D> 
+concept IVector4Field3D 
+    inherits IField3D<Vector4D> 
 { }
 
-// An implicit procedural requires an epsilon to be provided for comparison 
-// purposes. This provide the 'width' of an implicit curve, or depth of a surface. 
-concept ImplicitProcedural<TDomain>  
-{
-    Eval(x: Self, amount: TDomain, epsilon: TDomain): Boolean;
-}
+// An implicit procedural could represent a curve in 2D, a surface, solid, or volume in 3D. 
+concept IImplicitProcedural<TDomain>  
+    inherits IProcedural<TDomain, Boolean>
+{ }
 
 // An implicit surface, where we are either on the surface or not. 
-concept ImplicitSurface
-    inherits Surface, ImplicitProcedural<Vector3D>
+concept IImplicitSurface
+    inherits ISurface, IImplicitProcedural<Vector3D>
 { }
 
 // An implicitly defined curve
-concept ImplicitCurve2D
-    inherits Geometry2D, ImplicitProcedural<Vector2D>
+concept IImplicitCurve2D
+    inherits IGeometry2D, IImplicitProcedural<Vector2D>
 { }
 
 // An implicit solid/volume, where we are either inside (true) or outside (false).
-concept ImplicitVolume
-    inherits Geometry3D, ImplicitProcedural<Vector3D>
+concept IImplicitVolume
+    inherits IGeometry3D, IImplicitProcedural<Vector3D>
 { }
 
-// IAny geometrical concept defined by a finite number of points 
-concept Points2D
-    inherits Geometry2D
+// Any geometrical concept defined by a finite number of points 
+concept IPoints2D
+    inherits IGeometry2D
 { 
     Points(x: Self): IArray<Vector2D>;
 }
 
-// IAny geometrical concept defined by a finite number of points 
-concept Points3D
-    inherits Geometry3D
+// Any geometrical concept defined by a finite number of points 
+concept IPoints3D
+    inherits IGeometry3D
 { 
     Points(x: Self): IArray<Vector3D>;
 }
 
-// https://en.wikipedia.org/wiki/B%C3%A9zier_surface
-concept BezierPatch
-    inherits Points3D, Surface, IArray2D<Vector3D>    
-{ }
-
-concept PolyhederalFace
-{
-    FaceIndex(x: Self): Integer;
-    VertexIndices(x: Self): IArray<Integer>;
-    Polyhedron(x: Self): Polyhedron;
-}
-
-// https://en.wikipedia.org/wiki/Polyhedron
-concept Polyhedron 
-    inherits Surface, Points3D
-{
-    Faces(x: Self): IArray<PolyhederalFace>;
-}
-
-concept ConvexPolyhedron
-    inherits Polyhedron 
-{ }
-
-concept SolidPolyhedron
-    inherits Polyhedron 
-{ }
-
 concept IndexedGeometry3D
-	inherits Geometry3D
+	inherits IGeometry3D
 {
     PrimitiveSize: Integer;
 	Indices(x: Self): IArray<Integer>;
 	Vertices(x: Self): IArray<Vector3D>;
 }
 
-concept Grid2D
+concept IGrid2D
     inherits IArray2D<Vector2D>
 { }
 
 // Also known as quad strips. 
-concept QuadGrid
+concept IQuadGrid
     inherits IArray2D<Vector3D>
 { 
     ClosedX(x: Self): Boolean;
@@ -283,34 +233,34 @@ concept QuadGrid
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
 // Also known as a PolygonalChain
-concept PolyLine2D
-    inherits Points2D, OpenClosedShape
+concept IPolyLine2D
+    inherits IPoints2D, IOpenClosedShape
 { 
 }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
 // Also known as a PolygonalChain
-concept PolyLine3D
-    inherits Points3D, OpenClosedShape
+concept IPolyLine3D
+    inherits IPoints3D, IOpenClosedShape
 { 
 }
 
-concept ClosedPolyLine2D
-    inherits PolyLine2D, ClosedShape2D
+concept IClosedPolyLine2D
+    inherits IPolyLine2D, IClosedShape2D
 { 
 }
 
-concept ClosedPolyLine3D
-    inherits PolyLine3D
+concept IClosedPolyLine3D
+    inherits IPolyLine3D
 { 
 }
 
-concept Polygon2D
-    inherits PolyLine2D
+concept IPolygon2D
+    inherits IPolyLine2D
 {
 }
 
-concept Polygon3D
-    inherits PolyLine3D
+concept IPolygon3D
+    inherits IPolyLine3D
 {
 }

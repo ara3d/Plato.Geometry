@@ -70,7 +70,7 @@ library ArrayLibrary
 		return true;
 	}
 
-    IAny(xs: IArray<$T>, f: Function1<$T, Boolean>): Boolean
+    Any(xs: IArray<$T>, f: Function1<$T, Boolean>): Boolean
     {
         for (var i=0; i < xs.Count; i = i + 1)
 			if (f(xs.At(i)))

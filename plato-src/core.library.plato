@@ -306,7 +306,7 @@ library INumerical
 		=> x.Components.All(predicate);
 
     AnyComponent(x: INumerical, predicate: Function1<Number, Boolean>): Boolean
-		=> x.Components.IAny(predicate);
+		=> x.Components.Any(predicate);
 
     Between(x: INumerical, a: INumerical, b: INumerical): Boolean
         => x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All(x => x);

@@ -1,4 +1,4 @@
-library Geometry
+library IGeometry
 {
     //==
 	// 2D Lines
@@ -99,21 +99,21 @@ library Geometry
 	//==
 	// Polygon functions 
 
-	Closed(x: Polygon2D): Boolean => true;
-	Closed(x: Polygon3D): Boolean => true;
-	Closed(x: ClosedShape2D): Boolean => true;
-	Closed(x: ClosedShape3D): Boolean => true;
-	Closed(x: OpenShape2D): Boolean => false;
+	Closed(x: IPolygon2D): Boolean => true;
+	Closed(x: IPolygon3D): Boolean => true;
+	Closed(x: IClosedShape2D): Boolean => true;
+	Closed(x: IClosedShape3D): Boolean => true;
+	Closed(x: IOpenShape2D): Boolean => false;
 	
 	/* TODO: I really want to have a PairwiseMap function, but it is not working. 
-	Sides(x: Polygon2D): IArray<Line2D> => x.Points.PairwiseMap((a, b) => Line2D(a, b));
-	Perimeter(x: Polygon2D): Number => x.Sides.Map(a => a.Length).Sum;
+	Sides(x: IPolygon2D): IArray<Line2D> => x.Points.PairwiseMap((a, b) => Line2D(a, b));
+	Perimeter(x: IPolygon2D): Number => x.Sides.Map(a => a.Length).Sum;
 	*/
 
 	//== 
 	// Misc functions 
 
-	Transform(x: Deformable3D, m: Matrix4x4): Deformable3D => x.Deform(v => m * v);
+	Transform(x: IDeformable3D, m: Matrix4x4): IDeformable3D => x.Deform(v => m * v);
 	Vector2D(a: Size2D): Vector2D => (a.Width, a.Height);
 	Vector3D(a: Size3D): Vector3D => (a.Width, a.Height, a.Depth);
     CirclePoints(n: Integer): IArray<Vector2D> => n.Fractions.Map((x) => x.Turns.CircleFunction);
