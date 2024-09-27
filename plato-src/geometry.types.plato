@@ -1,7 +1,7 @@
 //# 2D Shapes
 
 type Transform2D
-    implements Value
+    implements IValue
 {
     Translation: Vector2D;
     Rotation: Angle;
@@ -9,7 +9,7 @@ type Transform2D
 }
 
 type Pose2D
-    implements Value
+    implements IValue
 {
     Position: Vector2D;
     Orientation: Angle;
@@ -17,21 +17,21 @@ type Pose2D
 
 // Axis-Aligned bounding box 
 type Bounds2D
-    implements Interval<Vector2D>
+    implements IInterval<Vector2D>
 {
     Min: Vector2D;
     Max: Vector2D;
 }
 
 type Ray2D
-    implements Value
+    implements IValue
 {
     Direction: Vector2D;
     Origin: Vector2D;
 }
 
 type Triangle2D
-    implements Value, Array<Vector2D>
+    implements IValue, IArray<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
@@ -39,7 +39,7 @@ type Triangle2D
 }
 
 type Quad2D
-    implements Value, Array<Vector2D>
+    implements IValue, IArray<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
@@ -48,7 +48,7 @@ type Quad2D
 }
 
 type Line2D
-    implements PolyLine2D, Array<Vector2D>
+    implements PolyLine2D, IArray<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
@@ -133,14 +133,14 @@ type Box2D
 //# 3D Shapes
 
 type Sphere
-    implements Value
+    implements IValue
 {
     Center: Vector3D;
     Radius: Number;
 }
 
 type Plane
-    implements Value
+    implements IValue
 {
     Normal: Vector3D;
     D: Number;
@@ -148,7 +148,7 @@ type Plane
 
 
 type Transform3D
-    implements Value
+    implements IValue
 {
     Translation: Vector3D;
     Rotation: Rotation3D;
@@ -156,7 +156,7 @@ type Transform3D
 }
 
 type Pose3D
-    implements Value
+    implements IValue
 {
     Position: Vector3D;
     Orientation: Orientation3D;
@@ -171,28 +171,28 @@ type Frame3D
 
 // Axis-Aligned bounding box 
 type Bounds3D
-    implements Interval<Vector3D>
+    implements IInterval<Vector3D>
 {
     Min: Vector3D;
     Max: Vector3D;
 }
 
 type Line3D
-    implements PolyLine3D, Array<Vector3D>
+    implements PolyLine3D, IArray<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
 }
 
 type Ray3D
-    implements Value
+    implements IValue
 {
     Direction: Vector3D;
     Position: Vector3D;
 }
 
 type Triangle3D
-    implements Value, Array<Vector3D>
+    implements IValue, IArray<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
@@ -200,7 +200,7 @@ type Triangle3D
 }
 
 type Quad3D
-    implements Value, Array<Vector3D>
+    implements IValue, IArray<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
@@ -255,7 +255,7 @@ type Box3D
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve    
 type CubicBezier2D
-    implements Array<Vector2D>
+    implements IArray<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
@@ -265,7 +265,7 @@ type CubicBezier2D
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type CubicBezier3D
-    implements Array<Vector3D>
+    implements IArray<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
@@ -275,7 +275,7 @@ type CubicBezier3D
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier2D
-    implements Array<Vector2D>
+    implements IArray<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
@@ -284,7 +284,7 @@ type QuadraticBezier2D
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier3D
-    implements Array<Vector3D>
+    implements IArray<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
@@ -296,7 +296,7 @@ type QuadraticBezier3D
 //==
 
 type Quaternion
-    implements Value 
+    implements IValue 
 {
     X: Number;
     Y: Number;
@@ -305,14 +305,14 @@ type Quaternion
 }
 
 type AxisAngle
-    implements Value
+    implements IValue
 {
     Axis: Vector3D;
     Angle: Angle;
 }
 
 type EulerAngles
-    implements Value
+    implements IValue
 {
     Yaw: Angle;
     Pitch: Angle;
@@ -320,15 +320,15 @@ type EulerAngles
 }
 
 type Rotation3D
-    implements Value
+    implements IValue
 {
     Quaternion: Quaternion;
 }
 
 type Orientation3D
-    implements Value
+    implements IValue
 {
-    Value: Rotation3D;
+    IValue: Rotation3D;
 }
 
 //==
@@ -336,7 +336,7 @@ type Orientation3D
 //==
 
 type Line4D
-    implements Value, Array<Vector4D>
+    implements IValue, IArray<Vector4D>
 {
     A: Vector4D;
     B: Vector4D;

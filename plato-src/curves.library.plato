@@ -1,19 +1,19 @@
 library Curves
 {
     // https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
-    LinearFunction(x: Algebraic, m: Number, b: Number): Algebraic
+    LinearFunction(x: IAlgebraic, m: Number, b: Number): IAlgebraic
         => m * x + b;
 
     //  https://en.wikipedia.org/wiki/Quadratic_function
-    QuadraticFunction(x: Algebraic, a: Number, b: Number, c: Number): Algebraic
+    QuadraticFunction(x: IAlgebraic, a: Number, b: Number, c: Number): IAlgebraic
         => a * x.Square + b * x + c;
 
     //  https://en.wikipedia.org/wiki/Cubic_function
-    CubicFunction(x: Algebraic, a: Number, b: Number, c: Number, d: Number): Algebraic
+    CubicFunction(x: IAlgebraic, a: Number, b: Number, c: Number, d: Number): IAlgebraic
         => a * x.Cube + b * x.Square + c * x + d;
 
     // https://en.wikipedia.org/wiki/Parabola
-    ParabolaFunction(x: Multiplicative): Multiplicative
+    ParabolaFunction(x: IMultiplicative): IMultiplicative
         => x.Square;
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
@@ -73,7 +73,7 @@ library Curves
         => (t, t.Turns.Tan);
 
     //==
-    // 3D Vector
+    // 3D IVector
     //== 
 
     // https://en.wikipedia.org/wiki/Torus_knot

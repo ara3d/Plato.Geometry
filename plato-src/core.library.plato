@@ -1,4 +1,4 @@
-library Numerical
+library INumerical
 {
     //==
     // Constants
@@ -113,40 +113,40 @@ library Numerical
         => AlmostEqual(x, 0) || AlmostEqual(x, 1);
    
     //==
-    // Arithmetic operations 
+    // IArithmetic operations 
 
-    Pow2(x: Arithmetic): Arithmetic 
+    Pow2(x: IArithmetic): IArithmetic 
         => x * x;
 
-    Pow3(x: Arithmetic): Arithmetic 
+    Pow3(x: IArithmetic): IArithmetic 
         => x.Pow2 * x;
 
-    Pow4(x: Arithmetic): Arithmetic 
+    Pow4(x: IArithmetic): IArithmetic 
         => x.Pow3 * x;
 
-    Pow5(x: Arithmetic): Arithmetic 
+    Pow5(x: IArithmetic): IArithmetic 
         => x.Pow4 * x;
 
-    Square(x: Arithmetic): Arithmetic 
+    Square(x: IArithmetic): IArithmetic 
         => x.Pow2;
 
-    Cube(x: Arithmetic): Arithmetic 
+    Cube(x: IArithmetic): IArithmetic 
         => x.Pow3;
 
     //==
-    // Numerical Operations 
+    // INumerical Operations 
 
-    PlusOne(x: Numerical): Numerical 
+    PlusOne(x: INumerical): INumerical 
         => x + x.One;
 
-    MinusOne(x: Numerical): Numerical
+    MinusOne(x: INumerical): INumerical
         => x - x.One;
     
-    FromOne(x: Numerical): Numerical 
+    FromOne(x: INumerical): INumerical 
         => x.One - x;
 
     //==
-    // WholeNumber Operations 
+    // IWholeNumber Operations 
 
 
     //==
@@ -157,73 +157,73 @@ library Numerical
     FloatDivision(x: Integer, y: Integer): Number
 		=> x.ToNumber / y.ToNumber;
 
-	Fractions(x: Integer): Array<Number>
+	Fractions(x: Integer): IArray<Number>
 		=> x.Range.Map((i) => i.FloatDivision(x));
 
     //==
-    // NumberLike Operations 
+    // INumberLike Operations 
 
-    Multiply(x: NumberLike, y: NumberLike): NumberLike
+    Multiply(x: INumberLike, y: INumberLike): INumberLike
 		=> x.FromNumber(x.ToNumber * y.ToNumber);
    
-    Divide(x: NumberLike, y: NumberLike): NumberLike
+    Divide(x: INumberLike, y: INumberLike): INumberLike
 		=> x.FromNumber(x.ToNumber / y.ToNumber);
    
-    Modulo(x: NumberLike, y: NumberLike): NumberLike
+    Modulo(x: INumberLike, y: INumberLike): INumberLike
 		=> x.FromNumber(x.ToNumber % y.ToNumber);
    
     //==
-    // Real Operations 
+    // IReal Operations 
 
-    Magnitude(x: Real): Number
-        => x.Value;
+    Magnitude(x: IReal): Number
+        => x.IValue;
 
-    GtZ(x : Real): Boolean
+    GtZ(x : IReal): Boolean
         => x > x.Zero;
 
-    LtZ(x : Real): Boolean
+    LtZ(x : IReal): Boolean
         => x < x.Zero;
 
-    GtEqZ(x : Real): Boolean
+    GtEqZ(x : IReal): Boolean
         => x >= x.Zero;
 
-    LtEqZ(x : Real): Boolean
+    LtEqZ(x : IReal): Boolean
         => x <= x.Zero;
 
-    IsPositive(x: Real): Boolean
+    IsPositive(x: IReal): Boolean
         => x.GtEqZ;
 
-    IsNegative(x: Real): Boolean
+    IsNegative(x: IReal): Boolean
         => x.LtZ;
 
-    Sign(x: Real): Integer
+    Sign(x: IReal): Integer
         => x.LtZ ? -1 : x.GtZ ? 1 : 0;
 
-    Abs(x: Real): Real 
+    Abs(x: IReal): IReal 
         => x.LtZ ? -x: x;
     
     //==
-    // ScalarArithmetic operations 
+    // IScalarArithmetic operations 
 
-    Half(x: ScalarArithmetic): ScalarArithmetic
+    Half(x: IScalarArithmetic): IScalarArithmetic
         => x / 2.0;
         
-    Quarter(x: ScalarArithmetic): ScalarArithmetic
+    Quarter(x: IScalarArithmetic): IScalarArithmetic
         => x / 4.0;
     
-    Tenth(x: ScalarArithmetic): ScalarArithmetic 
+    Tenth(x: IScalarArithmetic): IScalarArithmetic 
         => x / 10.0;
     
-    Twice(x: ScalarArithmetic): ScalarArithmetic 
+    Twice(x: IScalarArithmetic): IScalarArithmetic 
         => x * 2.0;
            
-    Lerp(a: ScalarArithmetic, b: ScalarArithmetic, t: Number): ScalarArithmetic
+    Lerp(a: IScalarArithmetic, b: IScalarArithmetic, t: Number): IScalarArithmetic
         => a * t.FromOne + b * t;
           
     Between(self: Number, min: Number, max: Number): Boolean
         => self >= min && self <= max;
 
-    Barycentric(v1: ScalarArithmetic, v2: ScalarArithmetic, v3: ScalarArithmetic, uv: Vector2D): ScalarArithmetic 
+    Barycentric(v1: IScalarArithmetic, v2: IScalarArithmetic, v3: IScalarArithmetic, uv: Vector2D): IScalarArithmetic 
         => v1 + (v2 - v1) * uv.X + (v3 - v1) * uv.Y;   
 
     //==
@@ -276,138 +276,138 @@ library Numerical
 		=> x.Turns * 400.0;
 
     //==
-    // Numerical functions
+    // INumerical functions
 
-    Component(x: Numerical, n: Integer): Number
+    Component(x: INumerical, n: Integer): Number
         => x.Components[n];
 
-    NumComponents(x: Numerical): Integer
+    NumComponents(x: INumerical): Integer
         => x.Components.Count;
 
-    MapComponents(x: Numerical, f: Function1<Number, Number>): Numerical
+    MapComponents(x: INumerical, f: Function1<Number, Number>): INumerical
         => x.FromComponents(x.Components.Map(f));
 
-    ZipComponents(x: Numerical, y: Numerical, f: Function2<Number, Number, Number>): Numerical
+    ZipComponents(x: INumerical, y: INumerical, f: Function2<Number, Number, Number>): INumerical
         => x.FromComponents(x.Components.Zip(y.Components, f));
 
-    Zero(x: Numerical): Numerical
+    Zero(x: INumerical): INumerical
         => x.MapComponents((i) => 0.0);
 
-    One(x: Numerical): Numerical
+    One(x: INumerical): INumerical
         => x.MapComponents((i) => 1.0);
 
-    MinValue(x: Numerical): Numerical
+    MinValue(x: INumerical): INumerical
         => x.MapComponents((x) => x.MinValue);
 
-    MaxValue(x: Numerical): Numerical
+    MaxValue(x: INumerical): INumerical
         => x.MapComponents((x) => x.MaxValue);
 
-    AllComponents(x: Numerical, predicate: Function1<Number, Boolean>): Boolean
+    AllComponents(x: INumerical, predicate: Function1<Number, Boolean>): Boolean
 		=> x.Components.All(predicate);
 
-    AnyComponent(x: Numerical, predicate: Function1<Number, Boolean>): Boolean
-		=> x.Components.Any(predicate);
+    AnyComponent(x: INumerical, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.IAny(predicate);
 
-    Between(x: Numerical, a: Numerical, b: Numerical): Boolean
+    Between(x: INumerical, a: INumerical, b: INumerical): Boolean
         => x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All(x => x);
 
-    BetweenZeroOne(x: Numerical): Boolean
+    BetweenZeroOne(x: INumerical): Boolean
         => x.Between(x.Zero, x.One);
 
-    Clamp(x: Numerical, a: Numerical, b: Numerical): Numerical
+    Clamp(x: INumerical, a: INumerical, b: INumerical): INumerical
         => x.FromComponents(x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
 
-    ClampOne(x: Numerical): Numerical
+    ClampOne(x: INumerical): INumerical
         => x.Clamp(x.Zero, x.One);
 
     //==
-    // Equatable functions
+    // IEquatable functions
 
-    Equals(a: Equatable, b: Equatable): Boolean
+    Equals(a: IEquatable, b: IEquatable): Boolean
         => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All(x => x);
 
-    NotEquals(a: Equatable, b: Equatable): Boolean
+    NotEquals(a: IEquatable, b: IEquatable): Boolean
         => !a.Equals(b);
 
     //==
     // Comparable functions
     
-    LessThan(a: Orderable, b: Orderable): Boolean 
+    LessThan(a: IOrderable, b: IOrderable): Boolean 
         => a <= b && a != b;
     
-    GreaterThan(a: Orderable, b: Orderable): Boolean 
+    GreaterThan(a: IOrderable, b: IOrderable): Boolean 
         => b < a;
     
-    GreaterThanOrEquals(a: Orderable, b: Orderable): Boolean 
+    GreaterThanOrEquals(a: IOrderable, b: IOrderable): Boolean 
         => b <= a;
        
-    Lesser(a: Orderable, b: Orderable): Orderable 
+    Lesser(a: IOrderable, b: IOrderable): IOrderable 
         => a <= b ? a : b;
     
-    Greater(a: Orderable, b: Orderable): Orderable 
+    Greater(a: IOrderable, b: IOrderable): IOrderable 
         => a >= b ? a : b;
    
-    CompareTo(a: Orderable, b: Orderable): Integer
+    CompareTo(a: IOrderable, b: IOrderable): Integer
 		=> a <= b ? (a == b ? 0 : - 1) : 1;
     
     //==
     // Number-like
 
-    ToNumber(x: NumberLike): Number
+    ToNumber(x: INumberLike): Number
         => x.Component(0);
 
-    FromNumber(x: NumberLike, n: Number): NumberLike
+    FromNumber(x: INumberLike, n: Number): INumberLike
         => x.FromComponents([n]);
 
-    Compare(a: NumberLike, b: NumberLike): Integer
+    Compare(a: INumberLike, b: INumberLike): Integer
         => a.ToNumber.Compare(b.ToNumber);
 
-    Add(x: NumberLike, y: Number): NumberLike
+    Add(x: INumberLike, y: Number): INumberLike
 		=> x.FromNumber(x.ToNumber + y);
 
-    Subract(x: NumberLike, y: Number): NumberLike
+    Subract(x: INumberLike, y: Number): INumberLike
 		=> x.FromNumber(x.ToNumber - y);
 
     //==
-    // Numerical implementation of ScalarArithmetic 
+    // INumerical implementation of IScalarArithmetic 
 
-    Multiply(x: Numerical, s: Number): Numerical
+    Multiply(x: INumerical, s: Number): INumerical
         => x.MapComponents((i) => i * s);
 
-    Divide(x: Numerical, s: Number): Numerical
+    Divide(x: INumerical, s: Number): INumerical
         => x.MapComponents((i) => i / s);
 
-    Modulo(x: Numerical, s: Number): Numerical
+    Modulo(x: INumerical, s: Number): INumerical
         => x.MapComponents((i) => i % s);       
 
     //==
-    // Numerical implementation of AdditiveArithmetic
+    // INumerical implementation of AdditiveArithmetic
 
-    Add(x: Numerical, y: Numerical): Numerical
+    Add(x: INumerical, y: INumerical): INumerical
         => x.ZipComponents(y, (a, b) => a + b);
 
-    Subtract(x: Numerical, y: Numerical): Numerical
+    Subtract(x: INumerical, y: INumerical): INumerical
         => x.ZipComponents(y, (a, b) => a - b);
 
-    Negative(x: Numerical): Numerical
+    Negative(x: INumerical): INumerical
         => x.MapComponents((a) => -a);
 
     //==
-    // Vector implementation of Multiplicative arithmetic
+    // IVector implementation of IMultiplicative arithmetic
     // This is component wise, and doesn't make sense for measurements (which have components)
         
-    Multiply(x: Vector, y: Vector): Vector
+    Multiply(x: IVector, y: IVector): IVector
         => x.ZipComponents(y, (a, b) => a * b);
 
-    Divide(x: Vector, y: Vector): Vector
+    Divide(x: IVector, y: IVector): IVector
         => x.ZipComponents(y, (a, b) => a / b);
 
-    Modulo(x: Vector, y: Vector): Vector
+    Modulo(x: IVector, y: IVector): IVector
         => x.ZipComponents(y, (a, b) => a % b);
 
     //==
     // NOTE:
-    // There are many other operations that make sense on Numerical types. 
+    // There are many other operations that make sense on INumerical types. 
     // For example, everything that works on a single value. MinValue/MaxValue/Negate/Reciprocal/Inverse/Clamp/SmoothStep/Step/Sign/IsZero/IsOne/IsPositive/IsNegative/IsEven/IsOdd/IsPowerOfTwo/IsPowerOfTen/IsPowerOfTwo/IsPowerOfTen/IsPrime/IsComposite/IsPerfect/IsDeficient/IsAbundant/IsSquare/IsCube/IsPowerOf/IsRootOf/IsFactorOf/IsMultipleOf/IsDivisorOf/IsDivisibleBy
 
 }

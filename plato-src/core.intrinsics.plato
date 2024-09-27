@@ -40,7 +40,8 @@
 
     ToNumber(x: Integer): Number;
 
-    Map(x: Integer, f: Function1<Integer, $T>): Array<$T>;
+    Map(x: Integer, f: Function1<Integer, $T>): IArray<$T>;
+    FlatMap(xs: IArray<$T1>, f: Function1<$T1, IArray<$T2>>): IArray<$T2>;
 
     Invoke(f: Function0<$TR>): $TR;
     Invoke(f: Function1<$T0, $TR>, a0: $T0): $TR;
@@ -48,7 +49,7 @@
     Invoke(f: Function3<$T0, $T1, $T2, $TR>, a0: $T0, a1: $T1, a2: $T2): $TR;
     Invoke(f: Function4<$T0, $T1, $T2, $T3, $TR>, a0: $T0, a1: $T1, a2: $T2, a3: $T3): $TR;
 
-    New(t: Type, args: Array<Any>): Dynamic;
+    New(t: Type, args: IArray<IAny>): Dynamic;
 
     At(x: String, y: Integer): Character;
     Count(x: String): Integer;
@@ -63,5 +64,5 @@
     Equals(x: Number, y: Number): Boolean;
     Equals(x: Character, y: Character): Boolean;
     Equals(x: String, y: String): Boolean;
-    Equals(x: Boolean, y: Boolean): Boolean        ;
+    Equals(x: Boolean, y: Boolean): Boolean;
 }

@@ -3,27 +3,27 @@
 
 // A floating point representation of a real number 
 type Number 
-    implements Real
+    implements IReal
 { }
 
 // A positive or negative whole number 
 type Integer   
-    implements WholeNumber
+    implements IWholeNumber
 { }
 
 // Text
 type String
-    implements Value, Orderable, Array<Character>
+    implements IValue, IOrderable, IArray<Character>
 { }
 
 // Truth value (true or false)
 type Boolean 
-    implements Value, Orderable, BooleanOperations
+    implements IValue, IOrderable, IBoolean
 { }
 
 // A single character of text 
 type Character
-    implements Value, Orderable
+    implements IValue, IOrderable
 { }
 
 // A run-time checked value. 

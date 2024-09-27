@@ -1,29 +1,29 @@
             
 // A numerical type that is normally in the range of 0 to 1. 
 type Unit
-    implements Real
+    implements IReal
 {
-    Value: Number;
+    IValue: Number;
 }
 
 // A value in the range of 0 to 1 that represents the probability of an occurence
 type Probability
-    implements Measure
+    implements IMeasure
 {
-    Value: Number;
+    IValue: Number;
 }
 
 // A two dimensional value, have has a real and imaginary component. 
 type Complex
-    implements Vector
+    implements IVector
 {
-    Real: Number;
+    IReal: Number;
     Imaginary: Number;
 }
 
 // A pair of integers 
 type Integer2
-    implements Value, Array<Integer>
+    implements IValue, IArray<Integer>
 {
     A: Integer;
     B: Integer;
@@ -31,7 +31,7 @@ type Integer2
 
 // A tuple of 3 integers 
 type Integer3
-    implements Value, Array<Integer>
+    implements IValue, IArray<Integer>
 {
     A: Integer;
     B: Integer;
@@ -40,7 +40,7 @@ type Integer3
 
 // A tuple of 4 integers 
 type Integer4
-    implements Value, Array<Integer>
+    implements IValue, IArray<Integer>
 {
     A: Integer;
     B: Integer;
@@ -50,7 +50,7 @@ type Integer4
 
 // https://en.wikipedia.org/wiki/RGB_color_spaces
 type Color
-    implements Coordinate
+    implements ICoordinate
 {
     R: Unit;
     G: Unit;
@@ -60,7 +60,7 @@ type Color
 
 // https://en.wikipedia.org/wiki/CIELUV
 type ColorLUV
-    implements Coordinate
+    implements ICoordinate
 {
     Lightness: Unit;
     U: Unit;
@@ -69,7 +69,7 @@ type ColorLUV
 
 // https://en.wikipedia.org/wiki/CIELAB_color_space
 type ColorLAB
-    implements Coordinate
+    implements ICoordinate
 {
     Lightness: Unit;
     A: Number; 
@@ -78,7 +78,7 @@ type ColorLAB
 
 // https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_model
 type ColorLCh
-    implements Coordinate
+    implements ICoordinate
 {
     Lightness: Unit;
     ChromaHue: PolarCoordinate;
@@ -86,7 +86,7 @@ type ColorLCh
 
 // https://en.wikipedia.org/wiki/HSL_and_HSV
 type ColorHSV
-    implements Coordinate
+    implements ICoordinate
 {
     Hue: Angle;
     S: Unit;
@@ -95,7 +95,7 @@ type ColorHSV
 
 // https://en.wikipedia.org/wiki/HSL_and_HSV
 type ColorHSL
-    implements Coordinate
+    implements ICoordinate
 {
     Hue: Angle;
     Saturation: Unit;
@@ -104,7 +104,7 @@ type ColorHSL
 
 // https://en.wikipedia.org/wiki/YCbCr   
 type ColorYCbCr
-    implements Coordinate
+    implements ICoordinate
 {
     Y: Unit;
     Cb: Unit;
@@ -113,7 +113,7 @@ type ColorYCbCr
 
 // https://en.wikipedia.org/wiki/Spherical_coordinate_system    
 type SphericalCoordinate
-    implements Coordinate
+    implements ICoordinate
 {
     Radius: Number;
     Azimuth: Angle;
@@ -122,7 +122,7 @@ type SphericalCoordinate
 
 // https://en.wikipedia.org/wiki/Polar_coordinate_system   
 type PolarCoordinate
-    implements Coordinate
+    implements ICoordinate
 {
     Radius: Number;
     Angle: Angle;
@@ -130,7 +130,7 @@ type PolarCoordinate
 
 // https://en.wikipedia.org/wiki/Log-polar_coordinates    
 type LogPolarCoordinate
-    implements Coordinate
+    implements ICoordinate
 {
     Rho: Number;
     Azimuth: Angle;
@@ -138,7 +138,7 @@ type LogPolarCoordinate
 
 // https://en.wikipedia.org/wiki/Cylindrical_coordinate_system    
 type CylindricalCoordinate
-    implements Coordinate
+    implements ICoordinate
 {
     RadialDistance: Number;
     Azimuth: Angle;
@@ -147,7 +147,7 @@ type CylindricalCoordinate
 
 // https://en.wikipedia.org/wiki/Horizontal_coordinate_system    
 type HorizontalCoordinate
-    implements Coordinate
+    implements ICoordinate
 {
     Radius: Number;
     Azimuth: Angle;
@@ -156,7 +156,7 @@ type HorizontalCoordinate
 
 // https://en.wikipedia.org/wiki/Geographic_coordinate_system    
 type GeoCoordinate
-    implements Coordinate
+    implements ICoordinate
 {
     Latitude: Angle;
     Longitude: Angle;
@@ -164,15 +164,15 @@ type GeoCoordinate
 
 // https://en.wikipedia.org/wiki/Geographic_coordinate_system    
 type GeoCoordinateWithAltitude
-    implements Coordinate
+    implements ICoordinate
 {
-    Coordinate: GeoCoordinate;
+    ICoordinate: GeoCoordinate;
     Altitude: Number;
 }
 
 // Two dimensional rectangular size
 type Size2D
-    implements Value, Array<Number>
+    implements IValue, IArray<Number>
 {
     Width: Number;
     Height: Number;
@@ -180,7 +180,7 @@ type Size2D
 
 // Three dimensional box size
 type Size3D
-    implements Value, Array<Number>
+    implements IValue, IArray<Number>
 {
     Width: Number;
     Height: Number;
@@ -189,7 +189,7 @@ type Size3D
 
 // A fraction of two integer
 type Rational 
-	implements Value
+	implements IValue
 {
 	Numerator: Integer;
 	Denominator: Integer;
@@ -197,7 +197,7 @@ type Rational
 
 // An arbitrary fraction 
 type Fraction
-    implements Value
+    implements IValue
 {
     Numerator: Number;
     Denominator: Number;
@@ -205,32 +205,32 @@ type Fraction
 
 // An angle measurement 
 type Angle
-    implements Measure
+    implements IMeasure
 {
     Radians: Number;
 }
 
 // A length measurement 
 type Length
-    implements Measure
+    implements IMeasure
 {
     Meters: Number;
 }
 
 type Mass
-    implements Measure
+    implements IMeasure
 {
     Kilograms: Number;
 }
 
 type Temperature
-    implements Measure
+    implements IMeasure
 {
     Celsius: Number;
 }
 
 type Time
-    implements Measure
+    implements IMeasure
 {
     Seconds: Number;
 }
@@ -238,20 +238,20 @@ type Time
 // Unix date-time representation: number of non-leap seconds elapsed since January 1st, 1970.
 // https://en.wikipedia.org/wiki/Unix_time
 type DateTime
-    implements Coordinate
+    implements ICoordinate
 {
-    Value: Number; 
+    IValue: Number; 
 }
 
 type AnglePair
-    implements Interval<Angle>
+    implements IInterval<Angle>
 {
     Min: Angle;
     Max: Angle;
 }
 
 type NumberInterval
-    implements Interval<Number>
+    implements IInterval<Number>
 {
     Min: Number;
     Max: Number;
@@ -259,7 +259,7 @@ type NumberInterval
 
 // A 2-dimensional vector
 type Vector2D
-    implements Vector
+    implements IVector
 {
     X: Number;
     Y: Number;
@@ -267,7 +267,7 @@ type Vector2D
 
 // A 3-dimensional vector    
 type Vector3D
-    implements Vector
+    implements IVector
 {
     X: Number;
     Y: Number;
@@ -276,7 +276,7 @@ type Vector3D
 
 // A 4-dimensional vector
 type Vector4D
-    implements Vector
+    implements IVector
 {
     X: Number;
     Y: Number;
@@ -287,7 +287,7 @@ type Vector4D
 // Affine 2D transformation matrix 
 // https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
 type Matrix3x3 
-    implements Value, Array<Vector3D>
+    implements IValue, IArray<Vector3D>
 {
     Column1: Vector3D;   
     Column2: Vector3D;   
@@ -300,7 +300,7 @@ type Matrix3x3
 // Column major layout in memory 
 // Translation component is in Column4.XYZ    
 type Matrix4x4
-    implements Value, Array<Vector4D>
+    implements IValue, IArray<Vector4D>
 {
     Column1: Vector4D;
     Column2: Vector4D;

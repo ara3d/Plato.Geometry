@@ -1,15 +1,15 @@
 // https://en.wikipedia.org/wiki/Top_type
 // This is the Top Type in Plato. All types provide this. 
-concept Any
+concept IAny
 { 
-    FieldNames(x: Self): Array<String>;     
-    FieldValues(x: Self): Array<Dynamic>;
+    FieldNames(x: Self): IArray<String>;     
+    FieldValues(x: Self): IArray<Dynamic>;
     TypeName(x: Self): String;
 }
 
 // A value is a read-only type which has the implicit rule that only Values are members
-concept Value 
-    inherits Any, Equatable
+concept IValue 
+    inherits IAny, IEquatable
 { 
 }
 
@@ -17,17 +17,17 @@ concept Value
 // It is a generalization of real numbers to multiple dimensions, and with or without units of measure.
 // The NumComponents function returns the dimensionality of the numerical type. 
 // Individual components are returned via the Component type. 
-concept Numerical 
-    inherits Value, ScalarArithmetic, Additive
+concept INumerical 
+    inherits IValue, IScalarArithmetic, IAdditive
 {
-    Components(x: Self): Array<Number>;
-    FromComponents(x: Self, xs: Array<Number>): Self;
+    Components(x: Self): IArray<Number>;
+    FromComponents(x: Self, xs: IArray<Number>): Self;
 }   
 
 // These are things that can be converted to and from numbers. It includes measures, and reals.
 // Whole numbers are not included because converting to/from a number would change the result.
-concept NumberLike
-    inherits Numerical, Orderable
+concept INumberLike
+    inherits INumerical, IOrderable
 {
 	ToNumber(x: Self): Number;
     FromNumber(x: Self, n: Number): Self;
@@ -35,61 +35,61 @@ concept NumberLike
 
 // Represents a continuous one dimensional value.
 // https://en.wikipedia.org/wiki/Real_number
-// The "Value" or a Real is the number itself, and is equal to the Magnitude  
-concept Real
-    inherits NumberLike, Algebraic, Arithmetic
+// The "IValue" or a IReal is the number itself, and is equal to the Magnitude  
+concept IReal
+    inherits INumberLike, IAlgebraic, IArithmetic
 {
 }
 
 // Used for integer and cardinal types. 
-// Somewhat counter intuitively, they are not considered Numerical types.
+// Somewhat counter intuitively, they are not considered INumerical types.
 // They do however support arithmetic operations.
-concept WholeNumber 
-    inherits Value, Orderable, Arithmetic
+concept IWholeNumber 
+    inherits IValue, IOrderable, IArithmetic
 {
 }
 
 // A measure is a numeric value with an intrinisic unit of measure. 
-// It resembles a Real except you cannot multiply or divide two measures without 
-// getting a new type. It does however support Additive on itself.
-concept Measure
-    inherits NumberLike, Additive
+// It resembles a IReal except you cannot multiply or divide two measures without 
+// getting a new type. It does however support IAdditive on itself.
+concept IMeasure
+    inherits INumberLike, IAdditive
 {
 }
 
-// Vectors are specialization of the Numerical type.
+// Vectors are specialization of the INumerical type.
 // Unlike reals and measures they cannot be compared in any meaningful way 
 // They are also "array-like" in that they have a fixed number of components.
-concept Vector
-    inherits Numerical, Arithmetic, Array<Number>
+concept IVector
+    inherits INumerical, IArithmetic, IArray<Number>
 { 
 }
 
 // A coordinate is a point in some space (e.g., a cartesian grid). 
-// This also includes a time line, so a DateTime is considered a Coordinate. 
+// This also includes a time line, so a DateTime is considered a ICoordinate. 
 // Notice that coordinates do not provide arithmetic operators.  
 // We could have defined a Point2D and a Point3D types as kinds of coordinates,  
 // however, doing anything interesting with them involved converting them 
 // to vectors. This just added a lot of complexity without much benefit. 
-concept Coordinate
-    inherits Value
+concept ICoordinate
+    inherits IValue
 { }
 
 // The less than function return true if the first value is strictly less than the other. 
-concept Orderable 
-    inherits Equatable
+concept IOrderable 
+    inherits IEquatable
 {
 	LessThanOrEquals(x: Self, y: Self): Boolean;
 }
 
 // Supported for when two values are equal 
-concept Equatable
+concept IEquatable
 {
     Equals(a: Self, b: Self): Boolean;
 }
 
 // The formal term for this is an Abelian group over addition
-concept Additive
+concept IAdditive
 {
     Add(a: Self, b: Self): Self;    
     Subtract(a: Self, b: Self): Self;    
@@ -97,7 +97,7 @@ concept Additive
 }
 
 // Types implementing this concept can be multiplied or divided by a scalar value
-concept ScalarArithmetic
+concept IScalarArithmetic
 { 
     Modulo(self: Self, other: Number): Self;    
     Divide(self: Self, other: Number): Self;    
@@ -107,37 +107,37 @@ concept ScalarArithmetic
 
 // A type which can be multiplied by itself
 // Abelian semigroup over multiplication
-concept Multiplicative
+concept IMultiplicative
 {
     Multiply(a: Self, b: Self): Self;
 }
 
-// Multiplicative inverse
-concept Invertible
+// IMultiplicative inverse
+concept IInvertible
 {
     Inverse(self: Self): Self;  
 }
 
 // Represents an Abelian group under multiplication 
-concept MultiplicativeWithInverse
-    inherits Multiplicative, Invertible
+concept IMultiplicativeWithInverse
+    inherits IMultiplicative, IInvertible
 {
 }
 
 // A type which can be multiplied and added, and supports scalara arithmetic  
-concept Algebraic
-    inherits Additive, MultiplicativeWithInverse, ScalarArithmetic
+concept IAlgebraic
+    inherits IAdditive, IMultiplicativeWithInverse, IScalarArithmetic
 {
 }
 
 // A type which can be divided by itself 
-concept Divisible
+concept IDivisible
 { 
     Divide(a: Self, b: Self): Self;    
 }
 
 // A type which supports modulo arithmetic
-concept ModuloOperation
+concept IModulo
 {
     Modulo(a: Self, b: Self): Self;
 }
@@ -145,13 +145,13 @@ concept ModuloOperation
 // Basic arithmetic operators 
 // Technically this is an arithmetic field + modulo operation
 // https://en.wikipedia.org/wiki/Field_(mathematics)
-concept Arithmetic 
-    inherits Additive, Multiplicative, Divisible, ModuloOperation
+concept IArithmetic 
+    inherits IAdditive, IMultiplicative, IDivisible, IModulo
 { 
 }
 
 // Basic boolean operations, which are also similar to set operations.  
-concept BooleanOperations
+concept IBoolean
 {
     And(a: Self, b: Self): Self;
     Or(a: Self, b: Self): Self;    
@@ -159,11 +159,37 @@ concept BooleanOperations
 }
 
 // Represents a range of values. 
-concept Interval<T>    
-    where T: Numerical, T: Arithmetic
-    inherits Equatable, Value, Array<T>
+concept IInterval<T>    
+    where T: INumerical, T: IArithmetic
+    inherits IEquatable, IValue, IArray<T>
 {
     Min(x: Self): T;
     Max(x: Self): T;    
     Size(x: Self): T;
+}
+
+// Arrays provide a count and support the indexing operator [] 
+concept IArray<T>
+{
+    Count(xs: Self): Integer;
+    At(xs: Self, n: Integer): T;
+}
+
+// Extends the IArray concept with rows and columns. 
+concept IArray2D<T>
+    inherits IArray<T>
+{ 
+    RowCount(xs: Self): Integer;
+    ColumnCount(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer): T;
+}
+
+// Extends the IArray concept with rows, columns, and layers. 
+concept IArray3D<T>
+    inherits IArray<T>
+{ 
+    RowCount(xs: Self): Integer;
+    ColumnCount(xs: Self): Integer;
+    LayerCount(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer, layer: Integer): T;
 }

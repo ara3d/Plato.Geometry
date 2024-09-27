@@ -1,0 +1,95 @@
+
+
+library ArrayLibrary
+{
+    // Returns n numbers, from 0 to 1, including 0, but not 1. 
+    Numbers(n: Integer): IArray<Number>
+        => n.Map((i) => i.ToNumber / n.ToNumber);
+
+    Range(n: Integer): IArray<Integer>
+        => n.Map((i) => i);
+
+    Count(xs: IArray2D<$T>): Integer 
+        => xs.RowCount * xs.ColumnCount;
+
+    Count(xs: IArray3D<$T>): Integer 
+        => xs.RowCount * xs.ColumnCount * xs.LayerCount;
+    
+    At(xs: IArray2D<$T>, i: Integer): $T 
+        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount);
+    
+    At(xs: IArray3D<$T>, i: Integer): $T 
+        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount, i / xs.LayerCount);    
+        
+    IsEmpty(xs: IArray<$T>): Boolean
+        => xs.Count == 0;
+    
+    First(xs: IArray<$T>): $T 
+        => xs[0];    
+    
+    Last(xs: IArray<$T>): $T
+        => xs[xs.Count - 1];
+
+    Middle(xs: IArray<$T>, n: Integer): $T
+		=> xs[xs.Count / 2];
+
+    Slice(xs: IArray<$T>, from: Integer, to: Integer): IArray<$T>
+       => xs.Subarray(from, to - from);
+
+    Subarray(xs: IArray<$T>, from: Integer, count: Integer): IArray<$T>
+        => count.Map((i) => xs.At(i + from));
+
+    Skip(xs: IArray<$T>, n: Integer): IArray<$T>
+		=> xs.Subarray(n, xs.Count - n);
+
+    Take(xs: IArray<$T>, n: Integer): IArray<$T>
+        => xs.Subarray(0, n);
+
+    Drop(xs: IArray<$T>, n: Integer): IArray<$T>
+		=> xs.Take(xs.Count - n);
+
+    SkipDrop(xs: IArray<$T>, n1: Integer, n2: Integer): IArray<$T>
+        => xs.Skip(n1).Drop(n2);
+
+    Rest(xs: IArray<$T>): IArray<$T>
+		=> xs.Skip(1);
+
+    Reduce(xs: IArray<$T>, acc: $U, f: Function2<$T, $U, $U>): $U
+    {
+        var r = acc;
+        for (var i=0; i < xs.Count; i = i + 1)
+			r = f(xs.At(i), r);
+        return r;
+    }
+
+    All(xs: IArray<$T>, f: Function1<$T, Boolean>): Boolean
+    {
+        for (var i=0; i < xs.Count; i = i + 1)
+			if (!f(xs.At(i)))
+				return false;
+		return true;
+	}
+
+    IAny(xs: IArray<$T>, f: Function1<$T, Boolean>): Boolean
+    {
+        for (var i=0; i < xs.Count; i = i + 1)
+			if (f(xs.At(i)))
+				return true;
+		return false;
+	}
+
+    Map(xs: IArray<$T1>, f: Function1<$T1, $T2>): IArray<$T2> 
+        => xs.Count.Map((i) => f(xs.At(i)));
+
+    PairwiseMap(xs: IArray<$T1>, f: Function2<$T1, $T1, $T2>): IArray<$T2> 
+		=> (xs.Count - 1).Map(i => f(xs[i], xs[i + 1]));
+
+    PairwiseMapModulo(xs: IArray<$T1>, f: Function2<$T1, $T1, $T2>): IArray<$T2> 
+		=> xs.Count.Map(i => f(xs[i], xs[(i + 1) % xs.Count]));
+
+    Zip(xs: IArray<$T1>, ys: IArray<$T2>, f: Function2<$T1, $T2, $T3>): IArray<$T3> 
+        => xs.Count.Lesser(ys.Count).Map((i) => f(xs[i], ys[i]));  
+
+    Zip(xs: IArray<$T1>, ys: IArray<$T2>, zs: IArray<$T3>, f: Function3<$T1, $T2, $T3, $T4>): IArray<$T4> 
+        => xs.Count.Lesser(ys.Count).Lesser(zs.Count).Map((i) => f(xs[i], ys[i], zs[i]));  
+} 

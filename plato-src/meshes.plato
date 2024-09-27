@@ -9,52 +9,65 @@ type Vertex
     Color: Color;
 }
 
-//---------------------------------------------------
-// # Indexed geometry related functions
-
-NumFaces(t: IndexedGeometry3D): Integer => t.Indices.Length / t.PrimitiveSize;
-FaceIndices(t: IndexedGeometry3D, f: Integer): Array<Integer> => t.Indices.Slice(f * t.PrimitiveSize, t.PrimitiveSize);)
-FaceVertices(t: IndexedGeometry3D, f: Integer): Array<Vertex> => t.FaceIndices(f).Map(i => t.Vertices[i]);
-FaceIndexSlices(t: IndexedGeometry3D): Array<Array<Integer>> => t.Indices.Slices(t.PrimitiveSize);
-
-//---------------------------------------------------
-// # Implicit functions
-
-PointCloud(t: IndexedGeometry3D): PointCloud => (t.Vertices, t.Indices);
-LineSet(t: TriangleMesh): LineSet => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[0]]);
-LineSet(t: QuadMesh): LineSet => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]);
-TriangleMesh(t: QuadMesh): TriangleMesh => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]);
-
 //# Indexed geometry related types
+
+library Meshes
+{
+    //---------------------------------------------------
+    // # Indexed geometry related functions
+
+    NumFaces(t: IndexedGeometry3D): Integer => t.Indices.Length / t.PrimitiveSize;
+    FaceIndices(t: IndexedGeometry3D, f: Integer): IArray<Integer> => t.Indices.Slice(f * t.PrimitiveSize, t.PrimitiveSize);)
+    FaceVertices(t: IndexedGeometry3D, f: Integer): IArray<Vertex> => t.FaceIndices(f).Map(i => t.Vertices[i]);
+    FaceIndexSlices(t: IndexedGeometry3D): IArray<IArray<Integer>> => t.Indices.Slices(t.PrimitiveSize);
+
+    //---------------------------------------------------
+    // # Implicit functions
+
+    PointCloud(t: IndexedGeometry3D): PointCloud => (t.Vertices, t.Indices);
+    LineSet(t: TriangleMesh): LineSet => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[0]]);
+    LineSet(t: QuadMesh): LineSet => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]);
+    TriangleMesh(t: QuadMesh): TriangleMesh => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]);
+
+
+    //---------------------------------------------------
+    // # Type specific functions
+
+    PrimitiveSize(t: PointCloud): Integer => 1;
+    PrimitiveSize(t: LineSet): Integer => 2;
+    Faces(t: LineSet): IArray<Line3D> => t.FacesVertices.Map(a => (a[0], a[1])); 
+    PrimitiveSize(t: TriangleMesh): Integer => 3;
+    Faces(t: TriangleMesh): IArray<Triangle3D> => t.FacesVertices.Map(a => (a[0], a[1], a[2])); 
+    PrimitiveSize(t: QuadMesh): Integer => 4;
+    Faces(t: QuadMesh): IArray<Triangle4D> => t.FacesVertices.Map(a => (a[0], a[1], a[2], a[3])); 
+}
+
+//# Specific indexed geometry types
 
 type PointCloud
     implements IndexedGeometry3D
 {   
 }
 
-PrimitiveSize(t: PointCloud): Integer => 1;
 
 type LineSet
     implements IndexedGeometry3D
 {   
 }
 
-PrimitiveSize(t: LineSet): Integer => 2;
-Faces(t: LineSet): Array<Line3D> => t.FacesVertices.Map(a => (a[0], a[1])); 
-
 type TriangleMesh
     implements IndexedGeometry3D
 {   
 }
 
-PrimitiveSize(t: TriangleMesh): Integer => 3;
-Faces(t: TriangleMesh): Array<Triangle3D> => t.FacesVertices.Map(a => (a[0], a[1], a[2])); 
 
 type QuadMesh
     implements IndexedGeometry3D
 {   
 }
 
-PrimitiveSize(t: QuadMesh): Integer => 4;
-Faces(t: QuadMesh): Array<Triangle4D> => t.FacesVertices.Map(a => (a[0], a[1], a[2], a[3])); 
-
+type TessellatedMesh
+	implements IndexedGeometry3D
+{   
+    UVs: IArray<Vector2D>;
+}

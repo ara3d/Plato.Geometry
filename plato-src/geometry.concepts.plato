@@ -1,4 +1,4 @@
-﻿concept Bounded2D
+﻿concept IBounded2D
 {
     Bounds(x: Self): Bounds2D;
 }
@@ -143,13 +143,13 @@ concept DistanceField<TDomain>
     inherits Procedural<TDomain, Number>
 { }
 
-// A Vector or Scalar field in 2-Dimensions
+// A IVector or Scalar field in 2-Dimensions
 // https://en.wikipedia.org/wiki/Vector_field
 concept Field2D<T>
     inherits Geometry2D, Procedural<Vector2D, T>
 { }
 
-// A Vector or Scalar field in 3-Dimensions
+// A IVector or Scalar field in 3-Dimensions
 // https://en.wikipedia.org/wiki/Vector_field
 // This is effectively a Trivariate function. 
 // Given three arguments (x, y, z) it returns a single value. 
@@ -220,29 +220,29 @@ concept ImplicitVolume
     inherits Geometry3D, ImplicitProcedural<Vector3D>
 { }
 
-// Any geometrical concept defined by a finite number of points 
+// IAny geometrical concept defined by a finite number of points 
 concept Points2D
     inherits Geometry2D
 { 
-    Points(x: Self): Array<Vector2D>;
+    Points(x: Self): IArray<Vector2D>;
 }
 
-// Any geometrical concept defined by a finite number of points 
+// IAny geometrical concept defined by a finite number of points 
 concept Points3D
     inherits Geometry3D
 { 
-    Points(x: Self): Array<Vector3D>;
+    Points(x: Self): IArray<Vector3D>;
 }
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_surface
 concept BezierPatch
-    inherits Points3D, Surface, Array2D<Vector3D>    
+    inherits Points3D, Surface, IArray2D<Vector3D>    
 { }
 
 concept PolyhederalFace
 {
     FaceIndex(x: Self): Integer;
-    VertexIndices(x: Self): Array<Integer>;
+    VertexIndices(x: Self): IArray<Integer>;
     Polyhedron(x: Self): Polyhedron;
 }
 
@@ -250,7 +250,7 @@ concept PolyhederalFace
 concept Polyhedron 
     inherits Surface, Points3D
 {
-    Faces(x: Self): Array<PolyhederalFace>;
+    Faces(x: Self): IArray<PolyhederalFace>;
 }
 
 concept ConvexPolyhedron
@@ -265,17 +265,17 @@ concept IndexedGeometry3D
 	inherits Geometry3D
 {
     PrimitiveSize: Integer;
-	Indices(x: Self): Array<Integer>;
-	Vertices(x: Self): Array<Vector3D>;
+	Indices(x: Self): IArray<Integer>;
+	Vertices(x: Self): IArray<Vector3D>;
 }
 
 concept Grid2D
-    inherits Array2D<Vector2D>
+    inherits IArray2D<Vector2D>
 { }
 
 // Also known as quad strips. 
 concept QuadGrid
-    inherits Array2D<Vector3D>
+    inherits IArray2D<Vector3D>
 { 
     ClosedX(x: Self): Boolean;
     ClosedY(x: Self): Boolean;

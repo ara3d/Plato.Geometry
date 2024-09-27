@@ -4,7 +4,7 @@ library Geometry
 	// 2D Lines
 	
 	Closed(x: Line2D): Boolean => false;
-	Points(x: Line2D): Array<Vector2D> => x;
+	Points(x: Line2D): IArray<Vector2D> => x;
 	Length(x: Line2D): Number => (x.B - x.A).Length;
 	Direction(x: Line2D): Vector2D => (x.B - x.A);
 	Ray2D(x: Line2D): Ray2D => (x.A, x.Direction);
@@ -14,7 +14,7 @@ library Geometry
 	// 3D Lines
 	 
 	Closed(x: Line3D): Boolean => false;
-	Points(x: Line3D): Array<Vector3D> => x;
+	Points(x: Line3D): IArray<Vector3D> => x;
 	Length(x: Line3D): Number => (x.B - x.A).Length;
 	Direction(x: Line3D): Vector3D => (x.B - x.A);
 	Ray3D(x: Line3D): Ray3D => (x.A, x.Direction);
@@ -40,7 +40,7 @@ library Geometry
 	TopRight(x: Rect2D): Vector2D => (x.Right, x.Top);
 	BottomRight(x: Rect2D): Vector2D => (x.Right, x.Bottom);
 	BottomLeft(x: Rect2D): Vector2D => (x.Left, x.Bottom);
-	Points(x: Rect2D): Array<Vector2D> => [x.TopLeft, x.TopRight, x.BottomRight, x.BottomLeft];
+	Points(x: Rect2D): IArray<Vector2D> => [x.TopLeft, x.TopRight, x.BottomRight, x.BottomLeft];
 
 	//==
 	// Ellipse functions 
@@ -51,7 +51,7 @@ library Geometry
 	//==
 	// Triangle 2D functions 
 
-	Points(x: Triangle2D): Array<Vector2D> => [x.A, x.B, x.C];
+	Points(x: Triangle2D): IArray<Vector2D> => [x.A, x.B, x.C];
 	Area(t: Triangle2D): Number => (t.A.X * (t.C.Y - t.B.Y) + t.B.X * (t.A.Y - t.C.Y) + t.C.X * (t.B.Y - t.A.Y)).Half;
 	Flip(t: Triangle2D): Triangle2D => (t.C, t.B, t.A);
     Center(t: Triangle2D): Vector2D => (t.A + t.B + t.C) / 3.0;
@@ -106,7 +106,7 @@ library Geometry
 	Closed(x: OpenShape2D): Boolean => false;
 	
 	/* TODO: I really want to have a PairwiseMap function, but it is not working. 
-	Sides(x: Polygon2D): Array<Line2D> => x.Points.PairwiseMap((a, b) => Line2D(a, b));
+	Sides(x: Polygon2D): IArray<Line2D> => x.Points.PairwiseMap((a, b) => Line2D(a, b));
 	Perimeter(x: Polygon2D): Number => x.Sides.Map(a => a.Length).Sum;
 	*/
 
@@ -116,6 +116,6 @@ library Geometry
 	Transform(x: Deformable3D, m: Matrix4x4): Deformable3D => x.Deform(v => m * v);
 	Vector2D(a: Size2D): Vector2D => (a.Width, a.Height);
 	Vector3D(a: Size3D): Vector3D => (a.Width, a.Height, a.Depth);
-    CirclePoints(n: Integer): Array<Vector2D> => n.Fractions.Map((x) => x.Turns.CircleFunction);
-	Points(x: RegularPolygon): Array<Vector2D> => x.NumPoints.CirclePoints;
+    CirclePoints(n: Integer): IArray<Vector2D> => n.Fractions.Map((x) => x.Turns.CircleFunction);
+	Points(x: RegularPolygon): IArray<Vector2D> => x.NumPoints.CirclePoints;
 }
