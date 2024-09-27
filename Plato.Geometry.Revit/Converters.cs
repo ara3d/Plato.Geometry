@@ -24,7 +24,7 @@ namespace Plato.Geometry.Revit
 
         public static Plane ToPlato(this ClipPlane self) => new Plane(self.Normal.ToPlato(), self.Origin.DistanceTo(self.Normal));
         public static Bounds3D ToPlato(this BoundingBoxXYZ self) => new Bounds3D(self.Min.ToPlato(), self.Max.ToPlato());
-        public static Bounds2D ToPlato(this BoundingBoxUV self) => new Bounds2D(self.Min.ToPlato(), self.Max.ToPlato())
+        public static Bounds2D ToPlato(this BoundingBoxUV self) => new Bounds2D(self.Min.ToPlato(), self.Max.ToPlato());
     }
 
     public static class RevitHelpers
@@ -62,10 +62,5 @@ namespace Plato.Geometry.Revit
             buffer.GetVertexStreamPositionNormalColored().AddVertices(verts);
         }
 
-      
-        public static void Test()
-        {
-            DrawContext.FlushBuffer();
-        }
     }
 }
