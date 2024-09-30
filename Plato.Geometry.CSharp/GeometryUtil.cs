@@ -14,7 +14,8 @@ namespace Plato.Geometry
 
     public static class GeometryUtil
     {
-        public static Array2D<V> CartesianProduct<T, U, V>(this Array<T> self, Array<U> other, Func<U, T, V> func)
+        /*
+        public static IArray2D<V> CartesianProduct<T, U, V>(this IArray<T> self, IArray<U> other, Func<U, T, V> func)
             => New.Array(self.Count, other.Count, (i, j) => func(other.At(j), self.At(i)));
 
         public static Vector3D LerpAlong(this Line3D self, double t)
@@ -23,10 +24,10 @@ namespace Plato.Geometry
         public static Vector2D LerpAlong(this Line2D self, double t)
             => self.A.Lerp(self.B, t);
 
-        public static T ModuloAt<T>(this Array<T> a, Integer i)
+        public static T ModuloAt<T>(this IArray<T> a, Integer i)
             => a.At(i % a.Count);
 
-        public static Array<Vector3D> Normalize(this Array<Vector3D> vectors)
+        public static IArray<Vector3D> Normalize(this IArray<Vector3D> vectors)
             => vectors.Map(v => v.Normalize);
 
         public static Vector3D Average(this Vector3D a, Vector3D b)
@@ -35,7 +36,6 @@ namespace Plato.Geometry
         public static Vector2D Average(this Vector2D a, Vector2D b)
             => (a + b) / 2;
 
-        /*
         public static bool SequenceAlmostEquals(this Array<Vector3D> vs1, Array<Vector3D> vs2, double tolerance)
             => vs1.Count == vs2.Count && vs1.Indices().All(i => vs1[i].AlmostEquals(vs2[i], tolerance));
 
@@ -78,17 +78,17 @@ namespace Plato.Geometry
                            ? new Int3(v.Y, v.Z, v.X)
                            : new Int3(v.Z, v.Y, v.X);
                }
-           }*/
+           }
 
-        public static Array<double> Interpolate(this int count)
+        public static IArray<double> Interpolate(this int count)
             => InterpolateExclusive(count);
 
-        public static Array<double> InterpolateInclusive(this int count)
+        public static IArray<double> InterpolateInclusive(this Integer count)
             => count <= 0
                 ? New.Array<double>()
                 : count == 1
                     ? New.Array(0.0)
-                    : count.Map(i => i / (double)(count - 1));
+                    : count.MapRange(i => i / (double)(count - 1));
 
         public static Array<double> InterpolateExclusive(this int count)
             => count <= 0
@@ -141,7 +141,7 @@ namespace Plato.Geometry
         }
 
         // Returns the distance between two lines
-        // t and u are the distances if the intersection points along the two lines 
+        // t and u are the distances if the intersection points along the two lines
         public static Number LineLineDistance(Line2D line1, Line2D line2, out Number t, out Number u, double epsilon = 0.0000001f)
         {
             var x1 = line1.A.X;
@@ -219,14 +219,14 @@ namespace Plato.Geometry
             }
 
             // Consider the line extending the segment, parameterized as v + t (w - v).
-            // We find projection of point p onto the line. 
+            // We find projection of point p onto the line.
             // It falls where t = [(p-v) . (w-v)] / |w-v|^2
             // We clamp t from [0,1] to handle points outside the segment vw.
             t = ((p - a).Dot(b - a) / l2).Clamp(0.0f, 1.0f);
             var closestPoint = a + t * (b - a); // Projection falls on the segment
             return (p - closestPoint).Length;
         }
-        
+
         /*
         public static Array<Vector2D> Offset(this Array<Vector2D> points, double offset, bool closed)
         {
@@ -256,7 +256,7 @@ namespace Plato.Geometry
                     // We probably have virtually coincident points, or maybe a bug in the line algorithm.
                     Debugger.Break();
 
-                    // If we couldn't determine an intersection point 
+                    // If we couldn't determine an intersection point
                     // Add the end of the first line, and the beginning of the next
                     r.Add(line1.B);
                     r.Add(line2.A);
@@ -270,7 +270,6 @@ namespace Plato.Geometry
 
             return Intrinsics.MakeArray(r.ToArray());
         }
-        */
 
         public static Array<Line2D> ToLines(this Array<Vector2D> points, bool closed)
             => (points.Count - (closed ? 0 : 1)).Map(i => new Line2D(points.At(i), points.ModuloAt(i + 1)));
@@ -281,7 +280,6 @@ namespace Plato.Geometry
         public static Ray3D ToRay(this Line3D self)
             => (self.A, self.B - self.A);
 
-        /*
         public static Triangle3D GetTriangle(this TriMesh self, int i)
             => new Triangle3D(self.Vertices[self.Faces[i].A], self.Vertices[self.Faces[i].B], self.Vertices[self.Faces[i].C]);
 

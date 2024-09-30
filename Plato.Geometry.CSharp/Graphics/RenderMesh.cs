@@ -24,10 +24,10 @@ namespace Plato.Geometry.Graphics
 
     public static class RenderMeshExtensions
     {
-        public static RenderMesh ToRenderMesh(this TriMesh self, Color color)
+        public static RenderMesh ToRenderMesh(this TriangleMesh self, Color color)
         {
             var r = new RenderMesh();
-            var n = self.Faces.Count * 3;
+            var n = self.NumFaces;
             r.Vertices = new RenderVertex[n];
             r.Indices = new int[n];
             for (var i = 0; i < self.Faces.Count; ++i)

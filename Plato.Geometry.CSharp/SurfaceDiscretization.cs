@@ -2,6 +2,7 @@
 
 namespace Plato.Geometry
 {
+    /*
     /// <summary>
     /// This class is used for sampling parameterized surfaces and computing quad-mesh strip indices.
     /// Note that the members are computed on demand, so be careful about over-computation. 
@@ -42,4 +43,5 @@ namespace Plato.Geometry
         }
 
     }
+    */
 }

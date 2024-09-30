@@ -6,8 +6,6 @@ namespace Plato.Geometry
 {
     public static class SurfaceFunctions
     {
-        public static Array<Integer> Range(this int n)
-            => ((Integer)n).Range;
 
         public static Vector3D Sphere(this Vector2D uv)
             => Sphere(uv.X.Turns, uv.Y.Turns);
@@ -151,8 +149,6 @@ namespace Plato.Geometry
             var d = f(uv - (e, 0));
             return new SurfacePoint(p, uv, a, b, c, d);
         }
-
-        public Vertex Vertex => (Center, Normal, UV);
     }
 
 

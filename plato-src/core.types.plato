@@ -3,14 +3,14 @@
 type Unit
     implements IReal
 {
-    IValue: Number;
+    Value: Number;
 }
 
 // A value in the range of 0 to 1 that represents the probability of an occurence
 type Probability
     implements IMeasure
 {
-    IValue: Number;
+    Value: Number;
 }
 
 // A two dimensional value, have has a real and imaginary component. 
@@ -240,7 +240,7 @@ type Time
 type DateTime
     implements ICoordinate
 {
-    IValue: Number; 
+    Value: Number; 
 }
 
 type AnglePair

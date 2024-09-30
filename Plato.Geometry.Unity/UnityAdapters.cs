@@ -35,33 +35,18 @@ namespace Plato.Geometry.Unity
 
         //public static Matrix3D ToPlato(this Matrix4x4 m) =>  ((m.M))
 
-        public static Vector3[] ToUnityPositions(this Array<Vertex> verts)
-        {
-            var r = new Vector3[verts.Count];
-            for (var i = 0; i < verts.Count; ++i)
-                r[i] = verts.At(i).Position.ToUnity();
-            return r;
-        }
+        public static Vector3[] ToUnity(this IArray<Vector3D> verts)
+            => verts.Map(ToUnity).ToSystemArray();
 
-        public static int[] ToUnityIndices(this Array<Integer3> faces)
-        {
-            var r = new int[faces.Count * 3];
-            for (var i = 0; i < faces.Count; ++i)
-            {
-                var f = faces.At(i);
-                r[i * 3 + 0] = f.A;
-                r[i * 3 + 1] = f.B;
-                r[i * 3 + 2] = f.C;
-            }
-            return r;
-        }
+        public static int[] ToUnity(this IArray<Integer> indices) 
+            => indices.Map(i => i.Value).ToSystemArray(); 
 
-        public static Mesh ToUnity(this TriMesh mesh)
+        public static Mesh ToUnity(this TriangleMesh mesh)
         {
             var unityMesh = new Mesh
             {
-                vertices = mesh.Vertices.ToUnityPositions(),
-                triangles = mesh.Faces.ToUnityIndices()
+                vertices = mesh.Vertices.ToUnity(),
+                triangles = mesh.Indices.ToUnity()
             };
             //unityMesh.normals = mesh.Vertices.ToUnityNormals();
             //unityMesh.uv = mesh.UVs.ToUnity();

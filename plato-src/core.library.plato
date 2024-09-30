@@ -176,7 +176,7 @@ library INumerical
     // IReal Operations 
 
     Magnitude(x: IReal): Number
-        => x.IValue;
+        => x.Value;
 
     GtZ(x : IReal): Boolean
         => x > x.Zero;
@@ -201,7 +201,10 @@ library INumerical
 
     Abs(x: IReal): IReal 
         => x.LtZ ? -x: x;
-    
+
+    Inverse(x: IReal): IReal
+        => x.One / x;
+
     //==
     // IScalarArithmetic operations 
 
@@ -217,14 +220,8 @@ library INumerical
     Twice(x: IScalarArithmetic): IScalarArithmetic 
         => x * 2.0;
            
-    Lerp(a: IScalarArithmetic, b: IScalarArithmetic, t: Number): IScalarArithmetic
-        => a * t.FromOne + b * t;
-          
     Between(self: Number, min: Number, max: Number): Boolean
         => self >= min && self <= max;
-
-    Barycentric(v1: IScalarArithmetic, v2: IScalarArithmetic, v3: IScalarArithmetic, uv: Vector2D): IScalarArithmetic 
-        => v1 + (v2 - v1) * uv.X + (v3 - v1) * uv.Y;   
 
     //==
     // Matrix operations
@@ -309,7 +306,7 @@ library INumerical
 		=> x.Components.Any(predicate);
 
     Between(x: INumerical, a: INumerical, b: INumerical): Boolean
-        => x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All(x => x);
+        => x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All(x0 => x0);
 
     BetweenZeroOne(x: INumerical): Boolean
         => x.Between(x.Zero, x.One);
@@ -409,5 +406,20 @@ library INumerical
     // NOTE:
     // There are many other operations that make sense on INumerical types. 
     // For example, everything that works on a single value. MinValue/MaxValue/Negate/Reciprocal/Inverse/Clamp/SmoothStep/Step/Sign/IsZero/IsOne/IsPositive/IsNegative/IsEven/IsOdd/IsPowerOfTwo/IsPowerOfTen/IsPowerOfTwo/IsPowerOfTen/IsPrime/IsComposite/IsPerfect/IsDeficient/IsAbundant/IsSquare/IsCube/IsPowerOf/IsRootOf/IsFactorOf/IsMultipleOf/IsDivisorOf/IsDivisibleBy
+
+
+    //==
+    // IInterpolatable functions. 
+
+    // Linear interpolation
+    Lerp(a: IInterpolatable, b: IInterpolatable, t: Number): IInterpolatable
+        => a * t.FromOne + b * t;
+          
+    // Barycentric interpolation (e.g. triangle)
+    // NOTE: we may want to put the Vector2D at the front of the type, but then this would not be made available 
+    // for the range of Interpolatable types (at least not now, based on limitations of the Plato compiler)
+    Barycentric(v1: IInterpolatable, v2: IInterpolatable, v3: IInterpolatable, uv: Vector2D): IInterpolatable 
+        => (v1 + (v2 - v1)) * uv.X + (v3 - v1) * uv.Y;   
+
 
 }

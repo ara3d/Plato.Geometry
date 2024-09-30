@@ -26,3 +26,24 @@ concept ConvexPolyhedron
 concept SolidPolyhedron
     inherits Polyhedron 
 { }
+
+
+type ParametricCurve2D
+    implements ICurve2D
+{
+    Evaluator: Function1<Number, Vector2D>;
+}
+
+type ParametricCurve3D
+    implements ICurve3D
+{
+    Evaluator: Function1<Number, Vector3D>;
+}
+
+type ParametricSurface
+    implements IProceduralSurface
+{
+    Evaluator: Function1<Number, Vector3D>;
+    PeriodicX: Boolean;
+    PeriodicY: Boolean;
+}

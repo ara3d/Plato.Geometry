@@ -1,73 +1,137 @@
-//# Rendering related types
 
-// This is not used yet. It will be much more common to use the Single precision version of this structure 
-type Vertex
-{  
-	Position: Vector3D;
-	Normal: Vector3D;
-	UV: Vector2D;
-    Color: Color;
-}
+//==
+//# Mesh related concepts
 
-//# Indexed geometry related types
-
-library Meshes
+// Any geometry that consists has an index buffer 
+concept IIndexedGeometry3D
+	inherits IPoints3D
 {
-    //---------------------------------------------------
-    // # Indexed geometry related functions
+    // The number of indices per element (2 for lines, 3 for triangles, 4 for quads, etc.))
+    PrimitiveSize(x: Self): Integer;
 
-    NumFaces(t: IndexedGeometry3D): Integer => t.Indices.Length / t.PrimitiveSize;
-    FaceIndices(t: IndexedGeometry3D, f: Integer): IArray<Integer> => t.Indices.Slice(f * t.PrimitiveSize, t.PrimitiveSize);)
-    FaceVertices(t: IndexedGeometry3D, f: Integer): IArray<Vertex> => t.FaceIndices(f).Map(i => t.Vertices[i]);
-    FaceIndexSlices(t: IndexedGeometry3D): IArray<IArray<Integer>> => t.Indices.Slices(t.PrimitiveSize);
-
-    //---------------------------------------------------
-    // # Implicit functions
-
-    PointCloud(t: IndexedGeometry3D): PointCloud => (t.Vertices, t.Indices);
-    LineSet(t: TriangleMesh): LineSet => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[0]]);
-    LineSet(t: QuadMesh): LineSet => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]);
-    TriangleMesh(t: QuadMesh): TriangleMesh => (t.Vertices, t.FaceIndexSlices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]);
-
-
-    //---------------------------------------------------
-    // # Type specific functions
-
-    PrimitiveSize(t: PointCloud): Integer => 1;
-    PrimitiveSize(t: LineSet): Integer => 2;
-    Faces(t: LineSet): IArray<Line3D> => t.FacesVertices.Map(a => (a[0], a[1])); 
-    PrimitiveSize(t: TriangleMesh): Integer => 3;
-    Faces(t: TriangleMesh): IArray<Triangle3D> => t.FacesVertices.Map(a => (a[0], a[1], a[2])); 
-    PrimitiveSize(t: QuadMesh): Integer => 4;
-    Faces(t: QuadMesh): IArray<Triangle4D> => t.FacesVertices.Map(a => (a[0], a[1], a[2], a[3])); 
+    // An index buffer used to index the number of points 
+	Indices(x: Self): IArray<Integer>;
 }
 
+concept ILineMesh
+	inherits IIndexedGeometry3D
+{ }
+
+concept ITriangleMesh
+    inherits IIndexedGeometry3D
+{ }
+
+concept IQuadMesh
+	inherits IIndexedGeometry3D
+{ }
+
+concept IPrimitives3D<TPrim>
+    where TPrim: IArray<Vector3D>
+    inherits IIndexedGeometry3D
+{ 
+    Primitives(xs: Self): IArray<TPrim>;
+}
+
+concept ILines 
+    inherits IPrimitives3D<Line3D>
+{ }
+
+concept ITriangles
+    inherits IPrimitives3D<Triangle3D>
+{ }
+
+concept IQuads
+    inherits IPrimitives3D<Quad3D>
+{ }
+
+//==
 //# Specific indexed geometry types
 
-type PointCloud
-    implements IndexedGeometry3D
-{   
-}
-
-
-type LineSet
-    implements IndexedGeometry3D
-{   
+type LineMesh
+    implements ILineMesh
+{ 
+    Points: IArray<Vector3D>;
+    Indices: IArray<Integer>;
 }
 
 type TriangleMesh
-    implements IndexedGeometry3D
-{   
+    implements ITriangleMesh
+{ 
+    Points: IArray<Vector3D>;
+    Indices: IArray<Integer>;
 }
-
 
 type QuadMesh
-    implements IndexedGeometry3D
+    implements IQuadMesh
 {   
+    Points: IArray<Vector3D>;
+    Indices: IArray<Integer>;
 }
 
-type TessellatedMesh
-	implements IndexedGeometry3D
-{   
-    UVs: IArray<Vector2D>;
+type Lines
+    implements ILines
+{ 
+    Primitives: IArray<Line3D>;
+}
+
+type Triangles
+    implements ITriangles
+{ 
+    Primitives: IArray<Triangle3D>;
+}
+
+type Quads
+    implements IQuads
+{ 
+    Primitives: IArray<Quad3D>;
+}
+
+library Meshes
+{
+    // # Indexed geometry related functions
+
+    NumFaces(g: IIndexedGeometry3D): Integer => g.NumPrimitives;
+    NumPrimitives(g: IIndexedGeometry3D): Integer => g.Indices.Count / g.PrimitiveSize;
+    FaceIndices(g: IIndexedGeometry3D, f: Integer): IArray<Integer> => g.Indices.Subarray(f * g.PrimitiveSize, PrimitiveSize);
+    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3D> => g.FaceIndices(f).Map(i => g.Vertices[i]);
+    AllFaceIndices(g: IIndexedGeometry3D): IArray<IArray<Integer>> => g.Indices.Slices(g.PrimitiveSize);
+    AllFaceVertices(g: IIndexedGeometry3D): IArray<IArray<Vector3D>> => g.Indices.Map(i => g.Vertices[i]).Slices(g.PrimitiveSize);
+    Vertices(g: IPoints3D): IArray<Vector3D> => g.Points;
+    NumVertices(g: IIndexedGeometry3D): Integer => g.Points.Count;
+
+    Primitives(g: ILineMesh): IArray<Line3D> => g.AllFaceVertices.Map(p => new Line3D(p));
+    Primitives(g: ITriangleMesh): IArray<Triangle3D> => g.AllFaceVertices.Map(p => new Triangle3D(p));
+    Primitives(g: IQuadMesh): IArray<Quad3D> => g.AllFaceVertices.Map(p => new Quad3D(p));
+
+    // # Primitives
+
+    PrimitiveSize(g: ILines): Integer => 2;
+    PrimitiveSize(g: ITriangles): Integer => 3;
+    PrimitiveSize(g: IQuads): Integer => 4;
+    NumPrimitives(g: IPrimitives3D<$T>): Integer => g.Primitives.Count / g.PrimitiveSize;    
+    Indices(g: IPrimitives3D<$T>): IArray<Integer> => g.NumPrimitives.Range;    
+    Points(g: IPrimitives3D<$T>): IArray<Vector3D> => g.Primitives.FlatMap(p => p);
+    
+    // # Implicit cast functions
+
+    LineMesh(g: ITriangleMesh): LineMesh => (g.Vertices, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[0]]));
+    LineMesh(g: IQuadMesh): LineMesh => (g.Vertices, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]));
+    TriangleMesh(g: IQuadMesh): TriangleMesh => (g.Vertices, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));
+
+    Lines(g: ILineMesh): Lines => new Lines(g.Primitives);
+    Triangles(g: ITriangleMesh): Triangles => new Triangles(g.Primitives);
+    Quads(g: IQuadMesh): Quads => new Quads(g.Primitives);
+
+    LineMesh(g: IPrimitives3D<Line3D>): LineMesh => (g.Points, g.Indices);
+    TriangleMesh(g: IPrimitives3D<Triangle3D>): TriangleMesh => (g.Points, g.Indices);
+    QuadMesh(g: IPrimitives3D<Quad3D>): QuadMesh => (g.Points, g.Indices);
+
+    // # Concept implementation functions
+
+    PrimitiveSize(g: ILineMesh): Integer => 2;
+    PrimitiveSize(g: ITriangleMesh): Integer => 3;
+    PrimitiveSize(g: IQuadMesh): Integer => 4;
+     
+    Faces(g: ITriangleMesh): IArray<Triangle3D> => g.Primitives; 
+    Faces(g: IQuadMesh): IArray<Quad3D> => g.Primitives; 
 }

@@ -1,15 +1,21 @@
-﻿concept IBounded2D
+﻿// This type provides a 2D bounding-box
+concept IBounded2D
 {
+    // Returns a 2D axis aligned bounding box.
     Bounds(x: Self): Bounds2D;
 }
 
+// This type provides a 3D bounding-box
 concept IBounded3D
 {
+    // Returns a 3D axis aligned bounding box.
     Bounds(x: Self): Bounds3D;
 }
 
+// This type can be transformed using a 3x3 matrix
 concept ITransformable2D 
 {
+    // Retruns a new instance of the object transformed by the given matrix.
     Transform(x: Self, matrix: Matrix3x3): Self;
 }
 
@@ -35,7 +41,6 @@ concept IDeformable3D
 }
 
 // The set of all geometric objects: figures, shapes, points, fields, lines, and meshes. 
-
 concept IGeometry 
 { }
 
@@ -211,14 +216,6 @@ concept IPoints3D
     Points(x: Self): IArray<Vector3D>;
 }
 
-concept IndexedGeometry3D
-	inherits IGeometry3D
-{
-    PrimitiveSize: Integer;
-	Indices(x: Self): IArray<Integer>;
-	Vertices(x: Self): IArray<Vector3D>;
-}
-
 concept IGrid2D
     inherits IArray2D<Vector2D>
 { }
@@ -235,32 +232,27 @@ concept IQuadGrid
 // Also known as a PolygonalChain
 concept IPolyLine2D
     inherits IPoints2D, IOpenClosedShape
-{ 
-}
+{ }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
 // Also known as a PolygonalChain
 concept IPolyLine3D
     inherits IPoints3D, IOpenClosedShape
-{ 
-}
+{ }
 
 concept IClosedPolyLine2D
     inherits IPolyLine2D, IClosedShape2D
-{ 
-}
+{ }
 
 concept IClosedPolyLine3D
-    inherits IPolyLine3D
-{ 
-}
+    inherits IPolyLine3D, IClosedShape3D
+{ }
 
 concept IPolygon2D
-    inherits IPolyLine2D
-{
-}
+    inherits IClosedPolyLine2D
+{ }
 
 concept IPolygon3D
-    inherits IPolyLine3D
-{
-}
+    inherits IClosedPolyLine3D
+{ }
+

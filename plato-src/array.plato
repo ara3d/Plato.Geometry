@@ -1,13 +1,41 @@
 
+// Arrays provide a count and support the indexing operator [] 
+concept IArray<T>
+{
+    Count(xs: Self): Integer;
+    At(xs: Self, n: Integer): T;
+}
+
+// Extends the IArray concept with rows and columns. 
+concept IArray2D<T>
+    inherits IArray<T>
+{ 
+    RowCount(xs: Self): Integer;
+    ColumnCount(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer): T;
+}
+
+// Extends the IArray concept with rows, columns, and layers. 
+concept IArray3D<T>
+    inherits IArray<T>
+{ 
+    RowCount(xs: Self): Integer;
+    ColumnCount(xs: Self): Integer;
+    LayerCount(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer, layer: Integer): T;
+}
 
 library ArrayLibrary
 {
     // Returns n numbers, from 0 to 1, including 0, but not 1. 
     Numbers(n: Integer): IArray<Number>
-        => n.Map((i) => i.ToNumber / n.ToNumber);
-
+        => n.MapRange((i) => i.ToNumber / n.ToNumber);
+            
     Range(n: Integer): IArray<Integer>
-        => n.Map((i) => i);
+        => n.MapRange((i) => i);
+
+    Indices(xs: IArray<$T>): IArray<Integer>
+		=> xs.Count.Range;
 
     Count(xs: IArray2D<$T>): Integer 
         => xs.RowCount * xs.ColumnCount;
@@ -36,8 +64,11 @@ library ArrayLibrary
     Slice(xs: IArray<$T>, from: Integer, to: Integer): IArray<$T>
        => xs.Subarray(from, to - from);
 
+    Slices(xs: IArray<$T>, n: Integer): IArray<IArray<$T>>
+	    => n.MapRange(i => xs.Subarray(i * xs.Count / n, n));
+
     Subarray(xs: IArray<$T>, from: Integer, count: Integer): IArray<$T>
-        => count.Map((i) => xs.At(i + from));
+        => count.MapRange((i) => xs.At(i + from));
 
     Skip(xs: IArray<$T>, n: Integer): IArray<$T>
 		=> xs.Subarray(n, xs.Count - n);
@@ -45,11 +76,14 @@ library ArrayLibrary
     Take(xs: IArray<$T>, n: Integer): IArray<$T>
         => xs.Subarray(0, n);
 
+    TakeLast(xs: IArray<$T>, n: Integer): IArray<$T>
+        => xs.Skip(xs.Count - 1);
+
     Drop(xs: IArray<$T>, n: Integer): IArray<$T>
 		=> xs.Take(xs.Count - n);
 
-    SkipDrop(xs: IArray<$T>, n1: Integer, n2: Integer): IArray<$T>
-        => xs.Skip(n1).Drop(n2);
+    Trim(xs: IArray<$T>, first: Integer, last: Integer): IArray<$T>
+        => xs.Skip(first).Drop(last);
 
     Rest(xs: IArray<$T>): IArray<$T>
 		=> xs.Skip(1);
@@ -79,17 +113,17 @@ library ArrayLibrary
 	}
 
     Map(xs: IArray<$T1>, f: Function1<$T1, $T2>): IArray<$T2> 
-        => xs.Count.Map((i) => f(xs.At(i)));
+        => xs.Count.MapRange((i) => f(xs.At(i)));
 
     PairwiseMap(xs: IArray<$T1>, f: Function2<$T1, $T1, $T2>): IArray<$T2> 
-		=> (xs.Count - 1).Map(i => f(xs[i], xs[i + 1]));
+		=> (xs.Count - 1).MapRange(i => f(xs[i], xs[i + 1]));
 
     PairwiseMapModulo(xs: IArray<$T1>, f: Function2<$T1, $T1, $T2>): IArray<$T2> 
-		=> xs.Count.Map(i => f(xs[i], xs[(i + 1) % xs.Count]));
+		=> xs.Count.MapRange(i => f(xs[i], xs[(i + 1) % xs.Count]));
 
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, f: Function2<$T1, $T2, $T3>): IArray<$T3> 
-        => xs.Count.Lesser(ys.Count).Map((i) => f(xs[i], ys[i]));  
+        => xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i]));  
 
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, zs: IArray<$T3>, f: Function3<$T1, $T2, $T3, $T4>): IArray<$T4> 
-        => xs.Count.Lesser(ys.Count).Lesser(zs.Count).Map((i) => f(xs[i], ys[i], zs[i]));  
+        => xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => f(xs[i], ys[i], zs[i]));  
 } 

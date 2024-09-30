@@ -52,8 +52,9 @@ concept IWholeNumber
 // A measure is a numeric value with an intrinisic unit of measure. 
 // It resembles a IReal except you cannot multiply or divide two measures without 
 // getting a new type. It does however support IAdditive on itself.
+// The idea of interpolation, combines a couple of existing concepts. 
 concept IMeasure
-    inherits INumberLike, IAdditive
+    inherits INumberLike, IAdditive, IInterpolatable
 {
 }
 
@@ -61,7 +62,7 @@ concept IMeasure
 // Unlike reals and measures they cannot be compared in any meaningful way 
 // They are also "array-like" in that they have a fixed number of components.
 concept IVector
-    inherits INumerical, IArithmetic, IArray<Number>
+    inherits INumerical, IArithmetic, IArray<Number>, IInterpolatable
 { 
 }
 
@@ -84,12 +85,14 @@ concept IOrderable
 
 // Supported for when two values are equal 
 concept IEquatable
+    inherits IAny
 {
     Equals(a: Self, b: Self): Boolean;
 }
 
 // The formal term for this is an Abelian group over addition
 concept IAdditive
+    inherits IAny
 {
     Add(a: Self, b: Self): Self;    
     Subtract(a: Self, b: Self): Self;    
@@ -98,22 +101,24 @@ concept IAdditive
 
 // Types implementing this concept can be multiplied or divided by a scalar value
 concept IScalarArithmetic
+    inherits IAny
 { 
     Modulo(self: Self, other: Number): Self;    
     Divide(self: Self, other: Number): Self;    
     Multiply(self: Self, other: Number): Self;    
-    Multiply(other: Number, self: Self): Self;    
 }
 
 // A type which can be multiplied by itself
 // Abelian semigroup over multiplication
 concept IMultiplicative
+    inherits IAny
 {
     Multiply(a: Self, b: Self): Self;
 }
 
 // IMultiplicative inverse
 concept IInvertible
+    inherits IAny
 {
     Inverse(self: Self): Self;  
 }
@@ -126,18 +131,26 @@ concept IMultiplicativeWithInverse
 
 // A type which can be multiplied and added, and supports scalara arithmetic  
 concept IAlgebraic
-    inherits IAdditive, IMultiplicativeWithInverse, IScalarArithmetic
-{
+    inherits IInterpolatable, IMultiplicativeWithInverse, 
+{   
 }
+
+// To be able to interpolate between two values requires addition, and scalar arithmetic
+// This is a property shared by algebraic types and measurement types. 
+concept IInterpolatable   
+    inherits IAdditive, IScalarArithmetic
+{ }
 
 // A type which can be divided by itself 
 concept IDivisible
+    inherits IAny
 { 
     Divide(a: Self, b: Self): Self;    
 }
 
 // A type which supports modulo arithmetic
 concept IModulo
+    inherits IAny
 {
     Modulo(a: Self, b: Self): Self;
 }
@@ -152,6 +165,7 @@ concept IArithmetic
 
 // Basic boolean operations, which are also similar to set operations.  
 concept IBoolean
+    inherits IAny
 {
     And(a: Self, b: Self): Self;
     Or(a: Self, b: Self): Self;    
@@ -160,36 +174,9 @@ concept IBoolean
 
 // Represents a range of values. 
 concept IInterval<T>    
-    where T: INumerical, T: IArithmetic
+    where T: INumerical
     inherits IEquatable, IValue, IArray<T>
 {
     Min(x: Self): T;
-    Max(x: Self): T;    
-    Size(x: Self): T;
-}
-
-// Arrays provide a count and support the indexing operator [] 
-concept IArray<T>
-{
-    Count(xs: Self): Integer;
-    At(xs: Self, n: Integer): T;
-}
-
-// Extends the IArray concept with rows and columns. 
-concept IArray2D<T>
-    inherits IArray<T>
-{ 
-    RowCount(xs: Self): Integer;
-    ColumnCount(xs: Self): Integer;
-    At(xs: Self, column: Integer, row: Integer): T;
-}
-
-// Extends the IArray concept with rows, columns, and layers. 
-concept IArray3D<T>
-    inherits IArray<T>
-{ 
-    RowCount(xs: Self): Integer;
-    ColumnCount(xs: Self): Integer;
-    LayerCount(xs: Self): Integer;
-    At(xs: Self, column: Integer, row: Integer, layer: Integer): T;
+    Max(x: Self): T;
 }
