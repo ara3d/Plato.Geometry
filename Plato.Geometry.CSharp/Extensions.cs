@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Plato.DoublePrecision;
 using Boolean = Plato.DoublePrecision.Boolean;
 
@@ -157,6 +158,10 @@ namespace Plato.Geometry
     /// </summary>
     public static class Extensions
     {
+        public static IEnumerable<T> Enumerate<T>(this IArray<T> self)
+        {
+        }
+
         //==
         // Surface constructors
         /*

@@ -138,6 +138,13 @@ namespace Plato.DoublePrecision
         public static Boolean LessThanOrEquals(this String a, String b) => a.Value.CompareTo(b.Value) <= 0;
     }
     
+    public interface IArray<T> : System.Collections.Generic.IReadOnlyList<T>
+    {
+        Integer Count { get; }
+        T At(Integer n);
+        T this[Integer n] { get; }
+    }
+
     public readonly partial struct Number
     {
     }
@@ -153,6 +160,14 @@ namespace Plato.DoublePrecision
             Count = count;
             _func = func;
         }
+        public System.Collections.Generic.IEnumerator<T> GetEnumerator()
+		{
+			for (var i = 0; i < Count; i++)
+				yield return this[i];
+		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        T System.Collections.Generic.IReadOnlyList<T>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<T>.Count => this.Count;
     }
 
    public readonly struct Array2D<T> : IArray2D<T>
@@ -171,6 +186,14 @@ namespace Plato.DoublePrecision
             RowCount = numRows;
             _func = func;
         }
+        public System.Collections.Generic.IEnumerator<T> GetEnumerator()
+		{
+			for (var i = 0; i < Count; i++)
+				yield return this[i];
+		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        T System.Collections.Generic.IReadOnlyList<T>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<T>.Count => this.Count;
     }
 
     public readonly struct PrimitiveArray<T> : IArray<T>
@@ -180,6 +203,14 @@ namespace Plato.DoublePrecision
         public T At(Integer n) => _data[n];
         public T this[Integer n] => _data[n];
         public PrimitiveArray(T[] data) => _data = data;    
+        public System.Collections.Generic.IEnumerator<T> GetEnumerator()
+		{
+			for (var i = 0; i < Count; i++)
+				yield return this[i];
+		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        T System.Collections.Generic.IReadOnlyList<T>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<T>.Count => this.Count;
     }
 
     public readonly struct ListArray<T> : IArray<T>
@@ -189,6 +220,14 @@ namespace Plato.DoublePrecision
         public T At(Integer n) => _data[n];
         public T this[Integer n] => _data[n];
         public ListArray(System.Collections.Generic.IReadOnlyList<T> data) => _data = data;
+        public System.Collections.Generic.IEnumerator<T> GetEnumerator()
+		{
+			for (var i = 0; i < Count; i++)
+				yield return this[i];
+		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        T System.Collections.Generic.IReadOnlyList<T>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<T>.Count => this.Count;
     }
 
     public readonly partial struct String
@@ -259,12 +298,6 @@ namespace Plato.DoublePrecision
         public static implicit operator Function4<T0, T1, T2, T3, TR>(System.Func<T0, T1, T2, T3, TR> f) => new Function4<T0, T1, T2, T3, TR>(f);
     }
 
-    public interface IArray<T>
-    {
-        Integer Count { get; }
-        T At(Integer n);
-        T this[Integer n] { get; }
-    }
     public interface IArray2D<T>: IArray<T>
     {
         Integer RowCount { get; }
@@ -915,6 +948,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Character[](String self) => self.ToSystemArray();
         public static implicit operator Array<Character>(String self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Character> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Character System.Collections.Generic.IReadOnlyList<Character>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Character>.Count => this.Count;
         // Implemented concept functions and type functions
         public Character At(Integer y) => Intrinsics.At(this, y);
         public Character this[Integer y] => At(y);
@@ -1724,6 +1760,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Number[](Complex self) => self.ToSystemArray();
         public static implicit operator Array<Number>(Complex self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Numerical predefined functions
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(IReal, Imaginary);
         public Complex FromComponents(IArray<Number> numbers) => new Complex(numbers[0], numbers[1]);
@@ -1837,6 +1876,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Integer[](Integer2 self) => self.ToSystemArray();
         public static implicit operator Array<Integer>(Integer2 self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Integer> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Integer System.Collections.Generic.IReadOnlyList<Integer>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Integer2 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer2 a, Integer2 b) => a.Equals(b);
@@ -1878,6 +1920,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Integer[](Integer3 self) => self.ToSystemArray();
         public static implicit operator Array<Integer>(Integer3 self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Integer> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Integer System.Collections.Generic.IReadOnlyList<Integer>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Integer3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer3 a, Integer3 b) => a.Equals(b);
@@ -1921,6 +1966,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Integer[](Integer4 self) => self.ToSystemArray();
         public static implicit operator Array<Integer>(Integer4 self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Integer> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Integer System.Collections.Generic.IReadOnlyList<Integer>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Integer4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer4 a, Integer4 b) => a.Equals(b);
@@ -2372,6 +2420,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Number[](Size2D self) => self.ToSystemArray();
         public static implicit operator Array<Number>(Size2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Implemented concept functions and type functions
         public Vector2D Vector2D => this.Width.Tuple2(this.Height);
         public static implicit operator Vector2D(Size2D a) => a.Vector2D;
@@ -2415,6 +2466,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Number[](Size3D self) => self.ToSystemArray();
         public static implicit operator Array<Number>(Size3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Implemented concept functions and type functions
         public Vector3D Vector3D => this.Width.Tuple3(this.Height, this.Depth);
         public static implicit operator Vector3D(Size3D a) => a.Vector3D;
@@ -3113,6 +3167,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Angle[](AnglePair self) => self.ToSystemArray();
         public static implicit operator Array<Angle>(AnglePair self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Angle> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Angle System.Collections.Generic.IReadOnlyList<Angle>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Angle>.Count => this.Count;
         // Implemented concept functions and type functions
         public Angle Size => this.Max.Subtract(this.Min);
         public Angle Lerp(Number amount) => this.Min.Lerp(this.Max, amount);
@@ -3173,6 +3230,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Number[](NumberInterval self) => self.ToSystemArray();
         public static implicit operator Array<Number>(NumberInterval self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Implemented concept functions and type functions
         public Number Size => this.Max.Subtract(this.Min);
         public Number Lerp(Number amount) => this.Min.Lerp(this.Max, amount);
@@ -3240,6 +3300,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Number[](Vector2D self) => self.ToSystemArray();
         public static implicit operator Array<Number>(Vector2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Numerical predefined functions
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(X, Y);
         public Vector2D FromComponents(IArray<Number> numbers) => new Vector2D(numbers[0], numbers[1]);
@@ -3369,6 +3432,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Number[](Vector3D self) => self.ToSystemArray();
         public static implicit operator Array<Number>(Vector3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Numerical predefined functions
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(X, Y, Z);
         public Vector3D FromComponents(IArray<Number> numbers) => new Vector3D(numbers[0], numbers[1], numbers[2]);
@@ -3502,6 +3568,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Number[](Vector4D self) => self.ToSystemArray();
         public static implicit operator Array<Number>(Vector4D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Numerical predefined functions
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(X, Y, Z, W);
         public Vector4D FromComponents(IArray<Number> numbers) => new Vector4D(numbers[0], numbers[1], numbers[2], numbers[3]);
@@ -3617,6 +3686,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector3D[](Matrix3x3 self) => self.ToSystemArray();
         public static implicit operator Array<Vector3D>(Matrix3x3 self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Matrix3x3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Matrix3x3 a, Matrix3x3 b) => a.Equals(b);
@@ -3660,6 +3732,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector4D[](Matrix4x4 self) => self.ToSystemArray();
         public static implicit operator Array<Vector4D>(Matrix4x4 self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector4D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector4D System.Collections.Generic.IReadOnlyList<Vector4D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector4D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Number M11 => this.Column1.X;
         public Number M12 => this.Column2.X;
@@ -3779,6 +3854,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector2D[](Bounds2D self) => self.ToSystemArray();
         public static implicit operator Array<Vector2D>(Bounds2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Vector2D Size => this.Max.Subtract(this.Min);
         public Vector2D Lerp(Number amount) => this.Min.Lerp(this.Max, amount);
@@ -3867,6 +3945,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector2D[](Triangle2D self) => self.ToSystemArray();
         public static implicit operator Array<Vector2D>(Triangle2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Vector2D> Points => Intrinsics.MakeArray(this.A, this.B, this.C);
         public Number Area => this.A.X.Multiply(this.C.Y.Subtract(this.B.Y)).Add(this.B.X.Multiply(this.A.Y.Subtract(this.C.Y)).Add(this.C.X.Multiply(this.B.Y.Subtract(this.A.Y)))).Half;
@@ -3915,6 +3996,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector2D[](Quad2D self) => self.ToSystemArray();
         public static implicit operator Array<Vector2D>(Quad2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Quad2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Quad2D a, Quad2D b) => a.Equals(b);
@@ -3953,6 +4037,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector2D[](Line2D self) => self.ToSystemArray();
         public static implicit operator Array<Vector2D>(Line2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Points => this;
@@ -4410,6 +4497,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector3D[](Bounds3D self) => self.ToSystemArray();
         public static implicit operator Array<Vector3D>(Bounds3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Vector3D Size => this.Max.Subtract(this.Min);
         public Vector3D Lerp(Number amount) => this.Min.Lerp(this.Max, amount);
@@ -4465,6 +4555,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector3D[](Line3D self) => self.ToSystemArray();
         public static implicit operator Array<Vector3D>(Line3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Points => this;
@@ -4538,6 +4631,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector3D[](Triangle3D self) => self.ToSystemArray();
         public static implicit operator Array<Vector3D>(Triangle3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Triangle3D Flip => this.C.Tuple3(this.B, this.A);
         public Vector3D Normal => this.B.Subtract(this.A).Cross(this.C.Subtract(this.A)).Normalize;
@@ -4587,6 +4683,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector3D[](Quad3D self) => self.ToSystemArray();
         public static implicit operator Array<Vector3D>(Quad3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Quad3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Quad3D a, Quad3D b) => a.Equals(b);
@@ -4773,6 +4872,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector2D[](CubicBezier2D self) => self.ToSystemArray();
         public static implicit operator Array<Vector2D>(CubicBezier2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         // Unimplemented concept functions
         public Integer Count => 4;
@@ -4811,6 +4913,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector3D[](CubicBezier3D self) => self.ToSystemArray();
         public static implicit operator Array<Vector3D>(CubicBezier3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         // Unimplemented concept functions
         public Integer Count => 4;
@@ -4847,6 +4952,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector2D[](QuadraticBezier2D self) => self.ToSystemArray();
         public static implicit operator Array<Vector2D>(QuadraticBezier2D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         // Unimplemented concept functions
         public Integer Count => 3;
@@ -4883,6 +4991,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector3D[](QuadraticBezier3D self) => self.ToSystemArray();
         public static implicit operator Array<Vector3D>(QuadraticBezier3D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         // Unimplemented concept functions
         public Integer Count => 3;
@@ -5058,6 +5169,9 @@ namespace Plato.DoublePrecision
         public static implicit operator Vector4D[](Line4D self) => self.ToSystemArray();
         public static implicit operator Array<Vector4D>(Line4D self) => self.ToPrimitiveArray();
         public System.Collections.Generic.IEnumerator<Vector4D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector4D System.Collections.Generic.IReadOnlyList<Vector4D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector4D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Line4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Line4D a, Line4D b) => a.Equals(b);
