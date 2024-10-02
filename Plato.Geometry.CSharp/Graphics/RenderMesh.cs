@@ -1,41 +1,26 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
 using Plato.DoublePrecision;
+using Plato.Geometry.Memory;
 
 namespace Plato.Geometry.Graphics
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]    
-    public struct RenderVertex
+    public class RenderMesh : IDisposable
     {
-        public float PX, PY, PZ;
-        public float NX, NY, NZ;
-        public float U, V;
-        public float R;
-        public float G;
-        public float B;
-        public float A;
-    }
+        public PinnedArray<RenderVertex> Vertices;
+        public PinnedArray<int> Indices;
 
-    public class RenderMesh
-    {
-        public RenderVertex[] Vertices;
-        public int[] Indices;
-    }
-
-    public static class RenderMeshExtensions
-    {
-        public static RenderMesh ToRenderMesh(this TriangleMesh self, Color color)
+        public RenderMesh(IEnumerable<RenderVertex> vertices, IEnumerable<int> indices)
         {
-            var r = new RenderMesh();
-            var n = self.NumFaces;
-            r.Vertices = new RenderVertex[n];
-            r.Indices = new int[n];
-            for (var i = 0; i < self.Faces.Count; ++i)
-            {
-                var face = self.Faces[i];
-            }
+            Vertices = new PinnedArray<RenderVertex>(vertices.ToArray());
+            Indices = new PinnedArray<int>(indices.ToArray());
+        }
 
-            throw new NotImplementedException();
+        public void Dispose()
+        {
+            Vertices.Dispose();
+            Indices.Dispose();
         }
     }
 }

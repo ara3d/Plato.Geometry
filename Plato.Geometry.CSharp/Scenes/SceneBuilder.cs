@@ -1,13 +1,12 @@
 ﻿using Plato.DoublePrecision;
 using Plato.Geometry.Graphics;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Plato.Geometry.Scenes
 {
     public class SceneBuilder
     {
-        private Scene _scene = new Scene();
+        private readonly Scene _scene = new Scene();
         private bool _frozen;
         private int _id;
         public Material DefaultLineMaterial = Colors.Blue;
@@ -25,18 +24,30 @@ namespace Plato.Geometry.Scenes
                 throw new System.InvalidOperationException("Scene is frozen");
         }
 
-        public LineObject AddLines(IEnumerable<Vector3D> points, bool closed, Material material = null, double width = 0.01, string name = null)
+        public SceneLine AddLines(IReadOnlyList<Vector3D> points, bool closed, Material material = null, double width = 0.01, string name = null)
         {
             CheckFrozen();
-            var obj = new LineObject
+            var obj = new SceneLine(material ?? DefaultLineMaterial, width, closed, points);
+            var node = new SceneNode
             {
-                Name = name ?? $"Loop_{_id++}",
-                Width = width,
-                Material = material ?? DefaultLineMaterial,
-                Closed = closed,
-                Points = points.ToList()
+                Name = name ?? $"Line {_id++}",
             };
-            _scene.Root.Children.Add(obj);
+            node.Objects.Add(obj);
+            _scene.Root.Children.Add(node);
+            return obj;
+        }
+
+
+        public SceneMesh AddMesh(ITriangleMesh mesh, Material material = null, string name = null)
+        {
+            CheckFrozen();
+            var obj = new SceneMesh(material ?? DefaultMeshMaterial, mesh);
+            var node = new SceneNode
+            {
+                Name = name ?? $"Mesh {_id++}",
+            };
+            node.Objects.Add(obj);
+            _scene.Root.Children.Add(node);
             return obj;
         }
     }

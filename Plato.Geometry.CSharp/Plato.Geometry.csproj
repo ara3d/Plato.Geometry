@@ -141,7 +141,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="IO\" />
     <Folder Include="Utils\" />
   </ItemGroup>
 

@@ -28,7 +28,7 @@ namespace Plato.Geometry.Unity
             Create(scene.Root, po);
         }
 
-        public static GameObject Create(ISceneObject obj, GameObject parent)
+        public static GameObject Create(ISceneNode obj, GameObject parent)
         {
             var r = new GameObject();
             r.name = obj.Name;

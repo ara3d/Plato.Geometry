@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Plato.Geometry.Memory
 {
     /// <summary>
-    /// Represents a pinned managed array, providing access to its memory.
+    /// Represents a pinned managed array, providing low-level access to its memory.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
     public unsafe class PinnedArray<T> : IMemoryBlock where T : unmanaged
@@ -20,11 +20,6 @@ namespace Plato.Geometry.Memory
         /// Gets the size of the memory block in bytes.
         /// </summary>
         public long SizeInBytes { get; }
-
-        /// <summary>
-        /// Informs the owner class whether 
-        /// </summary>
-        public bool IsOwner => false;
 
         /// <summary>
         /// Gets the underlying managed array.

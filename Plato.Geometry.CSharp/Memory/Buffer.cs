@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Plato.DoublePrecision;
 
 namespace Plato.Geometry.Memory
 {
-    public unsafe interface IBuffer<out T> 
-        : IDisposable, IReadOnlyList<T> 
-        where T : unmanaged
-    {
-        T* Pointer { get; }
-    }
-
     /// <summary>
     /// Represents a buffer of unmanaged memory containing elements of type <typeparamref name="T"/>.
+    /// The constructor takes an IMemoryBlock and a boolean indicating whether the buffer owns the memory block.
+    /// If the buffer owns the memory block, it will dispose of it when the buffer is disposed.
+    /// The constructor will check that the memory block is properly aligned and that the size is a multiple of the element size.
     /// </summary>
     /// <typeparam name="T">The type of elements in the buffer.</typeparam>
     public unsafe class Buffer<T> : IBuffer<T> where T : unmanaged
@@ -42,7 +39,7 @@ namespace Plato.Geometry.Memory
         /// </summary>
         /// <param name="memoryBlock">The memory block containing the data.</param>
         /// <param name="isOwner">Indicates whether this buffer owns the memory block.</param>
-        public Buffer(IMemoryBlock memoryBlock, bool isOwner)
+        public Buffer(IMemoryBlock memoryBlock, bool isOwner = true)
         {
             MemoryBlock = memoryBlock ?? throw new ArgumentNullException(nameof(memoryBlock));
             IsOwner = isOwner;
@@ -51,9 +48,7 @@ namespace Plato.Geometry.Memory
             // Check alignment of _pointer to ElementSize bytes
             var address = (long)Pointer;
             if ((address % ElementSize) != 0)
-            {
                 throw new InvalidOperationException($"Pointer address {address} is not aligned to {ElementSize} bytes.");
-            }
 
             if (memoryBlock.SizeInBytes % ElementSize != 0)
                 throw new ArgumentException($"Memory size ({memoryBlock.SizeInBytes}) is not a multiple of the element size ({ElementSize}).");
@@ -102,29 +97,14 @@ namespace Plato.Geometry.Memory
                 MemoryBlock.Dispose();
             }
         }
-    }
 
-    public static unsafe class BufferExtensions
-    {
-        public static long SizeInBytes<T>(this IBuffer<T> self) where T : unmanaged
-            => self.Count * sizeof(T);
-        
-        public static IBuffer<T1> Cast<T0, T1>(this IBuffer<T0> self) where T0 : unmanaged where T1 : unmanaged
-        {
-            var p = new IntPtr(self.Pointer);
-            var mem = new ExternalMemoryBlock(p, self.SizeInBytes());
-            return new Buffer<T1>(mem, false);
-        }
+        // Implementation of IArray.Count
+        Integer IArray<T>.Count => Count;
 
-        public static IBuffer<T> Slice<T>(this IBuffer<T> self, int start, int count) where T : unmanaged
-        {
-            if (start < 0 || start >= self.Count)
-                throw new ArgumentOutOfRangeException(nameof(start));
-            if (count < 0 || start + count > self.Count)
-                throw new ArgumentOutOfRangeException(nameof(count));
-            var p = self.Pointer + start;
-            var mem = new ExternalMemoryBlock(new IntPtr(p), count * sizeof(T));
-            return new Buffer<T>(mem, false);
-        }
+        // Implementation of IArray.At
+        public T At(Integer n) => this[n];
+
+        // Implementation of IArray indexer property
+        public T this[Integer n] => this[n.Value];
     }
 }

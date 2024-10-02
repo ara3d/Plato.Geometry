@@ -4,44 +4,45 @@ using Plato.Geometry.Graphics;
 
 namespace Plato.Geometry.Scenes
 {
-    public interface IScene
-    {
-        ISceneObject Root { get; }
-    }
-
-    public interface ISceneObject
-    {
-        string Name { get; }
-        Material Material { get; }
-        Transform3D Transform { get; }
-        IReadOnlyList<ISceneObject> Children { get; }
-    }
-
-    public class LineObject : SceneObject
-    {
-        public double Width;
-        public bool Closed;
-        public List<Vector3D> Points = new List<Vector3D>();
-    }
-
-    public class MeshObject : SceneObject
-    {
-        public List<Vector3D> Vertices = new List<Vector3D>();
-        public List<int> Indices = new List<int>();
-    }
-
-    public class SceneObject : ISceneObject
-    {
-        public string Name { get; set; }
-        public Material Material { get; set; }
-        public Transform3D Transform { get; set; } = new Transform3D(Vector3D.Default, Rotation3D.Default, (1, 1, 1));
-        public List<ISceneObject> Children = new List<ISceneObject>();
-        IReadOnlyList<ISceneObject> ISceneObject.Children => Children;
-    }
-
     public class Scene : IScene
     {
-        public SceneObject Root { get; } = new SceneObject();
-        ISceneObject IScene.Root => Root;
+        public SceneNode Root { get; } = new SceneNode();
+        ISceneNode IScene.Root => Root;
+    }
+
+    public class SceneNode : ISceneNode
+    {
+        public string Name { get; set; }
+        public Transform3D Transform { get; set; } = new Transform3D(Vector3D.Default, Rotation3D.Default, (1, 1, 1));
+        public List<ISceneObject> Objects = new List<ISceneObject>();
+        IReadOnlyList<ISceneObject> ISceneNode.Objects => Objects;
+        public List<ISceneNode> Children = new List<ISceneNode>();
+        IReadOnlyList<ISceneNode> ISceneNode.Children => Children;
+    }
+
+    public class SceneMesh : ISceneMesh
+    {
+        public SceneMesh(Material material, ITriangleMesh mesh)
+        {
+            Material = material;
+            Mesh = mesh;
+        }
+        public Material Material { get; set; }
+        public ITriangleMesh Mesh { get; set; }
+    }
+
+    public class SceneLine : ISceneLine
+    {
+        public SceneLine(Material material, double width, bool closed, IReadOnlyList<Vector3D> points)
+        {
+            Material = material;
+            Width = width;
+            Closed = closed;
+            Points = points;
+        }
+        public Material Material { get; set; }
+        public double Width { get; set; }
+        public bool Closed { get; set; }
+        public IReadOnlyList<Vector3D> Points { get; }
     }
 }

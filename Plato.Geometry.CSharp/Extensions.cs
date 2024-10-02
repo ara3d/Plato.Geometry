@@ -158,9 +158,6 @@ namespace Plato.Geometry
     /// </summary>
     public static class Extensions
     {
-        public static IEnumerable<T> Enumerate<T>(this IArray<T> self)
-        {
-        }
 
         //==
         // Surface constructors

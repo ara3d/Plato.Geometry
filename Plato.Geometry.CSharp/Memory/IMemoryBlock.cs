@@ -3,7 +3,10 @@
 namespace Plato.Geometry
 {
     /// <summary>
-    /// Represents a block of unmanaged memory.
+    /// Represents a pointer to a range of unmanaged memory.
+    /// This might be a fixed array, or an IntPtr returned by an external API,
+    /// or some memory that has been allocated by the user.
+    /// It must be disposed when no longer used, or when it is known to be no longer valid.
     /// </summary>
     public interface IMemoryBlock : IDisposable
     {
