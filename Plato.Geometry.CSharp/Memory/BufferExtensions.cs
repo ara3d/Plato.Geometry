@@ -24,5 +24,16 @@ namespace Plato.Geometry.Memory
             var mem = new ExternalMemoryBlock(new IntPtr(p), count * sizeof(T));
             return new Buffer<T>(mem, false);
         }
+
+        public static IBuffer<T> ToTemporaryBuffer<T>(this IntPtr self, int elementCount) where T : unmanaged
+            => new Buffer<T>(new ExternalMemoryBlock(self, elementCount * sizeof(T)), false);
+
+        public static T[] Clone<T>(this IBuffer<T> self) where T : unmanaged
+        {
+            var result = new T[self.Count];
+            for (var i = 0; i < self.Count; ++i)
+                result[i] = self[i];
+            return result;
+        }
     }
 }

@@ -37,14 +37,14 @@ namespace Plato.Geometry.Scenes
             return obj;
         }
 
-
-        public SceneMesh AddMesh(ITriangleMesh mesh, Material material = null, string name = null)
+        public SceneMesh AddMesh(ITriangleMesh mesh, ITransform3D transform, Material material = null, string name = null)
         {
             CheckFrozen();
             var obj = new SceneMesh(material ?? DefaultMeshMaterial, mesh);
             var node = new SceneNode
             {
                 Name = name ?? $"Mesh {_id++}",
+                Transform = transform ?? NullTransform.Instance,
             };
             node.Objects.Add(obj);
             _scene.Root.Children.Add(node);

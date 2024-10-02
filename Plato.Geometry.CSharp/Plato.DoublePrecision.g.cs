@@ -79,10 +79,32 @@ namespace Plato.DoublePrecision
         public static Character At(String x, Integer n) => x.Value[n];
         public static Integer Count(String x) => x.Value.Length;
 
-        public static string MakeString(string typeName, IArray<String> fieldNames, IArray<Dynamic> fieldValues)
+        public static string MakeString<T>(T self, string typeName, IArray<String> fieldNames, IArray<Dynamic> fieldValues)
         {
+            if (self is Integer n)
+            {
+                return n.Value.ToString();
+			}
+            else if (self is Number x)
+            {
+                return x.Value.ToString();
+            }
+            else if (self is Character c)
+            {
+                return $"\"{c.Value.ToString().Replace("\\", "\\\\").Replace("\"", "\\\"")}\"";
+            }
+            else if (self is String s)
+            {
+                return $"\"{s.Value.ToString().Replace("\\", "\\\\").Replace("\"", "\\\"")}\"";
+            }
+            else if (self is Boolean b)
+            {
+                if (b) return "true";
+				else return "false";
+            }
+
             var sb = new System.Text.StringBuilder();
-            sb.Append($"{{ _type=\"{typeName}\" ");
+            sb.Append($"{{ _type = \"{typeName}\" ");
             for (var i = 0; i < fieldNames.Count; i++)
                 sb.Append(", ").Append(fieldNames.At(i).Value).Append(" = ").Append(fieldValues.At(i).Value);
             sb.Append(" }");
@@ -705,7 +727,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Number(double value) => new Number(value);
         public override bool Equals(object obj) { if (!(obj is Number)) return false; var other = (Number)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Number self) => new Dynamic(self);
         public static implicit operator Number(Dynamic value) => value.As<Number>();
         public String TypeName => "Number";
@@ -731,33 +753,6 @@ namespace Plato.DoublePrecision
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(Value);
         public Number FromComponents(IArray<Number> numbers) => new Number(numbers[0]);
         // Implemented concept functions and type functions
-        public Angle Acos => Intrinsics.Acos(this);
-        public Angle Asin => Intrinsics.Asin(this);
-        public Angle Atan => Intrinsics.Atan(this);
-        public Number Pow(Number y) => Intrinsics.Pow(this, y);
-        public Number Log(Number y) => Intrinsics.Log(this, y);
-        public Number Ln => Intrinsics.Ln(this);
-        public Number Exp => Intrinsics.Exp(this);
-        public Number Floor => Intrinsics.Floor(this);
-        public Number Ceiling => Intrinsics.Ceiling(this);
-        public Number Round => Intrinsics.Round(this);
-        public Number Truncate => Intrinsics.Truncate(this);
-        public Number Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
-        public static Number operator +(Number x, Number y) => x.Add(y);
-        public Number Subtract(Number y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
-        public static Number operator -(Number x, Number y) => x.Subtract(y);
-        public Number Divide(Number y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
-        public static Number operator /(Number x, Number y) => x.Divide(y);
-        public Number Multiply(Number y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
-        public static Number operator *(Number x, Number y) => x.Multiply(y);
-        public Number Modulo(Number y) => this.FromNumber(this.ToNumber.Modulo(y.ToNumber));
-        public static Number operator %(Number x, Number y) => x.Modulo(y);
-        public Number Negative => this.MapComponents((a) => a.Negative);
-        public static Number operator -(Number x) => x.Negative;
-        public Boolean LessThanOrEquals(Number y) => Intrinsics.LessThanOrEquals(this, y);
-        public static Boolean operator <=(Number x, Number y) => x.LessThanOrEquals(y);
-        public Boolean Equals(Number b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Number a, Number b) => a.Equals(b);
         public Number OunceToGram => this.Multiply(((Number)28.349523125));
         public Number TroyOunceToGram => this.Multiply(((Number)31.1034768));
         public Number GrainToMilligram => this.Multiply(((Number)64.79891));
@@ -792,6 +787,33 @@ namespace Plato.DoublePrecision
         public Vector2D CosFunction2D => this.Tuple2(this.Turns.Cos);
         public Vector2D TanFunction2D => this.Tuple2(this.Turns.Tan);
         public Vector3D HelixFunction(Number revs) => this.Multiply(revs).Turns.Sin.Tuple3(this.Multiply(revs).Turns.Cos, this);
+        public Angle Acos => Intrinsics.Acos(this);
+        public Angle Asin => Intrinsics.Asin(this);
+        public Angle Atan => Intrinsics.Atan(this);
+        public Number Pow(Number y) => Intrinsics.Pow(this, y);
+        public Number Log(Number y) => Intrinsics.Log(this, y);
+        public Number Ln => Intrinsics.Ln(this);
+        public Number Exp => Intrinsics.Exp(this);
+        public Number Floor => Intrinsics.Floor(this);
+        public Number Ceiling => Intrinsics.Ceiling(this);
+        public Number Round => Intrinsics.Round(this);
+        public Number Truncate => Intrinsics.Truncate(this);
+        public Number Add(Number y) => Intrinsics.Add(this, y);
+        public static Number operator +(Number x, Number y) => x.Add(y);
+        public Number Subtract(Number y) => Intrinsics.Subtract(this, y);
+        public static Number operator -(Number x, Number y) => x.Subtract(y);
+        public Number Divide(Number y) => Intrinsics.Divide(this, y);
+        public static Number operator /(Number x, Number y) => x.Divide(y);
+        public Number Multiply(Number y) => Intrinsics.Multiply(this, y);
+        public static Number operator *(Number x, Number y) => x.Multiply(y);
+        public Number Modulo(Number y) => Intrinsics.Modulo(this, y);
+        public static Number operator %(Number x, Number y) => x.Modulo(y);
+        public Number Negative => Intrinsics.Negative(this);
+        public static Number operator -(Number x) => x.Negative;
+        public Boolean LessThanOrEquals(Number y) => Intrinsics.LessThanOrEquals(this, y);
+        public static Boolean operator <=(Number x, Number y) => x.LessThanOrEquals(y);
+        public Boolean Equals(Number y) => Intrinsics.Equals(this, y);
+        public static Boolean operator ==(Number x, Number y) => x.Equals(y);
         public Number Magnitude => this.Value;
         public Boolean GtZ => this.GreaterThan(this.Zero);
         public Boolean LtZ => this.LessThan(this.Zero);
@@ -861,7 +883,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Integer(int value) => new Integer(value);
         public override bool Equals(object obj) { if (!(obj is Integer)) return false; var other = (Integer)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Integer self) => new Dynamic(self);
         public static implicit operator Integer(Dynamic value) => value.As<Integer>();
         public String TypeName => "Integer";
@@ -881,6 +903,12 @@ namespace Plato.DoublePrecision
             return this.MapRange((i) => i.ToNumber.Divide(_var0.ToNumber));
         }
          } public IArray<Integer> Range => this.MapRange((i) => i);
+        public Number FloatDivision(Integer y) => this.ToNumber.Divide(y.ToNumber);
+        public IArray<Number> Fractions { get {
+            var _var1 = this;
+            return this.Range.Map((i) => i.FloatDivision(_var1));
+        }
+         } public IArray<Vector2D> CirclePoints => this.Fractions.Map((x) => x.Turns.CircleFunction);
         public Integer Add(Integer y) => Intrinsics.Add(this, y);
         public static Integer operator +(Integer x, Integer y) => x.Add(y);
         public Integer Subtract(Integer y) => Intrinsics.Subtract(this, y);
@@ -896,15 +924,9 @@ namespace Plato.DoublePrecision
         public Number ToNumber => Intrinsics.ToNumber(this);
         public Boolean LessThanOrEquals(Integer y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Integer x, Integer y) => x.LessThanOrEquals(y);
-        public Boolean Equals(Integer b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Integer a, Integer b) => a.Equals(b);
+        public Boolean Equals(Integer y) => Intrinsics.Equals(this, y);
+        public static Boolean operator ==(Integer x, Integer y) => x.Equals(y);
         public IArray<TR> MapRange<TR>(System.Func<Integer, TR> f) => Intrinsics.MapRange(this, f);
-        public Number FloatDivision(Integer y) => this.ToNumber.Divide(y.ToNumber);
-        public IArray<Number> Fractions { get {
-            var _var1 = this;
-            return this.Range.Map((i) => i.FloatDivision(_var1));
-        }
-         } public IArray<Vector2D> CirclePoints => this.Fractions.Map((x) => x.Turns.CircleFunction);
         public Boolean NotEquals(Integer b) => this.Equals(b).Not;
         public static Boolean operator !=(Integer a, Integer b) => a.NotEquals(b);
         public Boolean LessThan(Integer b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -936,7 +958,7 @@ namespace Plato.DoublePrecision
         public static implicit operator String(string value) => new String(value);
         public override bool Equals(object obj) { if (!(obj is String)) return false; var other = (String)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(String self) => new Dynamic(self);
         public static implicit operator String(Dynamic value) => value.As<String>();
         public String TypeName => "String";
@@ -957,8 +979,8 @@ namespace Plato.DoublePrecision
         public Integer Count => Intrinsics.Count(this);
         public Boolean LessThanOrEquals(String y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(String x, String y) => x.LessThanOrEquals(y);
-        public Boolean Equals(String b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(String a, String b) => a.Equals(b);
+        public Boolean Equals(String y) => Intrinsics.Equals(this, y);
+        public static Boolean operator ==(String x, String y) => x.Equals(y);
         public Boolean NotEquals(String b) => this.Equals(b).Not;
         public static Boolean operator !=(String a, String b) => a.NotEquals(b);
         public Boolean LessThan(String b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -983,7 +1005,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Boolean(bool value) => new Boolean(value);
         public override bool Equals(object obj) { if (!(obj is Boolean)) return false; var other = (Boolean)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Boolean self) => new Dynamic(self);
         public static implicit operator Boolean(Dynamic value) => value.As<Boolean>();
         public String TypeName => "Boolean";
@@ -1003,8 +1025,8 @@ namespace Plato.DoublePrecision
         public static Boolean operator !(Boolean x) => x.Not;
         public Boolean LessThanOrEquals(Boolean y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Boolean x, Boolean y) => x.LessThanOrEquals(y);
-        public Boolean Equals(Boolean b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Boolean a, Boolean b) => a.Equals(b);
+        public Boolean Equals(Boolean y) => Intrinsics.Equals(this, y);
+        public static Boolean operator ==(Boolean x, Boolean y) => x.Equals(y);
         public Boolean NotEquals(Boolean b) => this.Equals(b).Not;
         public static Boolean operator !=(Boolean a, Boolean b) => a.NotEquals(b);
         public Boolean LessThan(Boolean b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -1029,7 +1051,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Character(char value) => new Character(value);
         public override bool Equals(object obj) { if (!(obj is Character)) return false; var other = (Character)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Character self) => new Dynamic(self);
         public static implicit operator Character(Dynamic value) => value.As<Character>();
         public String TypeName => "Character";
@@ -1040,8 +1062,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean LessThanOrEquals(Character y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Character x, Character y) => x.LessThanOrEquals(y);
-        public Boolean Equals(Character b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Character a, Character b) => a.Equals(b);
+        public Boolean Equals(Character y) => Intrinsics.Equals(this, y);
+        public static Boolean operator ==(Character x, Character y) => x.Equals(y);
         public Boolean NotEquals(Character b) => this.Equals(b).Not;
         public static Boolean operator !=(Character a, Character b) => a.NotEquals(b);
         public Boolean LessThan(Character b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -1066,7 +1088,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Type(System.Type value) => new Type(value);
         public override bool Equals(object obj) { if (!(obj is Type)) return false; var other = (Type)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Type self) => new Dynamic(self);
         public static implicit operator Type(Dynamic value) => value.As<Type>();
         public String TypeName => "Type";
@@ -1082,7 +1104,7 @@ namespace Plato.DoublePrecision
         public static Error New() => new Error();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Error self) => new Dynamic(self);
         public static implicit operator Error(Dynamic value) => value.As<Error>();
         public String TypeName => "Error";
@@ -1105,7 +1127,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1) { x0 = X0; x1 = X1; }
         public override bool Equals(object obj) { if (!(obj is Tuple2<T0, T1>)) return false; var other = (Tuple2<T0, T1>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple2<T0, T1> self) => new Dynamic(self);
         public static implicit operator Tuple2<T0, T1>(Dynamic value) => value.As<Tuple2<T0, T1>>();
         public String TypeName => "Tuple2<T0, T1>";
@@ -1130,7 +1152,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2) { x0 = X0; x1 = X1; x2 = X2; }
         public override bool Equals(object obj) { if (!(obj is Tuple3<T0, T1, T2>)) return false; var other = (Tuple3<T0, T1, T2>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple3<T0, T1, T2> self) => new Dynamic(self);
         public static implicit operator Tuple3<T0, T1, T2>(Dynamic value) => value.As<Tuple3<T0, T1, T2>>();
         public String TypeName => "Tuple3<T0, T1, T2>";
@@ -1157,7 +1179,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; }
         public override bool Equals(object obj) { if (!(obj is Tuple4<T0, T1, T2, T3>)) return false; var other = (Tuple4<T0, T1, T2, T3>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple4<T0, T1, T2, T3> self) => new Dynamic(self);
         public static implicit operator Tuple4<T0, T1, T2, T3>(Dynamic value) => value.As<Tuple4<T0, T1, T2, T3>>();
         public String TypeName => "Tuple4<T0, T1, T2, T3>";
@@ -1186,7 +1208,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; }
         public override bool Equals(object obj) { if (!(obj is Tuple5<T0, T1, T2, T3, T4>)) return false; var other = (Tuple5<T0, T1, T2, T3, T4>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple5<T0, T1, T2, T3, T4> self) => new Dynamic(self);
         public static implicit operator Tuple5<T0, T1, T2, T3, T4>(Dynamic value) => value.As<Tuple5<T0, T1, T2, T3, T4>>();
         public String TypeName => "Tuple5<T0, T1, T2, T3, T4>";
@@ -1217,7 +1239,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; }
         public override bool Equals(object obj) { if (!(obj is Tuple6<T0, T1, T2, T3, T4, T5>)) return false; var other = (Tuple6<T0, T1, T2, T3, T4, T5>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple6<T0, T1, T2, T3, T4, T5> self) => new Dynamic(self);
         public static implicit operator Tuple6<T0, T1, T2, T3, T4, T5>(Dynamic value) => value.As<Tuple6<T0, T1, T2, T3, T4, T5>>();
         public String TypeName => "Tuple6<T0, T1, T2, T3, T4, T5>";
@@ -1250,7 +1272,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; }
         public override bool Equals(object obj) { if (!(obj is Tuple7<T0, T1, T2, T3, T4, T5, T6>)) return false; var other = (Tuple7<T0, T1, T2, T3, T4, T5, T6>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple7<T0, T1, T2, T3, T4, T5, T6> self) => new Dynamic(self);
         public static implicit operator Tuple7<T0, T1, T2, T3, T4, T5, T6>(Dynamic value) => value.As<Tuple7<T0, T1, T2, T3, T4, T5, T6>>();
         public String TypeName => "Tuple7<T0, T1, T2, T3, T4, T5, T6>";
@@ -1285,7 +1307,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6, out T7 x7) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; x7 = X7; }
         public override bool Equals(object obj) { if (!(obj is Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>)) return false; var other = (Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6) && X7.Equals(other.X7); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6, X7);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> self) => new Dynamic(self);
         public static implicit operator Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>(Dynamic value) => value.As<Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>>();
         public String TypeName => "Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>";
@@ -1322,7 +1344,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6, out T7 x7, out T8 x8) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; x7 = X7; x8 = X8; }
         public override bool Equals(object obj) { if (!(obj is Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>)) return false; var other = (Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6) && X7.Equals(other.X7) && X8.Equals(other.X8); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6, X7, X8);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> self) => new Dynamic(self);
         public static implicit operator Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>(Dynamic value) => value.As<Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>>();
         public String TypeName => "Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>";
@@ -1361,7 +1383,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6, out T7 x7, out T8 x8, out T9 x9) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; x7 = X7; x8 = X8; x9 = X9; }
         public override bool Equals(object obj) { if (!(obj is Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>)) return false; var other = (Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6) && X7.Equals(other.X7) && X8.Equals(other.X8) && X9.Equals(other.X9); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> self) => new Dynamic(self);
         public static implicit operator Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(Dynamic value) => value.As<Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>>();
         public String TypeName => "Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>";
@@ -1376,7 +1398,7 @@ namespace Plato.DoublePrecision
         public static Function4<T0, T1, T2, T3, TR> New() => new Function4<T0, T1, T2, T3, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Function4<T0, T1, T2, T3, TR> self) => new Dynamic(self);
         public static implicit operator Function4<T0, T1, T2, T3, TR>(Dynamic value) => value.As<Function4<T0, T1, T2, T3, TR>>();
         public String TypeName => "Function4<T0, T1, T2, T3, TR>";
@@ -1392,7 +1414,7 @@ namespace Plato.DoublePrecision
         public static Function5<T0, T1, T2, T3, T4, TR> New() => new Function5<T0, T1, T2, T3, T4, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Function5<T0, T1, T2, T3, T4, TR> self) => new Dynamic(self);
         public static implicit operator Function5<T0, T1, T2, T3, T4, TR>(Dynamic value) => value.As<Function5<T0, T1, T2, T3, T4, TR>>();
         public String TypeName => "Function5<T0, T1, T2, T3, T4, TR>";
@@ -1407,7 +1429,7 @@ namespace Plato.DoublePrecision
         public static Function6<T0, T1, T2, T3, T4, T5, TR> New() => new Function6<T0, T1, T2, T3, T4, T5, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Function6<T0, T1, T2, T3, T4, T5, TR> self) => new Dynamic(self);
         public static implicit operator Function6<T0, T1, T2, T3, T4, T5, TR>(Dynamic value) => value.As<Function6<T0, T1, T2, T3, T4, T5, TR>>();
         public String TypeName => "Function6<T0, T1, T2, T3, T4, T5, TR>";
@@ -1422,7 +1444,7 @@ namespace Plato.DoublePrecision
         public static Function7<T0, T1, T2, T3, T4, T5, T6, TR> New() => new Function7<T0, T1, T2, T3, T4, T5, T6, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Function7<T0, T1, T2, T3, T4, T5, T6, TR> self) => new Dynamic(self);
         public static implicit operator Function7<T0, T1, T2, T3, T4, T5, T6, TR>(Dynamic value) => value.As<Function7<T0, T1, T2, T3, T4, T5, T6, TR>>();
         public String TypeName => "Function7<T0, T1, T2, T3, T4, T5, T6, TR>";
@@ -1437,7 +1459,7 @@ namespace Plato.DoublePrecision
         public static Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR> New() => new Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR> self) => new Dynamic(self);
         public static implicit operator Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>(Dynamic value) => value.As<Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>>();
         public String TypeName => "Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>";
@@ -1452,7 +1474,7 @@ namespace Plato.DoublePrecision
         public static Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR> New() => new Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR> self) => new Dynamic(self);
         public static implicit operator Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>(Dynamic value) => value.As<Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>>();
         public String TypeName => "Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>";
@@ -1467,7 +1489,7 @@ namespace Plato.DoublePrecision
         public static Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> New() => new Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> self) => new Dynamic(self);
         public static implicit operator Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>(Dynamic value) => value.As<Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>>();
         public String TypeName => "Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>";
@@ -1491,7 +1513,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Unit value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is Unit)) return false; var other = (Unit)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Unit self) => new Dynamic(self);
         public static implicit operator Unit(Dynamic value) => value.As<Unit>();
         public String TypeName => "Unit";
@@ -1625,7 +1647,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Probability value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is Probability)) return false; var other = (Probability)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Probability self) => new Dynamic(self);
         public static implicit operator Probability(Dynamic value) => value.As<Probability>();
         public String TypeName => "Probability";
@@ -1734,7 +1756,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number iReal, out Number imaginary) { iReal = IReal; imaginary = Imaginary; }
         public override bool Equals(object obj) { if (!(obj is Complex)) return false; var other = (Complex)obj; return IReal.Equals(other.IReal) && Imaginary.Equals(other.Imaginary); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(IReal, Imaginary);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Complex self) => new Dynamic(self);
         public static implicit operator Complex(Dynamic value) => value.As<Complex>();
         public String TypeName => "Complex";
@@ -1861,7 +1883,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer a, out Integer b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Integer2)) return false; var other = (Integer2)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Integer2 self) => new Dynamic(self);
         public static implicit operator Integer2(Dynamic value) => value.As<Integer2>();
         public String TypeName => "Integer2";
@@ -1905,7 +1927,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer a, out Integer b, out Integer c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is Integer3)) return false; var other = (Integer3)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Integer3 self) => new Dynamic(self);
         public static implicit operator Integer3(Dynamic value) => value.As<Integer3>();
         public String TypeName => "Integer3";
@@ -1951,7 +1973,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer a, out Integer b, out Integer c, out Integer d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is Integer4)) return false; var other = (Integer4)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Integer4 self) => new Dynamic(self);
         public static implicit operator Integer4(Dynamic value) => value.As<Integer4>();
         public String TypeName => "Integer4";
@@ -1997,7 +2019,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit r, out Unit g, out Unit b, out Unit a) { r = R; g = G; b = B; a = A; }
         public override bool Equals(object obj) { if (!(obj is Color)) return false; var other = (Color)obj; return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(R, G, B, A);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Color self) => new Dynamic(self);
         public static implicit operator Color(Dynamic value) => value.As<Color>();
         public String TypeName => "Color";
@@ -2027,7 +2049,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit lightness, out Unit u, out Unit v) { lightness = Lightness; u = U; v = V; }
         public override bool Equals(object obj) { if (!(obj is ColorLUV)) return false; var other = (ColorLUV)obj; return Lightness.Equals(other.Lightness) && U.Equals(other.U) && V.Equals(other.V); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Lightness, U, V);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(ColorLUV self) => new Dynamic(self);
         public static implicit operator ColorLUV(Dynamic value) => value.As<ColorLUV>();
         public String TypeName => "ColorLUV";
@@ -2057,7 +2079,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit lightness, out Number a, out Number b) { lightness = Lightness; a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is ColorLAB)) return false; var other = (ColorLAB)obj; return Lightness.Equals(other.Lightness) && A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Lightness, A, B);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(ColorLAB self) => new Dynamic(self);
         public static implicit operator ColorLAB(Dynamic value) => value.As<ColorLAB>();
         public String TypeName => "ColorLAB";
@@ -2085,7 +2107,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit lightness, out PolarCoordinate chromaHue) { lightness = Lightness; chromaHue = ChromaHue; }
         public override bool Equals(object obj) { if (!(obj is ColorLCh)) return false; var other = (ColorLCh)obj; return Lightness.Equals(other.Lightness) && ChromaHue.Equals(other.ChromaHue); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Lightness, ChromaHue);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(ColorLCh self) => new Dynamic(self);
         public static implicit operator ColorLCh(Dynamic value) => value.As<ColorLCh>();
         public String TypeName => "ColorLCh";
@@ -2115,7 +2137,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle hue, out Unit s, out Unit v) { hue = Hue; s = S; v = V; }
         public override bool Equals(object obj) { if (!(obj is ColorHSV)) return false; var other = (ColorHSV)obj; return Hue.Equals(other.Hue) && S.Equals(other.S) && V.Equals(other.V); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Hue, S, V);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(ColorHSV self) => new Dynamic(self);
         public static implicit operator ColorHSV(Dynamic value) => value.As<ColorHSV>();
         public String TypeName => "ColorHSV";
@@ -2145,7 +2167,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle hue, out Unit saturation, out Unit luminance) { hue = Hue; saturation = Saturation; luminance = Luminance; }
         public override bool Equals(object obj) { if (!(obj is ColorHSL)) return false; var other = (ColorHSL)obj; return Hue.Equals(other.Hue) && Saturation.Equals(other.Saturation) && Luminance.Equals(other.Luminance); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Hue, Saturation, Luminance);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(ColorHSL self) => new Dynamic(self);
         public static implicit operator ColorHSL(Dynamic value) => value.As<ColorHSL>();
         public String TypeName => "ColorHSL";
@@ -2175,7 +2197,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit y, out Unit cb, out Unit cr) { y = Y; cb = Cb; cr = Cr; }
         public override bool Equals(object obj) { if (!(obj is ColorYCbCr)) return false; var other = (ColorYCbCr)obj; return Y.Equals(other.Y) && Cb.Equals(other.Cb) && Cr.Equals(other.Cr); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Y, Cb, Cr);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(ColorYCbCr self) => new Dynamic(self);
         public static implicit operator ColorYCbCr(Dynamic value) => value.As<ColorYCbCr>();
         public String TypeName => "ColorYCbCr";
@@ -2205,7 +2227,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radius, out Angle azimuth, out Angle polar) { radius = Radius; azimuth = Azimuth; polar = Polar; }
         public override bool Equals(object obj) { if (!(obj is SphericalCoordinate)) return false; var other = (SphericalCoordinate)obj; return Radius.Equals(other.Radius) && Azimuth.Equals(other.Azimuth) && Polar.Equals(other.Polar); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius, Azimuth, Polar);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(SphericalCoordinate self) => new Dynamic(self);
         public static implicit operator SphericalCoordinate(Dynamic value) => value.As<SphericalCoordinate>();
         public String TypeName => "SphericalCoordinate";
@@ -2233,7 +2255,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radius, out Angle angle) { radius = Radius; angle = Angle; }
         public override bool Equals(object obj) { if (!(obj is PolarCoordinate)) return false; var other = (PolarCoordinate)obj; return Radius.Equals(other.Radius) && Angle.Equals(other.Angle); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius, Angle);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(PolarCoordinate self) => new Dynamic(self);
         public static implicit operator PolarCoordinate(Dynamic value) => value.As<PolarCoordinate>();
         public String TypeName => "PolarCoordinate";
@@ -2261,7 +2283,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number rho, out Angle azimuth) { rho = Rho; azimuth = Azimuth; }
         public override bool Equals(object obj) { if (!(obj is LogPolarCoordinate)) return false; var other = (LogPolarCoordinate)obj; return Rho.Equals(other.Rho) && Azimuth.Equals(other.Azimuth); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Rho, Azimuth);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(LogPolarCoordinate self) => new Dynamic(self);
         public static implicit operator LogPolarCoordinate(Dynamic value) => value.As<LogPolarCoordinate>();
         public String TypeName => "LogPolarCoordinate";
@@ -2291,7 +2313,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radialDistance, out Angle azimuth, out Number height) { radialDistance = RadialDistance; azimuth = Azimuth; height = Height; }
         public override bool Equals(object obj) { if (!(obj is CylindricalCoordinate)) return false; var other = (CylindricalCoordinate)obj; return RadialDistance.Equals(other.RadialDistance) && Azimuth.Equals(other.Azimuth) && Height.Equals(other.Height); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(RadialDistance, Azimuth, Height);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(CylindricalCoordinate self) => new Dynamic(self);
         public static implicit operator CylindricalCoordinate(Dynamic value) => value.As<CylindricalCoordinate>();
         public String TypeName => "CylindricalCoordinate";
@@ -2321,7 +2343,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radius, out Angle azimuth, out Number height) { radius = Radius; azimuth = Azimuth; height = Height; }
         public override bool Equals(object obj) { if (!(obj is HorizontalCoordinate)) return false; var other = (HorizontalCoordinate)obj; return Radius.Equals(other.Radius) && Azimuth.Equals(other.Azimuth) && Height.Equals(other.Height); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius, Azimuth, Height);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(HorizontalCoordinate self) => new Dynamic(self);
         public static implicit operator HorizontalCoordinate(Dynamic value) => value.As<HorizontalCoordinate>();
         public String TypeName => "HorizontalCoordinate";
@@ -2349,7 +2371,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle latitude, out Angle longitude) { latitude = Latitude; longitude = Longitude; }
         public override bool Equals(object obj) { if (!(obj is GeoCoordinate)) return false; var other = (GeoCoordinate)obj; return Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Latitude, Longitude);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(GeoCoordinate self) => new Dynamic(self);
         public static implicit operator GeoCoordinate(Dynamic value) => value.As<GeoCoordinate>();
         public String TypeName => "GeoCoordinate";
@@ -2377,7 +2399,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out GeoCoordinate iCoordinate, out Number altitude) { iCoordinate = ICoordinate; altitude = Altitude; }
         public override bool Equals(object obj) { if (!(obj is GeoCoordinateWithAltitude)) return false; var other = (GeoCoordinateWithAltitude)obj; return ICoordinate.Equals(other.ICoordinate) && Altitude.Equals(other.Altitude); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(ICoordinate, Altitude);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(GeoCoordinateWithAltitude self) => new Dynamic(self);
         public static implicit operator GeoCoordinateWithAltitude(Dynamic value) => value.As<GeoCoordinateWithAltitude>();
         public String TypeName => "GeoCoordinateWithAltitude";
@@ -2405,7 +2427,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number width, out Number height) { width = Width; height = Height; }
         public override bool Equals(object obj) { if (!(obj is Size2D)) return false; var other = (Size2D)obj; return Width.Equals(other.Width) && Height.Equals(other.Height); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Width, Height);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Size2D self) => new Dynamic(self);
         public static implicit operator Size2D(Dynamic value) => value.As<Size2D>();
         public String TypeName => "Size2D";
@@ -2451,7 +2473,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number width, out Number height, out Number depth) { width = Width; height = Height; depth = Depth; }
         public override bool Equals(object obj) { if (!(obj is Size3D)) return false; var other = (Size3D)obj; return Width.Equals(other.Width) && Height.Equals(other.Height) && Depth.Equals(other.Depth); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Width, Height, Depth);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Size3D self) => new Dynamic(self);
         public static implicit operator Size3D(Dynamic value) => value.As<Size3D>();
         public String TypeName => "Size3D";
@@ -2495,7 +2517,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer numerator, out Integer denominator) { numerator = Numerator; denominator = Denominator; }
         public override bool Equals(object obj) { if (!(obj is Rational)) return false; var other = (Rational)obj; return Numerator.Equals(other.Numerator) && Denominator.Equals(other.Denominator); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Numerator, Denominator);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Rational self) => new Dynamic(self);
         public static implicit operator Rational(Dynamic value) => value.As<Rational>();
         public String TypeName => "Rational";
@@ -2523,7 +2545,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number numerator, out Number denominator) { numerator = Numerator; denominator = Denominator; }
         public override bool Equals(object obj) { if (!(obj is Fraction)) return false; var other = (Fraction)obj; return Numerator.Equals(other.Numerator) && Denominator.Equals(other.Denominator); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Numerator, Denominator);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Fraction self) => new Dynamic(self);
         public static implicit operator Fraction(Dynamic value) => value.As<Fraction>();
         public String TypeName => "Fraction";
@@ -2552,7 +2574,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Angle value) => value.Radians;
         public override bool Equals(object obj) { if (!(obj is Angle)) return false; var other = (Angle)obj; return Radians.Equals(other.Radians); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radians);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Angle self) => new Dynamic(self);
         public static implicit operator Angle(Dynamic value) => value.As<Angle>();
         public String TypeName => "Angle";
@@ -2574,9 +2596,6 @@ namespace Plato.DoublePrecision
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(Radians);
         public Angle FromComponents(IArray<Number> numbers) => new Angle(numbers[0]);
         // Implemented concept functions and type functions
-        public Number Cos => Intrinsics.Cos(this);
-        public Number Sin => Intrinsics.Sin(this);
-        public Number Tan => Intrinsics.Tan(this);
         public Number Turns => this.Radians.Divide(Constants.TwoPi);
         public Number Degrees => this.Turns.Multiply(((Number)360));
         public Number Gradians => this.Turns.Multiply(((Number)400));
@@ -2592,6 +2611,9 @@ namespace Plato.DoublePrecision
         }
         public Vector3D TrefoilKnotFunction => this.Sin.Add(this.Multiply(((Number)2)).Sin.Multiply(((Number)2))).Tuple3(this.Cos.Add(this.Multiply(((Number)2)).Cos.Multiply(((Number)2))), this.Multiply(((Number)3)).Sin.Negative);
         public Vector3D FigureEightKnotFunction => ((Number)2).Add(this.Multiply(((Number)2)).Cos).Multiply(this.Multiply(((Number)3)).Cos).Tuple3(((Number)2).Add(this.Multiply(((Number)2)).Cos).Multiply(this.Multiply(((Number)3)).Sin), this.Multiply(((Number)4)).Sin);
+        public Number Cos => Intrinsics.Cos(this);
+        public Number Sin => Intrinsics.Sin(this);
+        public Number Tan => Intrinsics.Tan(this);
         public Angle Multiply(Angle y) => this.FromNumber(this.ToNumber.Multiply(y.ToNumber));
         public static Angle operator *(Angle x, Angle y) => x.Multiply(y);
         public Angle Divide(Angle y) => this.FromNumber(this.ToNumber.Divide(y.ToNumber));
@@ -2680,7 +2702,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Length value) => value.Meters;
         public override bool Equals(object obj) { if (!(obj is Length)) return false; var other = (Length)obj; return Meters.Equals(other.Meters); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Meters);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Length self) => new Dynamic(self);
         public static implicit operator Length(Dynamic value) => value.As<Length>();
         public String TypeName => "Length";
@@ -2790,7 +2812,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Mass value) => value.Kilograms;
         public override bool Equals(object obj) { if (!(obj is Mass)) return false; var other = (Mass)obj; return Kilograms.Equals(other.Kilograms); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Kilograms);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Mass self) => new Dynamic(self);
         public static implicit operator Mass(Dynamic value) => value.As<Mass>();
         public String TypeName => "Mass";
@@ -2900,7 +2922,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Temperature value) => value.Celsius;
         public override bool Equals(object obj) { if (!(obj is Temperature)) return false; var other = (Temperature)obj; return Celsius.Equals(other.Celsius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Celsius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Temperature self) => new Dynamic(self);
         public static implicit operator Temperature(Dynamic value) => value.As<Temperature>();
         public String TypeName => "Temperature";
@@ -3010,7 +3032,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Time value) => value.Seconds;
         public override bool Equals(object obj) { if (!(obj is Time)) return false; var other = (Time)obj; return Seconds.Equals(other.Seconds); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Seconds);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Time self) => new Dynamic(self);
         public static implicit operator Time(Dynamic value) => value.As<Time>();
         public String TypeName => "Time";
@@ -3120,7 +3142,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(DateTime value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is DateTime)) return false; var other = (DateTime)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(DateTime self) => new Dynamic(self);
         public static implicit operator DateTime(Dynamic value) => value.As<DateTime>();
         public String TypeName => "DateTime";
@@ -3148,7 +3170,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle min, out Angle max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is AnglePair)) return false; var other = (AnglePair)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(AnglePair self) => new Dynamic(self);
         public static implicit operator AnglePair(Dynamic value) => value.As<AnglePair>();
         public String TypeName => "AnglePair";
@@ -3211,7 +3233,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number min, out Number max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is NumberInterval)) return false; var other = (NumberInterval)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(NumberInterval self) => new Dynamic(self);
         public static implicit operator NumberInterval(Dynamic value) => value.As<NumberInterval>();
         public String TypeName => "NumberInterval";
@@ -3274,7 +3296,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y) { x = X; y = Y; }
         public override bool Equals(object obj) { if (!(obj is Vector2D)) return false; var other = (Vector2D)obj; return X.Equals(other.X) && Y.Equals(other.Y); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Vector2D self) => new Dynamic(self);
         public static implicit operator Vector2D(Dynamic value) => value.As<Vector2D>();
         public String TypeName => "Vector2D";
@@ -3406,7 +3428,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y, out Number z) { x = X; y = Y; z = Z; }
         public override bool Equals(object obj) { if (!(obj is Vector3D)) return false; var other = (Vector3D)obj; return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y, Z);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Vector3D self) => new Dynamic(self);
         public static implicit operator Vector3D(Dynamic value) => value.As<Vector3D>();
         public String TypeName => "Vector3D";
@@ -3542,7 +3564,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
         public override bool Equals(object obj) { if (!(obj is Vector4D)) return false; var other = (Vector4D)obj; return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z) && W.Equals(other.W); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y, Z, W);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Vector4D self) => new Dynamic(self);
         public static implicit operator Vector4D(Dynamic value) => value.As<Vector4D>();
         public String TypeName => "Vector4D";
@@ -3671,7 +3693,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D column1, out Vector3D column2, out Vector3D column3) { column1 = Column1; column2 = Column2; column3 = Column3; }
         public override bool Equals(object obj) { if (!(obj is Matrix3x3)) return false; var other = (Matrix3x3)obj; return Column1.Equals(other.Column1) && Column2.Equals(other.Column2) && Column3.Equals(other.Column3); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Column1, Column2, Column3);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Matrix3x3 self) => new Dynamic(self);
         public static implicit operator Matrix3x3(Dynamic value) => value.As<Matrix3x3>();
         public String TypeName => "Matrix3x3";
@@ -3717,7 +3739,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector4D column1, out Vector4D column2, out Vector4D column3, out Vector4D column4) { column1 = Column1; column2 = Column2; column3 = Column3; column4 = Column4; }
         public override bool Equals(object obj) { if (!(obj is Matrix4x4)) return false; var other = (Matrix4x4)obj; return Column1.Equals(other.Column1) && Column2.Equals(other.Column2) && Column3.Equals(other.Column3) && Column4.Equals(other.Column4); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Column1, Column2, Column3, Column4);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Matrix4x4 self) => new Dynamic(self);
         public static implicit operator Matrix4x4(Dynamic value) => value.As<Matrix4x4>();
         public String TypeName => "Matrix4x4";
@@ -3779,7 +3801,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D translation, out Angle rotation, out Vector2D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
         public override bool Equals(object obj) { if (!(obj is Transform2D)) return false; var other = (Transform2D)obj; return Translation.Equals(other.Translation) && Rotation.Equals(other.Rotation) && Scale.Equals(other.Scale); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Translation, Rotation, Scale);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Transform2D self) => new Dynamic(self);
         public static implicit operator Transform2D(Dynamic value) => value.As<Transform2D>();
         public String TypeName => "Transform2D";
@@ -3807,7 +3829,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D position, out Angle orientation) { position = Position; orientation = Orientation; }
         public override bool Equals(object obj) { if (!(obj is Pose2D)) return false; var other = (Pose2D)obj; return Position.Equals(other.Position) && Orientation.Equals(other.Orientation); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Position, Orientation);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Pose2D self) => new Dynamic(self);
         public static implicit operator Pose2D(Dynamic value) => value.As<Pose2D>();
         public String TypeName => "Pose2D";
@@ -3835,7 +3857,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D min, out Vector2D max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is Bounds2D)) return false; var other = (Bounds2D)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Bounds2D self) => new Dynamic(self);
         public static implicit operator Bounds2D(Dynamic value) => value.As<Bounds2D>();
         public String TypeName => "Bounds2D";
@@ -3898,7 +3920,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D direction, out Vector2D origin) { direction = Direction; origin = Origin; }
         public override bool Equals(object obj) { if (!(obj is Ray2D)) return false; var other = (Ray2D)obj; return Direction.Equals(other.Direction) && Origin.Equals(other.Origin); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Direction, Origin);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Ray2D self) => new Dynamic(self);
         public static implicit operator Ray2D(Dynamic value) => value.As<Ray2D>();
         public String TypeName => "Ray2D";
@@ -3930,7 +3952,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is Triangle2D)) return false; var other = (Triangle2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Triangle2D self) => new Dynamic(self);
         public static implicit operator Triangle2D(Dynamic value) => value.As<Triangle2D>();
         public String TypeName => "Triangle2D";
@@ -3981,7 +4003,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is Quad2D)) return false; var other = (Quad2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Quad2D self) => new Dynamic(self);
         public static implicit operator Quad2D(Dynamic value) => value.As<Quad2D>();
         public String TypeName => "Quad2D";
@@ -4023,7 +4045,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Line2D)) return false; var other = (Line2D)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Line2D self) => new Dynamic(self);
         public static implicit operator Line2D(Dynamic value) => value.As<Line2D>();
         public String TypeName => "Line2D";
@@ -4068,7 +4090,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D center, out Number radius) { center = Center; radius = Radius; }
         public override bool Equals(object obj) { if (!(obj is Circle)) return false; var other = (Circle)obj; return Center.Equals(other.Center) && Radius.Equals(other.Radius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Radius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Circle self) => new Dynamic(self);
         public static implicit operator Circle(Dynamic value) => value.As<Circle>();
         public String TypeName => "Circle";
@@ -4092,7 +4114,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Circle a, out Circle b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Lens)) return false; var other = (Lens)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Lens self) => new Dynamic(self);
         public static implicit operator Lens(Dynamic value) => value.As<Lens>();
         public String TypeName => "Lens";
@@ -4116,7 +4138,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D center, out Size2D size) { center = Center; size = Size; }
         public override bool Equals(object obj) { if (!(obj is Rect2D)) return false; var other = (Rect2D)obj; return Center.Equals(other.Center) && Size.Equals(other.Size); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Size);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Rect2D self) => new Dynamic(self);
         public static implicit operator Rect2D(Dynamic value) => value.As<Rect2D>();
         public String TypeName => "Rect2D";
@@ -4153,7 +4175,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D center, out Size2D size) { center = Center; size = Size; }
         public override bool Equals(object obj) { if (!(obj is Ellipse)) return false; var other = (Ellipse)obj; return Center.Equals(other.Center) && Size.Equals(other.Size); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Size);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Ellipse self) => new Dynamic(self);
         public static implicit operator Ellipse(Dynamic value) => value.As<Ellipse>();
         public String TypeName => "Ellipse";
@@ -4180,7 +4202,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D center, out Number innerRadius, out Number outerRadius) { center = Center; innerRadius = InnerRadius; outerRadius = OuterRadius; }
         public override bool Equals(object obj) { if (!(obj is Ring)) return false; var other = (Ring)obj; return Center.Equals(other.Center) && InnerRadius.Equals(other.InnerRadius) && OuterRadius.Equals(other.OuterRadius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, InnerRadius, OuterRadius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Ring self) => new Dynamic(self);
         public static implicit operator Ring(Dynamic value) => value.As<Ring>();
         public String TypeName => "Ring";
@@ -4204,7 +4226,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out AnglePair angles, out Circle circle) { angles = Angles; circle = Circle; }
         public override bool Equals(object obj) { if (!(obj is Arc)) return false; var other = (Arc)obj; return Angles.Equals(other.Angles) && Circle.Equals(other.Circle); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Angles, Circle);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Arc self) => new Dynamic(self);
         public static implicit operator Arc(Dynamic value) => value.As<Arc>();
         public String TypeName => "Arc";
@@ -4225,7 +4247,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Sector(Arc value) => new Sector(value);
         public override bool Equals(object obj) { if (!(obj is Sector)) return false; var other = (Sector)obj; return Arc.Equals(other.Arc); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Arc);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Sector self) => new Dynamic(self);
         public static implicit operator Sector(Dynamic value) => value.As<Sector>();
         public String TypeName => "Sector";
@@ -4246,7 +4268,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Chord(Arc value) => new Chord(value);
         public override bool Equals(object obj) { if (!(obj is Chord)) return false; var other = (Chord)obj; return Arc.Equals(other.Arc); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Arc);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Chord self) => new Dynamic(self);
         public static implicit operator Chord(Dynamic value) => value.As<Chord>();
         public String TypeName => "Chord";
@@ -4267,7 +4289,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Segment(Arc value) => new Segment(value);
         public override bool Equals(object obj) { if (!(obj is Segment)) return false; var other = (Segment)obj; return Arc.Equals(other.Arc); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Arc);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Segment self) => new Dynamic(self);
         public static implicit operator Segment(Dynamic value) => value.As<Segment>();
         public String TypeName => "Segment";
@@ -4288,7 +4310,7 @@ namespace Plato.DoublePrecision
         public static implicit operator RegularPolygon(Integer value) => new RegularPolygon(value);
         public override bool Equals(object obj) { if (!(obj is RegularPolygon)) return false; var other = (RegularPolygon)obj; return NumPoints.Equals(other.NumPoints); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(NumPoints);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(RegularPolygon self) => new Dynamic(self);
         public static implicit operator RegularPolygon(Dynamic value) => value.As<RegularPolygon>();
         public String TypeName => "RegularPolygon";
@@ -4315,7 +4337,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D center, out Angle rotation, out Size2D extent) { center = Center; rotation = Rotation; extent = Extent; }
         public override bool Equals(object obj) { if (!(obj is Box2D)) return false; var other = (Box2D)obj; return Center.Equals(other.Center) && Rotation.Equals(other.Rotation) && Extent.Equals(other.Extent); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Rotation, Extent);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Box2D self) => new Dynamic(self);
         public static implicit operator Box2D(Dynamic value) => value.As<Box2D>();
         public String TypeName => "Box2D";
@@ -4338,7 +4360,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D center, out Number radius) { center = Center; radius = Radius; }
         public override bool Equals(object obj) { if (!(obj is Sphere)) return false; var other = (Sphere)obj; return Center.Equals(other.Center) && Radius.Equals(other.Radius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Radius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Sphere self) => new Dynamic(self);
         public static implicit operator Sphere(Dynamic value) => value.As<Sphere>();
         public String TypeName => "Sphere";
@@ -4366,7 +4388,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D normal, out Number d) { normal = Normal; d = D; }
         public override bool Equals(object obj) { if (!(obj is Plane)) return false; var other = (Plane)obj; return Normal.Equals(other.Normal) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Normal, D);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Plane self) => new Dynamic(self);
         public static implicit operator Plane(Dynamic value) => value.As<Plane>();
         public String TypeName => "Plane";
@@ -4397,7 +4419,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D translation, out Rotation3D rotation, out Vector3D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
         public override bool Equals(object obj) { if (!(obj is Transform3D)) return false; var other = (Transform3D)obj; return Translation.Equals(other.Translation) && Rotation.Equals(other.Rotation) && Scale.Equals(other.Scale); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Translation, Rotation, Scale);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Transform3D self) => new Dynamic(self);
         public static implicit operator Transform3D(Dynamic value) => value.As<Transform3D>();
         public String TypeName => "Transform3D";
@@ -4425,7 +4447,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D position, out Orientation3D orientation) { position = Position; orientation = Orientation; }
         public override bool Equals(object obj) { if (!(obj is Pose3D)) return false; var other = (Pose3D)obj; return Position.Equals(other.Position) && Orientation.Equals(other.Orientation); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Position, Orientation);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Pose3D self) => new Dynamic(self);
         public static implicit operator Pose3D(Dynamic value) => value.As<Pose3D>();
         public String TypeName => "Pose3D";
@@ -4455,7 +4477,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D forward, out Vector3D up, out Vector3D right) { forward = Forward; up = Up; right = Right; }
         public override bool Equals(object obj) { if (!(obj is Frame3D)) return false; var other = (Frame3D)obj; return Forward.Equals(other.Forward) && Up.Equals(other.Up) && Right.Equals(other.Right); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Forward, Up, Right);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Frame3D self) => new Dynamic(self);
         public static implicit operator Frame3D(Dynamic value) => value.As<Frame3D>();
         public String TypeName => "Frame3D";
@@ -4478,7 +4500,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D min, out Vector3D max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is Bounds3D)) return false; var other = (Bounds3D)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Bounds3D self) => new Dynamic(self);
         public static implicit operator Bounds3D(Dynamic value) => value.As<Bounds3D>();
         public String TypeName => "Bounds3D";
@@ -4541,7 +4563,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Line3D)) return false; var other = (Line3D)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Line3D self) => new Dynamic(self);
         public static implicit operator Line3D(Dynamic value) => value.As<Line3D>();
         public String TypeName => "Line3D";
@@ -4585,7 +4607,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D direction, out Vector3D position) { direction = Direction; position = Position; }
         public override bool Equals(object obj) { if (!(obj is Ray3D)) return false; var other = (Ray3D)obj; return Direction.Equals(other.Direction) && Position.Equals(other.Position); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Direction, Position);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Ray3D self) => new Dynamic(self);
         public static implicit operator Ray3D(Dynamic value) => value.As<Ray3D>();
         public String TypeName => "Ray3D";
@@ -4616,7 +4638,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is Triangle3D)) return false; var other = (Triangle3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Triangle3D self) => new Dynamic(self);
         public static implicit operator Triangle3D(Dynamic value) => value.As<Triangle3D>();
         public String TypeName => "Triangle3D";
@@ -4668,7 +4690,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is Quad3D)) return false; var other = (Quad3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Quad3D self) => new Dynamic(self);
         public static implicit operator Quad3D(Dynamic value) => value.As<Quad3D>();
         public String TypeName => "Quad3D";
@@ -4710,7 +4732,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
         public override bool Equals(object obj) { if (!(obj is Capsule)) return false; var other = (Capsule)obj; return Line.Equals(other.Line) && Radius.Equals(other.Radius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Capsule self) => new Dynamic(self);
         public static implicit operator Capsule(Dynamic value) => value.As<Capsule>();
         public String TypeName => "Capsule";
@@ -4733,7 +4755,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
         public override bool Equals(object obj) { if (!(obj is Cylinder)) return false; var other = (Cylinder)obj; return Line.Equals(other.Line) && Radius.Equals(other.Radius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Cylinder self) => new Dynamic(self);
         public static implicit operator Cylinder(Dynamic value) => value.As<Cylinder>();
         public String TypeName => "Cylinder";
@@ -4756,7 +4778,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
         public override bool Equals(object obj) { if (!(obj is Cone)) return false; var other = (Cone)obj; return Line.Equals(other.Line) && Radius.Equals(other.Radius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Cone self) => new Dynamic(self);
         public static implicit operator Cone(Dynamic value) => value.As<Cone>();
         public String TypeName => "Cone";
@@ -4781,7 +4803,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Line3D line, out Number innerRadius, out Number outerRadius) { line = Line; innerRadius = InnerRadius; outerRadius = OuterRadius; }
         public override bool Equals(object obj) { if (!(obj is Tube)) return false; var other = (Tube)obj; return Line.Equals(other.Line) && InnerRadius.Equals(other.InnerRadius) && OuterRadius.Equals(other.OuterRadius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, InnerRadius, OuterRadius);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Tube self) => new Dynamic(self);
         public static implicit operator Tube(Dynamic value) => value.As<Tube>();
         public String TypeName => "Tube";
@@ -4806,7 +4828,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Line3D line, out Number radius1, out Number radius2) { line = Line; radius1 = Radius1; radius2 = Radius2; }
         public override bool Equals(object obj) { if (!(obj is ConeSegment)) return false; var other = (ConeSegment)obj; return Line.Equals(other.Line) && Radius1.Equals(other.Radius1) && Radius2.Equals(other.Radius2); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius1, Radius2);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(ConeSegment self) => new Dynamic(self);
         public static implicit operator ConeSegment(Dynamic value) => value.As<ConeSegment>();
         public String TypeName => "ConeSegment";
@@ -4831,7 +4853,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D center, out Rotation3D rotation, out Size3D extent) { center = Center; rotation = Rotation; extent = Extent; }
         public override bool Equals(object obj) { if (!(obj is Box3D)) return false; var other = (Box3D)obj; return Center.Equals(other.Center) && Rotation.Equals(other.Rotation) && Extent.Equals(other.Extent); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Rotation, Extent);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Box3D self) => new Dynamic(self);
         public static implicit operator Box3D(Dynamic value) => value.As<Box3D>();
         public String TypeName => "Box3D";
@@ -4858,7 +4880,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is CubicBezier2D)) return false; var other = (CubicBezier2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(CubicBezier2D self) => new Dynamic(self);
         public static implicit operator CubicBezier2D(Dynamic value) => value.As<CubicBezier2D>();
         public String TypeName => "CubicBezier2D";
@@ -4899,7 +4921,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is CubicBezier3D)) return false; var other = (CubicBezier3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(CubicBezier3D self) => new Dynamic(self);
         public static implicit operator CubicBezier3D(Dynamic value) => value.As<CubicBezier3D>();
         public String TypeName => "CubicBezier3D";
@@ -4938,7 +4960,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is QuadraticBezier2D)) return false; var other = (QuadraticBezier2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(QuadraticBezier2D self) => new Dynamic(self);
         public static implicit operator QuadraticBezier2D(Dynamic value) => value.As<QuadraticBezier2D>();
         public String TypeName => "QuadraticBezier2D";
@@ -4977,7 +4999,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is QuadraticBezier3D)) return false; var other = (QuadraticBezier3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(QuadraticBezier3D self) => new Dynamic(self);
         public static implicit operator QuadraticBezier3D(Dynamic value) => value.As<QuadraticBezier3D>();
         public String TypeName => "QuadraticBezier3D";
@@ -5018,7 +5040,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
         public override bool Equals(object obj) { if (!(obj is Quaternion)) return false; var other = (Quaternion)obj; return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z) && W.Equals(other.W); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y, Z, W);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Quaternion self) => new Dynamic(self);
         public static implicit operator Quaternion(Dynamic value) => value.As<Quaternion>();
         public String TypeName => "Quaternion";
@@ -5046,7 +5068,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D axis, out Angle angle) { axis = Axis; angle = Angle; }
         public override bool Equals(object obj) { if (!(obj is AxisAngle)) return false; var other = (AxisAngle)obj; return Axis.Equals(other.Axis) && Angle.Equals(other.Angle); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Axis, Angle);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(AxisAngle self) => new Dynamic(self);
         public static implicit operator AxisAngle(Dynamic value) => value.As<AxisAngle>();
         public String TypeName => "AxisAngle";
@@ -5076,7 +5098,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle yaw, out Angle pitch, out Angle roll) { yaw = Yaw; pitch = Pitch; roll = Roll; }
         public override bool Equals(object obj) { if (!(obj is EulerAngles)) return false; var other = (EulerAngles)obj; return Yaw.Equals(other.Yaw) && Pitch.Equals(other.Pitch) && Roll.Equals(other.Roll); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Yaw, Pitch, Roll);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(EulerAngles self) => new Dynamic(self);
         public static implicit operator EulerAngles(Dynamic value) => value.As<EulerAngles>();
         public String TypeName => "EulerAngles";
@@ -5101,7 +5123,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Rotation3D(Quaternion value) => new Rotation3D(value);
         public override bool Equals(object obj) { if (!(obj is Rotation3D)) return false; var other = (Rotation3D)obj; return Quaternion.Equals(other.Quaternion); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Quaternion);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Rotation3D self) => new Dynamic(self);
         public static implicit operator Rotation3D(Dynamic value) => value.As<Rotation3D>();
         public String TypeName => "Rotation3D";
@@ -5126,7 +5148,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Orientation3D(Rotation3D value) => new Orientation3D(value);
         public override bool Equals(object obj) { if (!(obj is Orientation3D)) return false; var other = (Orientation3D)obj; return IValue.Equals(other.IValue); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(IValue);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Orientation3D self) => new Dynamic(self);
         public static implicit operator Orientation3D(Dynamic value) => value.As<Orientation3D>();
         public String TypeName => "Orientation3D";
@@ -5154,7 +5176,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector4D a, out Vector4D b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Line4D)) return false; var other = (Line4D)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Line4D self) => new Dynamic(self);
         public static implicit operator Line4D(Dynamic value) => value.As<Line4D>();
         public String TypeName => "Line4D";
@@ -5196,7 +5218,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out IArray<Vector3D> points, out IArray<Integer> indices) { points = Points; indices = Indices; }
         public override bool Equals(object obj) { if (!(obj is LineMesh)) return false; var other = (LineMesh)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Indices);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(LineMesh self) => new Dynamic(self);
         public static implicit operator LineMesh(Dynamic value) => value.As<LineMesh>();
         public String TypeName => "LineMesh";
@@ -5239,7 +5261,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out IArray<Vector3D> points, out IArray<Integer> indices) { points = Points; indices = Indices; }
         public override bool Equals(object obj) { if (!(obj is TriangleMesh)) return false; var other = (TriangleMesh)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Indices);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(TriangleMesh self) => new Dynamic(self);
         public static implicit operator TriangleMesh(Dynamic value) => value.As<TriangleMesh>();
         public String TypeName => "TriangleMesh";
@@ -5285,7 +5307,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out IArray<Vector3D> points, out IArray<Integer> indices) { points = Points; indices = Indices; }
         public override bool Equals(object obj) { if (!(obj is QuadMesh)) return false; var other = (QuadMesh)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Indices);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(QuadMesh self) => new Dynamic(self);
         public static implicit operator QuadMesh(Dynamic value) => value.As<QuadMesh>();
         public String TypeName => "QuadMesh";
@@ -5328,7 +5350,7 @@ namespace Plato.DoublePrecision
         public static Lines New(IArray<Line3D> primitives) => new Lines(primitives);
         public override bool Equals(object obj) { if (!(obj is Lines)) return false; var other = (Lines)obj; return Primitives.Equals(other.Primitives); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Lines self) => new Dynamic(self);
         public static implicit operator Lines(Dynamic value) => value.As<Lines>();
         public String TypeName => "Lines";
@@ -5370,7 +5392,7 @@ namespace Plato.DoublePrecision
         public static Triangles New(IArray<Triangle3D> primitives) => new Triangles(primitives);
         public override bool Equals(object obj) { if (!(obj is Triangles)) return false; var other = (Triangles)obj; return Primitives.Equals(other.Primitives); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Triangles self) => new Dynamic(self);
         public static implicit operator Triangles(Dynamic value) => value.As<Triangles>();
         public String TypeName => "Triangles";
@@ -5412,7 +5434,7 @@ namespace Plato.DoublePrecision
         public static Quads New(IArray<Quad3D> primitives) => new Quads(primitives);
         public override bool Equals(object obj) { if (!(obj is Quads)) return false; var other = (Quads)obj; return Primitives.Equals(other.Primitives); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => Intrinsics.MakeString(TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
         public static implicit operator Dynamic(Quads self) => new Dynamic(self);
         public static implicit operator Quads(Dynamic value) => value.As<Quads>();
         public String TypeName => "Quads";
@@ -5447,8 +5469,6 @@ namespace Plato.DoublePrecision
     }
     public static class Constants
     {
-        public static Number MinNumber => Intrinsics.MinNumber;
-        public static Number MaxNumber => Intrinsics.MaxNumber;
         public static Number Pi => ((Number)3.1415926535897);
         public static Number TwoPi => Constants.Pi.Twice;
         public static Number HalfPi => Constants.Pi.Half;
@@ -5465,29 +5485,28 @@ namespace Plato.DoublePrecision
         public static Number GregorianYearDays => ((Number)365.2425);
         public static Number RadiansPerDegree => Constants.Pi.Divide(((Number)180));
         public static Number DegreesPerRadian => ((Number)180).Divide(Constants.Pi);
+        public static Number MinNumber => Intrinsics.MinNumber;
+        public static Number MaxNumber => Intrinsics.MaxNumber;
     }
     public static class Extensions
     {
         public static T Middle<T>(this IArray<T> xs, Integer n) => xs.At(xs.Count.Divide(((Integer)2)));
         public static IArray<T> Slice<T>(this IArray<T> xs, Integer from, Integer to) => xs.Subarray(from, to.Subtract(from));
         public static IArray<IArray<T>> Slices<T>(this IArray<T> xs, Integer n){
-            var _var50 = n;
+            var _var49 = n;
             {
-                var _var49 = n;
+                var _var48 = n;
                 {
-                    var _var48 = xs;
-                    {
-                        var _var47 = xs;
-                        return n.MapRange((i) => _var47.Subarray(i.Multiply(_var48.Count.Divide(_var49)), _var50));
-                    }
+                    var _var47 = xs;
+                    return xs.Count.Divide(n).MapRange((i) => _var47.Subarray(i.Multiply(_var48), _var49));
                 }
             }
         }
         public static IArray<T> Subarray<T>(this IArray<T> xs, Integer from, Integer count){
-            var _var52 = from;
+            var _var51 = from;
             {
-                var _var51 = xs;
-                return count.MapRange((i) => _var51.At(i.Add(_var52)));
+                var _var50 = xs;
+                return count.MapRange((i) => _var50.At(i.Add(_var51)));
             }
         }
         public static IArray<T> Skip<T>(this IArray<T> xs, Integer n) => xs.Subarray(n, xs.Count.Subtract(n));
@@ -5531,54 +5550,54 @@ namespace Plato.DoublePrecision
             return ((Boolean)false);
         }
         public static IArray<TR> Map<T0, TR>(this IArray<T0> xs, System.Func<T0, TR> f){
-            var _var54 = xs;
+            var _var53 = xs;
             {
-                var _var53 = f;
-                return xs.Count.MapRange((i) => _var53.Invoke(_var54.At(i)));
+                var _var52 = f;
+                return xs.Count.MapRange((i) => _var52.Invoke(_var53.At(i)));
             }
         }
         public static IArray<TR> PairwiseMap<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f){
-            var _var57 = xs;
+            var _var56 = xs;
             {
-                var _var56 = xs;
+                var _var55 = xs;
                 {
-                    var _var55 = f;
-                    return xs.Count.Subtract(((Integer)1)).MapRange((i) => _var55.Invoke(_var56.At(i), _var57.At(i.Add(((Integer)1)))));
+                    var _var54 = f;
+                    return xs.Count.Subtract(((Integer)1)).MapRange((i) => _var54.Invoke(_var55.At(i), _var56.At(i.Add(((Integer)1)))));
                 }
             }
         }
         public static IArray<TR> PairwiseMapModulo<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f){
-            var _var61 = xs;
+            var _var60 = xs;
             {
-                var _var60 = xs;
+                var _var59 = xs;
                 {
-                    var _var59 = xs;
+                    var _var58 = xs;
                     {
-                        var _var58 = f;
-                        return xs.Count.MapRange((i) => _var58.Invoke(_var59.At(i), _var60.At(i.Add(((Integer)1)).Modulo(_var61.Count))));
+                        var _var57 = f;
+                        return xs.Count.MapRange((i) => _var57.Invoke(_var58.At(i), _var59.At(i.Add(((Integer)1)).Modulo(_var60.Count))));
                     }
                 }
             }
         }
         public static IArray<TR> Zip<T0, T1, TR>(this IArray<T0> xs, IArray<T1> ys, System.Func<T0, T1, TR> f){
-            var _var64 = ys;
+            var _var63 = ys;
             {
-                var _var63 = xs;
+                var _var62 = xs;
                 {
-                    var _var62 = f;
-                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var62.Invoke(_var63.At(i), _var64.At(i)));
+                    var _var61 = f;
+                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var61.Invoke(_var62.At(i), _var63.At(i)));
                 }
             }
         }
         public static IArray<TR> Zip<T0, T1, T2, TR>(this IArray<T0> xs, IArray<T1> ys, IArray<T2> zs, System.Func<T0, T1, T2, TR> f){
-            var _var68 = zs;
+            var _var67 = zs;
             {
-                var _var67 = ys;
+                var _var66 = ys;
                 {
-                    var _var66 = xs;
+                    var _var65 = xs;
                     {
-                        var _var65 = f;
-                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var65.Invoke(_var66.At(i), _var67.At(i), _var68.At(i)));
+                        var _var64 = f;
+                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var64.Invoke(_var65.At(i), _var66.At(i), _var67.At(i)));
                     }
                 }
             }

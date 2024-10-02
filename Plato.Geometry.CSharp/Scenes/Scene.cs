@@ -13,7 +13,7 @@ namespace Plato.Geometry.Scenes
     public class SceneNode : ISceneNode
     {
         public string Name { get; set; }
-        public Transform3D Transform { get; set; } = new Transform3D(Vector3D.Default, Rotation3D.Default, (1, 1, 1));
+        public ITransform3D Transform { get; set; } = NullTransform.Instance;
         public List<ISceneObject> Objects = new List<ISceneObject>();
         IReadOnlyList<ISceneObject> ISceneNode.Objects => Objects;
         public List<ISceneNode> Children = new List<ISceneNode>();
@@ -45,4 +45,5 @@ namespace Plato.Geometry.Scenes
         public bool Closed { get; set; }
         public IReadOnlyList<Vector3D> Points { get; }
     }
+
 }

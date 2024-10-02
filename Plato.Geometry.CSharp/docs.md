@@ -1,994 +1,9 @@
-# Concepts
-
-Concepts are implemented as interfaces. Functions defined on a concept are available on every type that implements the concept.
-
-## Concept IAdditive
-
-Inherits: IAny.
-
-Implemented by: Number, Integer, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
-
-Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, IAlgebraic, IInterpolatable, IArithmetic.
-
-Functions: Add, Negative, Subtract.
-
-Fields: .
-
-## Concept IAlgebraic
-
-Inherits: IAdditive, IAny, IAny, IAny, IAny, IInterpolatable, IInvertible, IMultiplicative, IMultiplicativeWithInverse, IScalarArithmetic.
-
-Implemented by: Number, Unit.
-
-Inherited by: IReal.
-
-Functions: .
-
-Fields: .
-
-## Concept IAny
-
-Inherits: .
-
-Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D.
-
-Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IEquatable, IAdditive, IScalarArithmetic, IMultiplicative, IInvertible, IMultiplicativeWithInverse, IAlgebraic, IInterpolatable, IDivisible, IModulo, IArithmetic, IBoolean, IInterval.
-
-Functions: FieldNames, FieldValues, TypeName.
-
-Fields: .
-
-## Concept IArithmetic
-
-Inherits: IAdditive, IAny, IAny, IAny, IAny, IDivisible, IModulo, IMultiplicative.
-
-Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
-
-Inherited by: IReal, IWholeNumber, IVector.
-
-Functions: .
-
-Fields: .
-
-## Concept IArray
-
-Inherits: .
-
-Implemented by: String, Array, Array2D, Array3D, Complex, Integer2, Integer3, Integer4, Size2D, Size3D, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Bounds2D, Triangle2D, Quad2D, Line2D, Bounds3D, Line3D, Triangle3D, Quad3D, CubicBezier2D, CubicBezier3D, QuadraticBezier2D, QuadraticBezier3D, Line4D.
-
-Inherited by: IArray2D, IArray3D, IVector, IInterval, IGrid2D, IQuadGrid.
-
-Functions: At, Count.
-
-Fields: .
-
-## Concept IArray2D
-
-Inherits: IArray.
-
-Implemented by: Array2D.
-
-Inherited by: IGrid2D, IQuadGrid.
-
-Functions: At, ColumnCount, RowCount.
-
-Fields: .
-
-## Concept IArray3D
-
-Inherits: IArray.
-
-Implemented by: Array3D.
-
-Inherited by: .
-
-Functions: At, ColumnCount, LayerCount, RowCount.
-
-Fields: .
-
-## Concept IBoolean
-
-Inherits: IAny.
-
-Implemented by: Boolean.
-
-Inherited by: .
-
-Functions: And, Not, Or.
-
-Fields: .
-
-## Concept IBounded2D
-
-Inherits: .
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: Bounds.
-
-Fields: .
-
-## Concept IBounded3D
-
-Inherits: .
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: Bounds.
-
-Fields: .
-
-## Concept IClosedPolyLine2D
-
-Inherits: IClosedShape2D, IGeometry, IGeometry, IGeometry2D, IGeometry2D, IOpenClosedShape, IOpenClosedShape, IPoints2D, IPolyLine2D.
-
-Implemented by: Rect2D, RegularPolygon.
-
-Inherited by: IPolygon2D.
-
-Functions: .
-
-Fields: .
-
-## Concept IClosedPolyLine3D
-
-Inherits: IClosedShape3D, IGeometry, IGeometry, IGeometry3D, IGeometry3D, IOpenClosedShape, IOpenClosedShape, IPoints3D, IPolyLine3D.
-
-Implemented by: .
-
-Inherited by: IPolygon3D.
-
-Functions: .
-
-Fields: .
-
-## Concept IClosedShape2D
-
-Inherits: IGeometry, IGeometry2D, IOpenClosedShape.
-
-Implemented by: Circle, Lens, Rect2D, Ring, Sector, Chord, Segment, RegularPolygon.
-
-Inherited by: IClosedPolyLine2D, IPolygon2D.
-
-Functions: .
-
-Fields: .
-
-## Concept IClosedShape3D
-
-Inherits: IGeometry, IGeometry3D, IOpenClosedShape.
-
-Implemented by: .
-
-Inherited by: IClosedPolyLine3D, IPolygon3D.
-
-Functions: .
-
-Fields: .
-
-## Concept ICoordinate
-
-Inherits: IAny, IAny, IEquatable, IValue.
-
-Implemented by: Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, DateTime.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept ICurve
-
-Inherits: IOpenClosedShape, IProcedural.
-
-Implemented by: Ellipse.
-
-Inherited by: ICurve1D, ICurve2D, ICurve3D.
-
-Functions: .
-
-Fields: .
-
-## Concept ICurve1D
-
-Inherits: ICurve, IOpenClosedShape, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept ICurve2D
-
-Inherits: ICurve, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
-
-Implemented by: Ellipse.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept ICurve3D
-
-Inherits: ICurve, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IDeformable2D
-
-Inherits: .
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: Deform.
-
-Fields: .
-
-## Concept IDeformable3D
-
-Inherits: ITransformable3D.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: Deform.
-
-Fields: .
-
-## Concept IDistanceField
-
-Inherits: IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IDivisible
-
-Inherits: IAny.
-
-Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
-
-Inherited by: IReal, IWholeNumber, IVector, IArithmetic.
-
-Functions: Divide.
-
-Fields: .
-
-## Concept IEquatable
-
-Inherits: IAny.
-
-Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D.
-
-Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IInterval.
-
-Functions: Equals.
-
-Fields: .
-
-## Concept IExplicitSurface
-
-Inherits: IGeometry, IGeometry3D, IProcedural, ISurface.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IField2D
-
-Inherits: IGeometry, IGeometry2D, IProcedural.
-
-Implemented by: .
-
-Inherited by: IScalarField2D, IVector3Field2D, IVector4Field2D.
-
-Functions: .
-
-Fields: .
-
-## Concept IField3D
-
-Inherits: IGeometry, IGeometry3D, IProcedural.
-
-Implemented by: .
-
-Inherited by: IScalarField3D, IVector2Field3D, IVector3Field3D, IVector4Field3D.
-
-Functions: .
-
-Fields: .
-
-## Concept IGeometry
-
-Inherits: .
-
-Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
-
-Inherited by: IGeometry2D, IGeometry3D, IShape2D, IShape3D, IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve2D, ICurve3D, ISurface, IProceduralSurface, IExplicitSurface, IField2D, IField3D, IScalarField2D, IScalarField3D, IVector3Field2D, IVector4Field2D, IVector2Field3D, IVector3Field3D, IVector4Field3D, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPoints2D, IPoints3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, IIndexedGeometry3D, ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
-
-Functions: .
-
-Fields: .
-
-## Concept IGeometry2D
-
-Inherits: IGeometry.
-
-Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D.
-
-Inherited by: IShape2D, IOpenShape2D, IClosedShape2D, ICurve2D, IField2D, IScalarField2D, IVector3Field2D, IVector4Field2D, IImplicitCurve2D, IPoints2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
-
-Functions: .
-
-Fields: .
-
-## Concept IGeometry3D
-
-Inherits: IGeometry.
-
-Implemented by: Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
-
-Inherited by: IShape3D, IOpenShape3D, IClosedShape3D, ICurve3D, ISurface, IProceduralSurface, IExplicitSurface, IField3D, IScalarField3D, IVector2Field3D, IVector3Field3D, IVector4Field3D, IImplicitSurface, IImplicitVolume, IPoints3D, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, IIndexedGeometry3D, ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
-
-Functions: .
-
-Fields: .
-
-## Concept IGrid2D
-
-Inherits: IArray, IArray2D.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IImplicitCurve2D
-
-Inherits: IGeometry, IGeometry2D, IImplicitProcedural, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IImplicitProcedural
-
-Inherits: IProcedural.
-
-Implemented by: .
-
-Inherited by: IImplicitSurface, IImplicitCurve2D, IImplicitVolume.
-
-Functions: .
-
-Fields: .
-
-## Concept IImplicitSurface
-
-Inherits: IGeometry, IGeometry3D, IImplicitProcedural, IProcedural, ISurface.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IImplicitVolume
-
-Inherits: IGeometry, IGeometry3D, IImplicitProcedural, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IIndexedGeometry3D
-
-Inherits: IGeometry, IGeometry3D, IPoints3D.
-
-Implemented by: LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
-
-Inherited by: ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
-
-Functions: Indices, PrimitiveSize.
-
-Fields: .
-
-## Concept IInterpolatable
-
-Inherits: IAdditive, IAny, IAny, IScalarArithmetic.
-
-Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
-
-Inherited by: IReal, IMeasure, IVector, IAlgebraic.
-
-Functions: .
-
-Fields: .
-
-## Concept IInterval
-
-Inherits: IAny, IAny, IAny, IArray, IEquatable, IEquatable, IValue.
-
-Implemented by: AnglePair, NumberInterval, Bounds2D, Bounds3D.
-
-Inherited by: .
-
-Functions: Max, Min.
-
-Fields: .
-
-## Concept IInvertible
-
-Inherits: IAny.
-
-Implemented by: Number, Unit.
-
-Inherited by: IReal, IMultiplicativeWithInverse, IAlgebraic.
-
-Functions: Inverse.
-
-Fields: .
-
-## Concept ILineMesh
-
-Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
-
-Implemented by: LineMesh.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept ILines
-
-Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D, IPrimitives3D.
-
-Implemented by: Lines.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IMeasure
-
-Inherits: IAdditive, IAdditive, IAdditive, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IEquatable, IEquatable, IInterpolatable, INumberLike, INumerical, IOrderable, IScalarArithmetic, IScalarArithmetic, IValue.
-
-Implemented by: Probability, Angle, Length, Mass, Temperature, Time.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IModulo
-
-Inherits: IAny.
-
-Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
-
-Inherited by: IReal, IWholeNumber, IVector, IArithmetic.
-
-Functions: Modulo.
-
-Fields: .
-
-## Concept IMultiplicative
-
-Inherits: IAny.
-
-Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
-
-Inherited by: IReal, IWholeNumber, IVector, IMultiplicativeWithInverse, IAlgebraic, IArithmetic.
-
-Functions: Multiply.
-
-Fields: .
-
-## Concept IMultiplicativeWithInverse
-
-Inherits: IAny, IAny, IInvertible, IMultiplicative.
-
-Implemented by: Number, Unit.
-
-Inherited by: IReal, IAlgebraic.
-
-Functions: .
-
-Fields: .
-
-## Concept INumberLike
-
-Inherits: IAdditive, IAny, IAny, IAny, IAny, IAny, IEquatable, IEquatable, INumerical, IOrderable, IScalarArithmetic, IValue.
-
-Implemented by: Number, Unit, Probability, Angle, Length, Mass, Temperature, Time.
-
-Inherited by: IReal, IMeasure.
-
-Functions: FromNumber, ToNumber.
-
-Fields: .
-
-## Concept INumerical
-
-Inherits: IAdditive, IAny, IAny, IAny, IAny, IEquatable, IScalarArithmetic, IValue.
-
-Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
-
-Inherited by: INumberLike, IReal, IMeasure, IVector.
-
-Functions: Components, FromComponents.
-
-Fields: .
-
-## Concept IOpenClosedShape
-
-Inherits: .
-
-Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Line3D.
-
-Inherited by: IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve, ICurve1D, ICurve2D, ICurve3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D.
-
-Functions: Closed.
-
-Fields: .
-
-## Concept IOpenShape2D
-
-Inherits: IGeometry, IGeometry2D, IOpenClosedShape.
-
-Implemented by: Arc.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IOpenShape3D
-
-Inherits: IGeometry, IGeometry3D, IOpenClosedShape.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IOrderable
-
-Inherits: IAny, IEquatable.
-
-Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Angle, Length, Mass, Temperature, Time.
-
-Inherited by: INumberLike, IReal, IWholeNumber, IMeasure.
-
-Functions: LessThanOrEquals.
-
-Fields: .
-
-## Concept IPoints2D
-
-Inherits: IGeometry, IGeometry2D.
-
-Implemented by: Line2D, Rect2D, RegularPolygon.
-
-Inherited by: IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
-
-Functions: Points.
-
-Fields: .
-
-## Concept IPoints3D
-
-Inherits: IGeometry, IGeometry3D.
-
-Implemented by: Line3D, LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
-
-Inherited by: IPolyLine3D, IClosedPolyLine3D, IPolygon3D, IIndexedGeometry3D, ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
-
-Functions: Points.
-
-Fields: .
-
-## Concept IPolygon2D
-
-Inherits: IClosedPolyLine2D, IClosedShape2D, IGeometry, IGeometry, IGeometry2D, IGeometry2D, IOpenClosedShape, IOpenClosedShape, IPoints2D, IPolyLine2D.
-
-Implemented by: Rect2D, RegularPolygon.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IPolygon3D
-
-Inherits: IClosedPolyLine3D, IClosedShape3D, IGeometry, IGeometry, IGeometry3D, IGeometry3D, IOpenClosedShape, IOpenClosedShape, IPoints3D, IPolyLine3D.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IPolyLine2D
-
-Inherits: IGeometry, IGeometry2D, IOpenClosedShape, IPoints2D.
-
-Implemented by: Line2D, Rect2D, RegularPolygon.
-
-Inherited by: IClosedPolyLine2D, IPolygon2D.
-
-Functions: .
-
-Fields: .
-
-## Concept IPolyLine3D
-
-Inherits: IGeometry, IGeometry3D, IOpenClosedShape, IPoints3D.
-
-Implemented by: Line3D.
-
-Inherited by: IClosedPolyLine3D, IPolygon3D.
-
-Functions: .
-
-Fields: .
-
-## Concept IPrimitives3D
-
-Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
-
-Implemented by: Lines, Triangles, Quads.
-
-Inherited by: ILines, ITriangles, IQuads.
-
-Functions: Primitives.
-
-Fields: .
-
-## Concept IProcedural
-
-Inherits: .
-
-Implemented by: Ellipse.
-
-Inherited by: ICurve, ICurve1D, ICurve2D, ICurve3D, IProceduralSurface, IExplicitSurface, IDistanceField, IField2D, IField3D, IScalarField2D, IScalarField3D, IVector3Field2D, IVector4Field2D, IVector2Field3D, IVector3Field3D, IVector4Field3D, IImplicitProcedural, IImplicitSurface, IImplicitCurve2D, IImplicitVolume.
-
-Functions: Eval.
-
-Fields: .
-
-## Concept IProceduralSurface
-
-Inherits: IGeometry, IGeometry3D, IProcedural, ISurface.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: PeriodicX, PeriodicY.
-
-Fields: .
-
-## Concept IQuadGrid
-
-Inherits: IArray, IArray2D.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: ClosedX, ClosedY.
-
-Fields: .
-
-## Concept IQuadMesh
-
-Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
-
-Implemented by: QuadMesh.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IQuads
-
-Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D, IPrimitives3D.
-
-Implemented by: Quads.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IReal
-
-Inherits: IAdditive, IAdditive, IAdditive, IAlgebraic, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IDivisible, IEquatable, IEquatable, IInterpolatable, IInvertible, IModulo, IMultiplicative, IMultiplicative, IMultiplicativeWithInverse, INumberLike, INumerical, IOrderable, IScalarArithmetic, IScalarArithmetic, IValue.
-
-Implemented by: Number, Unit.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IScalarArithmetic
-
-Inherits: IAny.
-
-Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
-
-Inherited by: INumerical, INumberLike, IReal, IMeasure, IVector, IAlgebraic, IInterpolatable.
-
-Functions: Divide, Modulo, Multiply.
-
-Fields: .
-
-## Concept IScalarField2D
-
-Inherits: IField2D, IGeometry, IGeometry2D, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IScalarField3D
-
-Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IShape2D
-
-Inherits: IGeometry, IGeometry2D.
-
-Implemented by: Box2D.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IShape3D
-
-Inherits: IGeometry, IGeometry3D.
-
-Implemented by: Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept ISurface
-
-Inherits: IGeometry, IGeometry3D.
-
-Implemented by: .
-
-Inherited by: IProceduralSurface, IExplicitSurface, IImplicitSurface.
-
-Functions: .
-
-Fields: .
-
-## Concept ITransformable2D
-
-Inherits: .
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: Transform.
-
-Fields: .
-
-## Concept ITransformable3D
-
-Inherits: .
-
-Implemented by: .
-
-Inherited by: IDeformable3D.
-
-Functions: Transform.
-
-Fields: .
-
-## Concept ITriangleMesh
-
-Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
-
-Implemented by: TriangleMesh.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept ITriangles
-
-Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D, IPrimitives3D.
-
-Implemented by: Triangles.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IValue
-
-Inherits: IAny, IAny, IEquatable.
-
-Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D.
-
-Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IInterval.
-
-Functions: .
-
-Fields: .
-
-## Concept IVector
-
-Inherits: IAdditive, IAdditive, IAdditive, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IScalarArithmetic, IValue.
-
-Implemented by: Complex, Vector2D, Vector3D, Vector4D.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IVector2Field3D
-
-Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IVector3Field2D
-
-Inherits: IField2D, IGeometry, IGeometry2D, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IVector3Field3D
-
-Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IVector4Field2D
-
-Inherits: IField2D, IGeometry, IGeometry2D, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IVector4Field3D
-
-Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
-
-Implemented by: .
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
-## Concept IWholeNumber
-
-Inherits: IAdditive, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IDivisible, IEquatable, IEquatable, IModulo, IMultiplicative, IOrderable, IValue.
-
-Implemented by: Integer.
-
-Inherited by: .
-
-Functions: .
-
-Fields: .
-
+<Details>
+<Summary>
 # Types
+</Summary>
 
-Types are implemented as structs.
+Types in Plato are readonly structs.
 ## Type Angle
 
 Fields: Radians:ConcreteType:Number.
@@ -1697,3 +712,1147 @@ Fields: W:ConcreteType:Number, X:ConcreteType:Number, Y:ConcreteType:Number, Z:C
 
 Implements: IAdditive, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
 
+<Details>
+<Summary>
+# Concepts
+</Summary>
+
+Concepts in Plato are interfaces. Functions defined on a concept are available on every type that implements the concept.
+
+## IAdditive
+
+Inherits: IAny.
+
+Implemented by: Number, Integer, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
+
+Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, IAlgebraic, IInterpolatable, IArithmetic.
+
+Functions: Add, Negative, Subtract.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IAlgebraic
+
+Inherits: IAdditive, IAny, IAny, IAny, IAny, IInterpolatable, IInvertible, IMultiplicative, IMultiplicativeWithInverse, IScalarArithmetic.
+
+Implemented by: Number, Unit.
+
+Inherited by: IReal.
+
+Functions: .
+## IAny
+
+Inherits: .
+
+Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D.
+
+Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IEquatable, IAdditive, IScalarArithmetic, IMultiplicative, IInvertible, IMultiplicativeWithInverse, IAlgebraic, IInterpolatable, IDivisible, IModulo, IArithmetic, IBoolean, IInterval.
+
+Functions: FieldNames, FieldValues, TypeName.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IArithmetic
+
+Inherits: IAdditive, IAny, IAny, IAny, IAny, IDivisible, IModulo, IMultiplicative.
+
+Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
+
+Inherited by: IReal, IWholeNumber, IVector.
+
+Functions: .
+## IArray
+
+Inherits: .
+
+Implemented by: String, Array, Array2D, Array3D, Complex, Integer2, Integer3, Integer4, Size2D, Size3D, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Bounds2D, Triangle2D, Quad2D, Line2D, Bounds3D, Line3D, Triangle3D, Quad3D, CubicBezier2D, CubicBezier3D, QuadraticBezier2D, QuadraticBezier3D, Line4D.
+
+Inherited by: IArray2D, IArray3D, IVector, IInterval, IGrid2D, IQuadGrid.
+
+Functions: At, Count.
+
+
+
+
+
+
+
+
+
+## IArray2D
+
+Inherits: IArray.
+
+Implemented by: Array2D.
+
+Inherited by: IGrid2D, IQuadGrid.
+
+Functions: At, ColumnCount, RowCount.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IArray3D
+
+Inherits: IArray.
+
+Implemented by: Array3D.
+
+Inherited by: .
+
+Functions: At, ColumnCount, LayerCount, RowCount.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IBoolean
+
+Inherits: IAny.
+
+Implemented by: Boolean.
+
+Inherited by: .
+
+Functions: And, Not, Or.
+
+
+
+
+
+
+
+
+
+
+
+
+## IBounded2D
+
+Inherits: .
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: Bounds.
+
+
+
+
+
+
+## IBounded3D
+
+Inherits: .
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: Bounds.
+
+
+
+
+
+
+## IClosedPolyLine2D
+
+Inherits: IClosedShape2D, IGeometry, IGeometry, IGeometry2D, IGeometry2D, IOpenClosedShape, IOpenClosedShape, IPoints2D, IPolyLine2D.
+
+Implemented by: Rect2D, RegularPolygon.
+
+Inherited by: IPolygon2D.
+
+Functions: .
+## IClosedPolyLine3D
+
+Inherits: IClosedShape3D, IGeometry, IGeometry, IGeometry3D, IGeometry3D, IOpenClosedShape, IOpenClosedShape, IPoints3D, IPolyLine3D.
+
+Implemented by: .
+
+Inherited by: IPolygon3D.
+
+Functions: .
+## IClosedShape2D
+
+Inherits: IGeometry, IGeometry2D, IOpenClosedShape.
+
+Implemented by: Circle, Lens, Rect2D, Ring, Sector, Chord, Segment, RegularPolygon.
+
+Inherited by: IClosedPolyLine2D, IPolygon2D.
+
+Functions: .
+## IClosedShape3D
+
+Inherits: IGeometry, IGeometry3D, IOpenClosedShape.
+
+Implemented by: .
+
+Inherited by: IClosedPolyLine3D, IPolygon3D.
+
+Functions: .
+## ICoordinate
+
+Inherits: IAny, IAny, IEquatable, IValue.
+
+Implemented by: Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, DateTime.
+
+Inherited by: .
+
+Functions: .
+## ICurve
+
+Inherits: IOpenClosedShape, IProcedural.
+
+Implemented by: Ellipse.
+
+Inherited by: ICurve1D, ICurve2D, ICurve3D.
+
+Functions: .
+## ICurve1D
+
+Inherits: ICurve, IOpenClosedShape, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## ICurve2D
+
+Inherits: ICurve, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
+
+Implemented by: Ellipse.
+
+Inherited by: .
+
+Functions: .
+## ICurve3D
+
+Inherits: ICurve, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IDeformable2D
+
+Inherits: .
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: Deform.
+
+
+
+
+
+
+## IDeformable3D
+
+Inherits: ITransformable3D.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: Deform.
+
+
+
+
+
+
+## IDistanceField
+
+Inherits: IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IDivisible
+
+Inherits: IAny.
+
+Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
+
+Inherited by: IReal, IWholeNumber, IVector, IArithmetic.
+
+Functions: Divide.
+
+
+
+
+
+
+## IEquatable
+
+Inherits: IAny.
+
+Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D.
+
+Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IInterval.
+
+Functions: Equals.
+
+
+
+
+
+
+## IExplicitSurface
+
+Inherits: IGeometry, IGeometry3D, IProcedural, ISurface.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IField2D
+
+Inherits: IGeometry, IGeometry2D, IProcedural.
+
+Implemented by: .
+
+Inherited by: IScalarField2D, IVector3Field2D, IVector4Field2D.
+
+Functions: .
+## IField3D
+
+Inherits: IGeometry, IGeometry3D, IProcedural.
+
+Implemented by: .
+
+Inherited by: IScalarField3D, IVector2Field3D, IVector3Field3D, IVector4Field3D.
+
+Functions: .
+## IGeometry
+
+Inherits: .
+
+Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
+
+Inherited by: IGeometry2D, IGeometry3D, IShape2D, IShape3D, IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve2D, ICurve3D, ISurface, IProceduralSurface, IExplicitSurface, IField2D, IField3D, IScalarField2D, IScalarField3D, IVector3Field2D, IVector4Field2D, IVector2Field3D, IVector3Field3D, IVector4Field3D, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPoints2D, IPoints3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, IIndexedGeometry3D, ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
+
+Functions: .
+## IGeometry2D
+
+Inherits: IGeometry.
+
+Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D.
+
+Inherited by: IShape2D, IOpenShape2D, IClosedShape2D, ICurve2D, IField2D, IScalarField2D, IVector3Field2D, IVector4Field2D, IImplicitCurve2D, IPoints2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
+
+Functions: .
+## IGeometry3D
+
+Inherits: IGeometry.
+
+Implemented by: Line3D, Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D, LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
+
+Inherited by: IShape3D, IOpenShape3D, IClosedShape3D, ICurve3D, ISurface, IProceduralSurface, IExplicitSurface, IField3D, IScalarField3D, IVector2Field3D, IVector3Field3D, IVector4Field3D, IImplicitSurface, IImplicitVolume, IPoints3D, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, IIndexedGeometry3D, ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
+
+Functions: .
+## IGrid2D
+
+Inherits: IArray, IArray2D.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IImplicitCurve2D
+
+Inherits: IGeometry, IGeometry2D, IImplicitProcedural, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IImplicitProcedural
+
+Inherits: IProcedural.
+
+Implemented by: .
+
+Inherited by: IImplicitSurface, IImplicitCurve2D, IImplicitVolume.
+
+Functions: .
+## IImplicitSurface
+
+Inherits: IGeometry, IGeometry3D, IImplicitProcedural, IProcedural, ISurface.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IImplicitVolume
+
+Inherits: IGeometry, IGeometry3D, IImplicitProcedural, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IIndexedGeometry3D
+
+Inherits: IGeometry, IGeometry3D, IPoints3D.
+
+Implemented by: LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
+
+Inherited by: ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
+
+Functions: Indices, PrimitiveSize.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IInterpolatable
+
+Inherits: IAdditive, IAny, IAny, IScalarArithmetic.
+
+Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
+
+Inherited by: IReal, IMeasure, IVector, IAlgebraic.
+
+Functions: .
+## IInterval
+
+Inherits: IAny, IAny, IAny, IArray, IEquatable, IEquatable, IValue.
+
+Implemented by: AnglePair, NumberInterval, Bounds2D, Bounds3D.
+
+Inherited by: .
+
+Functions: Max, Min.
+
+
+
+
+
+
+
+
+## IInvertible
+
+Inherits: IAny.
+
+Implemented by: Number, Unit.
+
+Inherited by: IReal, IMultiplicativeWithInverse, IAlgebraic.
+
+Functions: Inverse.
+
+
+
+
+
+
+
+## ILineMesh
+
+Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
+
+Implemented by: LineMesh.
+
+Inherited by: .
+
+Functions: .
+## ILines
+
+Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D, IPrimitives3D.
+
+Implemented by: Lines.
+
+Inherited by: .
+
+Functions: .
+## IMeasure
+
+Inherits: IAdditive, IAdditive, IAdditive, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IEquatable, IEquatable, IInterpolatable, INumberLike, INumerical, IOrderable, IScalarArithmetic, IScalarArithmetic, IValue.
+
+Implemented by: Probability, Angle, Length, Mass, Temperature, Time.
+
+Inherited by: .
+
+Functions: .
+## IModulo
+
+Inherits: IAny.
+
+Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
+
+Inherited by: IReal, IWholeNumber, IVector, IArithmetic.
+
+Functions: Modulo.
+
+
+
+
+
+
+## IMultiplicative
+
+Inherits: IAny.
+
+Implemented by: Number, Integer, Unit, Complex, Vector2D, Vector3D, Vector4D.
+
+Inherited by: IReal, IWholeNumber, IVector, IMultiplicativeWithInverse, IAlgebraic, IArithmetic.
+
+Functions: Multiply.
+
+
+
+
+
+
+
+
+## IMultiplicativeWithInverse
+
+Inherits: IAny, IAny, IInvertible, IMultiplicative.
+
+Implemented by: Number, Unit.
+
+Inherited by: IReal, IAlgebraic.
+
+Functions: .
+## INumberLike
+
+Inherits: IAdditive, IAny, IAny, IAny, IAny, IAny, IEquatable, IEquatable, INumerical, IOrderable, IScalarArithmetic, IValue.
+
+Implemented by: Number, Unit, Probability, Angle, Length, Mass, Temperature, Time.
+
+Inherited by: IReal, IMeasure.
+
+Functions: FromNumber, ToNumber.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## INumerical
+
+Inherits: IAdditive, IAny, IAny, IAny, IAny, IEquatable, IScalarArithmetic, IValue.
+
+Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
+
+Inherited by: INumberLike, IReal, IMeasure, IVector.
+
+Functions: Components, FromComponents.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IOpenClosedShape
+
+Inherits: .
+
+Implemented by: Line2D, Circle, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Line3D.
+
+Inherited by: IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve, ICurve1D, ICurve2D, ICurve3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D.
+
+Functions: Closed.
+
+
+
+
+
+
+## IOpenShape2D
+
+Inherits: IGeometry, IGeometry2D, IOpenClosedShape.
+
+Implemented by: Arc.
+
+Inherited by: .
+
+Functions: .
+## IOpenShape3D
+
+Inherits: IGeometry, IGeometry3D, IOpenClosedShape.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IOrderable
+
+Inherits: IAny, IEquatable.
+
+Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Angle, Length, Mass, Temperature, Time.
+
+Inherited by: INumberLike, IReal, IWholeNumber, IMeasure.
+
+Functions: LessThanOrEquals.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IPoints2D
+
+Inherits: IGeometry, IGeometry2D.
+
+Implemented by: Line2D, Rect2D, RegularPolygon.
+
+Inherited by: IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
+
+Functions: Points.
+
+
+
+
+
+
+## IPoints3D
+
+Inherits: IGeometry, IGeometry3D.
+
+Implemented by: Line3D, LineMesh, TriangleMesh, QuadMesh, Lines, Triangles, Quads.
+
+Inherited by: IPolyLine3D, IClosedPolyLine3D, IPolygon3D, IIndexedGeometry3D, ILineMesh, ITriangleMesh, IQuadMesh, IPrimitives3D, ILines, ITriangles, IQuads.
+
+Functions: Points.
+
+
+
+
+
+
+## IPolygon2D
+
+Inherits: IClosedPolyLine2D, IClosedShape2D, IGeometry, IGeometry, IGeometry2D, IGeometry2D, IOpenClosedShape, IOpenClosedShape, IPoints2D, IPolyLine2D.
+
+Implemented by: Rect2D, RegularPolygon.
+
+Inherited by: .
+
+Functions: .
+## IPolygon3D
+
+Inherits: IClosedPolyLine3D, IClosedShape3D, IGeometry, IGeometry, IGeometry3D, IGeometry3D, IOpenClosedShape, IOpenClosedShape, IPoints3D, IPolyLine3D.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IPolyLine2D
+
+Inherits: IGeometry, IGeometry2D, IOpenClosedShape, IPoints2D.
+
+Implemented by: Line2D, Rect2D, RegularPolygon.
+
+Inherited by: IClosedPolyLine2D, IPolygon2D.
+
+Functions: .
+## IPolyLine3D
+
+Inherits: IGeometry, IGeometry3D, IOpenClosedShape, IPoints3D.
+
+Implemented by: Line3D.
+
+Inherited by: IClosedPolyLine3D, IPolygon3D.
+
+Functions: .
+## IPrimitives3D
+
+Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
+
+Implemented by: Lines, Triangles, Quads.
+
+Inherited by: ILines, ITriangles, IQuads.
+
+Functions: Primitives.
+
+
+
+
+
+
+
+
+
+
+## IProcedural
+
+Inherits: .
+
+Implemented by: Ellipse.
+
+Inherited by: ICurve, ICurve1D, ICurve2D, ICurve3D, IProceduralSurface, IExplicitSurface, IDistanceField, IField2D, IField3D, IScalarField2D, IScalarField3D, IVector3Field2D, IVector4Field2D, IVector2Field3D, IVector3Field3D, IVector4Field3D, IImplicitProcedural, IImplicitSurface, IImplicitCurve2D, IImplicitVolume.
+
+Functions: Eval.
+
+
+
+
+## IProceduralSurface
+
+Inherits: IGeometry, IGeometry3D, IProcedural, ISurface.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: PeriodicX, PeriodicY.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IQuadGrid
+
+Inherits: IArray, IArray2D.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: ClosedX, ClosedY.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IQuadMesh
+
+Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
+
+Implemented by: QuadMesh.
+
+Inherited by: .
+
+Functions: .
+## IQuads
+
+Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D, IPrimitives3D.
+
+Implemented by: Quads.
+
+Inherited by: .
+
+Functions: .
+## IReal
+
+Inherits: IAdditive, IAdditive, IAdditive, IAlgebraic, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IDivisible, IEquatable, IEquatable, IInterpolatable, IInvertible, IModulo, IMultiplicative, IMultiplicative, IMultiplicativeWithInverse, INumberLike, INumerical, IOrderable, IScalarArithmetic, IScalarArithmetic, IValue.
+
+Implemented by: Number, Unit.
+
+Inherited by: .
+
+Functions: .
+## IScalarArithmetic
+
+Inherits: IAny.
+
+Implemented by: Number, Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D.
+
+Inherited by: INumerical, INumberLike, IReal, IMeasure, IVector, IAlgebraic, IInterpolatable.
+
+Functions: Divide, Modulo, Multiply.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IScalarField2D
+
+Inherits: IField2D, IGeometry, IGeometry2D, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IScalarField3D
+
+Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IShape2D
+
+Inherits: IGeometry, IGeometry2D.
+
+Implemented by: Box2D.
+
+Inherited by: .
+
+Functions: .
+## IShape3D
+
+Inherits: IGeometry, IGeometry3D.
+
+Implemented by: Capsule, Cylinder, Cone, Tube, ConeSegment, Box3D.
+
+Inherited by: .
+
+Functions: .
+## ISurface
+
+Inherits: IGeometry, IGeometry3D.
+
+Implemented by: .
+
+Inherited by: IProceduralSurface, IExplicitSurface, IImplicitSurface.
+
+Functions: .
+## ITransformable2D
+
+Inherits: .
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: Transform.
+
+
+
+
+
+
+
+
+
+## ITransformable3D
+
+Inherits: .
+
+Implemented by: .
+
+Inherited by: IDeformable3D.
+
+Functions: Transform.
+
+
+
+
+
+
+
+
+
+## ITriangleMesh
+
+Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D.
+
+Implemented by: TriangleMesh.
+
+Inherited by: .
+
+Functions: .
+## ITriangles
+
+Inherits: IGeometry, IGeometry3D, IIndexedGeometry3D, IPoints3D, IPrimitives3D.
+
+Implemented by: Triangles.
+
+Inherited by: .
+
+Functions: .
+## IValue
+
+Inherits: IAny, IAny, IEquatable.
+
+Implemented by: Number, Integer, String, Boolean, Character, Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Size2D, Size3D, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Triangle2D, Quad2D, Sphere, Plane, Transform3D, Pose3D, Bounds3D, Ray3D, Triangle3D, Quad3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Orientation3D, Line4D.
+
+Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IInterval.
+
+Functions: .
+## IVector
+
+Inherits: IAdditive, IAdditive, IAdditive, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IScalarArithmetic, IValue.
+
+Implemented by: Complex, Vector2D, Vector3D, Vector4D.
+
+Inherited by: .
+
+Functions: .
+## IVector2Field3D
+
+Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IVector3Field2D
+
+Inherits: IField2D, IGeometry, IGeometry2D, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IVector3Field3D
+
+Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IVector4Field2D
+
+Inherits: IField2D, IGeometry, IGeometry2D, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IVector4Field3D
+
+Inherits: IField3D, IGeometry, IGeometry3D, IProcedural.
+
+Implemented by: .
+
+Inherited by: .
+
+Functions: .
+## IWholeNumber
+
+Inherits: IAdditive, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IDivisible, IEquatable, IEquatable, IModulo, IMultiplicative, IOrderable, IValue.
+
+Implemented by: Integer.
+
+Inherited by: .
+
+Functions: .
+</Details>

@@ -12,7 +12,7 @@ namespace Plato.Geometry.Scenes
     public interface ISceneNode
     {
         string Name { get; }
-        Transform3D Transform { get; }
+        ITransform3D Transform { get; }
         IReadOnlyList<ISceneObject> Objects { get; }
         IReadOnlyList<ISceneNode> Children { get; }
     }
@@ -33,4 +33,5 @@ namespace Plato.Geometry.Scenes
     {
         ITriangleMesh Mesh { get; }
     }
+
 }

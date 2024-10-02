@@ -11,10 +11,10 @@ namespace Plato.Geometry.Graphics
         public Color32(byte r, byte g, byte b, byte a) => (R, G, B, A) = (r, g, b, a);
         
         public static implicit operator Color32(Color color) => new Color32(
-            Extensions.ScaleToByte(color.R.Value),
-            Extensions.ScaleToByte(color.G.Value),
-            Extensions.ScaleToByte(color.B.Value),
-            Extensions.ScaleToByte(color.A.Value));
+            RenderExtensions.ScaleToByte(color.R.Value),
+            RenderExtensions.ScaleToByte(color.G.Value),
+            RenderExtensions.ScaleToByte(color.B.Value),
+            RenderExtensions.ScaleToByte(color.A.Value));
 
         public Color ToColor()
             => new Color(R / 255.0, G / 255.0, B / 255.0, A / 255.0);

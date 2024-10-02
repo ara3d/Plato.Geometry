@@ -19,7 +19,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Geometry\Ara3D.Geometry\Ara3D.Geometry.csproj" />
+    <ProjectReference Include="..\..\IFC-toolkit\Ara3D.IfcLoader\Ara3D.IfcLoader.csproj" />
     <ProjectReference Include="..\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
+    <ProjectReference Include="..\Plato.Geometry.Ifc\Plato.Geometry.Ifc.csproj" />
   </ItemGroup>
 
   <ItemGroup>

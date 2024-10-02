@@ -9,7 +9,7 @@ namespace Plato.Geometry.Memory
     /// Represents a buffer of unmanaged memory containing elements of type <typeparamref name="T"/>.
     /// The constructor takes an IMemoryBlock and a boolean indicating whether the buffer owns the memory block.
     /// If the buffer owns the memory block, it will dispose of it when the buffer is disposed.
-    /// The constructor will check that the memory block is properly aligned and that the size is a multiple of the element size.
+    /// The constructor will check that the memory block is a multiple of the element size.
     /// </summary>
     /// <typeparam name="T">The type of elements in the buffer.</typeparam>
     public unsafe class Buffer<T> : IBuffer<T> where T : unmanaged
@@ -44,11 +44,6 @@ namespace Plato.Geometry.Memory
             MemoryBlock = memoryBlock ?? throw new ArgumentNullException(nameof(memoryBlock));
             IsOwner = isOwner;
             Pointer = (T*)memoryBlock.Pointer;
-
-            // Check alignment of _pointer to ElementSize bytes
-            var address = (long)Pointer;
-            if ((address % ElementSize) != 0)
-                throw new InvalidOperationException($"Pointer address {address} is not aligned to {ElementSize} bytes.");
 
             if (memoryBlock.SizeInBytes % ElementSize != 0)
                 throw new ArgumentException($"Memory size ({memoryBlock.SizeInBytes}) is not a multiple of the element size ({ElementSize}).");

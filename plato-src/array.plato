@@ -65,7 +65,7 @@ library ArrayLibrary
        => xs.Subarray(from, to - from);
 
     Slices(xs: IArray<$T>, n: Integer): IArray<IArray<$T>>
-	    => n.MapRange(i => xs.Subarray(i * xs.Count / n, n));
+	    => (xs.Count / n).MapRange(i => xs.Subarray(i * n, n));
 
     Subarray(xs: IArray<$T>, from: Integer, count: Integer): IArray<$T>
         => count.MapRange((i) => xs.At(i + from));

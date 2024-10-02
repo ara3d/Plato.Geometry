@@ -55,7 +55,7 @@
     LessThanOrEquals(x: Number, y: Number): Boolean;
     LessThanOrEquals(x: Character, y: Character): Boolean;
     LessThanOrEquals(x: String, y: String): Boolean;
-    LessThanOrEquals(x: Boolean, y: Boolean): Boolean;
+    LessThanOrEquals(x: Boolean, y: Boolean): Boolean;    
 
     Equals(x: Integer, y: Integer): Boolean;
     Equals(x: Number, y: Number): Boolean;

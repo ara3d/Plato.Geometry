@@ -24,7 +24,7 @@ namespace Plato.Geometry.Scenes
 
         // TODO: this seems to be part of a MeshBuilder
 
-        public static void AddMesh(ITriangleMesh mesh, Transform3D transform, List<Vector3D> points, List<Integer> indices)
+        public static void AddMesh(ITriangleMesh mesh, ITransform3D transform, List<Vector3D> points, List<Integer> indices)
         {
             var offset = points.Count;
             foreach (var p in mesh.Points)
@@ -65,5 +65,13 @@ namespace Plato.Geometry.Scenes
                 v.X * (xy2 + wz2) + v.Y * (1.0f - xx2 - zz2) + v.Z * (yz2 - wx2),
                 v.X * (xz2 - wy2) + v.Y * (yz2 + wx2) + v.Z * (1.0f - xx2 - yy2));
         }
+
+        public static Vector3D TransformVector(this Matrix4x4 m, Vector3D v)
+            => (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31,
+                v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32,
+                v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33);
+
+        public static Vector3D TransformPoint(this Matrix4x4 m, Vector3D v)
+            => m * v;
     }
 }
