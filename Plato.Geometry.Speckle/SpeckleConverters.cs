@@ -10,6 +10,7 @@ using Plato.DoublePrecision;
 using Plato.Geometry.Scenes;
 using Material = Plato.Geometry.Graphics.Material;
 using Quaternion = System.DoubleNumerics.Quaternion;
+using PQuaternion = Plato.DoublePrecision.Quaternion;
 
 namespace Plato.Geometry.Speckle
 {
@@ -17,13 +18,19 @@ namespace Plato.Geometry.Speckle
     {
         public static IScene ToScene(this SpeckleObject self)
         {
-            var r = self.ToPlato();
+            var d = new Dictionary<string, SceneNode>();
+            var r = self.ToPlato(d);
+            var scl = 0.001;
+            r.Transform =
+                new TRSTransform(new Transform3D(Vector3D.Default, PQuaternion.Default.Identity, (scl, scl, scl)));
             return new Scene(r);
         }
 
-        public static SceneNode ToPlato(this SpeckleObject self)
+        public static SceneNode ToPlato(this SpeckleObject self, Dictionary<string, SceneNode> d)
         {
-            var r = new SceneNode
+            if (d.TryGetValue(self.Id, out var node))
+                return node;
+            var r = d[self.Id] = new SceneNode
             {
                 Name = self.Name,
                 Id = self.Id
@@ -39,14 +46,13 @@ namespace Plato.Geometry.Speckle
             }
             if (mesh != null) 
                 r.Objects.Add(new SceneMesh(mat, mesh.Value));
-            r.Children.AddRange(self.Children.Select(ToPlato));
+            r.Children.AddRange(self.Children.Select(c => c.ToPlato(d)));
             return r;
         }
 
         public static Vector3D ToPlato(this Vector3 self)
             => (self.X, self.Y, self.Z);
         
-
         public static Vector3D ToPlato(this Vector4 self)
             => (self.X, self.Y, self.Z);
         
@@ -64,7 +70,6 @@ namespace Plato.Geometry.Speckle
         public static Color ToColor(this System.Drawing.Color self, double opacity)
             => new Color(self.R / 255.0, self.G / 255.0, self.B / 255.0, opacity);
         
-
         public static IArray<Vector3D> ToPlato(this IReadOnlyList<double> self)
         {
             var n = self.Count / 3;
@@ -91,11 +96,18 @@ namespace Plato.Geometry.Speckle
             return r.ToIArray();
         }
 
+        public static bool NeedsTriangulation(this Mesh mesh)
+        {
+            for (var i = 0; i < mesh.faces.Count; i += 4)
+                if (mesh.faces[i] != 3) return true;
+            return false;
+        }
+
         public static TriangleMesh ToPlato(this Mesh self)
         {
-            self.TriangulateMesh();
-            var r = new TriangleMesh(self.vertices.ToPlato(), self.faces.ToPlatoIndices());
-            return r;
+            if (self.NeedsTriangulation())
+                self.TriangulateMesh();
+            return new TriangleMesh(self.vertices.ToPlato(), self.faces.ToPlatoIndices());
         }
     }
 }

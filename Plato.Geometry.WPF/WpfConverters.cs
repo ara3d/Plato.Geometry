@@ -52,12 +52,10 @@ namespace Plato.Geometry.WPF
         public static SpecularMaterial DefaultSpecular
             => GetDefaultSpecular(Colors.DarkSlateGray);
 
-        public static MaterialGroup ToWpf(this Material m)
+        public static System.Windows.Media.Media3D.Material ToWpf(this Material m)
         {
             var r = new MaterialGroup();
-            var diffuse = m == null 
-                ? DefaultDiffuseMaterial 
-                : m.ToDiffuseMaterial();
+            var diffuse = m.ToDiffuseMaterial();
             var specular = m == null 
                 ? DefaultSpecular 
                 : m.UseSpecular 
@@ -105,8 +103,7 @@ namespace Plato.Geometry.WPF
                 r.TriangleIndices.Add(mesh.Indices[i]);
             }
 
-            r.Normals = new Vector3DCollection(
-                mesh.ComputeVertexNormalsFaceted().Select(ToWpf));
+            r.Normals = new Vector3DCollection(mesh.ComputeVertexNormalsFaceted().Select(ToWpf));
 
             return r;
         }
@@ -151,6 +148,10 @@ namespace Plato.Geometry.WPF
         public static ModelVisual3D ToWpf(this IScene scene)
         {
             var content = scene.Root.ToWpf();
+            //var newParent = new Model3DGroup();
+            //var transparent = content.ExtractTransparentModels();
+            //newParent.Children.Add(content);
+            //newParent.Children.Add(transparent);
             content.Freeze();            
             return new ModelVisual3D()
             {
@@ -170,6 +171,35 @@ namespace Plato.Geometry.WPF
                 r.Children.Add(m);
             foreach (var c in children)
                 r.Children.Add(c);
+            return r;
+        }
+
+        public static bool IsTransparent(this System.Windows.Media.Media3D.Material m)
+            => (m is DiffuseMaterial dm && dm.Brush is SolidColorBrush sb && sb.Color.A < 255)
+            || (m is MaterialGroup mg) && mg.Children.Any(IsTransparent);
+
+        public static bool IsTransparent(this Model3D m)
+            => m is GeometryModel3D gm && gm.Material.IsTransparent();
+
+        public static Model3DGroup ExtractTransparentModels(this Model3DGroup group)
+        {
+            var r = new Model3DGroup();
+            var transparentObjects = new List<Model3D>();
+            for (var i = group.Children.Count; i > 0; --i)
+            {
+                var model = group.Children[i-1];
+                if (model.IsTransparent())
+                {
+                    group.Children.RemoveAt(i);
+                    transparentObjects.Add(model);
+                }
+            }
+            var childGroups = group.Children.OfType<Model3DGroup>().ToList();
+            var newChildGroups = childGroups.Select(ExtractTransparentModels).ToList();
+            foreach (var child in transparentObjects)
+                r.Children.Add(child);
+            foreach (var child in newChildGroups)
+                r.Children.Add(child);
             return r;
         }
     }
