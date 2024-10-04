@@ -1,11 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Plato.DoublePrecision;
+using Plato.Geometry.Graphics;
 
 namespace Plato.Geometry.Scenes
 {
     public static class SceneExtensions
     {
+        public static IEnumerable<ISceneMesh> GetMeshObjects(this ISceneNode node)
+            => node.Objects.OfType<ISceneMesh>();
+
+        public static Material DefaultLineMaterial = Colors.Blue;
+        public static Material DefaultMeshMaterial = Colors.Gray;
+
+        public static SceneLine AddLines(this SceneNode self, IReadOnlyList<Vector3D> points, bool closed, Material material = null, double width = 0.01, string name = null)
+        {
+            var obj = new SceneLine(material ?? DefaultLineMaterial, width, closed, points);
+            var id = Guid.NewGuid().ToString();
+            var node = new SceneNode
+            {
+                Id = id,
+                Name = name ?? $"Line {id}"
+            };
+            node.Objects.Add(obj);
+            self.Children.Add(node);
+            return obj;
+        }
+
+        public static SceneMesh AddMesh(this SceneNode self, TriangleMesh mesh, ITransform3D transform, Material material = null, string name = null)
+        {
+            var obj = new SceneMesh(material ?? DefaultMeshMaterial, mesh);
+            var id = Guid.NewGuid().ToString();
+            var node = new SceneNode
+            {
+                Id = id,
+                Name = name ?? $"Mesh {id}",
+                Transform = transform ?? NullTransform.Instance,
+            };
+            node.Objects.Add(obj);
+            self.Children.Add(node);
+            return obj;
+        }
+
         public static TriangleMesh ToTriangleMesh(this IScene scene)
         {
             var points = new List<Vector3D>();
@@ -42,36 +80,6 @@ namespace Plato.Geometry.Scenes
             => transform.Rotation.Transform(vector * transform.Scale);
 
         public static Vector3D Transform(this Rotation3D rotation, Vector3D v)
-            => rotation.Quaternion.Transform(v);
-
-        public static Vector3D Transform(this Quaternion rotation, Vector3D v)
-        {
-            var x2 = rotation.X + rotation.X;
-            var y2 = rotation.Y + rotation.Y;
-            var z2 = rotation.Z + rotation.Z;
-
-            var wx2 = rotation.W * x2;
-            var wy2 = rotation.W * y2;
-            var wz2 = rotation.W * z2;
-            var xx2 = rotation.X * x2;
-            var xy2 = rotation.X * y2;
-            var xz2 = rotation.X * z2;
-            var yy2 = rotation.Y * y2;
-            var yz2 = rotation.Y * z2;
-            var zz2 = rotation.Z * z2;
-
-            return new Vector3D(
-                v.X * (1.0f - yy2 - zz2) + v.Y * (xy2 - wz2) + v.Z * (xz2 + wy2),
-                v.X * (xy2 + wz2) + v.Y * (1.0f - xx2 - zz2) + v.Z * (yz2 - wx2),
-                v.X * (xz2 - wy2) + v.Y * (yz2 + wx2) + v.Z * (1.0f - xx2 - yy2));
-        }
-
-        public static Vector3D TransformVector(this Matrix4x4 m, Vector3D v)
-            => (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31,
-                v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32,
-                v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33);
-
-        public static Vector3D TransformPoint(this Matrix4x4 m, Vector3D v)
-            => m * v;
+            => rotation.Quaternion.Transform(v);                                                                    
     }
 }

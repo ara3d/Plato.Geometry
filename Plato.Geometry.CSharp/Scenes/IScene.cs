@@ -31,7 +31,7 @@ namespace Plato.Geometry.Scenes
 
     public interface ISceneMesh : ISceneObject
     {
-        ITriangleMesh Mesh { get; }
+        TriangleMesh Mesh { get; }
     }
 
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Ara3D.IfcLoader;
+using Ara3D.Utils;
 using Plato.DoublePrecision;
 using Plato.Geometry.Graphics;
 using Plato.Geometry.Memory;
@@ -11,15 +12,24 @@ namespace Plato.Geometry.Ifc
     {
         public static IScene ToScene(this IfcFile file)
         {
-            var sb = new SceneBuilder();
+            var scene = new Scene();
             foreach (var g in file.Model.GetGeometries())
             {
+                var node = new SceneNode()
+                {
+                    Name = $"Geometry {g.Id}"
+                };
+
                 foreach (var m in g.GetMeshes())
                 {
-                    sb.AddMesh(m.ToTriangleMesh(), m.GetTransform(), m.GetMaterial());
+                    node.AddMesh(m.ToTriangleMesh(), m.GetTransform(), m.GetMaterial(), $"Mesh {m.Id}");
                 }
+
+                scene.Root.Children.Add(node);
             }
-            return sb.ToScene();
+            scene.Root.Name = file.FilePath.GetFileName();
+            scene.Root.Transform = (TRSTransform)TRSTransform.YUpToZUp;
+            return scene;
         }
 
         // Copies the data from the C++ layer into arrays.
@@ -42,6 +52,6 @@ namespace Plato.Geometry.Ifc
             => *(Matrix4x4*)m.Transform.ToPointer();
 
         public static ITransform3D GetTransform(this IfcMesh m)
-            => new MatrixTransform(m.GetMatrix().Transpose());
+            => new MatrixTransform(m.GetMatrix().Transpose);
     }
 }

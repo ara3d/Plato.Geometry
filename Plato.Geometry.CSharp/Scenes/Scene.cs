@@ -6,12 +6,14 @@ namespace Plato.Geometry.Scenes
 {
     public class Scene : IScene
     {
-        public SceneNode Root { get; } = new SceneNode();
+        public SceneNode Root { get; }
         ISceneNode IScene.Root => Root;
+        public Scene(SceneNode root = null) => Root = root ?? new SceneNode();
     }
 
     public class SceneNode : ISceneNode
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public ITransform3D Transform { get; set; } = NullTransform.Instance;
         public List<ISceneObject> Objects = new List<ISceneObject>();
@@ -22,13 +24,13 @@ namespace Plato.Geometry.Scenes
 
     public class SceneMesh : ISceneMesh
     {
-        public SceneMesh(Material material, ITriangleMesh mesh)
+        public SceneMesh(Material material, TriangleMesh mesh)
         {
             Material = material;
             Mesh = mesh;
         }
         public Material Material { get; set; }
-        public ITriangleMesh Mesh { get; set; }
+        public TriangleMesh Mesh { get; set; }
     }
 
     public class SceneLine : ISceneLine

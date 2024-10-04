@@ -61,7 +61,7 @@ namespace Plato.DoublePrecision
             for (var i=0; i < xs.Count; ++i)
             {
                 var tmp = f(xs[i]);
-                for (var j=0; j < xs.Count; ++j)
+                for (var j=0; j < tmp.Count; ++j)
                 {
                     r.Add(tmp[j]);
                 }

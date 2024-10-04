@@ -105,7 +105,7 @@
     <None Include="Experimental\LineSegment.cs" />
     <None Include="Experimental\MathOps.cs" />
     <None Include="Experimental\MathOpsPartial.cs" />
-    <None Include="Experimental\Matrix4x4.cs" />
+    <None Include="Matrix4x4.cs" />
     <None Include="Experimental\Meshes.cs" />
     <None Include="Experimental\MeshExtensions.cs" />
     <None Include="Experimental\Modifiers.cs" />

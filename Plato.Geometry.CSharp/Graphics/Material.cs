@@ -60,6 +60,28 @@ namespace Plato.Geometry.Graphics
             Name = name;
         }
 
+        public SpecularSettings GetSpecularSettings()
+            => SpecularSettings.FromPBR(Color, Metallic, Roughness);
+
+        public bool UseSpecular 
+            => Metallic != 0 || Roughness != 0;
+
         public static implicit operator Material(Color color) => new Material(color);
+    }
+
+    public struct SpecularSettings
+    {
+        public readonly Color Color;
+        public readonly double Power;
+        public SpecularSettings(Color color, double power)
+        {
+            Color = color;
+            Power = power;
+        }
+
+        public static Color DielectricSpecular = new Color(0.04, 0.04, 0.04, 1.0);
+
+        public static SpecularSettings FromPBR(Color color, double metallic, double roughness)
+            => new SpecularSettings(DielectricSpecular.Lerp(color, metallic), ((Number)1).Lerp(100, 1 - roughness));
     }
 }
