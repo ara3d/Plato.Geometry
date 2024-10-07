@@ -444,6 +444,12 @@ namespace Plato.Geometry.IO
             var ys = buffers.First(b => b.Name == "y");
             var zs = buffers.First(b => b.Name == "z");
 
+            if (xs == null) throw new Exception("Missing x property");
+            if (ys == null) throw new Exception("Missing y property");
+            if (zs == null) throw new Exception("Missing z property");
+
+            // TODO: normals / colors / uv
+
             var vertices = new List<Vector3D>();
             for (var i = 0; i != xs.Count; ++i)
                 vertices.Add(new Vector3D(xs.GetDouble(i), ys.GetDouble(i), zs.GetDouble(i)));

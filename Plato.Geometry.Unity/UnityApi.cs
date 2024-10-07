@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Plato.Geometry.Scenes;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Plato.Geometry.Unity
 {
@@ -34,6 +36,11 @@ namespace Plato.Geometry.Unity
             r.name = obj.Name;
 
             r.transform.SetParent(parent.transform);
+
+            // I need to implement a decompose function
+            throw new Exception(); 
+
+            /*
             r.transform.localPosition = obj.Transform.Translation.ToUnity();
             r.transform.localRotation = obj.Transform.Rotation.ToUnity();
             r.transform.localScale = obj.Transform.Scale.ToUnity();
@@ -43,7 +50,7 @@ namespace Plato.Geometry.Unity
                 Create(child, r);
             }
 
-            if (obj is LineObject lo)
+            if (obj is SceneLine lo)
             {
                 var ld = r.AddComponent<PlatoLineDrawer>();
                 ld.LineObject = lo;
@@ -54,6 +61,7 @@ namespace Plato.Geometry.Unity
             // TODO: properly map materials. 
 
             return r;
+            */
         }
     }
 }

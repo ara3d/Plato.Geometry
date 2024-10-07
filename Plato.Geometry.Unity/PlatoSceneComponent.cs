@@ -52,7 +52,7 @@ namespace Plato.Geometry.Unity
     /// </summary>
     public class PlatoLineDrawer : PlatoSceneComponent
     {
-        public LineObject LineObject;
+        public SceneLine LineObject;
 
         public void Start()
         {
