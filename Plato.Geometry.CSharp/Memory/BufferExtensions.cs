@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Plato.Geometry.Memory
 {
@@ -7,7 +9,7 @@ namespace Plato.Geometry.Memory
         public static long SizeInBytes<T>(this IBuffer<T> self) where T : unmanaged
             => self.Count * sizeof(T);
         
-        public static IBuffer<T1> Cast<T0, T1>(this IBuffer<T0> self) where T0 : unmanaged where T1 : unmanaged
+        public static IBuffer<T1> Reinterpret<T0, T1>(this IBuffer<T0> self) where T0 : unmanaged where T1 : unmanaged
         {
             var p = new IntPtr(self.Pointer);
             var mem = new ExternalMemoryBlock(p, self.SizeInBytes());
@@ -35,5 +37,11 @@ namespace Plato.Geometry.Memory
                 result[i] = self[i];
             return result;
         }
+
+        public static IBuffer<T> ToBuffer<T>(this T[] self) where T : unmanaged
+            => new Buffer<T>(new PinnedArray<T>(self), true);
+
+        public static IBuffer<T> ToBuffer<T>(this IEnumerable<T> self) where T : unmanaged
+            => self.ToArray().ToBuffer();
     }
 }

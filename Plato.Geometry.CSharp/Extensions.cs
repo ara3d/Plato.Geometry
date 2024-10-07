@@ -15,6 +15,10 @@ namespace Plato.Geometry
         public static IArray<T> ToIArray<T>(this T[] self) 
             => new PrimitiveArray<T>(self);
 
-        
+        public static IArray<T> Repeat<T>(this T self, int count)
+            => ((Integer)count).MapRange(_ => self);
+
+        public static IArray<T> MapRange<T>(this int count, System.Func<int, T> func)
+            => ((Integer)count).MapRange(i => func(i));        
     }
 }

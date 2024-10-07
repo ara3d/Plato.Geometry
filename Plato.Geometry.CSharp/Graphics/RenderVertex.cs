@@ -6,16 +6,20 @@ namespace Plato.Geometry.Graphics
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct RenderVertex
     {
-        public RenderVertex(Vector3D position) : this(position, Vector3D.Default.Zero, Vector2D.Default.Zero, Color32.Default)
+        public RenderVertex(Vector3D position) 
+            : this(position, Vector3D.Default.Zero, Vector2D.Default.Zero, Color32.Default)
         { }
 
-        public RenderVertex(Vector3D position, Vector3D normal) : this(position, normal, Vector2D.Default.Zero, Color32.Default)
+        public RenderVertex(Vector3D position, Vector3D normal) 
+            : this(position, normal, Vector2D.Default.Zero, Color32.Default)
         { }
 
-        public RenderVertex(Vector3D position, Vector3D normal, Vector2D uv) : this(position, normal, uv, Color32.Default)
+        public RenderVertex(Vector3D position, Vector3D normal, Vector2D uv) 
+            : this(position, normal, uv, Color32.Default)
         { }
 
-        public RenderVertex(Vector3D position, Color color) : this(position, Vector3D.Default.Zero, Vector2D.Default.Zero, color)
+        public RenderVertex(Vector3D position, Color color) 
+            : this(position, Vector3D.Default.Zero, Vector2D.Default.Zero, color)
         { }
 
         public RenderVertex(Vector3D position, Vector3D normal, Vector2D uv, Color color)
@@ -28,7 +32,7 @@ namespace Plato.Geometry.Graphics
             NZ = (float)normal.Z;
             U = (float)uv.X;
             V = (float)uv.Y;
-            RGBA = (Color32)color;
+            RGBA = color;
         }
 
         public float PX, PY, PZ; // Position = 12 bytes

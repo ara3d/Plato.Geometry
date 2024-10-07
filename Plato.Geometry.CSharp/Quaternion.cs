@@ -29,6 +29,19 @@ namespace Plato.DoublePrecision
             );
         }
 
+        /* TODO: put this somewhere.
+        // Helper method to rotate a vector using a quaternion
+        public static Vector3D RotateVector(Vector3D vector, Quaternion rotation)
+        {
+            rotation.Normalize();
+            Quaternion qVector = new Quaternion(vector, 0);
+            Quaternion qConj = rotation;
+            qConj.Conjugate();
+            Quaternion qResult = rotation * qVector * qConj;
+            return new Vector3D(qResult.X, qResult.Y, qResult.Z);
+        }
+        */
+
         public Vector3D Transform(Vector3D v)
         {
             var x2 = X + X;

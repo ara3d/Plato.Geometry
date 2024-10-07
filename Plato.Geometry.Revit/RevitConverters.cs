@@ -4,16 +4,18 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.DirectContext3D;
 using Plato.DoublePrecision;
+using Plato.Geometry.Graphics;
 using RPlane = Autodesk.Revit.DB.Plane;
 using Plane = Plato.DoublePrecision.Plane;
 using Color = Plato.DoublePrecision.Color;
 
 namespace Plato.Geometry.Revit
 {
-    public static class Converters
+    public static class RevitConverters
     {
         public static XYZ ToRevit(this Vector3D self) => new XYZ(self.X, self.Y, self.Z);
         public static UV ToRevit(this Vector2D self) => new UV(self.X, self.Y);
+        public static ColorWithTransparency ToRevit(this Color32 self) => new ColorWithTransparency(self.R, self.G, self.B, self.A);
 
         public static Vector3D ToPlato(this XYZ self) => new Vector3D(self.X, self.Y, self.Z);
         public static Vector2D ToPlato(this UV self) => new Vector2D(self.U, self.V);
@@ -25,10 +27,7 @@ namespace Plato.Geometry.Revit
         public static Plane ToPlato(this ClipPlane self) => new Plane(self.Normal.ToPlato(), self.Origin.DistanceTo(self.Normal));
         public static Bounds3D ToPlato(this BoundingBoxXYZ self) => new Bounds3D(self.Min.ToPlato(), self.Max.ToPlato());
         public static Bounds2D ToPlato(this BoundingBoxUV self) => new Bounds2D(self.Min.ToPlato(), self.Max.ToPlato());
-    }
 
-    public static class RevitHelpers
-    {
         public static void Fill(this VertexBuffer buffer, IEnumerable<XYZ> positions)
         {
             var verts = positions.Select(p => new VertexPosition(p)).ToList();
@@ -53,14 +52,15 @@ namespace Plato.Geometry.Revit
         }
 
         public static void Fill(this VertexBuffer buffer, IEnumerable<XYZ> positions, IEnumerable<XYZ> normals, IEnumerable<ColorWithTransparency> colors)
-        {
-            buffer.Fill(positions.Zip(normals, colors, (p, n, c) => new VertexPositionNormalColored(p, n, c)).ToList());
-        }
+            => buffer.Fill(positions.Zip(normals, colors, (p, n, c) => new VertexPositionNormalColored(p, n, c)).ToList());
 
         public static void Fill(this VertexBuffer buffer, IList<VertexPositionNormalColored> verts)
-        {
-            buffer.GetVertexStreamPositionNormalColored().AddVertices(verts);
-        }
+            => buffer.GetVertexStreamPositionNormalColored().AddVertices(verts);
 
+        public static VertexPositionNormalColored ToRevit(this RenderVertex self)
+            => new VertexPositionNormalColored(
+                self.Position.ToRevit(),
+                self.Normal.ToRevit(),
+                self.RGBA.ToRevit());
     }
 }

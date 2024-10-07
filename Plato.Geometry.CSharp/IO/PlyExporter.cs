@@ -31,13 +31,13 @@ namespace Plato.Geometry.IO
 
             if (colors != null)
             {
-                yield return "property uint8 red";
-                yield return "property uint8 green";
-                yield return "property uint8 blue";
+                yield return "property uchar red";
+                yield return "property uchar green";
+                yield return "property uchar blue";
             }
 
             yield return "element face " + g.NumFaces;
-            yield return "property list uint8 int32 vertex_index";
+            yield return "property list uchar int vertex_index";
             yield return "end_header";
 
             // Write the vertices

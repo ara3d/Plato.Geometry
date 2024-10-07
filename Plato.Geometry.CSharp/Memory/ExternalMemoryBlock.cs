@@ -24,11 +24,6 @@ namespace Plato.Geometry
         /// <param name="sizeInBytes">The size of the memory block in bytes.</param>
         public ExternalMemoryBlock(IntPtr pointer, long sizeInBytes)
         {
-            if (pointer == IntPtr.Zero)
-                throw new ArgumentNullException(nameof(pointer));
-            if (sizeInBytes <= 0)
-                throw new ArgumentOutOfRangeException(nameof(sizeInBytes), "Size must be positive.");
-
             Pointer = pointer;
             SizeInBytes = sizeInBytes;
         }

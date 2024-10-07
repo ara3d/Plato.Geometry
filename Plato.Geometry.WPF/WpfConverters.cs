@@ -47,7 +47,7 @@ namespace Plato.Geometry.WPF
             = new DiffuseMaterial(DefaultBrush);
 
         public static SpecularMaterial GetDefaultSpecular(Color color)
-            => SpecularSettings.FromPBR(color, 0, 0.7).ToSpecularMaterial();
+            => SpecularSettings.FromPBR(color, 0.1, 0.6).ToSpecularMaterial();
 
         public static SpecularMaterial DefaultSpecular
             => GetDefaultSpecular(Colors.DarkSlateGray);
@@ -148,10 +148,6 @@ namespace Plato.Geometry.WPF
         public static ModelVisual3D ToWpf(this IScene scene)
         {
             var content = scene.Root.ToWpf();
-            //var newParent = new Model3DGroup();
-            //var transparent = content.ExtractTransparentModels();
-            //newParent.Children.Add(content);
-            //newParent.Children.Add(transparent);
             content.Freeze();            
             return new ModelVisual3D()
             {

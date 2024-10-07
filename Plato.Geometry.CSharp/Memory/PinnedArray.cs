@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Plato.Geometry.Memory
@@ -7,7 +9,7 @@ namespace Plato.Geometry.Memory
     /// Represents a pinned managed array, providing low-level access to its memory.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
-    public unsafe class PinnedArray<T> : IMemoryBlock where T : unmanaged
+    public unsafe class PinnedArray<T> : IReadOnlyList<T>, IMemoryBlock where T : unmanaged
     {
         private GCHandle _handle;
 
@@ -54,6 +56,9 @@ namespace Plato.Geometry.Memory
             // No need to call GC.SuppressFinalize since there's no finalizer
         }
 
-        // Removed the finalizer since we are calling Dispose manually and there's no unmanaged resources held directly.
+        public IEnumerator<T> GetEnumerator() => (IEnumerator<T>)Array.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() =>Array.GetEnumerator();
+        public int Count => Array.Length;
+        public T this[int index] => Array[index];
     }
 }

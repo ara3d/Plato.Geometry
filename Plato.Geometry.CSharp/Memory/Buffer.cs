@@ -41,8 +41,9 @@ namespace Plato.Geometry.Memory
         /// <param name="isOwner">Indicates whether this buffer owns the memory block.</param>
         public Buffer(IMemoryBlock memoryBlock, bool isOwner = true)
         {
-            MemoryBlock = memoryBlock ?? throw new ArgumentNullException(nameof(memoryBlock));
             IsOwner = isOwner;
+            if (memoryBlock == null)
+                return;
             Pointer = (T*)memoryBlock.Pointer;
 
             if (memoryBlock.SizeInBytes % ElementSize != 0)
@@ -61,9 +62,11 @@ namespace Plato.Geometry.Memory
         /// </summary>
         /// <param name="index">The zero-based index of the element.</param>
         /// <returns>The element at the specified index.</returns>
-        /// <exception cref="IndexOutOfRangeException">Thrown when the index is out of range.</exception>
         public T this[int index]
-            => Pointer[index];
+        {
+            get => Pointer[index];
+            set => Pointer[index] = value;
+        }
 
         /// <summary>
         /// Returns an enumerator that iterates through the buffer.
@@ -89,7 +92,7 @@ namespace Plato.Geometry.Memory
         {
             if (IsOwner)
             {
-                MemoryBlock.Dispose();
+                MemoryBlock?.Dispose();
             }
         }
 
@@ -100,6 +103,13 @@ namespace Plato.Geometry.Memory
         public T At(Integer n) => this[n];
 
         // Implementation of IArray indexer property
-        public T this[Integer n] => this[n.Value];
+        public T this[Integer n]
+        {
+            get => this[n.Value];
+            set => Pointer[n.Value] = value;
+        }
+
+        // An empty buffer
+        public static Buffer<T> Empty = new Buffer<T>(null, false);
     }
 }

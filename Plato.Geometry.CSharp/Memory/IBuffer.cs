@@ -12,5 +12,6 @@ namespace Plato.Geometry.Memory
         where T : unmanaged
     {
         T* Pointer { get; }
+        new T this[int index] { get; set; }
     }
 }

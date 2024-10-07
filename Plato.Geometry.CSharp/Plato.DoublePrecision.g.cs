@@ -178,7 +178,7 @@ namespace Plato.DoublePrecision
         public T At(Integer n) => _func(n);
         public T this[Integer n] => _func(n);
         public Array(Integer count, System.Func<Integer, T> func)
-        {
+        {   
             Count = count;
             _func = func;
         }
