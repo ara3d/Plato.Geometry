@@ -3,12 +3,6 @@ using System.Runtime.CompilerServices;
 
 namespace Plato.DoublePrecision
 {
-    public partial struct Vector3D
-    {
-        public bool IsParallel(Vector3D v) 
-            => Dot(v).Abs > 1 - 1e-10;
-    }
-
     /// <summary>
     /// A structure encapsulating a 4x4 matrix.
     /// </summary>
@@ -504,5 +498,203 @@ namespace Plato.DoublePrecision
                 (M21, M22, M23, M24),
                 (M31, M32, M33, M34),
                 (M41, M42, M43, M44));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Decompose(Matrix4x4 matrix, out Vector3D scale, out Quaternion rotation, out Vector3D translation)
+        {
+            var result = true;
+
+            var scales = new double[3];
+            const double EPSILON = 1e-10;
+
+            var canonicalBasis = new[] {
+                Vector3D.UnitX,
+                Vector3D.UnitY,
+                Vector3D.UnitZ,
+            };
+
+            var basis = new[] {
+                matrix.Row1.Vector3D,
+                matrix.Row2.Vector3D,
+                matrix.Row3.Vector3D
+            };
+
+            scales[0] = basis[0].Length;
+            scales[1] = basis[1].Length;
+            scales[2] = basis[2].Length;
+
+            uint a, b, c;
+            var (x, y, z) = (scales[0], scales[1], scales[2]);
+            if (x < y)
+            {
+                if (y < z)  
+                {
+                    a = 2; b = 1; c = 0;
+                }   
+                else 
+                {
+                    if (x < z)
+                    {
+                        a = 1; b = 2; c = 0;
+                    }
+                    else
+                    {
+                        a = 1; b = 0; c = 2;
+                    }
+                }
+            }
+            else
+            {
+                if (x < z)
+                {
+                    a = 2; b = 0; c = 1;
+                }
+                else
+                {
+                    if (y < z)
+                    {
+                        a = 0; b = 2; c = 1;
+                    }
+                    else
+                    {
+                        a = 0; b = 1; c = 2;
+                    }
+                }
+            }
+
+            if (scales[a] < EPSILON)
+                basis[a] = canonicalBasis[a];
+
+            basis[a] = basis[a].Normalize;
+
+            if (scales[b] < EPSILON)
+            {
+                var abs = basis[a].Abs;
+
+                var cc = abs.X < abs.Y ? 
+                    (abs.Y >= abs.Z && abs.X >= abs.Z) ? 2 : 0 :
+                    (abs.X >= abs.Z && abs.Y >= abs.Z) ? 2 : 1;
+
+                basis[b] = basis[a].Cross(canonicalBasis[cc]);
+            }
+
+            basis[b] = basis[b].Normalize;
+
+            if (scales[c] < EPSILON)
+                basis[c] = basis[a].Cross(basis[b]);
+
+            basis[c] = basis[c].Normalize;
+
+            // Create a temporary rotation matrix, and get the determinant.
+            var matTemp = CreateFromRows(basis[0], basis[1], basis[2]);
+            var det = matTemp.GetDeterminant();
+
+            // use Kramer's rule to check for handedness of coordinate system
+            if (det < 0.0f)
+            {
+                // switch coordinate system by negating the scale and inverting the basis vector on the x-axis
+                scales[a] = -scales[a];
+                basis[a] = -basis[a];
+                det = -det;
+
+                // Recreate the temporary matrix 
+                matTemp = CreateFromRows(basis[0], basis[1], basis[2]);
+            }
+
+            det -= 1.0f;
+            det *= det;
+
+            if (EPSILON < det)
+            {
+                // Non-SRT matrix encountered
+                rotation = Quaternion.Identity;
+                result = false;
+            }
+            else
+            {
+                // Generate the quaternion from the matrix
+                rotation = Quaternion.CreateFromRotationMatrix(matTemp);
+            }
+
+            translation = matrix.Translation;
+            scale = new Vector3D(scales[0], scales[1], scales[2]);
+            return result;
+        }
+
+        /*
+         // The following code is suggested by ChatGPT as an improvement, and needs testing, and A 3x3 matrix class
+          * public static bool Decompose(Matrix4x4 matrix, out Vector3D scale, out Quaternion rotation, out Vector3D translation)
+{
+    const double EPSILON = 1e-10;
+    bool result = true;
+
+    // Extract the translation component
+    translation = matrix.Translation;
+
+    // Extract the basis vectors (columns of the upper-left 3x3 matrix)
+    var basis = new[]
+    {
+        new Vector3D(matrix.M11, matrix.M12, matrix.M13),
+        new Vector3D(matrix.M21, matrix.M22, matrix.M23),
+        new Vector3D(matrix.M31, matrix.M32, matrix.M33)
+    };
+
+    // Compute the scales (lengths of the basis vectors)
+    var scales = new double[3];
+    for (int i = 0; i < 3; i++)
+    {
+        scales[i] = basis[i].Length;
+        if (scales[i] < EPSILON)
+        {
+            // Handle zero scale by setting the basis vector to a canonical vector
+            basis[i] = Vector3D.UnitX; // Or UnitY/UnitZ based on i
+            scales[i] = 0.0;
+        }
+    }
+
+    // Normalize the basis vectors to extract the rotation matrix
+    for (int i = 0; i < 3; i++)
+    {
+        if (scales[i] >= EPSILON)
+        {
+            basis[i] /= scales[i];
+        }
+        else
+        {
+            // Cannot normalize a zero vector
+            result = false;
+        }
+    }
+
+    // Reconstruct the rotation matrix
+    var rotationMatrix = new Matrix3x3(basis[0], basis[1], basis[2]);
+
+    // Check if the rotation matrix is orthonormal
+    double det = rotationMatrix.GetDeterminant();
+    if (det < 0.0)
+    {
+        // Adjust for left-handed coordinate system
+        scales[0] = -scales[0];
+        basis[0] = -basis[0];
+        rotationMatrix = new Matrix3x3(basis[0], basis[1], basis[2]);
+        det = -det;
+    }
+
+    if (Math.Abs(det - 1.0) > EPSILON)
+    {
+        // The rotation matrix is not valid
+        rotation = Quaternion.Identity;
+        result = false;
+    }
+    else
+    {
+        // Convert the rotation matrix to a quaternion
+        rotation = Quaternion.CreateFromRotationMatrix(rotationMatrix);
+    }
+
+    scale = new Vector3D(scales[0], scales[1], scales[2]);
+    return result;
+}
+         */
     }
 }

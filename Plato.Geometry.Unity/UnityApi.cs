@@ -8,8 +8,6 @@ namespace Plato.Geometry.Unity
 {
     public static class UnityApi
     {
-        public static Material LineMaterial;
-
         public static void ClearScene()
         {
             var objects = Object.FindObjectsOfType(typeof(PlatoSceneRoot));
@@ -27,41 +25,65 @@ namespace Plato.Geometry.Unity
         {
             var po = new GameObject("PlatoSceneRoot");
             po.AddComponent<PlatoSceneRoot>();
-            Create(scene.Root, po);
+
+            var id = 0;
+            var rootGameObject = Create(scene.Root, po, ref id);
+            rootGameObject.name = "Scene";
+
+            // Rotation to align Z-up to Y-up
+            po.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+            // Adjust for the right-handed to left-handed coordinate system
+            po.transform.localScale = new Vector3(1, 1, -1);
         }
 
-        public static GameObject Create(ISceneNode obj, GameObject parent)
+        public static GameObject Create(ISceneNode node, GameObject parent, ref int id)
         {
-            var r = new GameObject();
-            r.name = obj.Name;
+            var r = new GameObject
+            {
+                name = node.Name
+            };
 
             r.transform.SetParent(parent.transform);
 
-            // I need to implement a decompose function
-            throw new Exception(); 
+            // TODO: this does not support nested transforms! 
+            // In Plato, we assume all transforms are in world space. 
+            if (!node.Transform.IsIdentity())
+                node.Transform.Matrix.ApplyLocalTransformToUnity(r.transform);
 
-            /*
-            r.transform.localPosition = obj.Transform.Translation.ToUnity();
-            r.transform.localRotation = obj.Transform.Rotation.ToUnity();
-            r.transform.localScale = obj.Transform.Scale.ToUnity();
-
-            foreach (var child in obj.Children)
+            foreach (var obj in node.Objects)
             {
-                Create(child, r);
+                Create(obj, r, ref id);
             }
+
+            foreach (var child in node.Children)
+            {
+                Create(child, r, ref id);
+            }
+
+            return r;
+        }
+
+        public static GameObject Create(ISceneObject obj, GameObject parent, ref int id)
+        {
+            var r = new GameObject();
+
+            r.transform.SetParent(parent.transform);
 
             if (obj is SceneLine lo)
             {
+                r.name = $"Line {id++}";
                 var ld = r.AddComponent<PlatoLineDrawer>();
                 ld.LineObject = lo;
             }
 
-            // TODO: add a PlatoMeshDrawer
-            // TODO: figure out how to represent and render instances efficiently. 
-            // TODO: properly map materials. 
+            if (obj is SceneMesh sm)
+            {
+                r.name = $"Mesh {id++}";
+                var md = r.AddComponent<PlatoMeshDrawer>();
+                md.MeshObject = sm;
+            }
 
             return r;
-            */
         }
     }
 }

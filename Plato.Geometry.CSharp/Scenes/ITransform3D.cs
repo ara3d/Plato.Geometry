@@ -3,6 +3,7 @@ using System;
 
 namespace Plato.Geometry.Scenes
 {
+    // TODO: this will need an inverse property
     public interface ITransform3D
     {
         Vector3D TransformPoint(Vector3D point);
@@ -36,5 +37,11 @@ namespace Plato.Geometry.Scenes
         public Vector3D TransformVector(Vector3D vector) => vector;
         public Matrix4x4 Matrix { get; } = new Matrix4x4((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 0));
         public static NullTransform Instance { get; } = new NullTransform();
+    }
+
+    public static class Extensions
+    {
+        public static bool IsIdentity(this ITransform3D self)
+            => self is NullTransform || self.Matrix.IsIdentity;
     }
 }

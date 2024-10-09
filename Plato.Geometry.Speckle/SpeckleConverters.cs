@@ -22,7 +22,7 @@ namespace Plato.Geometry.Speckle
             var r = self.ToPlato(d);
             var scl = 0.001;
             r.Transform =
-                new TRSTransform(new Transform3D(Vector3D.Default, PQuaternion.Default.Identity, (scl, scl, scl)));
+                new TRSTransform(new Transform3D(Vector3D.Default, PQuaternion.Identity, (scl, scl, scl)));
             return new Scene(r);
         }
 

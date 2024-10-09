@@ -32,37 +32,25 @@ namespace Plato.Geometry.Unity
     /// </summary>
     public class PlatoSceneRoot : PlatoSceneComponent
     {
-        // Rotation to align Z-up to Y-up
-        private Quaternion targetRotation = Quaternion.Euler(-90f, 0f, 0f);
-
-        public Material LineMaterial;
-
-        public void Awake()
-        {
-            if (LineMaterial == null)
-                LineMaterial = new Material(Shader.Find("Sprites/Default"));
-
-            // Apply rotation to make Z-up
-            transform.rotation = targetRotation * transform.rotation;
-        }
     }
 
     /// <summary>
     /// Used for drawing lines
     /// </summary>
+    [RequireComponent(typeof(LineRenderer))]
     public class PlatoLineDrawer : PlatoSceneComponent
     {
         public SceneLine LineObject;
 
         public void Start()
         {
-            var lr = gameObject.AddComponent<LineRenderer>();
+            var lr = gameObject.GetComponent<LineRenderer>();
             lr.startWidth = (float)LineObject.Width;
             lr.endWidth = lr.startWidth;
             lr.useWorldSpace = false;
             lr.startColor = LineObject.Material.Color.ToUnity();
             lr.endColor = lr.startColor;
-            lr.material = Root.LineMaterial;
+            lr.material = new Material(Shader.Find("Sprites/Default"));
             UpdatePositions();
         }
 
@@ -80,6 +68,20 @@ namespace Plato.Geometry.Unity
             {
                 lr.loop = true;
             }
+        }
+    }
+
+    [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
+    public class PlatoMeshDrawer : PlatoSceneComponent
+    {
+        public SceneMesh MeshObject;
+
+        public void Start()
+        {
+            var mf = gameObject.GetComponent<MeshFilter>();
+            var mr = gameObject.GetComponent<MeshRenderer>();
+            mf.sharedMesh = MeshObject.Mesh.ToUnity();
+            mr.sharedMaterial = new Material(Shader.Find("Standard")) { color = MeshObject.Material.Color.ToUnity() };
         }
     }
 }

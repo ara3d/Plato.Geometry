@@ -14,6 +14,18 @@ namespace Plato.Geometry.Scenes
 
         public static Material DefaultLineMaterial = Colors.Blue;
         public static Material DefaultMeshMaterial = Colors.Gray;
+        
+        public static SceneNode AddNode(this SceneNode self, string name = null)
+        {
+            var id = Guid.NewGuid().ToString();
+            var node = new SceneNode
+            {
+                Id = id,
+                Name = name ?? $"Node {id}"
+            };
+            self.Children.Add(node);
+            return node;
+        }
 
         public static SceneLine AddLines(this SceneNode self, IReadOnlyList<Vector3D> points, bool closed, Material material = null, double width = 0.01, string name = null)
         {
@@ -80,6 +92,6 @@ namespace Plato.Geometry.Scenes
             => transform.Rotation.Transform(vector * transform.Scale);
 
         public static Vector3D Transform(this Rotation3D rotation, Vector3D v)
-            => rotation.Quaternion.Transform(v);                                                                    
+            => rotation.Quaternion.Transform(v);
     }
 }
