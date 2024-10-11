@@ -1,7 +1,20 @@
-﻿using Plato.DoublePrecision;
+﻿using System;
+using System.Linq;
+using Plato.DoublePrecision;
 
 namespace Plato.Geometry
 {
+    public static class Surfaces
+    {
+        public static QuadMesh ToQuadMesh(Func<Vector2D, Vector3D> f, int nColumns, int nRows, bool closedX, bool closedY)
+        {
+            var sd = new SurfaceDiscretization(nColumns, nRows, closedX, closedY);
+            var points = sd.Uvs.Map(f);
+            var indices = sd.Indices.FlatMap(i => i);
+            return new QuadMesh(points, indices);
+        }
+    }
+
     public static class SurfaceFunctions
     {
 

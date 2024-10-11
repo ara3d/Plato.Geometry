@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Plato.DoublePrecision;
 
 namespace Plato.Geometry
@@ -14,9 +15,8 @@ namespace Plato.Geometry
 
     public static class GeometryUtil
     {
-        /*
         public static IArray2D<V> CartesianProduct<T, U, V>(this IArray<T> self, IArray<U> other, Func<U, T, V> func)
-            => New.Array(self.Count, other.Count, (i, j) => func(other.At(j), self.At(i)));
+            => new Array2D<V>(self.Count, other.Count, (i, j) => func(other.At(j), self.At(i)));
 
         public static Vector3D LerpAlong(this Line3D self, double t)
             => self.A.Lerp(self.B, t);
@@ -36,6 +36,7 @@ namespace Plato.Geometry
         public static Vector2D Average(this Vector2D a, Vector2D b)
             => (a + b) / 2;
 
+        /*
         public static bool SequenceAlmostEquals(this Array<Vector3D> vs1, Array<Vector3D> vs2, double tolerance)
             => vs1.Count == vs2.Count && vs1.Indices().All(i => vs1[i].AlmostEquals(vs2[i], tolerance));
 
@@ -79,26 +80,30 @@ namespace Plato.Geometry
                            : new Int3(v.Z, v.Y, v.X);
                }
            }
+           */
 
         public static IArray<double> Interpolate(this int count)
             => InterpolateExclusive(count);
 
         public static IArray<double> InterpolateInclusive(this Integer count)
             => count <= 0
-                ? New.Array<double>()
+                ? Intrinsics.MakeArray<double>()
                 : count == 1
-                    ? New.Array(0.0)
+                    ? Intrinsics.MakeArray(0.0)
                     : count.MapRange(i => i / (double)(count - 1));
 
-        public static Array<double> InterpolateExclusive(this int count)
-            => count <= 0
-                ? New.Array<double>()
-                : count.Map(i => i / (double)count);
 
-        public static Array<Vector3D> InterpolateInclusive(this int count, Func<double, Vector3D> function)
+        public static IArray<double> InterpolateExclusive(this Integer count)
+            => count <= 0
+                ? Intrinsics.MakeArray<double>()
+                : count == 1
+                    ? Intrinsics.MakeArray(0.0)
+                    : count.MapRange(i => i / (double)(count));
+
+        public static IArray<Vector3D> InterpolateInclusive(this Integer count, Func<double, Vector3D> function)
             => count.InterpolateInclusive().Map(function);
 
-        public static Array<Vector3D> Interpolate(this Line3D self, int count)
+        public static IArray<Vector3D> Interpolate(this Line3D self, Integer count)
             => count.InterpolateInclusive(x => self.LerpAlong(x));
 
 
@@ -223,7 +228,7 @@ namespace Plato.Geometry
             // It falls where t = [(p-v) . (w-v)] / |w-v|^2
             // We clamp t from [0,1] to handle points outside the segment vw.
             t = ((p - a).Dot(b - a) / l2).Clamp(0.0f, 1.0f);
-            var closestPoint = a + t * (b - a); // Projection falls on the segment
+            var closestPoint = a + (b - a) * t; // Projection falls on the segment
             return (p - closestPoint).Length;
         }
 

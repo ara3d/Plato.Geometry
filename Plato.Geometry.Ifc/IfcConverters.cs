@@ -1,5 +1,4 @@
-﻿using System;
-using Ara3D.IfcLoader;
+﻿using Ara3D.IfcLoader;
 using Ara3D.Utils;
 using Plato.DoublePrecision;
 using Plato.Geometry.Graphics;

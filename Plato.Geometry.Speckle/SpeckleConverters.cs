@@ -23,7 +23,7 @@ namespace Plato.Geometry.Speckle
             var scl = 0.001;
             r.Transform =
                 new TRSTransform(new Transform3D(Vector3D.Default, PQuaternion.Identity, (scl, scl, scl)));
-            return new Scene(r);
+            return new Scene(r);    
         }
 
         public static SceneNode ToPlato(this SpeckleObject self, Dictionary<string, SceneNode> d)
@@ -52,7 +52,7 @@ namespace Plato.Geometry.Speckle
 
         public static Vector3D ToPlato(this Vector3 self)
             => (self.X, self.Y, self.Z);
-        
+            
         public static Vector3D ToPlato(this Vector4 self)
             => (self.X, self.Y, self.Z);
         
