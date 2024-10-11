@@ -41,7 +41,7 @@ namespace Plato.Geometry.Scenes
             return obj;
         }
 
-        public static SceneMesh AddMesh(this SceneNode self, TriangleMesh mesh, ITransform3D transform, Material material = null, string name = null)
+        public static SceneMesh AddMesh(this SceneNode self, TriangleMesh mesh, ITransform3D transform = null, Material material = null, string name = null)
         {
             var obj = new SceneMesh(material ?? DefaultMeshMaterial, mesh);
             var id = Guid.NewGuid().ToString();

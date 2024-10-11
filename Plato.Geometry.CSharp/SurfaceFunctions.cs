@@ -13,11 +13,25 @@ namespace Plato.Geometry
             var indices = sd.Indices.FlatMap(i => i);
             return new QuadMesh(points, indices);
         }
+
+        public static QuadMesh Sphere(int resolution)
+            => ToQuadMesh(SurfaceFunctions.Sphere, resolution, resolution, true, true);
+
+        public static QuadMesh Torus(int resolution)        
+            => ToQuadMesh(uv => SurfaceFunctions.Torus(uv, 5.0, 0.5), resolution, resolution, true, true);
+
+        public static QuadMesh Plane(int resolution)
+            => ToQuadMesh(SurfaceFunctions.PlaneXY, resolution, resolution, true, true);
+
+        public static QuadMesh Cylinder(int resolution)
+            => ToQuadMesh(SurfaceFunctions.Cylinder, resolution, resolution, true, true);
+
+        public static QuadMesh Capsule(int resolution)
+            => ToQuadMesh(SurfaceFunctions.Capsule, resolution, resolution, true, true);
     }
 
     public static class SurfaceFunctions
     {
-
         public static Vector3D Sphere(this Vector2D uv)
             => Sphere(uv.X.Turns, uv.Y.Turns);
 
