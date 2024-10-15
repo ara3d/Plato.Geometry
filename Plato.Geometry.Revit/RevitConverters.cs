@@ -28,19 +28,7 @@ namespace Plato.Geometry.Revit
         public static Bounds3D ToPlato(this BoundingBoxXYZ self) => new Bounds3D(self.Min.ToPlato(), self.Max.ToPlato());
         public static Bounds2D ToPlato(this BoundingBoxUV self) => new Bounds2D(self.Min.ToPlato(), self.Max.ToPlato());
 
-        public static void Fill(this VertexBuffer buffer, IEnumerable<XYZ> positions)
-        {
-            var verts = positions.Select(p => new VertexPosition(p)).ToList();
-            buffer.GetVertexStreamPosition().AddVertices(verts);
-        }
-
-        public static void Fill(this VertexBuffer buffer, IEnumerable<XYZ> positions, IEnumerable<XYZ> normals)
-        {
-            var verts = positions.Zip(normals, (p, n) => new VertexPositionNormal(p, n)).ToList();
-            buffer.GetVertexStreamPositionNormal().AddVertices(verts);
-        }
-
-        public static IEnumerable<T4> Zip<T1, T2, T3, T4>(this IEnumerable<T1> xs, IEnumerable<T2> ys, IEnumerable<T3> zs, Func<T1, T2, T3, T4> f)
+       public static IEnumerable<T4> Zip<T1, T2, T3, T4>(this IEnumerable<T1> xs, IEnumerable<T2> ys, IEnumerable<T3> zs, Func<T1, T2, T3, T4> f)
         {
             using (var xe = xs.GetEnumerator())
             using (var ye = ys.GetEnumerator())

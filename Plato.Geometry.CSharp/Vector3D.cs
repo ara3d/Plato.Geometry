@@ -11,6 +11,9 @@ namespace Plato.DoublePrecision
 
         public Vector3D Abs
             => (X.Abs, Y.Abs, Z.Abs);
+
+        public Quaternion LookRotation 
+            => Quaternion.GetLookRotation(this);
     }
 
     public partial struct Vector4D

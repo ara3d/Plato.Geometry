@@ -43,7 +43,7 @@ namespace Plato.DoublePrecision
         /// Gets the translation component of this matrix.
         /// </summary>
         public Vector3D Translation
-            => (M41, M42, M43);
+            => (M14, M24, M34);
 
         /// <summary>
         /// Sets the translation component of this matrix, returning a new Matrix

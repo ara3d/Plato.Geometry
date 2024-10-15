@@ -42,6 +42,6 @@ namespace Plato.Geometry.Scenes
     public static class Extensions
     {
         public static bool IsIdentity(this ITransform3D self)
-            => self is NullTransform || self.Matrix.IsIdentity;
+            => self is NullTransform;
     }
 }

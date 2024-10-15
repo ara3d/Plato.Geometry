@@ -43,6 +43,40 @@ namespace Plato.DoublePrecision
         }
         */
 
+        public static Quaternion GetLookRotation(Vector3D direction)
+        {
+            var up = Vector3D.UnitZ;
+
+            // Handle zero direction vector
+            if (direction.Length == 0)
+                throw new ArgumentException("Direction vector cannot be zero.", nameof(direction));
+
+            // Normalize the direction vector to get the forward vector
+            var forward = direction.Normalize;
+
+            if (up.IsParallel(forward))
+                up = Vector3D.UnitX; 
+
+            // Calculate the right vector and normalize it
+            var right = up.Cross(forward).Normalize;
+
+            // Recompute the up vector and normalize it
+            var correctedUp = forward.Cross(right).Normalize;
+
+            // Construct the rotation matrix using right, corrected up, and forward vectors
+            var rotationMatrix = new Matrix4x4(
+                new Vector4D(right.X, correctedUp.X, forward.X, 0),
+                new Vector4D(right.Y, correctedUp.Y, forward.Y, 0),
+                new Vector4D(right.Z, correctedUp.Z, forward.Z, 0),
+                new Vector4D(0, 0, 0, 1));
+
+            // Convert the rotation matrix to a quaternion
+            var rotation = CreateFromRotationMatrix(rotationMatrix);
+
+            // Normalize the quaternion to ensure it's a valid rotation
+            return rotation.Normalize;
+        }
+
         public Vector3D Transform(Vector3D v)
         {
             var x2 = X + X;

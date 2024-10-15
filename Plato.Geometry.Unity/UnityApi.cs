@@ -3,6 +3,7 @@ using System.Linq;
 using Plato.Geometry.Scenes;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Matrix4x4 = Plato.DoublePrecision.Matrix4x4;
 
 namespace Plato.Geometry.Unity
 {
@@ -43,12 +44,21 @@ namespace Plato.Geometry.Unity
                 name = node.Name
             };
 
-            r.transform.SetParent(parent.transform);
+            r.transform.SetParent(parent.transform, false);
 
-            // TODO: this does not support nested transforms! 
-            // In Plato, we assume all transforms are in world space. 
             if (!node.Transform.IsIdentity())
-                node.Transform.Matrix.ApplyLocalTransformToUnity(r.transform);
+            {
+                if (node.Transform is TRSTransform trs)
+                {
+                    r.transform.localPosition = trs.Transform.Translation.ToUnity();
+                    r.transform.localRotation = trs.Transform.Rotation.Quaternion.ToUnity();
+                    r.transform.localScale = trs.Transform.Scale.ToUnity();
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
 
             foreach (var obj in node.Objects)
             {
@@ -67,7 +77,7 @@ namespace Plato.Geometry.Unity
         {
             var r = new GameObject();
 
-            r.transform.SetParent(parent.transform);
+            r.transform.SetParent(parent.transform, false);
 
             if (obj is SceneLine lo)
             {

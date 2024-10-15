@@ -15,8 +15,8 @@ namespace Plato.Geometry
 
     public static class GeometryUtil
     {
-        public static IArray2D<V> CartesianProduct<T, U, V>(this IArray<T> self, IArray<U> other, Func<U, T, V> func)
-            => new Array2D<V>(self.Count, other.Count, (i, j) => func(other.At(j), self.At(i)));
+        public static IArray2D<TResult> CartesianProduct<TColumn, TRow, TResult>(this IArray<TColumn> columns, IArray<TRow> rows, Func<TColumn, TRow, TResult> func)
+            => new Array2D<TResult>(columns.Count, rows.Count, (i, j) => func(columns[i], rows[j]));
 
         public static Vector3D LerpAlong(this Line3D self, double t)
             => self.A.Lerp(self.B, t);

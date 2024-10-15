@@ -129,7 +129,7 @@
     <None Include="Experimental\Sphere.cs" />
     <None Include="Experimental\StandardPlane.cs" />
     <None Include="Experimental\StructsPartial.cs" />
-    <None Include="SurfaceDiscretization.cs" />
+    <None Include="QuadGrid.cs" />
     <None Include="Experimental\SurfaceFunctions.cs" />
     <None Include="Experimental\SurfaceOperations.cs" />
     <None Include="Experimental\SurfacePoint.cs" />

@@ -1,4 +1,4 @@
-﻿        using Plato.DoublePrecision;
+﻿using Plato.DoublePrecision;
 using UnityEngine;
 using Color = Plato.DoublePrecision.Color;
 using UColor = UnityEngine.Color;
@@ -40,14 +40,27 @@ namespace Plato.Geometry.Unity
         public static Vector3[] ToUnity(this IArray<Vector3D> verts)
             => verts.Map(ToUnity).ToSystemArray();
 
-        public static int[] ToUnity(this IArray<Integer> indices) 
-            => indices.Map(i => i.Value).ToSystemArray(); 
+        public static int[] ToUnity(this IArray<Integer> indices)
+        {
+            var r = new int[indices.Count];
+            for (var i = 0; i < indices.Count; i += 3)
+            {
+                r[i + 2] = indices[i + 0].Value;
+                r[i + 1] = indices[i + 1].Value;
+                r[i + 0] = indices[i + 2].Value;
+            }
 
-        public static Mesh ToUnity(this TriangleMesh mesh)
+            return r;
+        }
+
+        public static Mesh ToUnity(this IQuadMesh mesh)
+            => mesh.ToTriangleMesh().ToUnity();
+
+        public static Mesh ToUnity(this ITriangleMesh mesh)
         {
             var unityMesh = new Mesh
             {
-                vertices = mesh.Vertices.ToUnity(),
+                vertices = mesh.Points.ToUnity(),
                 triangles = mesh.Indices.ToUnity()
             };
             //unityMesh.normals = mesh.Vertices.ToUnityNormals();
