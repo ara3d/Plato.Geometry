@@ -1,15 +1,13 @@
 ﻿using System;
-using Plato.DoublePrecision;
-using Boolean = Plato.DoublePrecision.Boolean;
 
-namespace Plato.Geometry
+namespace Plato.DoublePrecision
 {
     /// <summary>
     /// This implements a quad mesh that has a fixed number of columns and rows.
     /// It may be closed on the X (columns) meaning that the last column is connected to the first column.
     /// And/or it may be closed on the Y (rows) meaning that the last row is connected to the first row.
     /// </summary>
-    public class QuadGrid : IQuadMesh
+    public class QuadGrid : IQuadMesh, IDeformable3D<QuadGrid>
     {
         public bool ClosedX { get; }
         public bool ClosedY { get; }
@@ -53,5 +51,26 @@ namespace Plato.Geometry
 
         public static IArray<Integer> AllQuadFaceIndicesFlat(Integer nCols, Integer nRows, Boolean closedX, Boolean closedY)
             => ToIndexArray(AllQuadFaceIndices(nCols, nRows, closedX, closedY));
+
+        public QuadGrid Deform(Func<Vector3D, Vector3D> f)
+            => new QuadGrid(PointGrid.Map(f), ClosedX, ClosedY);
+
+        public QuadGrid Transform(Matrix4x4 matrix)
+            => Deform(matrix.TransformPoint);
+
+        IDeformable3D IDeformable3D.Deform(Func<Vector3D, Vector3D> f)
+            => Deform(f);
+
+        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
+            => Transform(matrix);
+
+        public static implicit operator QuadMesh(QuadGrid q)
+            => new QuadMesh(q.Points, q.Indices);
+
+        public static implicit operator PointArray(QuadGrid q)
+            => q.Points.ToPoints();
+
+        public static implicit operator TriangleMesh(QuadGrid q)
+            => q.ToTriangleMesh();
     }
 }

@@ -1,6 +1,6 @@
 namespace Plato.DoublePrecision
 {
-        public static partial class Intrinsics
+    public static partial class Intrinsics
     {
         public static TR Invoke<TR>(this Function0<TR> self) => self._function();
         public static TR Invoke<T0, TR>(this Function1<T0, TR> self, T0 arg) => self._function(arg);

@@ -1,23 +1,8 @@
-using Plato.Geometry;
+using System;
 
 namespace Plato.DoublePrecision
 {
-    public static class MeshExtensions
-    {
-        public static IArray<Integer> Indices<T>(this IArray<T> self)
-            => self.Count.Range;
-
-        public static IArray<Vector3D> Points(this IArray<Triangle3D> self)
-            => self.FlatMap(t => t);
-
-        public static TriangleMesh ToTriangleMesh(this IArray<Vector3D> points)
-            => new TriangleMesh(points, points.Indices());
-
-        public static TriangleMesh ToMesh(this IArray<Triangle3D> triangles)
-            => triangles.Points().ToTriangleMesh();
-    }
-
-    public partial struct TriangleMesh
+    public partial struct TriangleMesh : IDeformable3D<TriangleMesh>
     {
         public IArray<Vector3D> FaceNormals
             => Primitives.Map(t => t.Normal);
@@ -40,5 +25,20 @@ namespace Plato.DoublePrecision
             }
             return r.ToIArray();
         }
+
+        public TriangleMesh Deform(Func<Vector3D, Vector3D> f)
+            => new TriangleMesh(Points.Map(f), Indices);
+
+        public TriangleMesh Transform(Matrix4x4 matrix)
+            => Deform(matrix.TransformPoint);
+
+        IDeformable3D IDeformable3D.Deform(Func<Vector3D, Vector3D> f)
+            => Deform(f);
+
+        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
+            => Transform(matrix);
+
+        public static implicit operator PointArray(TriangleMesh mesh)
+            => mesh.Points.ToPoints();
     }
 }

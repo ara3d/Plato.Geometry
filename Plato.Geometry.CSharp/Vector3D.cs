@@ -1,6 +1,8 @@
+using System;
+
 namespace Plato.DoublePrecision
 {
-    public partial struct Vector3D
+    public partial struct Vector3D : IDeformable3D<Vector3D>
     {
         public static Vector3D UnitX = (1, 0, 0);
         public static Vector3D UnitY = (0, 1, 0);
@@ -14,10 +16,17 @@ namespace Plato.DoublePrecision
 
         public Quaternion LookRotation 
             => Quaternion.GetLookRotation(this);
-    }
 
-    public partial struct Vector4D
-    {
-        public Vector3D Vector3D => (X, Y, Z);
+        public Vector3D Deform(Func<Vector3D, Vector3D> f)
+            => f(this);
+
+        public Vector3D Transform(Matrix4x4 matrix)
+            => matrix.TransformPoint(this);
+
+        IDeformable3D IDeformable3D.Deform(Func<Vector3D, Vector3D> f)
+            => Deform(f);
+
+        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
+            => Transform(matrix);
     }
 }

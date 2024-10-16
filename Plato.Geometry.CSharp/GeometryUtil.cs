@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Plato.DoublePrecision;
 
-namespace Plato.Geometry
+namespace Plato.DoublePrecision
 {
     public enum StandardPlane
     {
@@ -82,25 +78,24 @@ namespace Plato.Geometry
            }
            */
 
-        public static IArray<double> Interpolate(this int count)
+        public static IArray<Number> Interpolate(this int count)
             => InterpolateExclusive(count);
 
-        public static IArray<double> InterpolateInclusive(this Integer count)
+        public static IArray<Number> InterpolateInclusive(this Integer count)
             => count <= 0
-                ? Intrinsics.MakeArray<double>()
+                ? Intrinsics.MakeArray<Number>()
                 : count == 1
-                    ? Intrinsics.MakeArray(0.0)
-                    : count.MapRange(i => i / (double)(count - 1));
+                    ? Intrinsics.MakeArray<Number>(0.0)
+                    : count.MapRange(i => i / (Number)(count - 1));
 
-
-        public static IArray<double> InterpolateExclusive(this Integer count)
+        public static IArray<Number> InterpolateExclusive(this Integer count)
             => count <= 0
-                ? Intrinsics.MakeArray<double>()
+                ? Intrinsics.MakeArray<Number>()
                 : count == 1
-                    ? Intrinsics.MakeArray(0.0)
-                    : count.MapRange(i => i / (double)(count));
+                    ? Intrinsics.MakeArray<Number>(0.0)
+                    : count.MapRange(i => i / (Number)(count));
 
-        public static IArray<Vector3D> InterpolateInclusive(this Integer count, Func<double, Vector3D> function)
+        public static IArray<Vector3D> InterpolateInclusive(this Integer count, Func<Number, Vector3D> function)
             => count.InterpolateInclusive().Map(function);
 
         public static IArray<Vector3D> Interpolate(this Line3D self, Integer count)

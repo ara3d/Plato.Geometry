@@ -106,7 +106,7 @@ type Sector
 
 type Chord
     implements IClosedShape2D
-{
+{       
     Arc: Arc;
 }
 
@@ -145,7 +145,6 @@ type Plane
     Normal: Vector3D;
     D: Number;
 }
-
 
 type Transform3D
     implements IValue

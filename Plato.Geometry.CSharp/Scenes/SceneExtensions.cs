@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using Plato.DoublePrecision;
 using Plato.Geometry.Graphics;
 
@@ -82,16 +81,5 @@ namespace Plato.Geometry.Scenes
             foreach (var i in mesh.Indices)
                 indices.Add(i + offset);
         }
-
-        // TODO: a lot of this stuff needs to find its way back into the Plato library. 
-
-        public static Vector3D TransformPoint(this Transform3D transform, Vector3D point)
-            => transform.TransformVector(point) + transform.Translation;
-
-        public static Vector3D TransformVector(this Transform3D transform, Vector3D vector)
-            => transform.Rotation.Transform(vector * transform.Scale);
-
-        public static Vector3D Transform(this Rotation3D rotation, Vector3D v)
-            => rotation.Quaternion.Transform(v);
     }
 }
