@@ -110,6 +110,6 @@ namespace Plato.Geometry.Memory
         }
 
         // An empty buffer
-        public static Buffer<T> Empty = new Buffer<T>(null, false);
+        public static readonly Buffer<T> Empty = new Buffer<T>(null, false);
     }
 }

@@ -11,8 +11,8 @@ namespace Plato.Geometry.Scenes
         public static IEnumerable<ISceneMesh> GetMeshObjects(this ISceneNode node)
             => node.Objects.OfType<ISceneMesh>();
 
-        public static Material DefaultLineMaterial = Colors.Blue;
-        public static Material DefaultMeshMaterial = Colors.Gray;
+        public static readonly Material DefaultLineMaterial = Colors.Blue;
+        public static readonly Material DefaultMeshMaterial = Colors.Gray;
         
         public static SceneNode AddNode(this SceneNode self, string name = null)
         {

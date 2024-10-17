@@ -16,9 +16,9 @@ namespace Plato.Geometry.Scenes
         public string Id { get; set; }
         public string Name { get; set; }
         public ITransform3D Transform { get; set; } = NullTransform.Instance;
-        public List<ISceneObject> Objects = new List<ISceneObject>();
+        public readonly List<ISceneObject> Objects = new List<ISceneObject>();
         IReadOnlyList<ISceneObject> ISceneNode.Objects => Objects;
-        public List<ISceneNode> Children = new List<ISceneNode>();
+        public readonly List<ISceneNode> Children = new List<ISceneNode>();
         IReadOnlyList<ISceneNode> ISceneNode.Children => Children;
     }
 

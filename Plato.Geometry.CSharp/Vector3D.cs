@@ -28,5 +28,8 @@ namespace Plato.DoublePrecision
 
         ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
             => Transform(matrix);
+
+        public Vector3D MidPoint(Vector3D other)
+            => Lerp(other, 0.5);
     }
 }

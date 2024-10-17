@@ -41,17 +41,7 @@ namespace Plato.Geometry.Unity
             => verts.Map(ToUnity).ToSystemArray();
 
         public static int[] ToUnity(this IArray<Integer> indices)
-        {
-            var r = new int[indices.Count];
-            for (var i = 0; i < indices.Count; i += 3)
-            {
-                r[i + 2] = indices[i + 0].Value;
-                r[i + 1] = indices[i + 1].Value;
-                r[i + 0] = indices[i + 2].Value;
-            }
-
-            return r;
-        }
+            => indices.Map(i => (int)i.Value).ToSystemArray();
 
         public static Mesh ToUnity(this IQuadMesh mesh)
             => mesh.ToTriangleMesh().ToUnity();

@@ -30,6 +30,9 @@ namespace Plato.DoublePrecision
             );
         }
 
+        public static Quaternion FromAxisAngle(AxisAngle aa)
+            => Quaternion.FromAxisAngle(aa.Axis, aa.Angle);
+
         /* TODO: put this somewhere.
         // Helper method to rotate a vector using a quaternion
         public static Vector3D RotateVector(Vector3D vector, Quaternion rotation)
@@ -235,6 +238,10 @@ namespace Plato.DoublePrecision
         public static Quaternion Concatenate(Quaternion q1, Quaternion q2)
             => ReverseConcatenate(q2, q1);
 
-        public Vector3D Vector3D => (X, Y, Z);
+        public Vector3D Vector3D 
+            => (X, Y, Z);
+
+        public static implicit operator Quaternion(AxisAngle aa)
+            => Quaternion.FromAxisAngle(aa);
     }
 }

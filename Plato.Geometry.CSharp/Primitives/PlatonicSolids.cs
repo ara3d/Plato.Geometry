@@ -12,20 +12,20 @@ namespace Plato.DoublePrecision
         private static readonly double _rt = 1.0 / _t;
         public static readonly double Sqrt2 = Math.Sqrt(2);
 
-        public static IArray<Vector3D> Normalize(this IArray<Vector3D> points)
-            => points.Map(p => p.Normalize);
-
         public static TriangleMesh ToTriangleMesh(this IArray<Vector3D> points, params Integer3[] faces)
             => new TriangleMesh(points, faces.ToIArray().FlatMap(i => i));
 
         public static QuadMesh ToQuadMesh(this IArray<Vector3D> points, params Integer4[] faces)
             => new QuadMesh(points, faces.ToIArray().FlatMap(i => i));
 
+        public static IArray<Vector3D> Points(params Vector3D[] points)
+            => Intrinsics.MakeArray(points);
+
         // https://mathworld.wolfram.com/RegularTetrahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/TetrahedronGeometry.js
-        public static readonly ITriangleMesh Tetrahedron
-            = Intrinsics.MakeArray<Vector3D>
-                ((1, 0, -1 / Sqrt2),
+        public static readonly TriangleMesh Tetrahedron
+            = Points(
+                    (1, 0, -1 / Sqrt2),
                     (-1, 0, -1 / Sqrt2),
                     (0, 1, 1 / Sqrt2),
                     (0, -1, 1 / Sqrt2)
@@ -35,8 +35,8 @@ namespace Plato.DoublePrecision
                     (2, 1, 0), (0, 3, 2),
                     (1, 3, 0), (2, 3, 1));
 
-        public static readonly IQuadMesh Cube
-            = Intrinsics.MakeArray<Vector3D>(
+        public static readonly QuadMesh Cube
+            = Points(
                     // Front quad
                     (-0.5, -0.5, -0.5),
                     (0.5, -0.5, -0.5),
@@ -59,7 +59,7 @@ namespace Plato.DoublePrecision
         // https://mathworld.wolfram.com/RegularOctahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/OctahedronGeometry.js
         public static readonly TriangleMesh Octahedron
-            = Intrinsics.MakeArray<Vector3D>(
+            = Points(
                     (1, 0, 0), (-1, 0, 0), (0, 1, 0),
                     (0, -1, 0), (0, 0, 1), (0, 0, -1))
                 .Normalize()
@@ -71,7 +71,7 @@ namespace Plato.DoublePrecision
         // https://mathworld.wolfram.com/RegularDodecahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/DodecahedronGeometry.js
         public static readonly TriangleMesh Dodecahedron
-            = Intrinsics.MakeArray<Vector3D>(
+            = Points(
                     // (±1, ±1, ±1)
                     (-1, -1, -1), (-1, -1, 1),
                     (-1, 1, -1), (-1, 1, 1),
@@ -107,7 +107,7 @@ namespace Plato.DoublePrecision
         // https://mathworld.wolfram.com/RegularIcosahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/IcosahedronGeometry.js
         public static readonly TriangleMesh Icosahedron
-            = Intrinsics.MakeArray<Vector3D>(
+            = Points(
                     (-1, _t, 0),
                     (1, _t, 0),
                     (-1, -_t, 0),

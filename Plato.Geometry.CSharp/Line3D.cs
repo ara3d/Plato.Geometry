@@ -2,7 +2,7 @@ using System;
 
 namespace Plato.DoublePrecision
 {
-    public partial struct Line3D : IDeformable3D<Line3D>
+    public partial struct Line3D : IDeformable3D<Line3D>, IProcedural<Number, Vector3D>
     {
         public Line3D Deform(Func<Vector3D, Vector3D> f)
             => new Line3D(f(A), f(B));
@@ -21,5 +21,17 @@ namespace Plato.DoublePrecision
 
         public static implicit operator PointArray(Line3D line)
             => line.ToPoints();
+
+        public Line3D Reverse
+            => (B, A);
+
+        public Quad3D Extrude(Vector3D direction)
+            => (A, B, B + direction, A + direction);
+
+        public Vector3D Eval(Number t)
+            => A.Lerp(B, t);
+
+        public Ray3D Ray
+            => this;
     }
 }

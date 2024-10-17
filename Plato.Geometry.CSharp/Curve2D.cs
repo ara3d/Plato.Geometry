@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Plato.DoublePrecision
 {
-    public class Curve2D : ICurve2D
+    public class Curve2D : ICurve2D, ICurve3D
     {
-        public Func<Number, Vector2D> _func;
+        public readonly Func<Number, Vector2D> _func;
         public Boolean _closed;
 
         public Curve2D(Func<Number, Vector2D> func, Boolean closed)
@@ -26,7 +26,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Curve2D(Vector2D point)
             => new Curve2D(t => point, false);
 
-        public static Curve2D Default
+        public static readonly Curve2D Default
             = new Curve2D(_ => Vector2D.Default, false);
 
         public static implicit operator Curve2D(PolyLine2D poly)
@@ -64,5 +64,8 @@ namespace Plato.DoublePrecision
             }, 
                 poly.Closed);
         }
+
+        Vector3D IProcedural<Number, Vector3D>.Eval(Number amount)
+            => Eval(amount);
     }
 }

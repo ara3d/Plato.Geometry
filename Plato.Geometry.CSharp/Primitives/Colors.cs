@@ -1,7 +1,7 @@
 using System;
 using Plato.DoublePrecision;
 
-namespace Plato.Geometry.Graphics
+namespace Plato.DoublePrecision
 {
     public static class Colors
     {
@@ -10,7 +10,7 @@ namespace Plato.Geometry.Graphics
             return new Color(r / 255.0, g / 255.0, b / 255.0, a / 255.0);
         }
 
-        public static Random Rng = new Random();
+        public static readonly Random Rng = new Random();
 
         public static Color GetRandom()
         {

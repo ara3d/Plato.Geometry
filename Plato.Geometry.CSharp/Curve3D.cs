@@ -5,7 +5,7 @@ namespace Plato.DoublePrecision
 {
     public class Curve3D : ICurve3D, IDeformable3D<Curve3D>
     {
-        public Func<Number, Vector3D> _func;
+        public readonly Func<Number, Vector3D> _func;
         public Boolean _closed;
 
         public Curve3D(Func<Number, Vector3D> func, Boolean closed)
@@ -23,7 +23,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Curve3D(Vector3D point)
             => new Curve3D(t => point, false);
 
-        public static Curve3D Default
+        public static readonly Curve3D Default
             = new Curve3D(_ => Vector3D.Default, false);
 
         public static implicit operator Curve3D(PolyLine3D poly)

@@ -38,7 +38,10 @@ namespace Plato.DoublePrecision
         ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
             => Transform(matrix);
 
+        public PointArray ToPoints()
+            => Points.ToPoints();
+
         public static implicit operator PointArray(TriangleMesh mesh)
-            => mesh.Points.ToPoints();
+            => mesh.ToPoints();
     }
 }

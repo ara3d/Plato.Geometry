@@ -1,34 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Plato.DoublePrecision
 {
-    public static class ProceduralExtensions
-    {
-        public static IArray<T> Sample<T>(this IProcedural<Number, T> self, Integer n)
-            => n.InterpolateExclusive().Map(self.Eval);
-    }
-
-    public static class CurveExtension
-    {
-        public static Curve3D Transform(this ICurve3D self, Transform3D t)
-            => new Curve3D(x => t.TransformPoint(self.Eval(x)), self.Closed);
-
-        public static QuadGrid Revolve(this ICurve3D self, Func<Number, Vector3D> f)
-    
-    }
-
-    public static class Curves
-    {
-        public static Curve3D Circle => new Curve3D(x => x.CircleFunction, true);
-    }
-
-
     public static class Polygons
     {
         public static PolyLine2D RegularPolygon(int n)
-            => Curves.Circle.Sample(n).ToPolyLine2D(true);
+            => Curves.Circle.ToPolyLine2D(n);
 
         public static readonly PolyLine2D Triangle = RegularPolygon(3);
         public static readonly PolyLine2D Square = RegularPolygon(4);
@@ -44,7 +22,10 @@ namespace Plato.DoublePrecision
         public static readonly PolyLine2D Centagon = RegularPolygon(100);
 
         public static PolyLine2D RegularStarPolygon(int p, int q)
-            => Curves.Circle.Sample(p).SelectEveryNth(q).ToPolygon();
+            => CirclePoints(p).EveryNth(q).ToPolyLine2D(true);
+
+        public static IArray<Vector2D> CirclePoints(int n)
+            => Curves.Circle.Sample<Vector2D>(n);
 
         public static PolyLine2D StarFigure(Integer p, Integer q)
         {
@@ -52,7 +33,7 @@ namespace Plato.DoublePrecision
             Debug.Assert(q > 1);
             if (p.RelativelyPrime(q))
                 return RegularStarPolygon(p, q);
-            var points = Curves.Circle.Sample(p);
+            var points = CirclePoints(p);
             var r = new List<Vector2D>();
             var connected = new bool[p];
             for (var i = 0; i < p; ++i)
@@ -102,5 +83,14 @@ namespace Plato.DoublePrecision
         // https://en.wikipedia.org/wiki/Decagram_(geometry)
         public static readonly PolyLine2D Decagram
             = RegularStarPolygon(10, 3);
+
+        public static PolyLine2D Star(Integer n, Number outerRadius, Number innerRadius)
+            => (n * 2)
+                .MapRange(i => 
+                    i.FractionalTurn(n * 2).CircleFunction * 
+                    (i.IsEven() 
+                        ? outerRadius 
+                        : innerRadius))
+                .ToPolyLine2D(true);
     }
 }
