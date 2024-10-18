@@ -49,7 +49,7 @@ namespace Plato.Geometry
                 throw new OutOfMemoryException("Failed to allocate unmanaged memory.");
 
             var rawAddress = UnalignedPointer.ToInt64();
-            var offset = (Alignment - (rawAddress % Alignment)) % Alignment;
+            var offset = (Alignment - rawAddress % Alignment) % Alignment;
             Pointer = new IntPtr(rawAddress + offset);
         }
 

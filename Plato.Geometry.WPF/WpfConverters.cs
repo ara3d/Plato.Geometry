@@ -5,7 +5,7 @@ using Plato.DoublePrecision;
 using Plato.Geometry.Graphics;
 using Plato.Geometry.Scenes;
 using Color = Plato.DoublePrecision.Color;
-using Colors = Plato.Geometry.Graphics.Colors;
+using Colors = Plato.DoublePrecision.Colors;
 using Material = Plato.Geometry.Graphics.Material;
 using Vector3D = Plato.DoublePrecision.Vector3D;
 using WVector3D = System.Windows.Media.Media3D.Vector3D;

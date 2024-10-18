@@ -18,7 +18,7 @@ namespace Plato.DoublePrecision
         public static IArray<T> Repeat<T>(this T self, int count)
             => ((Integer)count).MapRange(_ => self);
 
-        public static IArray<T> MapRange<T>(this int count, System.Func<Integer, T> func)
+        public static IArray<T> MapRange<T>(this int count, Func<Integer, T> func)
             => ((Integer)count).MapRange(func);
 
         public static QuadGrid UpArrow(double length, double minorRadius, double majorRadius, int radialSegments,
@@ -57,7 +57,7 @@ namespace Plato.DoublePrecision
             => Quaternion.FromAxisAngle(axis, FractionalTurn(numerator, denominator)).ToTransform3D();
 
         public static Transform3D FractionalRotation(Number amount, Vector3D axis)
-            => Quaternion.FromAxisAngle(axis, amount.Turns).ToTransform3D();
+            => Quaternion.FromAxisAngle(axis, -amount.Turns).ToTransform3D();
 
         public static QuadGrid SurfaceOfRevolution(this IArray<Vector3D> points, Vector3D axis, int segments,
             bool closedU = false, bool closedV = true)
@@ -83,59 +83,6 @@ namespace Plato.DoublePrecision
                     new Vector2D(a.Value / (double)nGridSize, b.Value / (double)nGridSize))
                 .Map(uv => f((uv.X, uv.Y)))
                 .ToQuadGrid(closedX, closedY);
-
-        public static QuadGrid Sphere(int resolution)
-            => ToQuadGrid(SphereFunction, resolution, true, true);
-
-        public static QuadGrid Torus(int resolution)
-            => ToQuadGrid(uv => TorusFunction(uv, 1.0, 0.2), resolution, true, true);
-
-        public static QuadGrid Plane(int resolution)
-            => ToQuadGrid(PlaneXYFunction, resolution, true, true);
-
-        public static QuadGrid Cylinder(int resolution)
-            => ToQuadGrid(CylinderFunction, resolution, true, true);
-
-        public static QuadGrid Capsule(int resolution)
-            => ToQuadGrid(CapsuleFunction, resolution, true, true);
-
-        public static QuadGrid Disc(int resolution)
-            => ToQuadGrid(uv => DiscFunction(uv), resolution, true, false);
-
-        public static Vector3D SphereFunction(this Vector2D uv)
-            => SphereFunction(uv.X.Turns, uv.Y.Turns);
-
-        public static Vector3D SphereFunction(Angle u, Angle v)
-            => (-u.Cos * v.Sin, v.Cos, u.Sin * v.Sin);
-
-        // https://en.wikipedia.org/wiki/Torus#Geometry
-        public static Vector3D TorusFunction(this Vector2D uv, Number r1, Number r2)
-            => TorusFunction(uv.X.Turns, uv.Y.Turns, r1, r2);
-
-        public static Vector3D TorusFunction(Angle u, Angle v, Number r1, Number r2)
-            => ((r1 + r2 * u.Cos) * v.Cos,
-                (r1 + r2 * u.Cos) * v.Sin,
-                r2 * u.Sin);
-
-        public static Vector3D PlaneXYFunction(this Vector2D uv)
-            => uv;
-
-        public static Vector2D DiscFunction(this Vector2D uv)
-            => uv.X.Turns.CircleFunction * (1 - uv.Y);
-
-        public static Vector3D CylinderFunction(this Vector2D uv)
-            => ((Vector3D)uv.X.Turns.CircleFunction).WithZ(uv.Y);
-
-        public static Vector3D ConicalSectionFunction(this Vector2D uv, Number r1, Number r2)
-            => (uv.X.CircleFunction * r1.Lerp(r2, uv.Y)).Vector3D.WithZ(uv.Y);
-
-        public static Vector3D CapsuleFunction(this Vector2D uv)
-        {
-            uv *= (1, 2);
-            if (uv.Y < 0.5) return SphereFunction((uv.Y, uv.X));
-            if (uv.Y > 1.5) return SphereFunction((uv.Y - 1, uv.X)) + (0, 0, 1);
-            return (uv + (0, -0.5f)).CylinderFunction();
-        }
 
         public static TriangleMesh ToTriangleMesh(this IQuadMesh q)
         {
@@ -227,7 +174,7 @@ namespace Plato.DoublePrecision
                 ? Intrinsics.MakeArray<Number>()
                 : count == 1
                     ? Intrinsics.MakeArray<Number>(0.0)
-                    : count.MapRange(i => i / (Number)(count));
+                    : count.MapRange(i => i / (Number)count);
 
         public static IArray<Vector3D> InterpolateInclusive(this Integer count, Func<Number, Vector3D> function)
             => count.InterpolateInclusive().Map(function);
@@ -413,11 +360,19 @@ namespace Plato.DoublePrecision
         public static QuadGrid Extrude(this IArray<Vector3D> points, Vector3D direction, bool closed)
             => points.ToPolyLine3D(closed).Extrude(direction);
 
-        public static QuadGrid ToPrism(this IArray<Vector3D> points)
-            => points.ToPrism(1.0);
+        public static QuadGrid ToPrism(this PolyLine2D poly)
+            => poly.ToPrism(1.0);
 
-        public static QuadGrid ToPrism(this IArray<Vector3D> points, Number extrusionAmount)
-            => points.Extrude(Vector3D.UnitZ * extrusionAmount, true);
+        public static QuadGrid ToPrism(this PolyLine2D poly, Number extrusionAmount)
+            => poly.Extrude(Vector3D.UnitZ * extrusionAmount, poly.Closed);
+
+        public static TriangleMesh ToCappedPrism(this PolyLine2D poly, Number extrusionAmount)
+        {
+            var r = poly.ToPrism(extrusionAmount);
+            var topPoints = r.Points.Skip(poly.Points.Count);
+            var cap = topPoints.ToFan();
+            return Combine(r, cap);
+        }
 
         public static QuadGrid Sweep(this PolyLine2D polyLine, Func<Vector3D, Number, Vector3D> f, Integer segments, Boolean closed)
             => polyLine.To3D.Sweep(f, segments, closed);
@@ -444,7 +399,7 @@ namespace Plato.DoublePrecision
         public static IArray<Integer> FanIndices(Integer count, Boolean connected)
         {
             var r = new List<Integer>();
-            for (var i = 0; i < count - 2; i++)
+            for (var i = 0; i < count - 1; i++)
             {
                 r.Add(i);
                 r.Add(i + 1);
@@ -634,5 +589,9 @@ namespace Plato.DoublePrecision
         public static Angle Degrees(this int n)
             => ((Number)n).Degrees;
 
+        //==
+
+        public static TriangleMesh Combine(this TriangleMesh mesh, TriangleMesh other)
+            => mesh.Points.Concat(other.Points).ToTriangleMesh(mesh.Indices.Concat(other.Indices.Map(i => i + mesh.Points.Count)));
     }
 }

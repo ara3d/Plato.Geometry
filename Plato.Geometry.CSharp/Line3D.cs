@@ -5,7 +5,7 @@ namespace Plato.DoublePrecision
     public partial struct Line3D : IDeformable3D<Line3D>, IProcedural<Number, Vector3D>
     {
         public Line3D Deform(Func<Vector3D, Vector3D> f)
-            => new Line3D(f(A), f(B));
+            => (f(A), f(B));
 
         public Line3D Transform(Matrix4x4 matrix)
             => Deform(matrix.TransformPoint);

@@ -39,16 +39,17 @@ namespace Plato.DoublePrecision
             for (var i = 0; i < p; ++i)
             {
                 if (connected[i])
-                    break;
+                    continue;
                 var j = i;
-                while (j != i)
+                do
                 {
                     r.Add(points[j]);
-                    j = (j + q) % p;
-                    if (connected[j])
-                        break;
                     connected[j] = true;
-                }
+                    j = (j + q) % p;
+                } 
+                while (j != i);
+                r.Add(points[j]);
+                connected[j] = true;
             }
             return new PolyLine2D(r.ToIArray(), false);
         }

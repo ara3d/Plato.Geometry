@@ -68,6 +68,32 @@ type QuadMesh
     Indices: IArray<Integer>;
 }
 
+type PolyLine2D
+    implements IPolyLine2D
+{
+    Points: IArray<Vector2D>;
+    Closed: Boolean;
+}
+
+type PolyLine3D
+    implements IPolyLine3D
+{
+    Points: IArray<Vector3D>;
+    Closed: Boolean;
+}
+
+type PointArray2D
+    implements IPointArray2D
+{
+	Points: IArray<Vector2D>;
+}
+
+type PointArray3D
+	implements IPointArray3D
+{
+	Points: IArray<Vector3D>;
+}
+
 type Lines
     implements ILines
 { 
@@ -85,6 +111,15 @@ type Quads
 { 
     Primitives: IArray<Quad3D>;
 }
+
+type QuadGrid
+	implements IQuadGrid
+{
+	PointGrid: IArray2D<Vector3D>;
+	ClosedX: Boolean;
+    ClosedY: Boolean;
+}
+
 
 library Meshes
 {

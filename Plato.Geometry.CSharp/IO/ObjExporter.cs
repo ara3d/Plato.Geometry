@@ -16,12 +16,12 @@ namespace Plato.Geometry.IO
         {
             // Write the vertices 
             foreach (var v in mesh.Vertices)
-                yield return ($"v {v.X} {v.Y} {v.Z}");
+                yield return $"v {v.X} {v.Y} {v.Z}";
 
             if (uvs != null)
             {
                 for (var v = 0; v < uvs.Count; v++)
-                    yield return ($"vt {uvs[v].X} {uvs[v].Y}");
+                    yield return $"vt {uvs[v].X} {uvs[v].Y}";
             }
 
             foreach (var f in mesh.AllFaceIndices)
@@ -30,9 +30,9 @@ namespace Plato.Geometry.IO
                 var b = f[1] + 1;
                 var c = f[2] + 1;
                 if (uvs == null)
-                    yield return ($"f {a} {b} {c}");
+                    yield return $"f {a} {b} {c}";
                 else
-                    yield return ($"f {a}/{a} {b}/{b} {c}/{c}");    
+                    yield return $"f {a}/{a} {b}/{b} {c}/{c}";    
             }
         }
 

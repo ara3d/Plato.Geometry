@@ -54,16 +54,16 @@ namespace Plato.DoublePrecision
         {
             if (v.A < v.B)
             {
-                return (v.B <= v.C)
+                return v.B <= v.C
                     ? v
-                    : (v.A <= v.C)
+                    : v.A <= v.C
                         ? new Integer3(v.A, v.C, v.B)
                         : new Integer3(v.C, v.A, v.B);
             }
 
-            return (v.A < v.C)
+            return v.A < v.C
                 ? new Integer3(v.B, v.A, v.C)
-                : (v.B < v.C)
+                : v.B < v.C
                     ? new Integer3(v.B, v.C, v.A)
                     : new Integer3(v.C, v.B, v.A);
         }

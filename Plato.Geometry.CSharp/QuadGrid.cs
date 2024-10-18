@@ -26,6 +26,9 @@ namespace Plato.DoublePrecision
             Indices = AllQuadFaceIndicesFlat(NumColumns, NumRows, ClosedX, ClosedY);
         }
 
+        public static implicit operator QuadGrid((IArray2D<Vector3D>, Boolean closedX, Boolean closedY) tuple)
+            => new QuadGrid(tuple.Item1, tuple.Item2, tuple.Item3);
+
         // d -- c
         // |    |
         // a -- b
@@ -34,8 +37,8 @@ namespace Plato.DoublePrecision
         {
             var a = row * nCols + col;
             var b = row * nCols + (col + 1) % nCols;
-            var c = ((row + 1) % nRows) * nCols + (col + 1) % nCols;
-            var d = ((row + 1) % nRows) * nCols + col;
+            var c = (row + 1) % nRows * nCols + (col + 1) % nCols;
+            var d = (row + 1) % nRows * nCols + col;
             return (a, b, c, d);
         }
 
@@ -53,7 +56,7 @@ namespace Plato.DoublePrecision
             => ToIndexArray(AllQuadFaceIndices(nCols, nRows, closedX, closedY));
 
         public QuadGrid Deform(Func<Vector3D, Vector3D> f)
-            => new QuadGrid(PointGrid.Map(f), ClosedX, ClosedY);
+            => (PointGrid.Map(f), ClosedX, ClosedY);
 
         public QuadGrid Transform(Matrix4x4 matrix)
             => Deform(matrix.TransformPoint);
@@ -65,7 +68,7 @@ namespace Plato.DoublePrecision
             => Transform(matrix);
 
         public static implicit operator QuadMesh(QuadGrid q)
-            => new QuadMesh(q.Points, q.Indices);
+            => (q.Points, q.Indices);
 
         public static implicit operator PointArray(QuadGrid q)
             => q.Points.ToPoints();

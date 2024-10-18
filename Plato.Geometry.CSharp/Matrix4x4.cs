@@ -64,7 +64,10 @@ namespace Plato.DoublePrecision
                 (row0.W, row1.W, row2.W, row3.W));
 
         public Matrix4x4 WithTranslation(Vector3D v)
-            => (Column1, Column2, Column3, (v.X, v.Y, v.Z, M44));
+            => (Column1.WithW(v.X), 
+                Column2.WithW(v.Y), 
+                Column3.WithW(v.Z), 
+                (0, 0, 0, 1));
 
         /// <summary>
         /// Creates a translation matrix.
@@ -572,8 +575,8 @@ namespace Plato.DoublePrecision
                 var abs = basis[a].Abs;
 
                 var cc = abs.X < abs.Y ? 
-                    (abs.Y >= abs.Z && abs.X >= abs.Z) ? 2 : 0 :
-                    (abs.X >= abs.Z && abs.Y >= abs.Z) ? 2 : 1;
+                    abs.Y >= abs.Z && abs.X >= abs.Z ? 2 : 0 :
+                    abs.X >= abs.Z && abs.Y >= abs.Z ? 2 : 1;
 
                 basis[b] = basis[a].Cross(canonicalBasis[cc]);
             }

@@ -31,5 +31,17 @@ namespace Plato.DoublePrecision
 
         public Vector3D MidPoint(Vector3D other)
             => Lerp(other, 0.5);
+
+        public Vector3D XZY => (X, Z, Y);
+        public Vector3D ZXY => (Z, X, Y);
+        public Vector3D ZYX => (Z, X, Y);
+        public Vector3D YXZ => (Y, X, Z);
+        public Vector3D YZX => (Y, Z, X);
+
+        public Vector3D WithComponent(Integer axis, Number n)
+            => axis == 0 ? (n, Y, Z) 
+                : axis == 1 ? (X, n, Z)
+                    : axis == 2 ? (X, Y, n)
+                    : throw new IndexOutOfRangeException();
     }
 }

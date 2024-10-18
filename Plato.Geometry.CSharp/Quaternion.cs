@@ -31,7 +31,7 @@ namespace Plato.DoublePrecision
         }
 
         public static Quaternion FromAxisAngle(AxisAngle aa)
-            => Quaternion.FromAxisAngle(aa.Axis, aa.Angle);
+            => FromAxisAngle(aa.Axis, aa.Angle);
 
         /* TODO: put this somewhere.
         // Helper method to rotate a vector using a quaternion
@@ -67,11 +67,11 @@ namespace Plato.DoublePrecision
             var correctedUp = forward.Cross(right).Normalize;
 
             // Construct the rotation matrix using right, corrected up, and forward vectors
-            var rotationMatrix = new Matrix4x4(
-                new Vector4D(right.X, correctedUp.X, forward.X, 0),
-                new Vector4D(right.Y, correctedUp.Y, forward.Y, 0),
-                new Vector4D(right.Z, correctedUp.Z, forward.Z, 0),
-                new Vector4D(0, 0, 0, 1));
+            var rotationMatrix = (
+                (right.X, correctedUp.X, forward.X, 0),
+                (right.Y, correctedUp.Y, forward.Y, 0),
+                (right.Z, correctedUp.Z, forward.Z, 0),
+                (0, 0, 0, 1));
 
             // Convert the rotation matrix to a quaternion
             var rotation = CreateFromRotationMatrix(rotationMatrix);
@@ -96,7 +96,7 @@ namespace Plato.DoublePrecision
             var yz2 = Y * z2;
             var zz2 = Z * z2;
 
-            return new Vector3D(
+            return (
                 v.X * (1.0f - yy2 - zz2) + v.Y * (xy2 - wz2) + v.Z * (xz2 + wy2),
                 v.X * (xy2 + wz2) + v.Y * (1.0f - xx2 - zz2) + v.Z * (yz2 - wx2),
                 v.X * (xz2 - wy2) + v.Y * (yz2 + wx2) + v.Z * (1.0f - xx2 - yy2));
@@ -193,11 +193,11 @@ namespace Plato.DoublePrecision
 
             double s1, s2;
 
-            if (cosOmega > (1.0 - epsilon))
+            if (cosOmega > 1.0 - epsilon)
             {
                 // Too close, do straight linear interpolation.
                 s1 = 1.0 - t;
-                s2 = (flip) ? -t : t;
+                s2 = flip ? -t : t;
             } 
             else
             {
@@ -205,7 +205,7 @@ namespace Plato.DoublePrecision
                 var invSinOmega = 1 / omega.Sin;
 
                 s1 = ((1.0 - t) * omega).Sin * invSinOmega;
-                s2 = (flip)
+                s2 = flip
                     ? -(t * omega).Sin * invSinOmega
                     : (t * omega).Sin * invSinOmega;
             }
@@ -224,7 +224,7 @@ namespace Plato.DoublePrecision
             var bv = q1.Vector3D;
             var cv = av.Cross(bv);
             var dot = av.Dot(bv);
-            return new Quaternion(
+            return (
                 q2.X * q1.W + q1.X * q2.W + cv.X,
                 q2.Y * q1.W + q1.Y * q2.W + cv.Y,
                 q2.Z * q1.W + q1.Z * q2.W + cv.Z,
@@ -242,6 +242,6 @@ namespace Plato.DoublePrecision
             => (X, Y, Z);
 
         public static implicit operator Quaternion(AxisAngle aa)
-            => Quaternion.FromAxisAngle(aa);
+            => FromAxisAngle(aa);
     }
 }
