@@ -3,17 +3,15 @@ library IGeometry
     //==
 	// 2D Lines
 	
-	Closed(x: Line2D): Boolean => false;
 	Points(x: Line2D): IArray<Vector2D> => x;
 	Length(x: Line2D): Number => (x.B - x.A).Length;
 	Direction(x: Line2D): Vector2D => (x.B - x.A);
 	Ray2D(x: Line2D): Ray2D => (x.A, x.Direction);
-	Line3D(x: Line2D): Line3D => (x.A, x.B);
+	Line3D(x: Line2D): Line3D => x.To3D;
 
 	//== 
 	// 3D Lines
 	 
-	Closed(x: Line3D): Boolean => false;
 	Points(x: Line3D): IArray<Vector3D> => x;
 	Length(x: Line3D): Number => (x.B - x.A).Length;
 	Direction(x: Line3D): Vector3D => (x.B - x.A);
@@ -45,7 +43,6 @@ library IGeometry
 	//==
 	// Ellipse functions 
 
-	Closed(x: Ellipse): Boolean => true;
 	Eval(x: Ellipse, t: Number): Vector2D => t.CircleFunction * x.Size + x.Center;
 	
 	//==
@@ -64,32 +61,7 @@ library IGeometry
     Normal(t: Triangle3D): Vector3D => (t.B - t.A).Cross(t.C - t.A).Normalize;
     Center(t: Triangle3D): Vector3D => (t.A + t.B + t.C) / 3.0;
     Plane(t: Triangle3D): Plane => (t.Normal, t.Normal.Dot(t.A));
-	Barycentric(t: Triangle3D, uv: Vector2D): Vector3D => t.A.Barycentric(t.B, t.C, uv);
-
-	/* TODO: there is a problem in resolving variable names. 
-	 *
-	// Test if a given point is inside a given triangle in R2.
-    Contains(tr: Triangle2D, p: Vector2D): Boolean
-    {
-        // Point in triangle test using barycentric coordinates
-        var v0 = B - A;
-        var v1 = C - A;
-        var v2 = p - A;
-
-        var dot00 = v0.Dot(v0);
-        var dot01 = v0.Dot(v1);
-        var dot02 = v0.Dot(v2);
-        var dot11 = v1.Dot(v1);
-        var dot12 = v1.Dot(v2);
-
-        var invDenom = (dot00 * dot11 - dot01 * dot01);
-        dot11 = (dot11 * dot02 - dot01 * dot12) * invDenom;
-        dot00 = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-        var r = ((dot11 > 0) && (dot00 > 0)) && ((dot11 + dot00) < 1);
-		return r;
-    }
-	*/
+	Barycentric(t: Triangle3D, uv: Vector2D): Vector3D => t.A.Barycentric(t.B, t.C, uv);    
 
 	//==
 	// Plane functions
@@ -97,19 +69,15 @@ library IGeometry
     Project(p: Plane, v: Vector3D): Vector3D => v - p.Normal * p.Normal.Dot(v);
 	
 	//==
-	// Polygon functions 
+	// Closed functions 
 
+    Closed(x: Ellipse): Boolean => true;
 	Closed(x: IPolygon2D): Boolean => true;
 	Closed(x: IPolygon3D): Boolean => true;
 	Closed(x: IClosedShape2D): Boolean => true;
 	Closed(x: IClosedShape3D): Boolean => true;
 	Closed(x: IOpenShape2D): Boolean => false;
 	
-	/* TODO: I really want to have a PairwiseMap function, but it is not working. 
-	Sides(x: IPolygon2D): IArray<Line2D> => x.Points.PairwiseMap((a, b) => Line2D(a, b));
-	Perimeter(x: IPolygon2D): Number => x.Sides.Map(a => a.Length).Sum;
-	*/
-
 	//== 
 	// Misc functions 
 
@@ -118,4 +86,121 @@ library IGeometry
 	Vector3D(a: Size3D): Vector3D => (a.Width, a.Height, a.Depth);
     CirclePoints(n: Integer): IArray<Vector2D> => n.Fractions.Map((x) => x.Turns.CircleFunction);
 	Points(x: RegularPolygon): IArray<Vector2D> => x.NumPoints.CirclePoints;
+
+
+	Eval(x: IPolyLine3D, t: Number): Vector3D => throw;
+    Eval(x: Line2D, t: Number): Vector2D => x.A.Lerp(x.B, t);
+    Eval(x: Line3D, t: Number): Vector3D => x.A.Lerp(x.B, t);
+    Closed(x: Line2D): Boolean => x.A == x.B;
+    Closed(x: Line3D): Boolean => x.A == x.B;
+
+    Lines(xs: IArray<Vector3D>, ys: IArray<Vector3D): IArray<Line3D> 
+        => xs.Zip(ys, (a, b) => new Line3D(a, b));
+        
+    Lines(xs: IArray<Vector2D>, ys: IArray<Vector2D): IArray<Line3D> 
+        => xs.Zip(ys, (a, b) => new Line3D(a, b));
+               
+    Lines(xs: IPolyLine3D): IArray<Line3D> 
+        => xs.Closed 
+            ? xs.Lines(xs.Shift(1))
+            : xs.Drop(1).Lines(xs.Skip(1));
+
+           
+
+    // # Indexed geometry related functions
+
+    NumFaces(g: IIndexedGeometry3D): Integer => g.NumPrimitives;
+    NumPrimitives(g: IIndexedGeometry3D): Integer => g.Indices.Count / g.PrimitiveSize;
+    FaceIndices(g: IIndexedGeometry3D, f: Integer): IArray<Integer> => g.Indices.Subarray(f * g.PrimitiveSize, PrimitiveSize);
+    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3D> => g.FaceIndices(f).Map(i => g.Vertices[i]);
+    AllFaceIndices(g: IIndexedGeometry3D): IArray<IArray<Integer>> => g.Indices.Slices(g.PrimitiveSize);
+    AllFaceVertices(g: IIndexedGeometry3D): IArray<IArray<Vector3D>> => g.Indices.Map(i => g.Vertices[i]).Slices(g.PrimitiveSize);
+    Vertices(g: IPoints3D): IArray<Vector3D> => g.Points;
+    NumVertices(g: IIndexedGeometry3D): Integer => g.Points.Count;
+
+    Primitives(g: ILineMesh): IArray<Line3D> => g.AllFaceVertices.Map(p => new Line3D(p));
+    Primitives(g: ITriangleMesh): IArray<Triangle3D> => g.AllFaceVertices.Map(p => new Triangle3D(p));
+    Primitives(g: IQuadMesh): IArray<Quad3D> => g.AllFaceVertices.Map(p => new Quad3D(p));
+
+    // # Primitives
+
+    PrimitiveSize(g: ILineArray): Integer => 2;
+    PrimitiveSize(g: ITriangles): Integer => 3;
+    PrimitiveSize(g: IQuads): Integer => 4;
+    NumPrimitives(g: IPrimitives3D<$T>): Integer => g.Primitives.Count / g.PrimitiveSize;    
+    Indices(g: IPrimitives3D<$T>): IArray<Integer> => g.NumPrimitives.Range;    
+    Points(g: IPrimitives3D<$T>): IArray<Vector3D> => g.Primitives.FlatMap(p => p);
+    
+    // # Implicit cast functions
+
+    LineMesh(g: ITriangleMesh): LineMesh => (g.Vertices, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[0]]));
+    LineMesh(g: IQuadMesh): LineMesh => (g.Vertices, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]));
+    TriangleMesh(g: IQuadMesh): TriangleMesh => (g.Vertices, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));
+
+    Lines(g: ILineMesh): Lines => new Lines(g.Primitives);
+    Triangles(g: ITriangleMesh): Triangles => new Triangles(g.Primitives);
+    Quads(g: IQuadMesh): Quads => new Quads(g.Primitives);
+
+    LineMesh(g: IPrimitives3D<Line3D>): LineMesh => (g.Points, g.Indices);
+    TriangleMesh(g: IPrimitives3D<Triangle3D>): TriangleMesh => (g.Points, g.Indices);
+    QuadMesh(g: IPrimitives3D<Quad3D>): QuadMesh => (g.Points, g.Indices);
+
+    // # Concept implementation functions
+
+    PrimitiveSize(g: ILineMesh): Integer => 2;
+    PrimitiveSize(g: ITriangleMesh): Integer => 3;
+    PrimitiveSize(g: IQuadMesh): Integer => 4;
+     
+    Faces(g: ITriangleMesh): IArray<Triangle3D> => g.Primitives; 
+    Faces(g: IQuadMesh): IArray<Quad3D> => g.Primitives; 
+
+    //==
+    // 2D to 3D
+
+    To3D(x: Line2D): Line3D => (x.A.To3D, x.B.To3D);
+    To3D(x: Triangle2D): Triangle3D => (x.A.To3D, x.B.To3D, x.C.To3D);
+    To3D(x: Rect2D): Rect3D => (x.Center.To3D, x.Size.To3D);
+    To3D(x: Quad2D): Quad3D => (x.A.To3D, x.B.To3D, x.C.To3D, x.D.To3D);
+    To3D(x: Bounds2D): Bounds3D => (x.Min.To3D, x.Max.To3D);
+    To3D(x: IPointArray2D): PointArray3D => x.Points.To3D;
+    To3D(x: IPolyLine2D): PolyLine3D => (x.Points.To3D, x.Closed);
+    To3D(x: IArray<Vector2D>): PointArray3D => x.Map(p => p.To3D);
+    To3D(x: Ray2D): Ray3D => (x.Origin.To3D, x.Direction.To3D);
+
+    //==
+    // ISolid default implementations.
+    
+    
+    // Finds the parameter t closest to a given point p
+    ClosestUV(s: ISolid, p: Vector3D): UV
+    {
+        // Approximate the closest t using sampling
+        var minDistSq = Infinity;
+        var closestT = 0.0;
+        var samples = 1000; // Increase for higher accuracy
+
+        for i in 0 .. samples
+        {
+            let t = i / samples;
+            let pos = Eval(t);
+            let distSq = (p - pos).LengthSquared();
+            if (distSq < minDistSq)
+            {
+                minDistSq = distSq;
+                closestT = t;
+            }
+        }
+
+        return closestT;
+    }
+
+    // Computes the signed distance from point p to the figure-eight knot
+    Distance(p: Vector3D): Number
+    {
+        let t = ClosestUV(p);
+        let pos = Eval(t);
+        return (p - pos).Length;
+    }
+
+    Inside(p: Vector3D): Boolean => Distance(p) < 0.0;
 }

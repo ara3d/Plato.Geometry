@@ -1,4 +1,17 @@
-﻿// This type provides a 2D bounding-box
+﻿// Used for types that represent transformations in 3D space
+concept ITransform3D
+{
+    // Transforms a point using the transformation
+	Transform(x: Self, v: Vector3D): Vector3D;
+
+    // Transforms a normal vector using the transformation (ignores scale and translation)
+	TransformNormal(x: Self, v: Vector3D): Vector3D;
+
+    // Returns a new transformation that is the inverse of the current transformation
+    Inverse(x: Self): Self;
+}
+
+// This type provides a 2D bounding-box
 concept IBounded2D
 {
     // Returns a 2D axis aligned bounding box.
@@ -12,18 +25,6 @@ concept IBounded3D
     Bounds(x: Self): Bounds3D;
 }
 
-// This type can be transformed using a 3x3 matrix
-concept ITransformable2D 
-{
-    // Retruns a new instance of the object transformed by the given matrix.
-    Transform(x: Self, matrix: Matrix3x3): Self;
-}
-
-concept ITransformable3D 
-{
-    Transform(x: Self, matrix: Matrix4x4): Self;
-}
-
 concept IDeformable2D 
 {
     Deform(x: Self, f: Function1<Vector2D, Vector2D>): Self;
@@ -35,18 +36,12 @@ concept IOpenClosedShape
 }
 
 concept IDeformable3D 
-    inherits ITransformable3D
 {
     Deform(x: Self, f: Function1<Vector3D, Vector3D>): Self;
 }
 
 // The set of all geometric objects: figures, shapes, points, fields, lines, and meshes. 
 concept IGeometry 
-{ }
-
-// The set of all 2D geometric objects
-concept IGeometry2D
-    inherits IGeometry
 { }
 
 // The set of all 3D geometric objects
@@ -104,14 +99,34 @@ concept ICurve2D
     inherits IGeometry2D, ICurve<Vector2D>
 { }
 
+// A 2D curve which is known to be closed
+concept IClosedCurve2D
+	inherits ICurve2D, IClosedShape2D
+{ }
+
+// A 2D curve which is known to be open
+concept IOpenCurve2D
+	inherits ICurve2D, IOpenShape2D
+{ }
+
 // A 3 dimensional shape with a topological space of 1 dimensions
 concept ICurve3D
     inherits IGeometry3D, ICurve<Vector3D>
 { }
 
+// A 3D curve which is known to be closed
+concept IClosedCurve3D
+	inherits ICurve3D, IClosedShape3D
+{ }
+
+// A 3D curve which is known to be open
+concept IOpenCurve3D
+	inherits ICurve3D, IOpenShape3D
+{ }
+
 // Surfaces are 3 dimensional shapes with a topological space of 2 dimensions
 concept ISurface
-    inherits IGeometry3D 
+    inherits IGeometry3D, IField3D 
 { }
 
 // Parametric surfaces are shapes defined from two variables (U and V)
@@ -129,10 +144,6 @@ concept IProceduralSurface
 // Explicit surfaces are defined as functions from UV space to a z value (height)
 concept IExplicitSurface 
     inherits IProcedural<Vector2D, Number>, ISurface
-{ }
-
-concept IDistanceField<TDomain>
-    inherits IProcedural<TDomain, Number>
 { }
 
 // A IVector or Scalar field in 2-Dimensions
@@ -155,9 +166,21 @@ concept IScalarField2D
     inherits IField2D<Number> 
 { }
 
+concept IDistanceField2D
+    inherits IScalarField2D
+{ 
+    Distance(x: Self, p: Vector2D): Number;)
+}
+
 concept IScalarField3D
     inherits IField3D<Number>
 { }
+
+concept IDistanceField3D
+    inherits IScalarField3D
+{ 
+    Distance(x: Self, p: Vector2D): Number;
+}
 
 concept IVector3Field2D 
     inherits IField2D<Vector3D> 
@@ -202,42 +225,16 @@ concept IImplicitVolume
     inherits IGeometry3D, IImplicitProcedural<Vector3D>
 { }
 
-// Any geometrical concept defined by a finite number of points 
-concept IPoints2D
-    inherits IGeometry2D
-{ 
-    Points(x: Self): IArray<Vector2D>;
-}
-
-// Any geometrical concept defined by a finite number of points 
-concept IPoints3D
-    inherits IGeometry3D
-{ 
-    Points(x: Self): IArray<Vector3D>;
-}
-
-concept IGrid2D
-    inherits IArray2D<Vector2D>
-{ }
-
-// Also known as quad strips. 
-concept IQuadGrid
-    inherits IArray2D<Vector3D>
-{ 
-    ClosedX(x: Self): Boolean;
-    ClosedY(x: Self): Boolean;
-}
-
 // https://en.wikipedia.org/wiki/Polygonal_chain
 // Also known as a PolygonalChain
 concept IPolyLine2D
-    inherits IPoints2D, IOpenClosedShape
+    inherits IPointArray2D, IOpenClosedShape, ICurve2D
 { }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
 // Also known as a PolygonalChain
 concept IPolyLine3D
-    inherits IPoints3D, IOpenClosedShape
+    inherits IPointArray3D, IOpenClosedShape, ICurve3D
 { }
 
 concept IClosedPolyLine2D
@@ -256,3 +253,63 @@ concept IPolygon3D
     inherits IClosedPolyLine3D
 { }
 
+concept ISolid
+    inherits IShape3D, IDistanceField3D, ISurface3D
+{ }
+
+// Any geometrical concept defined by a finite number of points 
+concept IPointArray2D
+    inherits IArray<Vector2D>, IGeometry2D
+{ 
+    Points(x: Self): IArray<Vector2D>;
+}
+
+// Any geometrical concept defined by a finite number of points 
+concept IPointArray3D
+    inherits IArray<Vector3D>, IGeometry3D
+{ 
+    Points(x: Self): IArray<Vector3D>;
+}
+
+//==
+// Indexed geometry has points and indices.
+// Primitives are either lines, triangles, or quads. 
+
+concept IIndexedGeometry3D
+	inherits IPointArray3D
+{
+    // The number of indices per element (2 for lines, 3 for triangles, 4 for quads, etc.))
+    PrimitiveSize(x: Self): Integer;
+
+    // An index buffer used to index the number of points 
+	Indices(x: Self): IArray<Integer>;
+}
+
+concept IPrimitives3D<TPrim>
+    where TPrim: IArray<Vector3D>
+    inherits IIndexedGeometry3D
+{ 
+    Primitives(xs: Self): IArray<TPrim>;
+}
+
+concept ILineMesh
+	inherits IIndexedGeometry3D<Line3D>
+{ }
+
+concept ITriangleMesh
+    inherits IIndexedGeometry3D<Triangle3D>
+{ }
+
+concept IQuadMesh
+	inherits IIndexedGeometry3D<Quad3D>
+{ }
+
+// Also known as quad strips.
+// Represents a grid of quadrilaterals 
+concept IQuadGrid
+    inherits IQuadMesh
+{ 
+    PointGrid(x: Self): IArray<Vector3D>;
+    ClosedX(x: Self): Boolean;
+    ClosedY(x: Self): Boolean;
+}

@@ -4624,6 +4624,12 @@ namespace Plato.DoublePrecision
     }
     public readonly partial struct Triangle3D: IValue<Triangle3D>, IArray<Vector3D>
     {
+        public void MyTest()
+        {
+            var tri = new Triangle3D(VEctor3D.UnitX, ...);
+            tri = tri.WithA(VEctor3D.UnitY)
+        }
+
         public readonly Vector3D A;
         public readonly Vector3D B;
         public readonly Vector3D C;

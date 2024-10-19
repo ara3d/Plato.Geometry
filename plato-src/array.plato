@@ -126,4 +126,10 @@ library ArrayLibrary
 
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, zs: IArray<$T3>, f: Function3<$T1, $T2, $T3, $T4>): IArray<$T4> 
         => xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => f(xs[i], ys[i], zs[i]));  
+
+    ModuloAt(xs: IArray<$T>, n: Integer): $T
+		=> xs.At(n % xs.Count);
+
+    Shift(xs: IArray<$T>, n: Integer): IArray<$T>
+    	=> xs.Count.MapRange(i => xs.ModuloAt(i));
 } 

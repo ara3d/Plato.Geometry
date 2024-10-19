@@ -47,3 +47,28 @@ type ParametricSurface
     PeriodicX: Boolean;
     PeriodicY: Boolean;
 }
+
+	/* TODO: there is a problem in resolving variable names. 
+	 *
+	// Test if a given point is inside a given triangle in R2.
+    Contains(tr: Triangle2D, p: Vector2D): Boolean
+    {
+        // Point in triangle test using barycentric coordinates
+        var v0 = B - A;
+        var v1 = C - A;
+        var v2 = p - A;
+
+        var dot00 = v0.Dot(v0);
+        var dot01 = v0.Dot(v1);
+        var dot02 = v0.Dot(v2);
+        var dot11 = v1.Dot(v1);
+        var dot12 = v1.Dot(v2);
+
+        var invDenom = (dot00 * dot11 - dot01 * dot01);
+        dot11 = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        dot00 = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+        var r = ((dot11 > 0) && (dot00 > 0)) && ((dot11 + dot00) < 1);
+		return r;
+    }
+	*/

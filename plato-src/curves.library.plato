@@ -17,7 +17,7 @@ library Curves
         => x.Square;
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
-    StaircaseFloorFunction(x: Number, steps: Integer): Number
+    StaircaseFloorFunction(x: Number, steps: Integer): Number   
         => (x * steps).Floor / steps;
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
