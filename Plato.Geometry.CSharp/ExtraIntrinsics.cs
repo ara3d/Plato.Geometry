@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Linq;
 
 namespace Plato.DoublePrecision
 {
@@ -10,26 +11,26 @@ namespace Plato.DoublePrecision
         public static T Multiply<T>(this Number scalar, T self) where T : IScalarArithmetic<T>
             => self.Multiply(scalar);
 
-        public static Number MapComponents(this Number n, Func<Number, Number> f) 
+        public static Number MapComponents(this Number n, Func<Number, Number> f)
             => f(n);
 
 
-        public static Curve3D Curve(IPolyLine3D polyLine) 
+        public static Curve3D Curve(PolyLine3D polyLine)
         {
-            var lines = polyLine.Lines;
-            if (lines.Count == 0)
+            if (polyLine.Points.Count == 0)
                 return Curve3D.Default;
 
-            if (lines.Length == 1)
-                return lines[0];
+            if (polyLine.Points.Count == 1)
+                return polyLine.Points[0];
 
-            var lengths = lines.Map(line => line.Length);
-            var totalLength = lengths.Sum;
+            var lines = polyLine.Lines;
+            var lengths = lines.Map(line => line.Length).ToSystemArray();
+            var totalLength = lengths.Sum(l => l.Value);
 
             return new Curve3D(t =>
                 {
                     if (t <= 0) return lines[0].A;
-                    if (t >= 1) return lines[lines.Length - 1].B;
+                    if (t >= 1) return lines[lines.Count - 1].B;
 
                     var s = t * totalLength;
 
@@ -41,10 +42,12 @@ namespace Plato.DoublePrecision
                     }
 
                     // Technically shouldn't be possible, but just in case. 
-                    if (i >= lines.Length)
-                        return lines[lines.Length - 1].B;
+                    if (i >= lines.Count)
+                        return lines[lines.Count - 1].B;
 
                     return lines[i].Eval(s / lengths[i]);
                 },
-                polyLine.Closed);    }
+                polyLine.Closed);
+        }
+    }
 }

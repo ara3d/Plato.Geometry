@@ -170,23 +170,6 @@ type GeoCoordinateWithAltitude
     Altitude: Number;
 }
 
-// Two dimensional rectangular size
-type Size2D
-    implements IValue, IArray<Number>
-{
-    Width: Number;
-    Height: Number;
-}
-
-// Three dimensional box size
-type Size3D
-    implements IValue, IArray<Number>
-{
-    Width: Number;
-    Height: Number;
-    Depth: Number;
-}
-
 // A fraction of two integer
 type Rational 
 	implements IValue

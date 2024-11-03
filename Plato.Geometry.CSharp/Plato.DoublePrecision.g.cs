@@ -1,6 +1,9 @@
+using System.Runtime.Serialization;
+using System.Runtime.InteropServices;
+
 namespace Plato.DoublePrecision
 {
-    public static partial class Intrinsics
+        public static partial class Intrinsics
     {
         public static TR Invoke<TR>(this Function0<TR> self) => self._function();
         public static TR Invoke<T0, TR>(this Function1<T0, TR> self, T0 arg) => self._function(arg);
@@ -59,16 +62,9 @@ namespace Plato.DoublePrecision
         {
             var r = new System.Collections.Generic.List<T1>();
             for (var i=0; i < xs.Count; ++i)
-            {
-                var tmp = f(xs[i]);
-                for (var j=0; j < tmp.Count; ++j)
-                {
-                    r.Add(tmp[j]);
-                }
-            }
+                r.AddRange(f(xs[i]));            
             return new ListArray<T1>(r);
         }
-
 
         public static Boolean And(Boolean x, Boolean y) => x.Value && y.Value;
         public static Boolean Or(Boolean x, Boolean y) => x.Value || y.Value;
@@ -78,38 +74,6 @@ namespace Plato.DoublePrecision
 
         public static Character At(String x, Integer n) => x.Value[n];
         public static Integer Count(String x) => x.Value.Length;
-
-        public static string MakeString<T>(T self, string typeName, IArray<String> fieldNames, IArray<Dynamic> fieldValues)
-        {
-            if (self is Integer n)
-            {
-                return n.Value.ToString();
-			}
-            else if (self is Number x)
-            {
-                return x.Value.ToString();
-            }
-            else if (self is Character c)
-            {
-                return $"\"{c.Value.ToString().Replace("\\", "\\\\").Replace("\"", "\\\"")}\"";
-            }
-            else if (self is String s)
-            {
-                return $"\"{s.Value.ToString().Replace("\\", "\\\\").Replace("\"", "\\\"")}\"";
-            }
-            else if (self is Boolean b)
-            {
-                if (b) return "true";
-				else return "false";
-            }
-
-            var sb = new System.Text.StringBuilder();
-            sb.Append($"{{ _type = \"{typeName}\" ");
-            for (var i = 0; i < fieldNames.Count; i++)
-                sb.Append(", ").Append(fieldNames.At(i).Value).Append(" = ").Append(fieldValues.At(i).Value);
-            sb.Append(" }");
-            return sb.ToString();
-        }
 
         public static int CombineHashCodes(params object[] objects)
         {
@@ -158,6 +122,13 @@ namespace Plato.DoublePrecision
         public static Boolean LessThanOrEquals(this Integer a, Integer b) => a.Value <= b.Value;
         public static Boolean LessThanOrEquals(this Boolean a, Boolean b) => !a || (a && b);
         public static Boolean LessThanOrEquals(this String a, String b) => a.Value.CompareTo(b.Value) <= 0;
+
+        public static String ToString(this Number x) => x.Value.ToString();
+        public static String ToString(this Boolean x) => x ? "true" : "false";
+        public static String ToString(this Character x) => x.Value.ToString();
+        public static String ToString(this Integer x) => x.Value.ToString();
+        public static String ToString(this String x) => $"\"{x.Value}\"";
+        public static String ToString(this Type x) => $"\"{x.Value}\"";
     }
     
     public interface IArray<T> : System.Collections.Generic.IReadOnlyList<T>
@@ -178,7 +149,7 @@ namespace Plato.DoublePrecision
         public T At(Integer n) => _func(n);
         public T this[Integer n] => _func(n);
         public Array(Integer count, System.Func<Integer, T> func)
-        {   
+        {
             Count = count;
             _func = func;
         }
@@ -515,6 +486,18 @@ namespace Plato.DoublePrecision
         T Min { get; }
         T Max { get; }
     }
+    public interface ITransform3D<Self>: ITransform3D
+    {
+        Vector3D Transform(Vector3D v);
+        Vector3D TransformNormal(Vector3D v);
+        Self Inverse { get; }
+    }
+    public interface ITransform3D
+    {
+        Vector3D Transform(Vector3D v);
+        Vector3D TransformNormal(Vector3D v);
+        ITransform3D Inverse { get; }
+    }
     public interface IBounded2D
     {
         Bounds2D Bounds { get; }
@@ -522,22 +505,6 @@ namespace Plato.DoublePrecision
     public interface IBounded3D
     {
         Bounds3D Bounds { get; }
-    }
-    public interface ITransformable2D<Self>: ITransformable2D
-    {
-        Self Transform(Matrix3x3 matrix);
-    }
-    public interface ITransformable2D
-    {
-        ITransformable2D Transform(Matrix3x3 matrix);
-    }
-    public interface ITransformable3D<Self>: ITransformable3D
-    {
-        Self Transform(Matrix4x4 matrix);
-    }
-    public interface ITransformable3D
-    {
-        ITransformable3D Transform(Matrix4x4 matrix);
     }
     public interface IDeformable2D<Self>: IDeformable2D
     {
@@ -551,11 +518,11 @@ namespace Plato.DoublePrecision
     {
         Boolean Closed { get; }
     }
-    public interface IDeformable3D<Self>: ITransformable3D<Self>, IDeformable3D
+    public interface IDeformable3D<Self>: IDeformable3D
     {
         Self Deform(System.Func<Vector3D, Vector3D> f);
     }
-    public interface IDeformable3D: ITransformable3D
+    public interface IDeformable3D
     {
         IDeformable3D Deform(System.Func<Vector3D, Vector3D> f);
     }
@@ -574,16 +541,22 @@ namespace Plato.DoublePrecision
     public interface IShape3D: IGeometry3D
     {
     }
-    public interface IOpenShape2D: IGeometry2D, IOpenClosedShape
+    public interface IOpenShape: IOpenClosedShape
     {
     }
-    public interface IClosedShape2D: IGeometry2D, IOpenClosedShape
+    public interface IClosedShape: IOpenClosedShape
     {
     }
-    public interface IOpenShape3D: IGeometry3D, IOpenClosedShape
+    public interface IOpenShape2D: IGeometry2D, IOpenShape
     {
     }
-    public interface IClosedShape3D: IGeometry3D, IOpenClosedShape
+    public interface IClosedShape2D: IGeometry2D, IClosedShape
+    {
+    }
+    public interface IOpenShape3D: IGeometry3D, IOpenShape
+    {
+    }
+    public interface IClosedShape3D: IGeometry3D, IClosedShape
     {
     }
     public interface IProcedural<TDomain, TRange>
@@ -599,10 +572,22 @@ namespace Plato.DoublePrecision
     public interface ICurve2D: IGeometry2D, ICurve<Vector2D>
     {
     }
+    public interface IClosedCurve2D: ICurve2D, IClosedShape2D
+    {
+    }
+    public interface IOpenCurve2D: ICurve2D, IOpenShape2D
+    {
+    }
     public interface ICurve3D: IGeometry3D, ICurve<Vector3D>
     {
     }
-    public interface ISurface: IGeometry3D
+    public interface IClosedCurve3D: ICurve3D, IClosedShape3D
+    {
+    }
+    public interface IOpenCurve3D: ICurve3D, IOpenShape3D
+    {
+    }
+    public interface ISurface: IGeometry3D, IDistanceField3D
     {
     }
     public interface IProceduralSurface: IProcedural<Vector2D, Vector3D>, ISurface
@@ -611,9 +596,6 @@ namespace Plato.DoublePrecision
         Boolean PeriodicY { get; }
     }
     public interface IExplicitSurface: IProcedural<Vector2D, Number>, ISurface
-    {
-    }
-    public interface IDistanceField<TDomain>: IProcedural<TDomain, Number>
     {
     }
     public interface IField2D<T>: IGeometry2D, IProcedural<Vector2D, T>
@@ -625,8 +607,16 @@ namespace Plato.DoublePrecision
     public interface IScalarField2D: IField2D<Number>
     {
     }
+    public interface IDistanceField2D: IScalarField2D
+    {
+        Number Distance(Vector2D p);
+    }
     public interface IScalarField3D: IField3D<Number>
     {
+    }
+    public interface IDistanceField3D: IScalarField3D
+    {
+        Number Distance(Vector2D p);
     }
     public interface IVector3Field2D: IField2D<Vector3D>
     {
@@ -655,26 +645,10 @@ namespace Plato.DoublePrecision
     public interface IImplicitVolume: IGeometry3D, IImplicitProcedural<Vector3D>
     {
     }
-    public interface IPoints2D: IGeometry2D
-    {
-        IArray<Vector2D> Points { get; }
-    }
-    public interface IPoints3D: IGeometry3D
-    {
-        IArray<Vector3D> Points { get; }
-    }
-    public interface IGrid2D: IArray2D<Vector2D>
+    public interface IPolyLine2D: IPointGeometry2D, IOpenClosedShape, ICurve2D
     {
     }
-    public interface IQuadGrid: IArray2D<Vector3D>
-    {
-        Boolean ClosedX { get; }
-        Boolean ClosedY { get; }
-    }
-    public interface IPolyLine2D: IPoints2D, IOpenClosedShape
-    {
-    }
-    public interface IPolyLine3D: IPoints3D, IOpenClosedShape
+    public interface IPolyLine3D: IPointGeometry3D, IOpenClosedShape, ICurve3D
     {
     }
     public interface IClosedPolyLine2D: IPolyLine2D, IClosedShape2D
@@ -689,36 +663,111 @@ namespace Plato.DoublePrecision
     public interface IPolygon3D: IClosedPolyLine3D
     {
     }
-    public interface IIndexedGeometry3D: IPoints3D
+    public interface ISolid: IShape3D, IDistanceField3D, ISurface
+    {
+    }
+    public interface IPointGeometry2D: IGeometry2D
+    {
+        IArray<Vector2D> Points { get; }
+    }
+    public interface IPointGeometry3D: IGeometry3D
+    {
+        IArray<Vector3D> Points { get; }
+    }
+    public interface IPointArray2D: IPointGeometry2D
+    {
+    }
+    public interface IPointArray3D: IPointGeometry3D
+    {
+    }
+    public interface ILineArray2D: IPrimitiveArray2D<Line2D>, ILinePrimitives
+    {
+    }
+    public interface ILineArray3D: IPrimitiveArray3D<Line3D>, ILinePrimitives
+    {
+    }
+    public interface ITriangleArray2D: IPrimitiveArray2D<Triangle2D>, ITrianglePrimitives
+    {
+    }
+    public interface ITriangleArray3D: IPrimitiveArray3D<Triangle3D>, ITrianglePrimitives
+    {
+    }
+    public interface IQuadArray2D: IPrimitiveArray3D<Quad2D>, IQuadPrimitives
+    {
+    }
+    public interface IQuadArray3D: IPrimitiveArray3D<Quad3D>, IQuadPrimitives
+    {
+    }
+    public interface IPrimitiveGeometry
     {
         Integer PrimitiveSize { get; }
-        IArray<Integer> Indices { get; }
     }
-    public interface ILineMesh: IIndexedGeometry3D
+    public interface IPrimitiveGeometry2D: IPointGeometry2D, IPrimitiveGeometry
     {
     }
-    public interface ITriangleMesh: IIndexedGeometry3D
+    public interface IPrimitiveGeometry3D: IPointGeometry3D, IPrimitiveGeometry
     {
     }
-    public interface IQuadMesh: IIndexedGeometry3D
-    {
-    }
-    public interface IPrimitives3D<TPrim>: IIndexedGeometry3D
+    public interface IPrimitiveArray2D<TPrim>: IPrimitiveGeometry2D
     {
         IArray<TPrim> Primitives { get; }
     }
-    public interface ILines: IPrimitives3D<Line3D>
+    public interface IPrimitiveArray3D<TPrim>: IPrimitiveGeometry3D
+    {
+        IArray<TPrim> Primitives { get; }
+    }
+    public interface IIndexedGeometry
+    {
+        IArray<Integer> Indices { get; }
+    }
+    public interface IIndexedGeometry2D: IPrimitiveGeometry2D, IIndexedGeometry
     {
     }
-    public interface ITriangles: IPrimitives3D<Triangle3D>
+    public interface IIndexedGeometry3D: IPrimitiveGeometry3D, IIndexedGeometry
     {
     }
-    public interface IQuads: IPrimitives3D<Quad3D>
+    public interface IIndexedPrimitives2D<TPrim>: IIndexedGeometry2D, IPrimitiveArray2D<TPrim>
     {
     }
-    public readonly partial struct Number: IReal<Number>
+    public interface IIndexedPrimitives3D<TPrim>: IIndexedGeometry3D, IPrimitiveArray3D<TPrim>
     {
-        public readonly double Value;
+    }
+    public interface ILinePrimitives
+    {
+    }
+    public interface ITrianglePrimitives
+    {
+    }
+    public interface IQuadPrimitives
+    {
+    }
+    public interface ILineMesh2D: IIndexedPrimitives2D<Line2D>, ILinePrimitives
+    {
+    }
+    public interface ITriangleMesh2D: IIndexedPrimitives2D<Triangle2D>, ITrianglePrimitives
+    {
+    }
+    public interface IQuadMesh2D: IIndexedPrimitives2D<Quad2D>, IQuadPrimitives
+    {
+    }
+    public interface ILineMesh3D: IIndexedPrimitives3D<Line3D>, ILinePrimitives
+    {
+    }
+    public interface ITriangleMesh3D: IIndexedPrimitives3D<Triangle3D>, ITrianglePrimitives
+    {
+    }
+    public interface IQuadMesh3D: IIndexedPrimitives3D<Quad3D>, IQuadPrimitives
+    {
+    }
+    public interface IQuadGrid3D: IQuadMesh3D
+    {
+        IArray2D<Vector3D> PointGrid { get; }
+        Boolean ClosedX { get; }
+        Boolean ClosedY { get; }
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Number: IReal<Number>
+    {
+        [DataMember] public readonly double Value;
         public Number WithValue(double value) => new Number(value);
         public Number(double value) => (Value) = (value);
         public static Number Default = new Number();
@@ -727,7 +776,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Number(double value) => new Number(value);
         public override bool Equals(object obj) { if (!(obj is Number)) return false; var other = (Number)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.ToString(this);
         public static implicit operator Dynamic(Number self) => new Dynamic(self);
         public static implicit operator Number(Dynamic value) => value.As<Number>();
         public String TypeName => "Number";
@@ -872,9 +921,9 @@ namespace Plato.DoublePrecision
         public Number Cube => this.Pow3;
         // Unimplemented concept functions
     }
-    public readonly partial struct Integer: IWholeNumber<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer: IWholeNumber<Integer>
     {
-        public readonly int Value;
+        [DataMember] public readonly int Value;
         public Integer WithValue(int value) => new Integer(value);
         public Integer(int value) => (Value) = (value);
         public static Integer Default = new Integer();
@@ -883,7 +932,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Integer(int value) => new Integer(value);
         public override bool Equals(object obj) { if (!(obj is Integer)) return false; var other = (Integer)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.ToString(this);
         public static implicit operator Dynamic(Integer self) => new Dynamic(self);
         public static implicit operator Integer(Dynamic value) => value.As<Integer>();
         public String TypeName => "Integer";
@@ -947,9 +996,9 @@ namespace Plato.DoublePrecision
         public Integer ParabolaFunction => this.Square;
         // Unimplemented concept functions
     }
-    public readonly partial struct String: IValue<String>, IOrderable<String>, IArray<Character>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct String: IValue<String>, IOrderable<String>, IArray<Character>
     {
-        public readonly string Value;
+        [DataMember] public readonly string Value;
         public String WithValue(string value) => new String(value);
         public String(string value) => (Value) = (value);
         public static String Default = new String();
@@ -958,7 +1007,7 @@ namespace Plato.DoublePrecision
         public static implicit operator String(string value) => new String(value);
         public override bool Equals(object obj) { if (!(obj is String)) return false; var other = (String)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.ToString(this);
         public static implicit operator Dynamic(String self) => new Dynamic(self);
         public static implicit operator String(Dynamic value) => value.As<String>();
         public String TypeName => "String";
@@ -994,9 +1043,9 @@ namespace Plato.DoublePrecision
         public Integer CompareTo(String b) => this.LessThanOrEquals(b) ? this.Equals(b) ? ((Integer)0) : ((Integer)1).Negative : ((Integer)1);
         // Unimplemented concept functions
     }
-    public readonly partial struct Boolean: IValue<Boolean>, IOrderable<Boolean>, IBoolean<Boolean>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Boolean: IValue<Boolean>, IOrderable<Boolean>, IBoolean<Boolean>
     {
-        public readonly bool Value;
+        [DataMember] public readonly bool Value;
         public Boolean WithValue(bool value) => new Boolean(value);
         public Boolean(bool value) => (Value) = (value);
         public static Boolean Default = new Boolean();
@@ -1005,7 +1054,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Boolean(bool value) => new Boolean(value);
         public override bool Equals(object obj) { if (!(obj is Boolean)) return false; var other = (Boolean)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.ToString(this);
         public static implicit operator Dynamic(Boolean self) => new Dynamic(self);
         public static implicit operator Boolean(Dynamic value) => value.As<Boolean>();
         public String TypeName => "Boolean";
@@ -1040,9 +1089,9 @@ namespace Plato.DoublePrecision
         public Integer CompareTo(Boolean b) => this.LessThanOrEquals(b) ? this.Equals(b) ? ((Integer)0) : ((Integer)1).Negative : ((Integer)1);
         // Unimplemented concept functions
     }
-    public readonly partial struct Character: IValue<Character>, IOrderable<Character>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Character: IValue<Character>, IOrderable<Character>
     {
-        public readonly char Value;
+        [DataMember] public readonly char Value;
         public Character WithValue(char value) => new Character(value);
         public Character(char value) => (Value) = (value);
         public static Character Default = new Character();
@@ -1051,7 +1100,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Character(char value) => new Character(value);
         public override bool Equals(object obj) { if (!(obj is Character)) return false; var other = (Character)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.ToString(this);
         public static implicit operator Dynamic(Character self) => new Dynamic(self);
         public static implicit operator Character(Dynamic value) => value.As<Character>();
         public String TypeName => "Character";
@@ -1077,9 +1126,9 @@ namespace Plato.DoublePrecision
         public Integer CompareTo(Character b) => this.LessThanOrEquals(b) ? this.Equals(b) ? ((Integer)0) : ((Integer)1).Negative : ((Integer)1);
         // Unimplemented concept functions
     }
-    public readonly partial struct Type
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Type
     {
-        public readonly System.Type Value;
+        [DataMember] public readonly System.Type Value;
         public Type WithValue(System.Type value) => new Type(value);
         public Type(System.Type value) => (Value) = (value);
         public static Type Default = new Type();
@@ -1088,7 +1137,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Type(System.Type value) => new Type(value);
         public override bool Equals(object obj) { if (!(obj is Type)) return false; var other = (Type)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => Intrinsics.ToString(this);
         public static implicit operator Dynamic(Type self) => new Dynamic(self);
         public static implicit operator Type(Dynamic value) => value.As<Type>();
         public String TypeName => "Type";
@@ -1098,13 +1147,13 @@ namespace Plato.DoublePrecision
         public Dynamic New(IArray<IAny> args) => Intrinsics.New(this, args);
         // Unimplemented concept functions
     }
-    public readonly partial struct Error
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Error
     {
         public static Error Default = new Error();
         public static Error New() => new Error();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Error self) => new Dynamic(self);
         public static implicit operator Error(Dynamic value) => value.As<Error>();
         public String TypeName => "Error";
@@ -1113,10 +1162,10 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple2<T0, T1>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple2<T0, T1>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
         public Tuple2<T0, T1> WithX0(T0 x0) => new Tuple2<T0, T1>(x0, X1);
         public Tuple2<T0, T1> WithX1(T1 x1) => new Tuple2<T0, T1>(X0, x1);
         public Tuple2(T0 x0, T1 x1) => (X0, X1) = (x0, x1);
@@ -1127,7 +1176,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1) { x0 = X0; x1 = X1; }
         public override bool Equals(object obj) { if (!(obj is Tuple2<T0, T1>)) return false; var other = (Tuple2<T0, T1>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1} }}";
         public static implicit operator Dynamic(Tuple2<T0, T1> self) => new Dynamic(self);
         public static implicit operator Tuple2<T0, T1>(Dynamic value) => value.As<Tuple2<T0, T1>>();
         public String TypeName => "Tuple2<T0, T1>";
@@ -1136,11 +1185,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple3<T0, T1, T2>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple3<T0, T1, T2>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
         public Tuple3<T0, T1, T2> WithX0(T0 x0) => new Tuple3<T0, T1, T2>(x0, X1, X2);
         public Tuple3<T0, T1, T2> WithX1(T1 x1) => new Tuple3<T0, T1, T2>(X0, x1, X2);
         public Tuple3<T0, T1, T2> WithX2(T2 x2) => new Tuple3<T0, T1, T2>(X0, X1, x2);
@@ -1152,7 +1201,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2) { x0 = X0; x1 = X1; x2 = X2; }
         public override bool Equals(object obj) { if (!(obj is Tuple3<T0, T1, T2>)) return false; var other = (Tuple3<T0, T1, T2>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2} }}";
         public static implicit operator Dynamic(Tuple3<T0, T1, T2> self) => new Dynamic(self);
         public static implicit operator Tuple3<T0, T1, T2>(Dynamic value) => value.As<Tuple3<T0, T1, T2>>();
         public String TypeName => "Tuple3<T0, T1, T2>";
@@ -1161,12 +1210,12 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple4<T0, T1, T2, T3>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple4<T0, T1, T2, T3>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
-        public readonly T3 X3;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
+        [DataMember] public readonly T3 X3;
         public Tuple4<T0, T1, T2, T3> WithX0(T0 x0) => new Tuple4<T0, T1, T2, T3>(x0, X1, X2, X3);
         public Tuple4<T0, T1, T2, T3> WithX1(T1 x1) => new Tuple4<T0, T1, T2, T3>(X0, x1, X2, X3);
         public Tuple4<T0, T1, T2, T3> WithX2(T2 x2) => new Tuple4<T0, T1, T2, T3>(X0, X1, x2, X3);
@@ -1179,7 +1228,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; }
         public override bool Equals(object obj) { if (!(obj is Tuple4<T0, T1, T2, T3>)) return false; var other = (Tuple4<T0, T1, T2, T3>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2}, \"X3\" = {X3} }}";
         public static implicit operator Dynamic(Tuple4<T0, T1, T2, T3> self) => new Dynamic(self);
         public static implicit operator Tuple4<T0, T1, T2, T3>(Dynamic value) => value.As<Tuple4<T0, T1, T2, T3>>();
         public String TypeName => "Tuple4<T0, T1, T2, T3>";
@@ -1188,13 +1237,13 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple5<T0, T1, T2, T3, T4>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple5<T0, T1, T2, T3, T4>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
-        public readonly T3 X3;
-        public readonly T4 X4;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
+        [DataMember] public readonly T3 X3;
+        [DataMember] public readonly T4 X4;
         public Tuple5<T0, T1, T2, T3, T4> WithX0(T0 x0) => new Tuple5<T0, T1, T2, T3, T4>(x0, X1, X2, X3, X4);
         public Tuple5<T0, T1, T2, T3, T4> WithX1(T1 x1) => new Tuple5<T0, T1, T2, T3, T4>(X0, x1, X2, X3, X4);
         public Tuple5<T0, T1, T2, T3, T4> WithX2(T2 x2) => new Tuple5<T0, T1, T2, T3, T4>(X0, X1, x2, X3, X4);
@@ -1208,7 +1257,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; }
         public override bool Equals(object obj) { if (!(obj is Tuple5<T0, T1, T2, T3, T4>)) return false; var other = (Tuple5<T0, T1, T2, T3, T4>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2}, \"X3\" = {X3}, \"X4\" = {X4} }}";
         public static implicit operator Dynamic(Tuple5<T0, T1, T2, T3, T4> self) => new Dynamic(self);
         public static implicit operator Tuple5<T0, T1, T2, T3, T4>(Dynamic value) => value.As<Tuple5<T0, T1, T2, T3, T4>>();
         public String TypeName => "Tuple5<T0, T1, T2, T3, T4>";
@@ -1217,14 +1266,14 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple6<T0, T1, T2, T3, T4, T5>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple6<T0, T1, T2, T3, T4, T5>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
-        public readonly T3 X3;
-        public readonly T4 X4;
-        public readonly T5 X5;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
+        [DataMember] public readonly T3 X3;
+        [DataMember] public readonly T4 X4;
+        [DataMember] public readonly T5 X5;
         public Tuple6<T0, T1, T2, T3, T4, T5> WithX0(T0 x0) => new Tuple6<T0, T1, T2, T3, T4, T5>(x0, X1, X2, X3, X4, X5);
         public Tuple6<T0, T1, T2, T3, T4, T5> WithX1(T1 x1) => new Tuple6<T0, T1, T2, T3, T4, T5>(X0, x1, X2, X3, X4, X5);
         public Tuple6<T0, T1, T2, T3, T4, T5> WithX2(T2 x2) => new Tuple6<T0, T1, T2, T3, T4, T5>(X0, X1, x2, X3, X4, X5);
@@ -1239,7 +1288,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; }
         public override bool Equals(object obj) { if (!(obj is Tuple6<T0, T1, T2, T3, T4, T5>)) return false; var other = (Tuple6<T0, T1, T2, T3, T4, T5>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2}, \"X3\" = {X3}, \"X4\" = {X4}, \"X5\" = {X5} }}";
         public static implicit operator Dynamic(Tuple6<T0, T1, T2, T3, T4, T5> self) => new Dynamic(self);
         public static implicit operator Tuple6<T0, T1, T2, T3, T4, T5>(Dynamic value) => value.As<Tuple6<T0, T1, T2, T3, T4, T5>>();
         public String TypeName => "Tuple6<T0, T1, T2, T3, T4, T5>";
@@ -1248,15 +1297,15 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple7<T0, T1, T2, T3, T4, T5, T6>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple7<T0, T1, T2, T3, T4, T5, T6>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
-        public readonly T3 X3;
-        public readonly T4 X4;
-        public readonly T5 X5;
-        public readonly T6 X6;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
+        [DataMember] public readonly T3 X3;
+        [DataMember] public readonly T4 X4;
+        [DataMember] public readonly T5 X5;
+        [DataMember] public readonly T6 X6;
         public Tuple7<T0, T1, T2, T3, T4, T5, T6> WithX0(T0 x0) => new Tuple7<T0, T1, T2, T3, T4, T5, T6>(x0, X1, X2, X3, X4, X5, X6);
         public Tuple7<T0, T1, T2, T3, T4, T5, T6> WithX1(T1 x1) => new Tuple7<T0, T1, T2, T3, T4, T5, T6>(X0, x1, X2, X3, X4, X5, X6);
         public Tuple7<T0, T1, T2, T3, T4, T5, T6> WithX2(T2 x2) => new Tuple7<T0, T1, T2, T3, T4, T5, T6>(X0, X1, x2, X3, X4, X5, X6);
@@ -1272,7 +1321,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; }
         public override bool Equals(object obj) { if (!(obj is Tuple7<T0, T1, T2, T3, T4, T5, T6>)) return false; var other = (Tuple7<T0, T1, T2, T3, T4, T5, T6>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2}, \"X3\" = {X3}, \"X4\" = {X4}, \"X5\" = {X5}, \"X6\" = {X6} }}";
         public static implicit operator Dynamic(Tuple7<T0, T1, T2, T3, T4, T5, T6> self) => new Dynamic(self);
         public static implicit operator Tuple7<T0, T1, T2, T3, T4, T5, T6>(Dynamic value) => value.As<Tuple7<T0, T1, T2, T3, T4, T5, T6>>();
         public String TypeName => "Tuple7<T0, T1, T2, T3, T4, T5, T6>";
@@ -1281,16 +1330,16 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
-        public readonly T3 X3;
-        public readonly T4 X4;
-        public readonly T5 X5;
-        public readonly T6 X6;
-        public readonly T7 X7;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
+        [DataMember] public readonly T3 X3;
+        [DataMember] public readonly T4 X4;
+        [DataMember] public readonly T5 X5;
+        [DataMember] public readonly T6 X6;
+        [DataMember] public readonly T7 X7;
         public Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> WithX0(T0 x0) => new Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>(x0, X1, X2, X3, X4, X5, X6, X7);
         public Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> WithX1(T1 x1) => new Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>(X0, x1, X2, X3, X4, X5, X6, X7);
         public Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> WithX2(T2 x2) => new Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>(X0, X1, x2, X3, X4, X5, X6, X7);
@@ -1307,7 +1356,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6, out T7 x7) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; x7 = X7; }
         public override bool Equals(object obj) { if (!(obj is Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>)) return false; var other = (Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6) && X7.Equals(other.X7); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6, X7);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2}, \"X3\" = {X3}, \"X4\" = {X4}, \"X5\" = {X5}, \"X6\" = {X6}, \"X7\" = {X7} }}";
         public static implicit operator Dynamic(Tuple8<T0, T1, T2, T3, T4, T5, T6, T7> self) => new Dynamic(self);
         public static implicit operator Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>(Dynamic value) => value.As<Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>>();
         public String TypeName => "Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>";
@@ -1316,17 +1365,17 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
-        public readonly T3 X3;
-        public readonly T4 X4;
-        public readonly T5 X5;
-        public readonly T6 X6;
-        public readonly T7 X7;
-        public readonly T8 X8;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
+        [DataMember] public readonly T3 X3;
+        [DataMember] public readonly T4 X4;
+        [DataMember] public readonly T5 X5;
+        [DataMember] public readonly T6 X6;
+        [DataMember] public readonly T7 X7;
+        [DataMember] public readonly T8 X8;
         public Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> WithX0(T0 x0) => new Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>(x0, X1, X2, X3, X4, X5, X6, X7, X8);
         public Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> WithX1(T1 x1) => new Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>(X0, x1, X2, X3, X4, X5, X6, X7, X8);
         public Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> WithX2(T2 x2) => new Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>(X0, X1, x2, X3, X4, X5, X6, X7, X8);
@@ -1344,7 +1393,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6, out T7 x7, out T8 x8) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; x7 = X7; x8 = X8; }
         public override bool Equals(object obj) { if (!(obj is Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>)) return false; var other = (Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6) && X7.Equals(other.X7) && X8.Equals(other.X8); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6, X7, X8);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2}, \"X3\" = {X3}, \"X4\" = {X4}, \"X5\" = {X5}, \"X6\" = {X6}, \"X7\" = {X7}, \"X8\" = {X8} }}";
         public static implicit operator Dynamic(Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8> self) => new Dynamic(self);
         public static implicit operator Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>(Dynamic value) => value.As<Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>>();
         public String TypeName => "Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>";
@@ -1353,18 +1402,18 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
     {
-        public readonly T0 X0;
-        public readonly T1 X1;
-        public readonly T2 X2;
-        public readonly T3 X3;
-        public readonly T4 X4;
-        public readonly T5 X5;
-        public readonly T6 X6;
-        public readonly T7 X7;
-        public readonly T8 X8;
-        public readonly T9 X9;
+        [DataMember] public readonly T0 X0;
+        [DataMember] public readonly T1 X1;
+        [DataMember] public readonly T2 X2;
+        [DataMember] public readonly T3 X3;
+        [DataMember] public readonly T4 X4;
+        [DataMember] public readonly T5 X5;
+        [DataMember] public readonly T6 X6;
+        [DataMember] public readonly T7 X7;
+        [DataMember] public readonly T8 X8;
+        [DataMember] public readonly T9 X9;
         public Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> WithX0(T0 x0) => new Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(x0, X1, X2, X3, X4, X5, X6, X7, X8, X9);
         public Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> WithX1(T1 x1) => new Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(X0, x1, X2, X3, X4, X5, X6, X7, X8, X9);
         public Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> WithX2(T2 x2) => new Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(X0, X1, x2, X3, X4, X5, X6, X7, X8, X9);
@@ -1383,7 +1432,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out T0 x0, out T1 x1, out T2 x2, out T3 x3, out T4 x4, out T5 x5, out T6 x6, out T7 x7, out T8 x8, out T9 x9) { x0 = X0; x1 = X1; x2 = X2; x3 = X3; x4 = X4; x5 = X5; x6 = X6; x7 = X7; x8 = X8; x9 = X9; }
         public override bool Equals(object obj) { if (!(obj is Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>)) return false; var other = (Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>)obj; return X0.Equals(other.X0) && X1.Equals(other.X1) && X2.Equals(other.X2) && X3.Equals(other.X3) && X4.Equals(other.X4) && X5.Equals(other.X5) && X6.Equals(other.X6) && X7.Equals(other.X7) && X8.Equals(other.X8) && X9.Equals(other.X9); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X0\" = {X0}, \"X1\" = {X1}, \"X2\" = {X2}, \"X3\" = {X3}, \"X4\" = {X4}, \"X5\" = {X5}, \"X6\" = {X6}, \"X7\" = {X7}, \"X8\" = {X8}, \"X9\" = {X9} }}";
         public static implicit operator Dynamic(Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> self) => new Dynamic(self);
         public static implicit operator Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(Dynamic value) => value.As<Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>>();
         public String TypeName => "Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>";
@@ -1392,13 +1441,13 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Function4<T0, T1, T2, T3, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function4<T0, T1, T2, T3, TR>
     {
         public static Function4<T0, T1, T2, T3, TR> Default = new Function4<T0, T1, T2, T3, TR>();
         public static Function4<T0, T1, T2, T3, TR> New() => new Function4<T0, T1, T2, T3, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Function4<T0, T1, T2, T3, TR> self) => new Dynamic(self);
         public static implicit operator Function4<T0, T1, T2, T3, TR>(Dynamic value) => value.As<Function4<T0, T1, T2, T3, TR>>();
         public String TypeName => "Function4<T0, T1, T2, T3, TR>";
@@ -1408,13 +1457,13 @@ namespace Plato.DoublePrecision
         public TR Invoke(T0 a0, T1 a1, T2 a2, T3 a3) => Intrinsics.Invoke(this, a0, a1, a2, a3);
         // Unimplemented concept functions
     }
-    public readonly partial struct Function5<T0, T1, T2, T3, T4, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function5<T0, T1, T2, T3, T4, TR>
     {
         public static Function5<T0, T1, T2, T3, T4, TR> Default = new Function5<T0, T1, T2, T3, T4, TR>();
         public static Function5<T0, T1, T2, T3, T4, TR> New() => new Function5<T0, T1, T2, T3, T4, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Function5<T0, T1, T2, T3, T4, TR> self) => new Dynamic(self);
         public static implicit operator Function5<T0, T1, T2, T3, T4, TR>(Dynamic value) => value.As<Function5<T0, T1, T2, T3, T4, TR>>();
         public String TypeName => "Function5<T0, T1, T2, T3, T4, TR>";
@@ -1423,13 +1472,13 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Function6<T0, T1, T2, T3, T4, T5, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function6<T0, T1, T2, T3, T4, T5, TR>
     {
         public static Function6<T0, T1, T2, T3, T4, T5, TR> Default = new Function6<T0, T1, T2, T3, T4, T5, TR>();
         public static Function6<T0, T1, T2, T3, T4, T5, TR> New() => new Function6<T0, T1, T2, T3, T4, T5, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Function6<T0, T1, T2, T3, T4, T5, TR> self) => new Dynamic(self);
         public static implicit operator Function6<T0, T1, T2, T3, T4, T5, TR>(Dynamic value) => value.As<Function6<T0, T1, T2, T3, T4, T5, TR>>();
         public String TypeName => "Function6<T0, T1, T2, T3, T4, T5, TR>";
@@ -1438,13 +1487,13 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Function7<T0, T1, T2, T3, T4, T5, T6, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function7<T0, T1, T2, T3, T4, T5, T6, TR>
     {
         public static Function7<T0, T1, T2, T3, T4, T5, T6, TR> Default = new Function7<T0, T1, T2, T3, T4, T5, T6, TR>();
         public static Function7<T0, T1, T2, T3, T4, T5, T6, TR> New() => new Function7<T0, T1, T2, T3, T4, T5, T6, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Function7<T0, T1, T2, T3, T4, T5, T6, TR> self) => new Dynamic(self);
         public static implicit operator Function7<T0, T1, T2, T3, T4, T5, T6, TR>(Dynamic value) => value.As<Function7<T0, T1, T2, T3, T4, T5, T6, TR>>();
         public String TypeName => "Function7<T0, T1, T2, T3, T4, T5, T6, TR>";
@@ -1453,13 +1502,13 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>
     {
         public static Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR> Default = new Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>();
         public static Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR> New() => new Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR> self) => new Dynamic(self);
         public static implicit operator Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>(Dynamic value) => value.As<Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>>();
         public String TypeName => "Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>";
@@ -1468,13 +1517,13 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>
     {
         public static Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR> Default = new Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>();
         public static Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR> New() => new Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR> self) => new Dynamic(self);
         public static implicit operator Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>(Dynamic value) => value.As<Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>>();
         public String TypeName => "Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>";
@@ -1483,13 +1532,13 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>
     {
         public static Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> Default = new Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>();
         public static Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> New() => new Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>();
         public override bool Equals(object obj) => true;
         public override int GetHashCode() => Intrinsics.CombineHashCodes();
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{  }}";
         public static implicit operator Dynamic(Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> self) => new Dynamic(self);
         public static implicit operator Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>(Dynamic value) => value.As<Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>>();
         public String TypeName => "Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>";
@@ -1498,9 +1547,9 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Unit: IReal<Unit>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Unit: IReal<Unit>
     {
-        public readonly Number Value;
+        [DataMember] public readonly Number Value;
         public Unit WithValue(Number value) => new Unit(value);
         public Unit(Number value) => (Value) = (value);
         public static Unit Default = new Unit();
@@ -1513,7 +1562,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Unit value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is Unit)) return false; var other = (Unit)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Value\" = {Value} }}";
         public static implicit operator Dynamic(Unit self) => new Dynamic(self);
         public static implicit operator Unit(Dynamic value) => value.As<Unit>();
         public String TypeName => "Unit";
@@ -1632,9 +1681,9 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Unit y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Unit x, Unit y) => x.LessThanOrEquals(y);
     }
-    public readonly partial struct Probability: IMeasure<Probability>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Probability: IMeasure<Probability>
     {
-        public readonly Number Value;
+        [DataMember] public readonly Number Value;
         public Probability WithValue(Number value) => new Probability(value);
         public Probability(Number value) => (Value) = (value);
         public static Probability Default = new Probability();
@@ -1647,7 +1696,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Probability value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is Probability)) return false; var other = (Probability)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Value\" = {Value} }}";
         public static implicit operator Dynamic(Probability self) => new Dynamic(self);
         public static implicit operator Probability(Dynamic value) => value.As<Probability>();
         public String TypeName => "Probability";
@@ -1742,10 +1791,10 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Probability y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Probability x, Probability y) => x.LessThanOrEquals(y);
     }
-    public readonly partial struct Complex: IVector<Complex>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Complex: IVector<Complex>
     {
-        public readonly Number IReal;
-        public readonly Number Imaginary;
+        [DataMember] public readonly Number IReal;
+        [DataMember] public readonly Number Imaginary;
         public Complex WithIReal(Number iReal) => new Complex(iReal, Imaginary);
         public Complex WithImaginary(Number imaginary) => new Complex(IReal, imaginary);
         public Complex(Number iReal, Number imaginary) => (IReal, Imaginary) = (iReal, imaginary);
@@ -1756,7 +1805,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number iReal, out Number imaginary) { iReal = IReal; imaginary = Imaginary; }
         public override bool Equals(object obj) { if (!(obj is Complex)) return false; var other = (Complex)obj; return IReal.Equals(other.IReal) && Imaginary.Equals(other.Imaginary); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(IReal, Imaginary);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"IReal\" = {IReal}, \"Imaginary\" = {Imaginary} }}";
         public static implicit operator Dynamic(Complex self) => new Dynamic(self);
         public static implicit operator Complex(Dynamic value) => value.As<Complex>();
         public String TypeName => "Complex";
@@ -1869,10 +1918,10 @@ namespace Plato.DoublePrecision
         public Complex Barycentric(Complex v2, Complex v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
         // Unimplemented concept functions
     }
-    public readonly partial struct Integer2: IValue<Integer2>, IArray<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer2: IValue<Integer2>, IArray<Integer>
     {
-        public readonly Integer A;
-        public readonly Integer B;
+        [DataMember] public readonly Integer A;
+        [DataMember] public readonly Integer B;
         public Integer2 WithA(Integer a) => new Integer2(a, B);
         public Integer2 WithB(Integer b) => new Integer2(A, b);
         public Integer2(Integer a, Integer b) => (A, B) = (a, b);
@@ -1883,7 +1932,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer a, out Integer b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Integer2)) return false; var other = (Integer2)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B} }}";
         public static implicit operator Dynamic(Integer2 self) => new Dynamic(self);
         public static implicit operator Integer2(Dynamic value) => value.As<Integer2>();
         public String TypeName => "Integer2";
@@ -1911,11 +1960,11 @@ namespace Plato.DoublePrecision
         public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
         public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Integer3: IValue<Integer3>, IArray<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer3: IValue<Integer3>, IArray<Integer>
     {
-        public readonly Integer A;
-        public readonly Integer B;
-        public readonly Integer C;
+        [DataMember] public readonly Integer A;
+        [DataMember] public readonly Integer B;
+        [DataMember] public readonly Integer C;
         public Integer3 WithA(Integer a) => new Integer3(a, B, C);
         public Integer3 WithB(Integer b) => new Integer3(A, b, C);
         public Integer3 WithC(Integer c) => new Integer3(A, B, c);
@@ -1927,7 +1976,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer a, out Integer b, out Integer c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is Integer3)) return false; var other = (Integer3)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C} }}";
         public static implicit operator Dynamic(Integer3 self) => new Dynamic(self);
         public static implicit operator Integer3(Dynamic value) => value.As<Integer3>();
         public String TypeName => "Integer3";
@@ -1955,12 +2004,12 @@ namespace Plato.DoublePrecision
         public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
         public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Integer4: IValue<Integer4>, IArray<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer4: IValue<Integer4>, IArray<Integer>
     {
-        public readonly Integer A;
-        public readonly Integer B;
-        public readonly Integer C;
-        public readonly Integer D;
+        [DataMember] public readonly Integer A;
+        [DataMember] public readonly Integer B;
+        [DataMember] public readonly Integer C;
+        [DataMember] public readonly Integer D;
         public Integer4 WithA(Integer a) => new Integer4(a, B, C, D);
         public Integer4 WithB(Integer b) => new Integer4(A, b, C, D);
         public Integer4 WithC(Integer c) => new Integer4(A, B, c, D);
@@ -1973,7 +2022,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer a, out Integer b, out Integer c, out Integer d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is Integer4)) return false; var other = (Integer4)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C}, \"D\" = {D} }}";
         public static implicit operator Dynamic(Integer4 self) => new Dynamic(self);
         public static implicit operator Integer4(Dynamic value) => value.As<Integer4>();
         public String TypeName => "Integer4";
@@ -2001,12 +2050,12 @@ namespace Plato.DoublePrecision
         public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
         public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Color: ICoordinate<Color>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Color: ICoordinate<Color>
     {
-        public readonly Unit R;
-        public readonly Unit G;
-        public readonly Unit B;
-        public readonly Unit A;
+        [DataMember] public readonly Unit R;
+        [DataMember] public readonly Unit G;
+        [DataMember] public readonly Unit B;
+        [DataMember] public readonly Unit A;
         public Color WithR(Unit r) => new Color(r, G, B, A);
         public Color WithG(Unit g) => new Color(R, g, B, A);
         public Color WithB(Unit b) => new Color(R, G, b, A);
@@ -2019,7 +2068,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit r, out Unit g, out Unit b, out Unit a) { r = R; g = G; b = B; a = A; }
         public override bool Equals(object obj) { if (!(obj is Color)) return false; var other = (Color)obj; return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(R, G, B, A);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"R\" = {R}, \"G\" = {G}, \"B\" = {B}, \"A\" = {A} }}";
         public static implicit operator Dynamic(Color self) => new Dynamic(self);
         public static implicit operator Color(Dynamic value) => value.As<Color>();
         public String TypeName => "Color";
@@ -2033,11 +2082,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(Color a, Color b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct ColorLUV: ICoordinate<ColorLUV>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorLUV: ICoordinate<ColorLUV>
     {
-        public readonly Unit Lightness;
-        public readonly Unit U;
-        public readonly Unit V;
+        [DataMember] public readonly Unit Lightness;
+        [DataMember] public readonly Unit U;
+        [DataMember] public readonly Unit V;
         public ColorLUV WithLightness(Unit lightness) => new ColorLUV(lightness, U, V);
         public ColorLUV WithU(Unit u) => new ColorLUV(Lightness, u, V);
         public ColorLUV WithV(Unit v) => new ColorLUV(Lightness, U, v);
@@ -2049,7 +2098,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit lightness, out Unit u, out Unit v) { lightness = Lightness; u = U; v = V; }
         public override bool Equals(object obj) { if (!(obj is ColorLUV)) return false; var other = (ColorLUV)obj; return Lightness.Equals(other.Lightness) && U.Equals(other.U) && V.Equals(other.V); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Lightness, U, V);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Lightness\" = {Lightness}, \"U\" = {U}, \"V\" = {V} }}";
         public static implicit operator Dynamic(ColorLUV self) => new Dynamic(self);
         public static implicit operator ColorLUV(Dynamic value) => value.As<ColorLUV>();
         public String TypeName => "ColorLUV";
@@ -2063,11 +2112,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(ColorLUV a, ColorLUV b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct ColorLAB: ICoordinate<ColorLAB>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorLAB: ICoordinate<ColorLAB>
     {
-        public readonly Unit Lightness;
-        public readonly Number A;
-        public readonly Number B;
+        [DataMember] public readonly Unit Lightness;
+        [DataMember] public readonly Number A;
+        [DataMember] public readonly Number B;
         public ColorLAB WithLightness(Unit lightness) => new ColorLAB(lightness, A, B);
         public ColorLAB WithA(Number a) => new ColorLAB(Lightness, a, B);
         public ColorLAB WithB(Number b) => new ColorLAB(Lightness, A, b);
@@ -2079,7 +2128,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit lightness, out Number a, out Number b) { lightness = Lightness; a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is ColorLAB)) return false; var other = (ColorLAB)obj; return Lightness.Equals(other.Lightness) && A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Lightness, A, B);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Lightness\" = {Lightness}, \"A\" = {A}, \"B\" = {B} }}";
         public static implicit operator Dynamic(ColorLAB self) => new Dynamic(self);
         public static implicit operator ColorLAB(Dynamic value) => value.As<ColorLAB>();
         public String TypeName => "ColorLAB";
@@ -2093,10 +2142,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(ColorLAB a, ColorLAB b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct ColorLCh: ICoordinate<ColorLCh>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorLCh: ICoordinate<ColorLCh>
     {
-        public readonly Unit Lightness;
-        public readonly PolarCoordinate ChromaHue;
+        [DataMember] public readonly Unit Lightness;
+        [DataMember] public readonly PolarCoordinate ChromaHue;
         public ColorLCh WithLightness(Unit lightness) => new ColorLCh(lightness, ChromaHue);
         public ColorLCh WithChromaHue(PolarCoordinate chromaHue) => new ColorLCh(Lightness, chromaHue);
         public ColorLCh(Unit lightness, PolarCoordinate chromaHue) => (Lightness, ChromaHue) = (lightness, chromaHue);
@@ -2107,7 +2156,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit lightness, out PolarCoordinate chromaHue) { lightness = Lightness; chromaHue = ChromaHue; }
         public override bool Equals(object obj) { if (!(obj is ColorLCh)) return false; var other = (ColorLCh)obj; return Lightness.Equals(other.Lightness) && ChromaHue.Equals(other.ChromaHue); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Lightness, ChromaHue);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Lightness\" = {Lightness}, \"ChromaHue\" = {ChromaHue} }}";
         public static implicit operator Dynamic(ColorLCh self) => new Dynamic(self);
         public static implicit operator ColorLCh(Dynamic value) => value.As<ColorLCh>();
         public String TypeName => "ColorLCh";
@@ -2121,11 +2170,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(ColorLCh a, ColorLCh b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct ColorHSV: ICoordinate<ColorHSV>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorHSV: ICoordinate<ColorHSV>
     {
-        public readonly Angle Hue;
-        public readonly Unit S;
-        public readonly Unit V;
+        [DataMember] public readonly Angle Hue;
+        [DataMember] public readonly Unit S;
+        [DataMember] public readonly Unit V;
         public ColorHSV WithHue(Angle hue) => new ColorHSV(hue, S, V);
         public ColorHSV WithS(Unit s) => new ColorHSV(Hue, s, V);
         public ColorHSV WithV(Unit v) => new ColorHSV(Hue, S, v);
@@ -2137,7 +2186,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle hue, out Unit s, out Unit v) { hue = Hue; s = S; v = V; }
         public override bool Equals(object obj) { if (!(obj is ColorHSV)) return false; var other = (ColorHSV)obj; return Hue.Equals(other.Hue) && S.Equals(other.S) && V.Equals(other.V); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Hue, S, V);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Hue\" = {Hue}, \"S\" = {S}, \"V\" = {V} }}";
         public static implicit operator Dynamic(ColorHSV self) => new Dynamic(self);
         public static implicit operator ColorHSV(Dynamic value) => value.As<ColorHSV>();
         public String TypeName => "ColorHSV";
@@ -2151,11 +2200,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(ColorHSV a, ColorHSV b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct ColorHSL: ICoordinate<ColorHSL>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorHSL: ICoordinate<ColorHSL>
     {
-        public readonly Angle Hue;
-        public readonly Unit Saturation;
-        public readonly Unit Luminance;
+        [DataMember] public readonly Angle Hue;
+        [DataMember] public readonly Unit Saturation;
+        [DataMember] public readonly Unit Luminance;
         public ColorHSL WithHue(Angle hue) => new ColorHSL(hue, Saturation, Luminance);
         public ColorHSL WithSaturation(Unit saturation) => new ColorHSL(Hue, saturation, Luminance);
         public ColorHSL WithLuminance(Unit luminance) => new ColorHSL(Hue, Saturation, luminance);
@@ -2167,7 +2216,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle hue, out Unit saturation, out Unit luminance) { hue = Hue; saturation = Saturation; luminance = Luminance; }
         public override bool Equals(object obj) { if (!(obj is ColorHSL)) return false; var other = (ColorHSL)obj; return Hue.Equals(other.Hue) && Saturation.Equals(other.Saturation) && Luminance.Equals(other.Luminance); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Hue, Saturation, Luminance);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Hue\" = {Hue}, \"Saturation\" = {Saturation}, \"Luminance\" = {Luminance} }}";
         public static implicit operator Dynamic(ColorHSL self) => new Dynamic(self);
         public static implicit operator ColorHSL(Dynamic value) => value.As<ColorHSL>();
         public String TypeName => "ColorHSL";
@@ -2181,11 +2230,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(ColorHSL a, ColorHSL b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct ColorYCbCr: ICoordinate<ColorYCbCr>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorYCbCr: ICoordinate<ColorYCbCr>
     {
-        public readonly Unit Y;
-        public readonly Unit Cb;
-        public readonly Unit Cr;
+        [DataMember] public readonly Unit Y;
+        [DataMember] public readonly Unit Cb;
+        [DataMember] public readonly Unit Cr;
         public ColorYCbCr WithY(Unit y) => new ColorYCbCr(y, Cb, Cr);
         public ColorYCbCr WithCb(Unit cb) => new ColorYCbCr(Y, cb, Cr);
         public ColorYCbCr WithCr(Unit cr) => new ColorYCbCr(Y, Cb, cr);
@@ -2197,7 +2246,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Unit y, out Unit cb, out Unit cr) { y = Y; cb = Cb; cr = Cr; }
         public override bool Equals(object obj) { if (!(obj is ColorYCbCr)) return false; var other = (ColorYCbCr)obj; return Y.Equals(other.Y) && Cb.Equals(other.Cb) && Cr.Equals(other.Cr); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Y, Cb, Cr);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Y\" = {Y}, \"Cb\" = {Cb}, \"Cr\" = {Cr} }}";
         public static implicit operator Dynamic(ColorYCbCr self) => new Dynamic(self);
         public static implicit operator ColorYCbCr(Dynamic value) => value.As<ColorYCbCr>();
         public String TypeName => "ColorYCbCr";
@@ -2211,11 +2260,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(ColorYCbCr a, ColorYCbCr b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct SphericalCoordinate: ICoordinate<SphericalCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct SphericalCoordinate: ICoordinate<SphericalCoordinate>
     {
-        public readonly Number Radius;
-        public readonly Angle Azimuth;
-        public readonly Angle Polar;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Angle Azimuth;
+        [DataMember] public readonly Angle Polar;
         public SphericalCoordinate WithRadius(Number radius) => new SphericalCoordinate(radius, Azimuth, Polar);
         public SphericalCoordinate WithAzimuth(Angle azimuth) => new SphericalCoordinate(Radius, azimuth, Polar);
         public SphericalCoordinate WithPolar(Angle polar) => new SphericalCoordinate(Radius, Azimuth, polar);
@@ -2227,7 +2276,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radius, out Angle azimuth, out Angle polar) { radius = Radius; azimuth = Azimuth; polar = Polar; }
         public override bool Equals(object obj) { if (!(obj is SphericalCoordinate)) return false; var other = (SphericalCoordinate)obj; return Radius.Equals(other.Radius) && Azimuth.Equals(other.Azimuth) && Polar.Equals(other.Polar); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius, Azimuth, Polar);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Radius\" = {Radius}, \"Azimuth\" = {Azimuth}, \"Polar\" = {Polar} }}";
         public static implicit operator Dynamic(SphericalCoordinate self) => new Dynamic(self);
         public static implicit operator SphericalCoordinate(Dynamic value) => value.As<SphericalCoordinate>();
         public String TypeName => "SphericalCoordinate";
@@ -2241,10 +2290,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(SphericalCoordinate a, SphericalCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct PolarCoordinate: ICoordinate<PolarCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PolarCoordinate: ICoordinate<PolarCoordinate>
     {
-        public readonly Number Radius;
-        public readonly Angle Angle;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Angle Angle;
         public PolarCoordinate WithRadius(Number radius) => new PolarCoordinate(radius, Angle);
         public PolarCoordinate WithAngle(Angle angle) => new PolarCoordinate(Radius, angle);
         public PolarCoordinate(Number radius, Angle angle) => (Radius, Angle) = (radius, angle);
@@ -2255,7 +2304,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radius, out Angle angle) { radius = Radius; angle = Angle; }
         public override bool Equals(object obj) { if (!(obj is PolarCoordinate)) return false; var other = (PolarCoordinate)obj; return Radius.Equals(other.Radius) && Angle.Equals(other.Angle); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius, Angle);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Radius\" = {Radius}, \"Angle\" = {Angle} }}";
         public static implicit operator Dynamic(PolarCoordinate self) => new Dynamic(self);
         public static implicit operator PolarCoordinate(Dynamic value) => value.As<PolarCoordinate>();
         public String TypeName => "PolarCoordinate";
@@ -2269,10 +2318,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(PolarCoordinate a, PolarCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct LogPolarCoordinate: ICoordinate<LogPolarCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LogPolarCoordinate: ICoordinate<LogPolarCoordinate>
     {
-        public readonly Number Rho;
-        public readonly Angle Azimuth;
+        [DataMember] public readonly Number Rho;
+        [DataMember] public readonly Angle Azimuth;
         public LogPolarCoordinate WithRho(Number rho) => new LogPolarCoordinate(rho, Azimuth);
         public LogPolarCoordinate WithAzimuth(Angle azimuth) => new LogPolarCoordinate(Rho, azimuth);
         public LogPolarCoordinate(Number rho, Angle azimuth) => (Rho, Azimuth) = (rho, azimuth);
@@ -2283,7 +2332,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number rho, out Angle azimuth) { rho = Rho; azimuth = Azimuth; }
         public override bool Equals(object obj) { if (!(obj is LogPolarCoordinate)) return false; var other = (LogPolarCoordinate)obj; return Rho.Equals(other.Rho) && Azimuth.Equals(other.Azimuth); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Rho, Azimuth);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Rho\" = {Rho}, \"Azimuth\" = {Azimuth} }}";
         public static implicit operator Dynamic(LogPolarCoordinate self) => new Dynamic(self);
         public static implicit operator LogPolarCoordinate(Dynamic value) => value.As<LogPolarCoordinate>();
         public String TypeName => "LogPolarCoordinate";
@@ -2297,11 +2346,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(LogPolarCoordinate a, LogPolarCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct CylindricalCoordinate: ICoordinate<CylindricalCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CylindricalCoordinate: ICoordinate<CylindricalCoordinate>
     {
-        public readonly Number RadialDistance;
-        public readonly Angle Azimuth;
-        public readonly Number Height;
+        [DataMember] public readonly Number RadialDistance;
+        [DataMember] public readonly Angle Azimuth;
+        [DataMember] public readonly Number Height;
         public CylindricalCoordinate WithRadialDistance(Number radialDistance) => new CylindricalCoordinate(radialDistance, Azimuth, Height);
         public CylindricalCoordinate WithAzimuth(Angle azimuth) => new CylindricalCoordinate(RadialDistance, azimuth, Height);
         public CylindricalCoordinate WithHeight(Number height) => new CylindricalCoordinate(RadialDistance, Azimuth, height);
@@ -2313,7 +2362,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radialDistance, out Angle azimuth, out Number height) { radialDistance = RadialDistance; azimuth = Azimuth; height = Height; }
         public override bool Equals(object obj) { if (!(obj is CylindricalCoordinate)) return false; var other = (CylindricalCoordinate)obj; return RadialDistance.Equals(other.RadialDistance) && Azimuth.Equals(other.Azimuth) && Height.Equals(other.Height); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(RadialDistance, Azimuth, Height);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"RadialDistance\" = {RadialDistance}, \"Azimuth\" = {Azimuth}, \"Height\" = {Height} }}";
         public static implicit operator Dynamic(CylindricalCoordinate self) => new Dynamic(self);
         public static implicit operator CylindricalCoordinate(Dynamic value) => value.As<CylindricalCoordinate>();
         public String TypeName => "CylindricalCoordinate";
@@ -2327,11 +2376,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(CylindricalCoordinate a, CylindricalCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct HorizontalCoordinate: ICoordinate<HorizontalCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct HorizontalCoordinate: ICoordinate<HorizontalCoordinate>
     {
-        public readonly Number Radius;
-        public readonly Angle Azimuth;
-        public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Angle Azimuth;
+        [DataMember] public readonly Number Height;
         public HorizontalCoordinate WithRadius(Number radius) => new HorizontalCoordinate(radius, Azimuth, Height);
         public HorizontalCoordinate WithAzimuth(Angle azimuth) => new HorizontalCoordinate(Radius, azimuth, Height);
         public HorizontalCoordinate WithHeight(Number height) => new HorizontalCoordinate(Radius, Azimuth, height);
@@ -2343,7 +2392,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number radius, out Angle azimuth, out Number height) { radius = Radius; azimuth = Azimuth; height = Height; }
         public override bool Equals(object obj) { if (!(obj is HorizontalCoordinate)) return false; var other = (HorizontalCoordinate)obj; return Radius.Equals(other.Radius) && Azimuth.Equals(other.Azimuth) && Height.Equals(other.Height); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius, Azimuth, Height);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Radius\" = {Radius}, \"Azimuth\" = {Azimuth}, \"Height\" = {Height} }}";
         public static implicit operator Dynamic(HorizontalCoordinate self) => new Dynamic(self);
         public static implicit operator HorizontalCoordinate(Dynamic value) => value.As<HorizontalCoordinate>();
         public String TypeName => "HorizontalCoordinate";
@@ -2357,10 +2406,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(HorizontalCoordinate a, HorizontalCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct GeoCoordinate: ICoordinate<GeoCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct GeoCoordinate: ICoordinate<GeoCoordinate>
     {
-        public readonly Angle Latitude;
-        public readonly Angle Longitude;
+        [DataMember] public readonly Angle Latitude;
+        [DataMember] public readonly Angle Longitude;
         public GeoCoordinate WithLatitude(Angle latitude) => new GeoCoordinate(latitude, Longitude);
         public GeoCoordinate WithLongitude(Angle longitude) => new GeoCoordinate(Latitude, longitude);
         public GeoCoordinate(Angle latitude, Angle longitude) => (Latitude, Longitude) = (latitude, longitude);
@@ -2371,7 +2420,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle latitude, out Angle longitude) { latitude = Latitude; longitude = Longitude; }
         public override bool Equals(object obj) { if (!(obj is GeoCoordinate)) return false; var other = (GeoCoordinate)obj; return Latitude.Equals(other.Latitude) && Longitude.Equals(other.Longitude); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Latitude, Longitude);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Latitude\" = {Latitude}, \"Longitude\" = {Longitude} }}";
         public static implicit operator Dynamic(GeoCoordinate self) => new Dynamic(self);
         public static implicit operator GeoCoordinate(Dynamic value) => value.As<GeoCoordinate>();
         public String TypeName => "GeoCoordinate";
@@ -2385,10 +2434,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(GeoCoordinate a, GeoCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct GeoCoordinateWithAltitude: ICoordinate<GeoCoordinateWithAltitude>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct GeoCoordinateWithAltitude: ICoordinate<GeoCoordinateWithAltitude>
     {
-        public readonly GeoCoordinate ICoordinate;
-        public readonly Number Altitude;
+        [DataMember] public readonly GeoCoordinate ICoordinate;
+        [DataMember] public readonly Number Altitude;
         public GeoCoordinateWithAltitude WithICoordinate(GeoCoordinate iCoordinate) => new GeoCoordinateWithAltitude(iCoordinate, Altitude);
         public GeoCoordinateWithAltitude WithAltitude(Number altitude) => new GeoCoordinateWithAltitude(ICoordinate, altitude);
         public GeoCoordinateWithAltitude(GeoCoordinate iCoordinate, Number altitude) => (ICoordinate, Altitude) = (iCoordinate, altitude);
@@ -2399,7 +2448,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out GeoCoordinate iCoordinate, out Number altitude) { iCoordinate = ICoordinate; altitude = Altitude; }
         public override bool Equals(object obj) { if (!(obj is GeoCoordinateWithAltitude)) return false; var other = (GeoCoordinateWithAltitude)obj; return ICoordinate.Equals(other.ICoordinate) && Altitude.Equals(other.Altitude); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(ICoordinate, Altitude);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"ICoordinate\" = {ICoordinate}, \"Altitude\" = {Altitude} }}";
         public static implicit operator Dynamic(GeoCoordinateWithAltitude self) => new Dynamic(self);
         public static implicit operator GeoCoordinateWithAltitude(Dynamic value) => value.As<GeoCoordinateWithAltitude>();
         public String TypeName => "GeoCoordinateWithAltitude";
@@ -2413,100 +2462,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Size2D: IValue<Size2D>, IArray<Number>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Rational: IValue<Rational>
     {
-        public readonly Number Width;
-        public readonly Number Height;
-        public Size2D WithWidth(Number width) => new Size2D(width, Height);
-        public Size2D WithHeight(Number height) => new Size2D(Width, height);
-        public Size2D(Number width, Number height) => (Width, Height) = (width, height);
-        public static Size2D Default = new Size2D();
-        public static Size2D New(Number width, Number height) => new Size2D(width, height);
-        public static implicit operator (Number, Number)(Size2D self) => (self.Width, self.Height);
-        public static implicit operator Size2D((Number, Number) value) => new Size2D(value.Item1, value.Item2);
-        public void Deconstruct(out Number width, out Number height) { width = Width; height = Height; }
-        public override bool Equals(object obj) { if (!(obj is Size2D)) return false; var other = (Size2D)obj; return Width.Equals(other.Width) && Height.Equals(other.Height); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Width, Height);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Size2D self) => new Dynamic(self);
-        public static implicit operator Size2D(Dynamic value) => value.As<Size2D>();
-        public String TypeName => "Size2D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Width", (String)"Height");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Width), new Dynamic(Height));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Size2D)b);
-        // Array predefined functions
-        public Size2D(IArray<Number> xs) : this(xs[0], xs[1]) { }
-        public Size2D(Number[] xs) : this(xs[0], xs[1]) { }
-        public static Size2D New(IArray<Number> xs) => new Size2D(xs);
-        public static Size2D New(Number[] xs) => new Size2D(xs);
-        public static implicit operator Number[](Size2D self) => self.ToSystemArray();
-        public static implicit operator Array<Number>(Size2D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
-        // Implemented concept functions and type functions
-        public Vector2D Vector2D => this.Width.Tuple2(this.Height);
-        public static implicit operator Vector2D(Size2D a) => a.Vector2D;
-        public Boolean Equals(Size2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Size2D a, Size2D b) => a.Equals(b);
-        public Boolean NotEquals(Size2D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Size2D a, Size2D b) => a.NotEquals(b);
-        // Unimplemented concept functions
-        public Integer Count => 2;
-        public Number At(Integer n) => n == 0 ? Width : n == 1 ? Height : throw new System.IndexOutOfRangeException();
-        public Number this[Integer n] => n == 0 ? Width : n == 1 ? Height : throw new System.IndexOutOfRangeException();
-    }
-    public readonly partial struct Size3D: IValue<Size3D>, IArray<Number>
-    {
-        public readonly Number Width;
-        public readonly Number Height;
-        public readonly Number Depth;
-        public Size3D WithWidth(Number width) => new Size3D(width, Height, Depth);
-        public Size3D WithHeight(Number height) => new Size3D(Width, height, Depth);
-        public Size3D WithDepth(Number depth) => new Size3D(Width, Height, depth);
-        public Size3D(Number width, Number height, Number depth) => (Width, Height, Depth) = (width, height, depth);
-        public static Size3D Default = new Size3D();
-        public static Size3D New(Number width, Number height, Number depth) => new Size3D(width, height, depth);
-        public static implicit operator (Number, Number, Number)(Size3D self) => (self.Width, self.Height, self.Depth);
-        public static implicit operator Size3D((Number, Number, Number) value) => new Size3D(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Number width, out Number height, out Number depth) { width = Width; height = Height; depth = Depth; }
-        public override bool Equals(object obj) { if (!(obj is Size3D)) return false; var other = (Size3D)obj; return Width.Equals(other.Width) && Height.Equals(other.Height) && Depth.Equals(other.Depth); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Width, Height, Depth);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Size3D self) => new Dynamic(self);
-        public static implicit operator Size3D(Dynamic value) => value.As<Size3D>();
-        public String TypeName => "Size3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Width", (String)"Height", (String)"Depth");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Width), new Dynamic(Height), new Dynamic(Depth));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Size3D)b);
-        // Array predefined functions
-        public Size3D(IArray<Number> xs) : this(xs[0], xs[1], xs[2]) { }
-        public Size3D(Number[] xs) : this(xs[0], xs[1], xs[2]) { }
-        public static Size3D New(IArray<Number> xs) => new Size3D(xs);
-        public static Size3D New(Number[] xs) => new Size3D(xs);
-        public static implicit operator Number[](Size3D self) => self.ToSystemArray();
-        public static implicit operator Array<Number>(Size3D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
-        // Implemented concept functions and type functions
-        public Vector3D Vector3D => this.Width.Tuple3(this.Height, this.Depth);
-        public static implicit operator Vector3D(Size3D a) => a.Vector3D;
-        public Boolean Equals(Size3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Size3D a, Size3D b) => a.Equals(b);
-        public Boolean NotEquals(Size3D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Size3D a, Size3D b) => a.NotEquals(b);
-        // Unimplemented concept functions
-        public Integer Count => 3;
-        public Number At(Integer n) => n == 0 ? Width : n == 1 ? Height : n == 2 ? Depth : throw new System.IndexOutOfRangeException();
-        public Number this[Integer n] => n == 0 ? Width : n == 1 ? Height : n == 2 ? Depth : throw new System.IndexOutOfRangeException();
-    }
-    public readonly partial struct Rational: IValue<Rational>
-    {
-        public readonly Integer Numerator;
-        public readonly Integer Denominator;
+        [DataMember] public readonly Integer Numerator;
+        [DataMember] public readonly Integer Denominator;
         public Rational WithNumerator(Integer numerator) => new Rational(numerator, Denominator);
         public Rational WithDenominator(Integer denominator) => new Rational(Numerator, denominator);
         public Rational(Integer numerator, Integer denominator) => (Numerator, Denominator) = (numerator, denominator);
@@ -2517,7 +2476,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Integer numerator, out Integer denominator) { numerator = Numerator; denominator = Denominator; }
         public override bool Equals(object obj) { if (!(obj is Rational)) return false; var other = (Rational)obj; return Numerator.Equals(other.Numerator) && Denominator.Equals(other.Denominator); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Numerator, Denominator);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Numerator\" = {Numerator}, \"Denominator\" = {Denominator} }}";
         public static implicit operator Dynamic(Rational self) => new Dynamic(self);
         public static implicit operator Rational(Dynamic value) => value.As<Rational>();
         public String TypeName => "Rational";
@@ -2531,10 +2490,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(Rational a, Rational b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Fraction: IValue<Fraction>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Fraction: IValue<Fraction>
     {
-        public readonly Number Numerator;
-        public readonly Number Denominator;
+        [DataMember] public readonly Number Numerator;
+        [DataMember] public readonly Number Denominator;
         public Fraction WithNumerator(Number numerator) => new Fraction(numerator, Denominator);
         public Fraction WithDenominator(Number denominator) => new Fraction(Numerator, denominator);
         public Fraction(Number numerator, Number denominator) => (Numerator, Denominator) = (numerator, denominator);
@@ -2545,7 +2504,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number numerator, out Number denominator) { numerator = Numerator; denominator = Denominator; }
         public override bool Equals(object obj) { if (!(obj is Fraction)) return false; var other = (Fraction)obj; return Numerator.Equals(other.Numerator) && Denominator.Equals(other.Denominator); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Numerator, Denominator);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Numerator\" = {Numerator}, \"Denominator\" = {Denominator} }}";
         public static implicit operator Dynamic(Fraction self) => new Dynamic(self);
         public static implicit operator Fraction(Dynamic value) => value.As<Fraction>();
         public String TypeName => "Fraction";
@@ -2559,9 +2518,9 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(Fraction a, Fraction b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Angle: IMeasure<Angle>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Angle: IMeasure<Angle>
     {
-        public readonly Number Radians;
+        [DataMember] public readonly Number Radians;
         public Angle WithRadians(Number radians) => new Angle(radians);
         public Angle(Number radians) => (Radians) = (radians);
         public static Angle Default = new Angle();
@@ -2574,7 +2533,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Angle value) => value.Radians;
         public override bool Equals(object obj) { if (!(obj is Angle)) return false; var other = (Angle)obj; return Radians.Equals(other.Radians); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radians);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Radians\" = {Radians} }}";
         public static implicit operator Dynamic(Angle self) => new Dynamic(self);
         public static implicit operator Angle(Dynamic value) => value.As<Angle>();
         public String TypeName => "Angle";
@@ -2687,9 +2646,9 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Angle y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Angle x, Angle y) => x.LessThanOrEquals(y);
     }
-    public readonly partial struct Length: IMeasure<Length>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Length: IMeasure<Length>
     {
-        public readonly Number Meters;
+        [DataMember] public readonly Number Meters;
         public Length WithMeters(Number meters) => new Length(meters);
         public Length(Number meters) => (Meters) = (meters);
         public static Length Default = new Length();
@@ -2702,7 +2661,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Length value) => value.Meters;
         public override bool Equals(object obj) { if (!(obj is Length)) return false; var other = (Length)obj; return Meters.Equals(other.Meters); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Meters);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Meters\" = {Meters} }}";
         public static implicit operator Dynamic(Length self) => new Dynamic(self);
         public static implicit operator Length(Dynamic value) => value.As<Length>();
         public String TypeName => "Length";
@@ -2797,9 +2756,9 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Length y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Length x, Length y) => x.LessThanOrEquals(y);
     }
-    public readonly partial struct Mass: IMeasure<Mass>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Mass: IMeasure<Mass>
     {
-        public readonly Number Kilograms;
+        [DataMember] public readonly Number Kilograms;
         public Mass WithKilograms(Number kilograms) => new Mass(kilograms);
         public Mass(Number kilograms) => (Kilograms) = (kilograms);
         public static Mass Default = new Mass();
@@ -2812,7 +2771,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Mass value) => value.Kilograms;
         public override bool Equals(object obj) { if (!(obj is Mass)) return false; var other = (Mass)obj; return Kilograms.Equals(other.Kilograms); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Kilograms);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Kilograms\" = {Kilograms} }}";
         public static implicit operator Dynamic(Mass self) => new Dynamic(self);
         public static implicit operator Mass(Dynamic value) => value.As<Mass>();
         public String TypeName => "Mass";
@@ -2907,9 +2866,9 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Mass y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Mass x, Mass y) => x.LessThanOrEquals(y);
     }
-    public readonly partial struct Temperature: IMeasure<Temperature>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Temperature: IMeasure<Temperature>
     {
-        public readonly Number Celsius;
+        [DataMember] public readonly Number Celsius;
         public Temperature WithCelsius(Number celsius) => new Temperature(celsius);
         public Temperature(Number celsius) => (Celsius) = (celsius);
         public static Temperature Default = new Temperature();
@@ -2922,7 +2881,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Temperature value) => value.Celsius;
         public override bool Equals(object obj) { if (!(obj is Temperature)) return false; var other = (Temperature)obj; return Celsius.Equals(other.Celsius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Celsius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Celsius\" = {Celsius} }}";
         public static implicit operator Dynamic(Temperature self) => new Dynamic(self);
         public static implicit operator Temperature(Dynamic value) => value.As<Temperature>();
         public String TypeName => "Temperature";
@@ -3017,9 +2976,9 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Temperature y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Temperature x, Temperature y) => x.LessThanOrEquals(y);
     }
-    public readonly partial struct Time: IMeasure<Time>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Time: IMeasure<Time>
     {
-        public readonly Number Seconds;
+        [DataMember] public readonly Number Seconds;
         public Time WithSeconds(Number seconds) => new Time(seconds);
         public Time(Number seconds) => (Seconds) = (seconds);
         public static Time Default = new Time();
@@ -3032,7 +2991,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(Time value) => value.Seconds;
         public override bool Equals(object obj) { if (!(obj is Time)) return false; var other = (Time)obj; return Seconds.Equals(other.Seconds); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Seconds);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Seconds\" = {Seconds} }}";
         public static implicit operator Dynamic(Time self) => new Dynamic(self);
         public static implicit operator Time(Dynamic value) => value.As<Time>();
         public String TypeName => "Time";
@@ -3127,9 +3086,9 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Time y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Time x, Time y) => x.LessThanOrEquals(y);
     }
-    public readonly partial struct DateTime: ICoordinate<DateTime>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct DateTime: ICoordinate<DateTime>
     {
-        public readonly Number Value;
+        [DataMember] public readonly Number Value;
         public DateTime WithValue(Number value) => new DateTime(value);
         public DateTime(Number value) => (Value) = (value);
         public static DateTime Default = new DateTime();
@@ -3142,7 +3101,7 @@ namespace Plato.DoublePrecision
         public static implicit operator double(DateTime value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is DateTime)) return false; var other = (DateTime)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Value\" = {Value} }}";
         public static implicit operator Dynamic(DateTime self) => new Dynamic(self);
         public static implicit operator DateTime(Dynamic value) => value.As<DateTime>();
         public String TypeName => "DateTime";
@@ -3156,10 +3115,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(DateTime a, DateTime b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct AnglePair: IInterval<AnglePair, Angle>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct AnglePair: IInterval<AnglePair, Angle>
     {
-        public readonly Angle Min;
-        public readonly Angle Max;
+        [DataMember] public readonly Angle Min;
+        [DataMember] public readonly Angle Max;
         public AnglePair WithMin(Angle min) => new AnglePair(min, Max);
         public AnglePair WithMax(Angle max) => new AnglePair(Min, max);
         public AnglePair(Angle min, Angle max) => (Min, Max) = (min, max);
@@ -3170,7 +3129,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle min, out Angle max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is AnglePair)) return false; var other = (AnglePair)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Min\" = {Min}, \"Max\" = {Max} }}";
         public static implicit operator Dynamic(AnglePair self) => new Dynamic(self);
         public static implicit operator AnglePair(Dynamic value) => value.As<AnglePair>();
         public String TypeName => "AnglePair";
@@ -3219,10 +3178,10 @@ namespace Plato.DoublePrecision
         public Angle At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Angle this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct NumberInterval: IInterval<NumberInterval, Number>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct NumberInterval: IInterval<NumberInterval, Number>
     {
-        public readonly Number Min;
-        public readonly Number Max;
+        [DataMember] public readonly Number Min;
+        [DataMember] public readonly Number Max;
         public NumberInterval WithMin(Number min) => new NumberInterval(min, Max);
         public NumberInterval WithMax(Number max) => new NumberInterval(Min, max);
         public NumberInterval(Number min, Number max) => (Min, Max) = (min, max);
@@ -3233,7 +3192,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number min, out Number max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is NumberInterval)) return false; var other = (NumberInterval)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Min\" = {Min}, \"Max\" = {Max} }}";
         public static implicit operator Dynamic(NumberInterval self) => new Dynamic(self);
         public static implicit operator NumberInterval(Dynamic value) => value.As<NumberInterval>();
         public String TypeName => "NumberInterval";
@@ -3282,10 +3241,10 @@ namespace Plato.DoublePrecision
         public Number At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Number this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Vector2D: IVector<Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Vector2D: IVector<Vector2D>
     {
-        public readonly Number X;
-        public readonly Number Y;
+        [DataMember] public readonly Number X;
+        [DataMember] public readonly Number Y;
         public Vector2D WithX(Number x) => new Vector2D(x, Y);
         public Vector2D WithY(Number y) => new Vector2D(X, y);
         public Vector2D(Number x, Number y) => (X, Y) = (x, y);
@@ -3296,7 +3255,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y) { x = X; y = Y; }
         public override bool Equals(object obj) { if (!(obj is Vector2D)) return false; var other = (Vector2D)obj; return X.Equals(other.X) && Y.Equals(other.Y); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X\" = {X}, \"Y\" = {Y} }}";
         public static implicit operator Dynamic(Vector2D self) => new Dynamic(self);
         public static implicit operator Vector2D(Dynamic value) => value.As<Vector2D>();
         public String TypeName => "Vector2D";
@@ -3329,8 +3288,6 @@ namespace Plato.DoublePrecision
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(X, Y);
         public Vector2D FromComponents(IArray<Number> numbers) => new Vector2D(numbers[0], numbers[1]);
         // Implemented concept functions and type functions
-        public Vector3D Vector3D => this.X.Tuple3(this.Y, ((Integer)0));
-        public static implicit operator Vector3D(Vector2D v) => v.Vector3D;
         public Integer Count => ((Integer)2);
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : this.Y;
         public Number this[Integer n] => At(n);
@@ -3412,11 +3369,11 @@ namespace Plato.DoublePrecision
         public Vector2D Barycentric(Vector2D v2, Vector2D v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
         // Unimplemented concept functions
     }
-    public readonly partial struct Vector3D: IVector<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Vector3D: IVector<Vector3D>
     {
-        public readonly Number X;
-        public readonly Number Y;
-        public readonly Number Z;
+        [DataMember] public readonly Number X;
+        [DataMember] public readonly Number Y;
+        [DataMember] public readonly Number Z;
         public Vector3D WithX(Number x) => new Vector3D(x, Y, Z);
         public Vector3D WithY(Number y) => new Vector3D(X, y, Z);
         public Vector3D WithZ(Number z) => new Vector3D(X, Y, z);
@@ -3428,7 +3385,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y, out Number z) { x = X; y = Y; z = Z; }
         public override bool Equals(object obj) { if (!(obj is Vector3D)) return false; var other = (Vector3D)obj; return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y, Z);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X\" = {X}, \"Y\" = {Y}, \"Z\" = {Z} }}";
         public static implicit operator Dynamic(Vector3D self) => new Dynamic(self);
         public static implicit operator Vector3D(Dynamic value) => value.As<Vector3D>();
         public String TypeName => "Vector3D";
@@ -3461,14 +3418,28 @@ namespace Plato.DoublePrecision
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(X, Y, Z);
         public Vector3D FromComponents(IArray<Number> numbers) => new Vector3D(numbers[0], numbers[1], numbers[2]);
         // Implemented concept functions and type functions
-        public Vector4D Vector4D => this.X.Tuple4(this.Y, this.Z, ((Integer)0));
+        public Vector4D Vector4D => this.Vector4D(((Integer)0));
         public static implicit operator Vector4D(Vector3D v) => v.Vector4D;
+        public Vector4D Vector4D(Number w) => this.X.Tuple4(this.Y, this.Z, w);
+        public Vector3D XZY => this.X.Tuple3(this.Z, this.Y);
+        public Vector3D YXZ => this.Y.Tuple3(this.X, this.Z);
+        public Vector3D YZX => this.Y.Tuple3(this.Z, this.X);
+        public Vector3D ZXY => this.Z.Tuple3(this.X, this.Y);
+        public Vector3D ZYX => this.Z.Tuple3(this.Y, this.X);
+        public Vector2D XY => this.X.Tuple2(this.Y);
+        public Vector2D YX => this.Y.Tuple2(this.X);
+        public Vector3D MidPoint(Vector3D b) => this.Add(b).Divide(((Number)2));
+        public Line3D Line(Vector3D b) => this.Tuple2(b);
+        public Ray3D Ray(Vector3D b) => this.Tuple2(b);
+        public Ray3D RayTo(Vector3D b) => this.Tuple2(b.Subtract(this));
+        public Vector3D Project(Plane p) => this.Subtract(p.Normal.Multiply(p.Normal.Dot(this)));
         public Vector2D To2D => this.X.Tuple2(this.Y);
         public Integer Count => ((Integer)3);
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : n.Equals(((Integer)1)) ? this.Y : this.Z;
         public Number this[Integer n] => At(n);
         public Vector3D Cross(Vector3D b) => this.Y.Multiply(b.Z).Subtract(this.Z.Multiply(b.Y)).Tuple3(this.Z.Multiply(b.X).Subtract(this.X.Multiply(b.Z)), this.X.Multiply(b.Y).Subtract(this.Y.Multiply(b.X)));
         public Number MixedProduct(Vector3D b, Vector3D c) => this.Cross(b).Dot(c);
+        public Boolean IsParallel(Vector3D b) => this.Dot(b).Abs.GreaterThan(((Integer)1).Subtract(((Number)1E-06)));
         public Vector3D Multiply(Vector3D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
         public static Vector3D operator *(Vector3D x, Vector3D y) => x.Multiply(y);
         public Vector3D Divide(Vector3D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
@@ -3546,12 +3517,12 @@ namespace Plato.DoublePrecision
         public Vector3D Barycentric(Vector3D v2, Vector3D v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
         // Unimplemented concept functions
     }
-    public readonly partial struct Vector4D: IVector<Vector4D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Vector4D: IVector<Vector4D>
     {
-        public readonly Number X;
-        public readonly Number Y;
-        public readonly Number Z;
-        public readonly Number W;
+        [DataMember] public readonly Number X;
+        [DataMember] public readonly Number Y;
+        [DataMember] public readonly Number Z;
+        [DataMember] public readonly Number W;
         public Vector4D WithX(Number x) => new Vector4D(x, Y, Z, W);
         public Vector4D WithY(Number y) => new Vector4D(X, y, Z, W);
         public Vector4D WithZ(Number z) => new Vector4D(X, Y, z, W);
@@ -3564,7 +3535,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
         public override bool Equals(object obj) { if (!(obj is Vector4D)) return false; var other = (Vector4D)obj; return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z) && W.Equals(other.W); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y, Z, W);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X\" = {X}, \"Y\" = {Y}, \"Z\" = {Z}, \"W\" = {W} }}";
         public static implicit operator Dynamic(Vector4D self) => new Dynamic(self);
         public static implicit operator Vector4D(Dynamic value) => value.As<Vector4D>();
         public String TypeName => "Vector4D";
@@ -3677,11 +3648,11 @@ namespace Plato.DoublePrecision
         public Vector4D Barycentric(Vector4D v2, Vector4D v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
         // Unimplemented concept functions
     }
-    public readonly partial struct Matrix3x3: IValue<Matrix3x3>, IArray<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Matrix3x3: IValue<Matrix3x3>, IArray<Vector3D>
     {
-        public readonly Vector3D Column1;
-        public readonly Vector3D Column2;
-        public readonly Vector3D Column3;
+        [DataMember] public readonly Vector3D Column1;
+        [DataMember] public readonly Vector3D Column2;
+        [DataMember] public readonly Vector3D Column3;
         public Matrix3x3 WithColumn1(Vector3D column1) => new Matrix3x3(column1, Column2, Column3);
         public Matrix3x3 WithColumn2(Vector3D column2) => new Matrix3x3(Column1, column2, Column3);
         public Matrix3x3 WithColumn3(Vector3D column3) => new Matrix3x3(Column1, Column2, column3);
@@ -3693,7 +3664,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D column1, out Vector3D column2, out Vector3D column3) { column1 = Column1; column2 = Column2; column3 = Column3; }
         public override bool Equals(object obj) { if (!(obj is Matrix3x3)) return false; var other = (Matrix3x3)obj; return Column1.Equals(other.Column1) && Column2.Equals(other.Column2) && Column3.Equals(other.Column3); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Column1, Column2, Column3);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Column1\" = {Column1}, \"Column2\" = {Column2}, \"Column3\" = {Column3} }}";
         public static implicit operator Dynamic(Matrix3x3 self) => new Dynamic(self);
         public static implicit operator Matrix3x3(Dynamic value) => value.As<Matrix3x3>();
         public String TypeName => "Matrix3x3";
@@ -3721,12 +3692,12 @@ namespace Plato.DoublePrecision
         public Vector3D At(Integer n) => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : throw new System.IndexOutOfRangeException();
         public Vector3D this[Integer n] => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Matrix4x4: IValue<Matrix4x4>, IArray<Vector4D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Matrix4x4: IValue<Matrix4x4>, IArray<Vector4D>
     {
-        public readonly Vector4D Column1;
-        public readonly Vector4D Column2;
-        public readonly Vector4D Column3;
-        public readonly Vector4D Column4;
+        [DataMember] public readonly Vector4D Column1;
+        [DataMember] public readonly Vector4D Column2;
+        [DataMember] public readonly Vector4D Column3;
+        [DataMember] public readonly Vector4D Column4;
         public Matrix4x4 WithColumn1(Vector4D column1) => new Matrix4x4(column1, Column2, Column3, Column4);
         public Matrix4x4 WithColumn2(Vector4D column2) => new Matrix4x4(Column1, column2, Column3, Column4);
         public Matrix4x4 WithColumn3(Vector4D column3) => new Matrix4x4(Column1, Column2, column3, Column4);
@@ -3739,7 +3710,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector4D column1, out Vector4D column2, out Vector4D column3, out Vector4D column4) { column1 = Column1; column2 = Column2; column3 = Column3; column4 = Column4; }
         public override bool Equals(object obj) { if (!(obj is Matrix4x4)) return false; var other = (Matrix4x4)obj; return Column1.Equals(other.Column1) && Column2.Equals(other.Column2) && Column3.Equals(other.Column3) && Column4.Equals(other.Column4); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Column1, Column2, Column3, Column4);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Column1\" = {Column1}, \"Column2\" = {Column2}, \"Column3\" = {Column3}, \"Column4\" = {Column4} }}";
         public static implicit operator Dynamic(Matrix4x4 self) => new Dynamic(self);
         public static implicit operator Matrix4x4(Dynamic value) => value.As<Matrix4x4>();
         public String TypeName => "Matrix4x4";
@@ -3785,11 +3756,11 @@ namespace Plato.DoublePrecision
         public Vector4D At(Integer n) => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : n == 3 ? Column4 : throw new System.IndexOutOfRangeException();
         public Vector4D this[Integer n] => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : n == 3 ? Column4 : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Transform2D: IValue<Transform2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Transform2D: IValue<Transform2D>
     {
-        public readonly Vector2D Translation;
-        public readonly Angle Rotation;
-        public readonly Vector2D Scale;
+        [DataMember] public readonly Vector2D Translation;
+        [DataMember] public readonly Angle Rotation;
+        [DataMember] public readonly Vector2D Scale;
         public Transform2D WithTranslation(Vector2D translation) => new Transform2D(translation, Rotation, Scale);
         public Transform2D WithRotation(Angle rotation) => new Transform2D(Translation, rotation, Scale);
         public Transform2D WithScale(Vector2D scale) => new Transform2D(Translation, Rotation, scale);
@@ -3801,7 +3772,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D translation, out Angle rotation, out Vector2D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
         public override bool Equals(object obj) { if (!(obj is Transform2D)) return false; var other = (Transform2D)obj; return Translation.Equals(other.Translation) && Rotation.Equals(other.Rotation) && Scale.Equals(other.Scale); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Translation, Rotation, Scale);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Translation\" = {Translation}, \"Rotation\" = {Rotation}, \"Scale\" = {Scale} }}";
         public static implicit operator Dynamic(Transform2D self) => new Dynamic(self);
         public static implicit operator Transform2D(Dynamic value) => value.As<Transform2D>();
         public String TypeName => "Transform2D";
@@ -3815,26 +3786,26 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(Transform2D a, Transform2D b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Pose2D: IValue<Pose2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Pose2D: IValue<Pose2D>
     {
-        public readonly Vector2D Position;
-        public readonly Angle Orientation;
-        public Pose2D WithPosition(Vector2D position) => new Pose2D(position, Orientation);
-        public Pose2D WithOrientation(Angle orientation) => new Pose2D(Position, orientation);
-        public Pose2D(Vector2D position, Angle orientation) => (Position, Orientation) = (position, orientation);
+        [DataMember] public readonly Vector2D Position;
+        [DataMember] public readonly Angle Rotation;
+        public Pose2D WithPosition(Vector2D position) => new Pose2D(position, Rotation);
+        public Pose2D WithRotation(Angle rotation) => new Pose2D(Position, rotation);
+        public Pose2D(Vector2D position, Angle rotation) => (Position, Rotation) = (position, rotation);
         public static Pose2D Default = new Pose2D();
-        public static Pose2D New(Vector2D position, Angle orientation) => new Pose2D(position, orientation);
-        public static implicit operator (Vector2D, Angle)(Pose2D self) => (self.Position, self.Orientation);
+        public static Pose2D New(Vector2D position, Angle rotation) => new Pose2D(position, rotation);
+        public static implicit operator (Vector2D, Angle)(Pose2D self) => (self.Position, self.Rotation);
         public static implicit operator Pose2D((Vector2D, Angle) value) => new Pose2D(value.Item1, value.Item2);
-        public void Deconstruct(out Vector2D position, out Angle orientation) { position = Position; orientation = Orientation; }
-        public override bool Equals(object obj) { if (!(obj is Pose2D)) return false; var other = (Pose2D)obj; return Position.Equals(other.Position) && Orientation.Equals(other.Orientation); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Position, Orientation);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public void Deconstruct(out Vector2D position, out Angle rotation) { position = Position; rotation = Rotation; }
+        public override bool Equals(object obj) { if (!(obj is Pose2D)) return false; var other = (Pose2D)obj; return Position.Equals(other.Position) && Rotation.Equals(other.Rotation); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Position, Rotation);
+        public override string ToString() => $"{{ \"Position\" = {Position}, \"Rotation\" = {Rotation} }}";
         public static implicit operator Dynamic(Pose2D self) => new Dynamic(self);
         public static implicit operator Pose2D(Dynamic value) => value.As<Pose2D>();
         public String TypeName => "Pose2D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Position", (String)"Orientation");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Orientation));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Position", (String)"Rotation");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Rotation));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Pose2D)b);
         // Implemented concept functions and type functions
         public Boolean Equals(Pose2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
@@ -3843,10 +3814,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(Pose2D a, Pose2D b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Bounds2D: IInterval<Bounds2D, Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Bounds2D: IInterval<Bounds2D, Vector2D>
     {
-        public readonly Vector2D Min;
-        public readonly Vector2D Max;
+        [DataMember] public readonly Vector2D Min;
+        [DataMember] public readonly Vector2D Max;
         public Bounds2D WithMin(Vector2D min) => new Bounds2D(min, Max);
         public Bounds2D WithMax(Vector2D max) => new Bounds2D(Min, max);
         public Bounds2D(Vector2D min, Vector2D max) => (Min, Max) = (min, max);
@@ -3857,7 +3828,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D min, out Vector2D max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is Bounds2D)) return false; var other = (Bounds2D)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Min\" = {Min}, \"Max\" = {Max} }}";
         public static implicit operator Dynamic(Bounds2D self) => new Dynamic(self);
         public static implicit operator Bounds2D(Dynamic value) => value.As<Bounds2D>();
         public String TypeName => "Bounds2D";
@@ -3880,6 +3851,9 @@ namespace Plato.DoublePrecision
         Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
         int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
+        public Bounds3D To3D => this.Min.To3D.Tuple2(this.Max.To3D);
+        public Bounds3D Bounds3D => this.To3D;
+        public static implicit operator Bounds3D(Bounds2D x) => x.Bounds3D;
         public Vector2D Size => this.Max.Subtract(this.Min);
         public Vector2D Lerp(Number amount) => this.Min.Lerp(this.Max, amount);
         public Bounds2D Reverse => this.Max.Tuple2(this.Min);
@@ -3906,10 +3880,10 @@ namespace Plato.DoublePrecision
         public Vector2D At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Vector2D this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Ray2D: IValue<Ray2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ray2D: IValue<Ray2D>
     {
-        public readonly Vector2D Direction;
-        public readonly Vector2D Origin;
+        [DataMember] public readonly Vector2D Direction;
+        [DataMember] public readonly Vector2D Origin;
         public Ray2D WithDirection(Vector2D direction) => new Ray2D(direction, Origin);
         public Ray2D WithOrigin(Vector2D origin) => new Ray2D(Direction, origin);
         public Ray2D(Vector2D direction, Vector2D origin) => (Direction, Origin) = (direction, origin);
@@ -3920,7 +3894,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D direction, out Vector2D origin) { direction = Direction; origin = Origin; }
         public override bool Equals(object obj) { if (!(obj is Ray2D)) return false; var other = (Ray2D)obj; return Direction.Equals(other.Direction) && Origin.Equals(other.Origin); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Direction, Origin);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Direction\" = {Direction}, \"Origin\" = {Origin} }}";
         public static implicit operator Dynamic(Ray2D self) => new Dynamic(self);
         public static implicit operator Ray2D(Dynamic value) => value.As<Ray2D>();
         public String TypeName => "Ray2D";
@@ -3928,19 +3902,20 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Direction), new Dynamic(Origin));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Ray2D)b);
         // Implemented concept functions and type functions
-        public Ray3D Ray3D => this.Origin.Tuple2(this.Direction);
-        public static implicit operator Ray3D(Ray2D ray) => ray.Ray3D;
+        public Ray3D To3D => this.Origin.To3D.Tuple2(this.Direction.To3D);
+        public Ray3D Ray3D => this.To3D;
+        public static implicit operator Ray3D(Ray2D x) => x.Ray3D;
         public Boolean Equals(Ray2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Ray2D a, Ray2D b) => a.Equals(b);
         public Boolean NotEquals(Ray2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Ray2D a, Ray2D b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Triangle2D: IValue<Triangle2D>, IArray<Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Triangle2D: IPolygon2D
     {
-        public readonly Vector2D A;
-        public readonly Vector2D B;
-        public readonly Vector2D C;
+        [DataMember] public readonly Vector2D A;
+        [DataMember] public readonly Vector2D B;
+        [DataMember] public readonly Vector2D C;
         public Triangle2D WithA(Vector2D a) => new Triangle2D(a, B, C);
         public Triangle2D WithB(Vector2D b) => new Triangle2D(A, b, C);
         public Triangle2D WithC(Vector2D c) => new Triangle2D(A, B, c);
@@ -3952,45 +3927,33 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is Triangle2D)) return false; var other = (Triangle2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C} }}";
         public static implicit operator Dynamic(Triangle2D self) => new Dynamic(self);
         public static implicit operator Triangle2D(Dynamic value) => value.As<Triangle2D>();
         public String TypeName => "Triangle2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Triangle2D)b);
-        // Array predefined functions
-        public Triangle2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2]) { }
-        public Triangle2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2]) { }
-        public static Triangle2D New(IArray<Vector2D> xs) => new Triangle2D(xs);
-        public static Triangle2D New(Vector2D[] xs) => new Triangle2D(xs);
-        public static implicit operator Vector2D[](Triangle2D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector2D>(Triangle2D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Vector2D> Points => Intrinsics.MakeArray(this.A, this.B, this.C);
         public Number Area => this.A.X.Multiply(this.C.Y.Subtract(this.B.Y)).Add(this.B.X.Multiply(this.A.Y.Subtract(this.C.Y)).Add(this.C.X.Multiply(this.B.Y.Subtract(this.A.Y)))).Half;
         public Triangle2D Flip => this.C.Tuple3(this.B, this.A);
         public Vector2D Center => this.A.Add(this.B.Add(this.C)).Divide(((Number)3));
         public Vector2D Barycentric(Vector2D uv) => this.A.Barycentric(this.B, this.C, uv);
-        public Boolean Equals(Triangle2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Triangle2D a, Triangle2D b) => a.Equals(b);
-        public Boolean NotEquals(Triangle2D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Triangle2D a, Triangle2D b) => a.NotEquals(b);
+        public LineArray2D LineArray2D => LineArray2D.New(this.Lines);
+        public static implicit operator LineArray2D(Triangle2D t) => t.LineArray2D;
+        public Triangle3D To3D => this.A.To3D.Tuple3(this.B.To3D, this.C.To3D);
+        public Triangle3D Triangle3D => this.To3D;
+        public static implicit operator Triangle3D(Triangle2D x) => x.Triangle3D;
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
-        public Integer Count => 3;
-        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
-        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Quad2D: IValue<Quad2D>, IArray<Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Quad2D: IPolygon2D
     {
-        public readonly Vector2D A;
-        public readonly Vector2D B;
-        public readonly Vector2D C;
-        public readonly Vector2D D;
+        [DataMember] public readonly Vector2D A;
+        [DataMember] public readonly Vector2D B;
+        [DataMember] public readonly Vector2D C;
+        [DataMember] public readonly Vector2D D;
         public Quad2D WithA(Vector2D a) => new Quad2D(a, B, C, D);
         public Quad2D WithB(Vector2D b) => new Quad2D(A, b, C, D);
         public Quad2D WithC(Vector2D c) => new Quad2D(A, B, c, D);
@@ -4003,38 +3966,30 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is Quad2D)) return false; var other = (Quad2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C}, \"D\" = {D} }}";
         public static implicit operator Dynamic(Quad2D self) => new Dynamic(self);
         public static implicit operator Quad2D(Dynamic value) => value.As<Quad2D>();
         public String TypeName => "Quad2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Quad2D)b);
-        // Array predefined functions
-        public Quad2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public Quad2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public static Quad2D New(IArray<Vector2D> xs) => new Quad2D(xs);
-        public static Quad2D New(Vector2D[] xs) => new Quad2D(xs);
-        public static implicit operator Vector2D[](Quad2D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector2D>(Quad2D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public Boolean Equals(Quad2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Quad2D a, Quad2D b) => a.Equals(b);
-        public Boolean NotEquals(Quad2D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Quad2D a, Quad2D b) => a.NotEquals(b);
+        public IArray<Triangle2D> Triangles => Intrinsics.MakeArray(this.A.Tuple3(this.B, this.C), this.C.Tuple3(this.D, this.A));
+        public LineArray2D LineArray2D => this.Lines;
+        public static implicit operator LineArray2D(Quad2D q) => q.LineArray2D;
+        public TriangleArray2D TriangleArray2D => this.Triangles;
+        public static implicit operator TriangleArray2D(Quad2D q) => q.TriangleArray2D;
+        public Quad3D To3D => this.A.To3D.Tuple4(this.B.To3D, this.C.To3D, this.D.To3D);
+        public Quad3D Quad3D => this.To3D;
+        public static implicit operator Quad3D(Quad2D x) => x.Quad3D;
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
-        public Integer Count => 4;
-        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
-        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+        public IArray<Vector2D> Points => Intrinsics.Points(this);
     }
-    public readonly partial struct Line2D: IPolyLine2D, IArray<Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Line2D: IPolyLine2D, IOpenShape3D
     {
-        public readonly Vector2D A;
-        public readonly Vector2D B;
+        [DataMember] public readonly Vector2D A;
+        [DataMember] public readonly Vector2D B;
         public Line2D WithA(Vector2D a) => new Line2D(a, B);
         public Line2D WithB(Vector2D b) => new Line2D(A, b);
         public Line2D(Vector2D a, Vector2D b) => (A, B) = (a, b);
@@ -4045,65 +4000,30 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Line2D)) return false; var other = (Line2D)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B} }}";
         public static implicit operator Dynamic(Line2D self) => new Dynamic(self);
         public static implicit operator Line2D(Dynamic value) => value.As<Line2D>();
         public String TypeName => "Line2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
-        // Array predefined functions
-        public Line2D(IArray<Vector2D> xs) : this(xs[0], xs[1]) { }
-        public Line2D(Vector2D[] xs) : this(xs[0], xs[1]) { }
-        public static Line2D New(IArray<Vector2D> xs) => new Line2D(xs);
-        public static Line2D New(Vector2D[] xs) => new Line2D(xs);
-        public static implicit operator Vector2D[](Line2D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector2D>(Line2D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Points => this;
         public Number Length => this.B.Subtract(this.A).Length;
         public Vector2D Direction => this.B.Subtract(this.A);
         public Ray2D Ray2D => this.A.Tuple2(this.Direction);
         public static implicit operator Ray2D(Line2D x) => x.Ray2D;
-        public Line3D Line3D => this.A.Tuple2(this.B);
+        public Line2D Reverse => this.B.Tuple2(this.A);
+        public Vector2D Eval(Number t) => this.A.Lerp(this.B, t);
+        public Line3D To3D => this.A.To3D.Tuple2(this.B.To3D);
+        public Line3D Line3D => this.To3D;
         public static implicit operator Line3D(Line2D x) => x.Line3D;
-        // Unimplemented concept functions
-        public Integer Count => 2;
-        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
-        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
-    }
-    public readonly partial struct Circle: IClosedShape2D
-    {
-        public readonly Vector2D Center;
-        public readonly Number Radius;
-        public Circle WithCenter(Vector2D center) => new Circle(center, Radius);
-        public Circle WithRadius(Number radius) => new Circle(Center, radius);
-        public Circle(Vector2D center, Number radius) => (Center, Radius) = (center, radius);
-        public static Circle Default = new Circle();
-        public static Circle New(Vector2D center, Number radius) => new Circle(center, radius);
-        public static implicit operator (Vector2D, Number)(Circle self) => (self.Center, self.Radius);
-        public static implicit operator Circle((Vector2D, Number) value) => new Circle(value.Item1, value.Item2);
-        public void Deconstruct(out Vector2D center, out Number radius) { center = Center; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Circle)) return false; var other = (Circle)obj; return Center.Equals(other.Center) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Radius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Circle self) => new Dynamic(self);
-        public static implicit operator Circle(Dynamic value) => value.As<Circle>();
-        public String TypeName => "Circle";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Radius));
-        // Implemented concept functions and type functions
-        public Boolean Closed => ((Boolean)true);
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
     }
-    public readonly partial struct Lens: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Lens: IClosedShape2D
     {
-        public readonly Circle A;
-        public readonly Circle B;
+        [DataMember] public readonly Circle A;
+        [DataMember] public readonly Circle B;
         public Lens WithA(Circle a) => new Lens(a, B);
         public Lens WithB(Circle b) => new Lens(A, b);
         public Lens(Circle a, Circle b) => (A, B) = (a, b);
@@ -4114,7 +4034,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Circle a, out Circle b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Lens)) return false; var other = (Lens)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B} }}";
         public static implicit operator Dynamic(Lens self) => new Dynamic(self);
         public static implicit operator Lens(Dynamic value) => value.As<Lens>();
         public String TypeName => "Lens";
@@ -4124,29 +4044,29 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    public readonly partial struct Rect2D: IPolygon2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Rect2D: IPolygon2D
     {
-        public readonly Vector2D Center;
-        public readonly Size2D Size;
+        [DataMember] public readonly Vector2D Center;
+        [DataMember] public readonly Vector2D Size;
         public Rect2D WithCenter(Vector2D center) => new Rect2D(center, Size);
-        public Rect2D WithSize(Size2D size) => new Rect2D(Center, size);
-        public Rect2D(Vector2D center, Size2D size) => (Center, Size) = (center, size);
+        public Rect2D WithSize(Vector2D size) => new Rect2D(Center, size);
+        public Rect2D(Vector2D center, Vector2D size) => (Center, Size) = (center, size);
         public static Rect2D Default = new Rect2D();
-        public static Rect2D New(Vector2D center, Size2D size) => new Rect2D(center, size);
-        public static implicit operator (Vector2D, Size2D)(Rect2D self) => (self.Center, self.Size);
-        public static implicit operator Rect2D((Vector2D, Size2D) value) => new Rect2D(value.Item1, value.Item2);
-        public void Deconstruct(out Vector2D center, out Size2D size) { center = Center; size = Size; }
+        public static Rect2D New(Vector2D center, Vector2D size) => new Rect2D(center, size);
+        public static implicit operator (Vector2D, Vector2D)(Rect2D self) => (self.Center, self.Size);
+        public static implicit operator Rect2D((Vector2D, Vector2D) value) => new Rect2D(value.Item1, value.Item2);
+        public void Deconstruct(out Vector2D center, out Vector2D size) { center = Center; size = Size; }
         public override bool Equals(object obj) { if (!(obj is Rect2D)) return false; var other = (Rect2D)obj; return Center.Equals(other.Center) && Size.Equals(other.Size); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Size);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Center\" = {Center}, \"Size\" = {Size} }}";
         public static implicit operator Dynamic(Rect2D self) => new Dynamic(self);
         public static implicit operator Rect2D(Dynamic value) => value.As<Rect2D>();
         public String TypeName => "Rect2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Size");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Size));
         // Implemented concept functions and type functions
-        public Number Width => this.Size.Width;
-        public Number Height => this.Size.Height;
+        public Number Width => this.Size.X;
+        public Number Height => this.Size.Y;
         public Number HalfWidth => this.Width.Half;
         public Number HalfHeight => this.Height.Half;
         public Number Top => this.Center.Y.Add(HalfHeight);
@@ -4160,37 +4080,38 @@ namespace Plato.DoublePrecision
         public IArray<Vector2D> Points => Intrinsics.MakeArray(this.TopLeft, this.TopRight, this.BottomRight, this.BottomLeft);
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Ellipse: ICurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ellipse: ICurve2D, IClosedShape2D
     {
-        public readonly Vector2D Center;
-        public readonly Size2D Size;
+        [DataMember] public readonly Vector2D Center;
+        [DataMember] public readonly Vector2D Size;
         public Ellipse WithCenter(Vector2D center) => new Ellipse(center, Size);
-        public Ellipse WithSize(Size2D size) => new Ellipse(Center, size);
-        public Ellipse(Vector2D center, Size2D size) => (Center, Size) = (center, size);
+        public Ellipse WithSize(Vector2D size) => new Ellipse(Center, size);
+        public Ellipse(Vector2D center, Vector2D size) => (Center, Size) = (center, size);
         public static Ellipse Default = new Ellipse();
-        public static Ellipse New(Vector2D center, Size2D size) => new Ellipse(center, size);
-        public static implicit operator (Vector2D, Size2D)(Ellipse self) => (self.Center, self.Size);
-        public static implicit operator Ellipse((Vector2D, Size2D) value) => new Ellipse(value.Item1, value.Item2);
-        public void Deconstruct(out Vector2D center, out Size2D size) { center = Center; size = Size; }
+        public static Ellipse New(Vector2D center, Vector2D size) => new Ellipse(center, size);
+        public static implicit operator (Vector2D, Vector2D)(Ellipse self) => (self.Center, self.Size);
+        public static implicit operator Ellipse((Vector2D, Vector2D) value) => new Ellipse(value.Item1, value.Item2);
+        public void Deconstruct(out Vector2D center, out Vector2D size) { center = Center; size = Size; }
         public override bool Equals(object obj) { if (!(obj is Ellipse)) return false; var other = (Ellipse)obj; return Center.Equals(other.Center) && Size.Equals(other.Size); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Size);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Center\" = {Center}, \"Size\" = {Size} }}";
         public static implicit operator Dynamic(Ellipse self) => new Dynamic(self);
         public static implicit operator Ellipse(Dynamic value) => value.As<Ellipse>();
         public String TypeName => "Ellipse";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Size");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Size));
         // Implemented concept functions and type functions
-        public Boolean Closed => ((Boolean)true);
         public Vector2D Eval(Number t) => t.CircleFunction.Multiply(this.Size).Add(this.Center);
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    public readonly partial struct Ring: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ring: IClosedShape2D
     {
-        public readonly Vector2D Center;
-        public readonly Number InnerRadius;
-        public readonly Number OuterRadius;
+        [DataMember] public readonly Vector2D Center;
+        [DataMember] public readonly Number InnerRadius;
+        [DataMember] public readonly Number OuterRadius;
         public Ring WithCenter(Vector2D center) => new Ring(center, InnerRadius, OuterRadius);
         public Ring WithInnerRadius(Number innerRadius) => new Ring(Center, innerRadius, OuterRadius);
         public Ring WithOuterRadius(Number outerRadius) => new Ring(Center, InnerRadius, outerRadius);
@@ -4202,7 +4123,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D center, out Number innerRadius, out Number outerRadius) { center = Center; innerRadius = InnerRadius; outerRadius = OuterRadius; }
         public override bool Equals(object obj) { if (!(obj is Ring)) return false; var other = (Ring)obj; return Center.Equals(other.Center) && InnerRadius.Equals(other.InnerRadius) && OuterRadius.Equals(other.OuterRadius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, InnerRadius, OuterRadius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Center\" = {Center}, \"InnerRadius\" = {InnerRadius}, \"OuterRadius\" = {OuterRadius} }}";
         public static implicit operator Dynamic(Ring self) => new Dynamic(self);
         public static implicit operator Ring(Dynamic value) => value.As<Ring>();
         public String TypeName => "Ring";
@@ -4212,10 +4133,10 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    public readonly partial struct Arc: IOpenShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Arc: IOpenShape2D
     {
-        public readonly AnglePair Angles;
-        public readonly Circle Circle;
+        [DataMember] public readonly AnglePair Angles;
+        [DataMember] public readonly Circle Circle;
         public Arc WithAngles(AnglePair angles) => new Arc(angles, Circle);
         public Arc WithCircle(Circle circle) => new Arc(Angles, circle);
         public Arc(AnglePair angles, Circle circle) => (Angles, Circle) = (angles, circle);
@@ -4226,7 +4147,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out AnglePair angles, out Circle circle) { angles = Angles; circle = Circle; }
         public override bool Equals(object obj) { if (!(obj is Arc)) return false; var other = (Arc)obj; return Angles.Equals(other.Angles) && Circle.Equals(other.Circle); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Angles, Circle);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Angles\" = {Angles}, \"Circle\" = {Circle} }}";
         public static implicit operator Dynamic(Arc self) => new Dynamic(self);
         public static implicit operator Arc(Dynamic value) => value.As<Arc>();
         public String TypeName => "Arc";
@@ -4236,9 +4157,9 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
     }
-    public readonly partial struct Sector: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Sector: IClosedShape2D
     {
-        public readonly Arc Arc;
+        [DataMember] public readonly Arc Arc;
         public Sector WithArc(Arc arc) => new Sector(arc);
         public Sector(Arc arc) => (Arc) = (arc);
         public static Sector Default = new Sector();
@@ -4247,7 +4168,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Sector(Arc value) => new Sector(value);
         public override bool Equals(object obj) { if (!(obj is Sector)) return false; var other = (Sector)obj; return Arc.Equals(other.Arc); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Arc);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Arc\" = {Arc} }}";
         public static implicit operator Dynamic(Sector self) => new Dynamic(self);
         public static implicit operator Sector(Dynamic value) => value.As<Sector>();
         public String TypeName => "Sector";
@@ -4257,9 +4178,9 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    public readonly partial struct Chord: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Chord: IClosedShape2D
     {
-        public readonly Arc Arc;
+        [DataMember] public readonly Arc Arc;
         public Chord WithArc(Arc arc) => new Chord(arc);
         public Chord(Arc arc) => (Arc) = (arc);
         public static Chord Default = new Chord();
@@ -4268,7 +4189,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Chord(Arc value) => new Chord(value);
         public override bool Equals(object obj) { if (!(obj is Chord)) return false; var other = (Chord)obj; return Arc.Equals(other.Arc); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Arc);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Arc\" = {Arc} }}";
         public static implicit operator Dynamic(Chord self) => new Dynamic(self);
         public static implicit operator Chord(Dynamic value) => value.As<Chord>();
         public String TypeName => "Chord";
@@ -4278,9 +4199,9 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    public readonly partial struct Segment: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Segment: IClosedShape2D
     {
-        public readonly Arc Arc;
+        [DataMember] public readonly Arc Arc;
         public Segment WithArc(Arc arc) => new Segment(arc);
         public Segment(Arc arc) => (Arc) = (arc);
         public static Segment Default = new Segment();
@@ -4289,7 +4210,7 @@ namespace Plato.DoublePrecision
         public static implicit operator Segment(Arc value) => new Segment(value);
         public override bool Equals(object obj) { if (!(obj is Segment)) return false; var other = (Segment)obj; return Arc.Equals(other.Arc); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Arc);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Arc\" = {Arc} }}";
         public static implicit operator Dynamic(Segment self) => new Dynamic(self);
         public static implicit operator Segment(Dynamic value) => value.As<Segment>();
         public String TypeName => "Segment";
@@ -4299,9 +4220,9 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    public readonly partial struct RegularPolygon: IPolygon2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct RegularPolygon: IPolygon2D
     {
-        public readonly Integer NumPoints;
+        [DataMember] public readonly Integer NumPoints;
         public RegularPolygon WithNumPoints(Integer numPoints) => new RegularPolygon(numPoints);
         public RegularPolygon(Integer numPoints) => (NumPoints) = (numPoints);
         public static RegularPolygon Default = new RegularPolygon();
@@ -4310,7 +4231,7 @@ namespace Plato.DoublePrecision
         public static implicit operator RegularPolygon(Integer value) => new RegularPolygon(value);
         public override bool Equals(object obj) { if (!(obj is RegularPolygon)) return false; var other = (RegularPolygon)obj; return NumPoints.Equals(other.NumPoints); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(NumPoints);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"NumPoints\" = {NumPoints} }}";
         public static implicit operator Dynamic(RegularPolygon self) => new Dynamic(self);
         public static implicit operator RegularPolygon(Dynamic value) => value.As<RegularPolygon>();
         public String TypeName => "RegularPolygon";
@@ -4320,24 +4241,25 @@ namespace Plato.DoublePrecision
         public IArray<Vector2D> Points => this.NumPoints.CirclePoints;
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Box2D: IShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Box2D: IShape2D
     {
-        public readonly Vector2D Center;
-        public readonly Angle Rotation;
-        public readonly Size2D Extent;
+        [DataMember] public readonly Vector2D Center;
+        [DataMember] public readonly Angle Rotation;
+        [DataMember] public readonly Vector2D Extent;
         public Box2D WithCenter(Vector2D center) => new Box2D(center, Rotation, Extent);
         public Box2D WithRotation(Angle rotation) => new Box2D(Center, rotation, Extent);
-        public Box2D WithExtent(Size2D extent) => new Box2D(Center, Rotation, extent);
-        public Box2D(Vector2D center, Angle rotation, Size2D extent) => (Center, Rotation, Extent) = (center, rotation, extent);
+        public Box2D WithExtent(Vector2D extent) => new Box2D(Center, Rotation, extent);
+        public Box2D(Vector2D center, Angle rotation, Vector2D extent) => (Center, Rotation, Extent) = (center, rotation, extent);
         public static Box2D Default = new Box2D();
-        public static Box2D New(Vector2D center, Angle rotation, Size2D extent) => new Box2D(center, rotation, extent);
-        public static implicit operator (Vector2D, Angle, Size2D)(Box2D self) => (self.Center, self.Rotation, self.Extent);
-        public static implicit operator Box2D((Vector2D, Angle, Size2D) value) => new Box2D(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Vector2D center, out Angle rotation, out Size2D extent) { center = Center; rotation = Rotation; extent = Extent; }
+        public static Box2D New(Vector2D center, Angle rotation, Vector2D extent) => new Box2D(center, rotation, extent);
+        public static implicit operator (Vector2D, Angle, Vector2D)(Box2D self) => (self.Center, self.Rotation, self.Extent);
+        public static implicit operator Box2D((Vector2D, Angle, Vector2D) value) => new Box2D(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Vector2D center, out Angle rotation, out Vector2D extent) { center = Center; rotation = Rotation; extent = Extent; }
         public override bool Equals(object obj) { if (!(obj is Box2D)) return false; var other = (Box2D)obj; return Center.Equals(other.Center) && Rotation.Equals(other.Rotation) && Extent.Equals(other.Extent); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Rotation, Extent);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Center\" = {Center}, \"Rotation\" = {Rotation}, \"Extent\" = {Extent} }}";
         public static implicit operator Dynamic(Box2D self) => new Dynamic(self);
         public static implicit operator Box2D(Dynamic value) => value.As<Box2D>();
         public String TypeName => "Box2D";
@@ -4346,38 +4268,10 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    public readonly partial struct Sphere: IValue<Sphere>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Plane: IValue<Plane>
     {
-        public readonly Vector3D Center;
-        public readonly Number Radius;
-        public Sphere WithCenter(Vector3D center) => new Sphere(center, Radius);
-        public Sphere WithRadius(Number radius) => new Sphere(Center, radius);
-        public Sphere(Vector3D center, Number radius) => (Center, Radius) = (center, radius);
-        public static Sphere Default = new Sphere();
-        public static Sphere New(Vector3D center, Number radius) => new Sphere(center, radius);
-        public static implicit operator (Vector3D, Number)(Sphere self) => (self.Center, self.Radius);
-        public static implicit operator Sphere((Vector3D, Number) value) => new Sphere(value.Item1, value.Item2);
-        public void Deconstruct(out Vector3D center, out Number radius) { center = Center; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Sphere)) return false; var other = (Sphere)obj; return Center.Equals(other.Center) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Radius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Sphere self) => new Dynamic(self);
-        public static implicit operator Sphere(Dynamic value) => value.As<Sphere>();
-        public String TypeName => "Sphere";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Radius));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Sphere)b);
-        // Implemented concept functions and type functions
-        public Boolean Equals(Sphere b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Sphere a, Sphere b) => a.Equals(b);
-        public Boolean NotEquals(Sphere b) => this.Equals(b).Not;
-        public static Boolean operator !=(Sphere a, Sphere b) => a.NotEquals(b);
-        // Unimplemented concept functions
-    }
-    public readonly partial struct Plane: IValue<Plane>
-    {
-        public readonly Vector3D Normal;
-        public readonly Number D;
+        [DataMember] public readonly Vector3D Normal;
+        [DataMember] public readonly Number D;
         public Plane WithNormal(Vector3D normal) => new Plane(normal, D);
         public Plane WithD(Number d) => new Plane(Normal, d);
         public Plane(Vector3D normal, Number d) => (Normal, D) = (normal, d);
@@ -4388,7 +4282,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D normal, out Number d) { normal = Normal; d = D; }
         public override bool Equals(object obj) { if (!(obj is Plane)) return false; var other = (Plane)obj; return Normal.Equals(other.Normal) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Normal, D);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Normal\" = {Normal}, \"D\" = {D} }}";
         public static implicit operator Dynamic(Plane self) => new Dynamic(self);
         public static implicit operator Plane(Dynamic value) => value.As<Plane>();
         public String TypeName => "Plane";
@@ -4396,100 +4290,16 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Normal), new Dynamic(D));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Plane)b);
         // Implemented concept functions and type functions
-        public Vector3D Project(Vector3D v) => v.Subtract(this.Normal.Multiply(this.Normal.Dot(v)));
         public Boolean Equals(Plane b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Plane a, Plane b) => a.Equals(b);
         public Boolean NotEquals(Plane b) => this.Equals(b).Not;
         public static Boolean operator !=(Plane a, Plane b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Transform3D: IValue<Transform3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Bounds3D: IInterval<Bounds3D, Vector3D>
     {
-        public readonly Vector3D Translation;
-        public readonly Rotation3D Rotation;
-        public readonly Vector3D Scale;
-        public Transform3D WithTranslation(Vector3D translation) => new Transform3D(translation, Rotation, Scale);
-        public Transform3D WithRotation(Rotation3D rotation) => new Transform3D(Translation, rotation, Scale);
-        public Transform3D WithScale(Vector3D scale) => new Transform3D(Translation, Rotation, scale);
-        public Transform3D(Vector3D translation, Rotation3D rotation, Vector3D scale) => (Translation, Rotation, Scale) = (translation, rotation, scale);
-        public static Transform3D Default = new Transform3D();
-        public static Transform3D New(Vector3D translation, Rotation3D rotation, Vector3D scale) => new Transform3D(translation, rotation, scale);
-        public static implicit operator (Vector3D, Rotation3D, Vector3D)(Transform3D self) => (self.Translation, self.Rotation, self.Scale);
-        public static implicit operator Transform3D((Vector3D, Rotation3D, Vector3D) value) => new Transform3D(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Vector3D translation, out Rotation3D rotation, out Vector3D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
-        public override bool Equals(object obj) { if (!(obj is Transform3D)) return false; var other = (Transform3D)obj; return Translation.Equals(other.Translation) && Rotation.Equals(other.Rotation) && Scale.Equals(other.Scale); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Translation, Rotation, Scale);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Transform3D self) => new Dynamic(self);
-        public static implicit operator Transform3D(Dynamic value) => value.As<Transform3D>();
-        public String TypeName => "Transform3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Translation", (String)"Rotation", (String)"Scale");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Translation), new Dynamic(Rotation), new Dynamic(Scale));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Transform3D)b);
-        // Implemented concept functions and type functions
-        public Boolean Equals(Transform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Transform3D a, Transform3D b) => a.Equals(b);
-        public Boolean NotEquals(Transform3D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Transform3D a, Transform3D b) => a.NotEquals(b);
-        // Unimplemented concept functions
-    }
-    public readonly partial struct Pose3D: IValue<Pose3D>
-    {
-        public readonly Vector3D Position;
-        public readonly Orientation3D Orientation;
-        public Pose3D WithPosition(Vector3D position) => new Pose3D(position, Orientation);
-        public Pose3D WithOrientation(Orientation3D orientation) => new Pose3D(Position, orientation);
-        public Pose3D(Vector3D position, Orientation3D orientation) => (Position, Orientation) = (position, orientation);
-        public static Pose3D Default = new Pose3D();
-        public static Pose3D New(Vector3D position, Orientation3D orientation) => new Pose3D(position, orientation);
-        public static implicit operator (Vector3D, Orientation3D)(Pose3D self) => (self.Position, self.Orientation);
-        public static implicit operator Pose3D((Vector3D, Orientation3D) value) => new Pose3D(value.Item1, value.Item2);
-        public void Deconstruct(out Vector3D position, out Orientation3D orientation) { position = Position; orientation = Orientation; }
-        public override bool Equals(object obj) { if (!(obj is Pose3D)) return false; var other = (Pose3D)obj; return Position.Equals(other.Position) && Orientation.Equals(other.Orientation); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Position, Orientation);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Pose3D self) => new Dynamic(self);
-        public static implicit operator Pose3D(Dynamic value) => value.As<Pose3D>();
-        public String TypeName => "Pose3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Position", (String)"Orientation");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Orientation));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Pose3D)b);
-        // Implemented concept functions and type functions
-        public Boolean Equals(Pose3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Pose3D a, Pose3D b) => a.Equals(b);
-        public Boolean NotEquals(Pose3D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Pose3D a, Pose3D b) => a.NotEquals(b);
-        // Unimplemented concept functions
-    }
-    public readonly partial struct Frame3D
-    {
-        public readonly Vector3D Forward;
-        public readonly Vector3D Up;
-        public readonly Vector3D Right;
-        public Frame3D WithForward(Vector3D forward) => new Frame3D(forward, Up, Right);
-        public Frame3D WithUp(Vector3D up) => new Frame3D(Forward, up, Right);
-        public Frame3D WithRight(Vector3D right) => new Frame3D(Forward, Up, right);
-        public Frame3D(Vector3D forward, Vector3D up, Vector3D right) => (Forward, Up, Right) = (forward, up, right);
-        public static Frame3D Default = new Frame3D();
-        public static Frame3D New(Vector3D forward, Vector3D up, Vector3D right) => new Frame3D(forward, up, right);
-        public static implicit operator (Vector3D, Vector3D, Vector3D)(Frame3D self) => (self.Forward, self.Up, self.Right);
-        public static implicit operator Frame3D((Vector3D, Vector3D, Vector3D) value) => new Frame3D(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Vector3D forward, out Vector3D up, out Vector3D right) { forward = Forward; up = Up; right = Right; }
-        public override bool Equals(object obj) { if (!(obj is Frame3D)) return false; var other = (Frame3D)obj; return Forward.Equals(other.Forward) && Up.Equals(other.Up) && Right.Equals(other.Right); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Forward, Up, Right);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Frame3D self) => new Dynamic(self);
-        public static implicit operator Frame3D(Dynamic value) => value.As<Frame3D>();
-        public String TypeName => "Frame3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Forward", (String)"Up", (String)"Right");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Forward), new Dynamic(Up), new Dynamic(Right));
-        // Implemented concept functions and type functions
-        // Unimplemented concept functions
-    }
-    public readonly partial struct Bounds3D: IInterval<Bounds3D, Vector3D>
-    {
-        public readonly Vector3D Min;
-        public readonly Vector3D Max;
+        [DataMember] public readonly Vector3D Min;
+        [DataMember] public readonly Vector3D Max;
         public Bounds3D WithMin(Vector3D min) => new Bounds3D(min, Max);
         public Bounds3D WithMax(Vector3D max) => new Bounds3D(Min, max);
         public Bounds3D(Vector3D min, Vector3D max) => (Min, Max) = (min, max);
@@ -4500,7 +4310,7 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D min, out Vector3D max) { min = Min; max = Max; }
         public override bool Equals(object obj) { if (!(obj is Bounds3D)) return false; var other = (Bounds3D)obj; return Min.Equals(other.Min) && Max.Equals(other.Max); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Min, Max);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Min\" = {Min}, \"Max\" = {Max} }}";
         public static implicit operator Dynamic(Bounds3D self) => new Dynamic(self);
         public static implicit operator Bounds3D(Dynamic value) => value.As<Bounds3D>();
         public String TypeName => "Bounds3D";
@@ -4549,10 +4359,10 @@ namespace Plato.DoublePrecision
         public Vector3D At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Vector3D this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Line3D: IPolyLine3D, IArray<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Line3D: IPolyLine3D, IOpenShape3D
     {
-        public readonly Vector3D A;
-        public readonly Vector3D B;
+        [DataMember] public readonly Vector3D A;
+        [DataMember] public readonly Vector3D B;
         public Line3D WithA(Vector3D a) => new Line3D(a, B);
         public Line3D WithB(Vector3D b) => new Line3D(A, b);
         public Line3D(Vector3D a, Vector3D b) => (A, B) = (a, b);
@@ -4563,56 +4373,44 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b) { a = A; b = B; }
         public override bool Equals(object obj) { if (!(obj is Line3D)) return false; var other = (Line3D)obj; return A.Equals(other.A) && B.Equals(other.B); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B} }}";
         public static implicit operator Dynamic(Line3D self) => new Dynamic(self);
         public static implicit operator Line3D(Dynamic value) => value.As<Line3D>();
         public String TypeName => "Line3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
-        // Array predefined functions
-        public Line3D(IArray<Vector3D> xs) : this(xs[0], xs[1]) { }
-        public Line3D(Vector3D[] xs) : this(xs[0], xs[1]) { }
-        public static Line3D New(IArray<Vector3D> xs) => new Line3D(xs);
-        public static Line3D New(Vector3D[] xs) => new Line3D(xs);
-        public static implicit operator Vector3D[](Line3D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector3D>(Line3D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Points => this;
         public Number Length => this.B.Subtract(this.A).Length;
         public Vector3D Direction => this.B.Subtract(this.A);
         public Ray3D Ray3D => this.A.Tuple2(this.Direction);
         public static implicit operator Ray3D(Line3D x) => x.Ray3D;
-        public IArray<Vector3D> Vertices => this.Points;
+        public Line2D Reverse => this.B.Tuple2(this.A);
+        public Vector3D Eval(Number t) => this.A.Lerp(this.B, t);
+        public IArray<Vector3D> Vertices => this;
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public Integer Count => 2;
-        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
-        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
-    public readonly partial struct Ray3D: IValue<Ray3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ray3D: IValue<Ray3D>
     {
-        public readonly Vector3D Direction;
-        public readonly Vector3D Position;
-        public Ray3D WithDirection(Vector3D direction) => new Ray3D(direction, Position);
-        public Ray3D WithPosition(Vector3D position) => new Ray3D(Direction, position);
-        public Ray3D(Vector3D direction, Vector3D position) => (Direction, Position) = (direction, position);
+        [DataMember] public readonly Vector3D Direction;
+        [DataMember] public readonly Vector3D Origin;
+        public Ray3D WithDirection(Vector3D direction) => new Ray3D(direction, Origin);
+        public Ray3D WithOrigin(Vector3D origin) => new Ray3D(Direction, origin);
+        public Ray3D(Vector3D direction, Vector3D origin) => (Direction, Origin) = (direction, origin);
         public static Ray3D Default = new Ray3D();
-        public static Ray3D New(Vector3D direction, Vector3D position) => new Ray3D(direction, position);
-        public static implicit operator (Vector3D, Vector3D)(Ray3D self) => (self.Direction, self.Position);
+        public static Ray3D New(Vector3D direction, Vector3D origin) => new Ray3D(direction, origin);
+        public static implicit operator (Vector3D, Vector3D)(Ray3D self) => (self.Direction, self.Origin);
         public static implicit operator Ray3D((Vector3D, Vector3D) value) => new Ray3D(value.Item1, value.Item2);
-        public void Deconstruct(out Vector3D direction, out Vector3D position) { direction = Direction; position = Position; }
-        public override bool Equals(object obj) { if (!(obj is Ray3D)) return false; var other = (Ray3D)obj; return Direction.Equals(other.Direction) && Position.Equals(other.Position); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Direction, Position);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public void Deconstruct(out Vector3D direction, out Vector3D origin) { direction = Direction; origin = Origin; }
+        public override bool Equals(object obj) { if (!(obj is Ray3D)) return false; var other = (Ray3D)obj; return Direction.Equals(other.Direction) && Origin.Equals(other.Origin); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Direction, Origin);
+        public override string ToString() => $"{{ \"Direction\" = {Direction}, \"Origin\" = {Origin} }}";
         public static implicit operator Dynamic(Ray3D self) => new Dynamic(self);
         public static implicit operator Ray3D(Dynamic value) => value.As<Ray3D>();
         public String TypeName => "Ray3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Direction", (String)"Position");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Direction), new Dynamic(Position));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Direction", (String)"Origin");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Direction), new Dynamic(Origin));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Ray3D)b);
         // Implemented concept functions and type functions
         public Angle Angle(Ray3D b) => this.Direction.Angle(b.Direction);
@@ -4622,17 +4420,11 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(Ray3D a, Ray3D b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    public readonly partial struct Triangle3D: IValue<Triangle3D>, IArray<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Triangle3D: IPolygon3D
     {
-        public void MyTest()
-        {
-            var tri = new Triangle3D(VEctor3D.UnitX, ...);
-            tri = tri.WithA(VEctor3D.UnitY)
-        }
-
-        public readonly Vector3D A;
-        public readonly Vector3D B;
-        public readonly Vector3D C;
+        [DataMember] public readonly Vector3D A;
+        [DataMember] public readonly Vector3D B;
+        [DataMember] public readonly Vector3D C;
         public Triangle3D WithA(Vector3D a) => new Triangle3D(a, B, C);
         public Triangle3D WithB(Vector3D b) => new Triangle3D(A, b, C);
         public Triangle3D WithC(Vector3D c) => new Triangle3D(A, B, c);
@@ -4644,24 +4436,12 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is Triangle3D)) return false; var other = (Triangle3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C} }}";
         public static implicit operator Dynamic(Triangle3D self) => new Dynamic(self);
         public static implicit operator Triangle3D(Dynamic value) => value.As<Triangle3D>();
         public String TypeName => "Triangle3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Triangle3D)b);
-        // Array predefined functions
-        public Triangle3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2]) { }
-        public Triangle3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2]) { }
-        public static Triangle3D New(IArray<Vector3D> xs) => new Triangle3D(xs);
-        public static Triangle3D New(Vector3D[] xs) => new Triangle3D(xs);
-        public static implicit operator Vector3D[](Triangle3D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector3D>(Triangle3D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Triangle3D Flip => this.C.Tuple3(this.B, this.A);
         public Vector3D Normal => this.B.Subtract(this.A).Cross(this.C.Subtract(this.A)).Normalize;
@@ -4669,21 +4449,23 @@ namespace Plato.DoublePrecision
         public Plane Plane => this.Normal.Tuple2(this.Normal.Dot(this.A));
         public static implicit operator Plane(Triangle3D t) => t.Plane;
         public Vector3D Barycentric(Vector2D uv) => this.A.Barycentric(this.B, this.C, uv);
-        public Boolean Equals(Triangle3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Triangle3D a, Triangle3D b) => a.Equals(b);
-        public Boolean NotEquals(Triangle3D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Triangle3D a, Triangle3D b) => a.NotEquals(b);
+        public Line3D LineA => this.A.Tuple2(this.B);
+        public Line3D LineB => this.B.Tuple2(this.C);
+        public Line3D LineC => this.C.Tuple2(this.A);
+        public LineArray3D LineArray3D => this.Lines;
+        public static implicit operator LineArray3D(Triangle3D t) => t.LineArray3D;
+        public IArray<Vector3D> Vertices => this;
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
-        public Integer Count => 3;
-        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
-        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    public readonly partial struct Quad3D: IValue<Quad3D>, IArray<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Quad3D: IPolygon3D
     {
-        public readonly Vector3D A;
-        public readonly Vector3D B;
-        public readonly Vector3D C;
-        public readonly Vector3D D;
+        [DataMember] public readonly Vector3D A;
+        [DataMember] public readonly Vector3D B;
+        [DataMember] public readonly Vector3D C;
+        [DataMember] public readonly Vector3D D;
         public Quad3D WithA(Vector3D a) => new Quad3D(a, B, C, D);
         public Quad3D WithB(Vector3D b) => new Quad3D(A, b, C, D);
         public Quad3D WithC(Vector3D c) => new Quad3D(A, B, c, D);
@@ -4696,184 +4478,341 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is Quad3D)) return false; var other = (Quad3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C}, \"D\" = {D} }}";
         public static implicit operator Dynamic(Quad3D self) => new Dynamic(self);
         public static implicit operator Quad3D(Dynamic value) => value.As<Quad3D>();
         public String TypeName => "Quad3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Quad3D)b);
-        // Array predefined functions
-        public Quad3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public Quad3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public static Quad3D New(IArray<Vector3D> xs) => new Quad3D(xs);
-        public static Quad3D New(Vector3D[] xs) => new Quad3D(xs);
-        public static implicit operator Vector3D[](Quad3D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector3D>(Quad3D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public Boolean Equals(Quad3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Quad3D a, Quad3D b) => a.Equals(b);
-        public Boolean NotEquals(Quad3D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Quad3D a, Quad3D b) => a.NotEquals(b);
+        public Quad3D Flip => this.D.Tuple4(this.C, this.B, this.A);
+        public Vector3D Center => this.A.Add(this.B.Add(this.C.Add(this.D))).Divide(((Number)4));
+        public Line3D LineA => this.A.Tuple2(this.B);
+        public Line3D LineB => this.B.Tuple2(this.C);
+        public Line3D LineC => this.C.Tuple2(this.D);
+        public Line3D LineD => this.D.Tuple2(this.A);
+        public Triangle3D TriangleA => this.A.Tuple3(this.B, this.C);
+        public Triangle3D TriangleB => this.C.Tuple3(this.D, this.A);
+        public IArray<Triangle3D> Triangles => Intrinsics.MakeArray(this.A.Tuple3(this.B, this.C), this.C.Tuple3(this.D, this.A));
+        public LineArray3D LineArray3D => this.Lines;
+        public static implicit operator LineArray3D(Quad3D q) => q.LineArray3D;
+        public TriangleArray3D TriangleArray3D => this.Triangles;
+        public static implicit operator TriangleArray3D(Quad3D q) => q.TriangleArray3D;
+        public IArray<Vector3D> Vertices => this;
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
-        public Integer Count => 4;
-        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
-        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    public readonly partial struct Capsule: IShape3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Sphere: ISolid
     {
-        public readonly Line3D Line;
-        public readonly Number Radius;
-        public Capsule WithLine(Line3D line) => new Capsule(line, Radius);
-        public Capsule WithRadius(Number radius) => new Capsule(Line, radius);
-        public Capsule(Line3D line, Number radius) => (Line, Radius) = (line, radius);
-        public static Capsule Default = new Capsule();
-        public static Capsule New(Line3D line, Number radius) => new Capsule(line, radius);
-        public static implicit operator (Line3D, Number)(Capsule self) => (self.Line, self.Radius);
-        public static implicit operator Capsule((Line3D, Number) value) => new Capsule(value.Item1, value.Item2);
-        public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Capsule)) return false; var other = (Capsule)obj; return Line.Equals(other.Line) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Capsule self) => new Dynamic(self);
-        public static implicit operator Capsule(Dynamic value) => value.As<Capsule>();
-        public String TypeName => "Capsule";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Line", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Line), new Dynamic(Radius));
+        [DataMember] public readonly Number Radius;
+        public Sphere WithRadius(Number radius) => new Sphere(radius);
+        public Sphere(Number radius) => (Radius) = (radius);
+        public static Sphere Default = new Sphere();
+        public static Sphere New(Number radius) => new Sphere(radius);
+        public static implicit operator Number(Sphere self) => self.Radius;
+        public static implicit operator Sphere(Number value) => new Sphere(value);
+        public static implicit operator Sphere(Integer value) => new Sphere(value);
+        public static implicit operator Sphere(int value) => new Integer(value);
+        public static implicit operator Sphere(double value) => new Number(value);
+        public static implicit operator double(Sphere value) => value.Radius;
+        public override bool Equals(object obj) { if (!(obj is Sphere)) return false; var other = (Sphere)obj; return Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius);
+        public override string ToString() => $"{{ \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(Sphere self) => new Dynamic(self);
+        public static implicit operator Sphere(Dynamic value) => value.As<Sphere>();
+        public String TypeName => "Sphere";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Cylinder: IShape3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Cylinder: ISurface
     {
-        public readonly Line3D Line;
-        public readonly Number Radius;
-        public Cylinder WithLine(Line3D line) => new Cylinder(line, Radius);
-        public Cylinder WithRadius(Number radius) => new Cylinder(Line, radius);
-        public Cylinder(Line3D line, Number radius) => (Line, Radius) = (line, radius);
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        public Cylinder WithHeight(Number height) => new Cylinder(height, Radius);
+        public Cylinder WithRadius(Number radius) => new Cylinder(Height, radius);
+        public Cylinder(Number height, Number radius) => (Height, Radius) = (height, radius);
         public static Cylinder Default = new Cylinder();
-        public static Cylinder New(Line3D line, Number radius) => new Cylinder(line, radius);
-        public static implicit operator (Line3D, Number)(Cylinder self) => (self.Line, self.Radius);
-        public static implicit operator Cylinder((Line3D, Number) value) => new Cylinder(value.Item1, value.Item2);
-        public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Cylinder)) return false; var other = (Cylinder)obj; return Line.Equals(other.Line) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public static Cylinder New(Number height, Number radius) => new Cylinder(height, radius);
+        public static implicit operator (Number, Number)(Cylinder self) => (self.Height, self.Radius);
+        public static implicit operator Cylinder((Number, Number) value) => new Cylinder(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is Cylinder)) return false; var other = (Cylinder)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
         public static implicit operator Dynamic(Cylinder self) => new Dynamic(self);
         public static implicit operator Cylinder(Dynamic value) => value.As<Cylinder>();
         public String TypeName => "Cylinder";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Line", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Line), new Dynamic(Radius));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Cone: IShape3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Capsule: ISolid
     {
-        public readonly Line3D Line;
-        public readonly Number Radius;
-        public Cone WithLine(Line3D line) => new Cone(line, Radius);
-        public Cone WithRadius(Number radius) => new Cone(Line, radius);
-        public Cone(Line3D line, Number radius) => (Line, Radius) = (line, radius);
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        public Capsule WithHeight(Number height) => new Capsule(height, Radius);
+        public Capsule WithRadius(Number radius) => new Capsule(Height, radius);
+        public Capsule(Number height, Number radius) => (Height, Radius) = (height, radius);
+        public static Capsule Default = new Capsule();
+        public static Capsule New(Number height, Number radius) => new Capsule(height, radius);
+        public static implicit operator (Number, Number)(Capsule self) => (self.Height, self.Radius);
+        public static implicit operator Capsule((Number, Number) value) => new Capsule(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is Capsule)) return false; var other = (Capsule)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(Capsule self) => new Dynamic(self);
+        public static implicit operator Capsule(Dynamic value) => value.As<Capsule>();
+        public String TypeName => "Capsule";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Cone: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        public Cone WithHeight(Number height) => new Cone(height, Radius);
+        public Cone WithRadius(Number radius) => new Cone(Height, radius);
+        public Cone(Number height, Number radius) => (Height, Radius) = (height, radius);
         public static Cone Default = new Cone();
-        public static Cone New(Line3D line, Number radius) => new Cone(line, radius);
-        public static implicit operator (Line3D, Number)(Cone self) => (self.Line, self.Radius);
-        public static implicit operator Cone((Line3D, Number) value) => new Cone(value.Item1, value.Item2);
-        public void Deconstruct(out Line3D line, out Number radius) { line = Line; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Cone)) return false; var other = (Cone)obj; return Line.Equals(other.Line) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public static Cone New(Number height, Number radius) => new Cone(height, radius);
+        public static implicit operator (Number, Number)(Cone self) => (self.Height, self.Radius);
+        public static implicit operator Cone((Number, Number) value) => new Cone(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is Cone)) return false; var other = (Cone)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
         public static implicit operator Dynamic(Cone self) => new Dynamic(self);
         public static implicit operator Cone(Dynamic value) => value.As<Cone>();
         public String TypeName => "Cone";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Line", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Line), new Dynamic(Radius));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Tube: IShape3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ConeSegment: ISolid
     {
-        public readonly Line3D Line;
-        public readonly Number InnerRadius;
-        public readonly Number OuterRadius;
-        public Tube WithLine(Line3D line) => new Tube(line, InnerRadius, OuterRadius);
-        public Tube WithInnerRadius(Number innerRadius) => new Tube(Line, innerRadius, OuterRadius);
-        public Tube WithOuterRadius(Number outerRadius) => new Tube(Line, InnerRadius, outerRadius);
-        public Tube(Line3D line, Number innerRadius, Number outerRadius) => (Line, InnerRadius, OuterRadius) = (line, innerRadius, outerRadius);
-        public static Tube Default = new Tube();
-        public static Tube New(Line3D line, Number innerRadius, Number outerRadius) => new Tube(line, innerRadius, outerRadius);
-        public static implicit operator (Line3D, Number, Number)(Tube self) => (self.Line, self.InnerRadius, self.OuterRadius);
-        public static implicit operator Tube((Line3D, Number, Number) value) => new Tube(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Line3D line, out Number innerRadius, out Number outerRadius) { line = Line; innerRadius = InnerRadius; outerRadius = OuterRadius; }
-        public override bool Equals(object obj) { if (!(obj is Tube)) return false; var other = (Tube)obj; return Line.Equals(other.Line) && InnerRadius.Equals(other.InnerRadius) && OuterRadius.Equals(other.OuterRadius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, InnerRadius, OuterRadius);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Tube self) => new Dynamic(self);
-        public static implicit operator Tube(Dynamic value) => value.As<Tube>();
-        public String TypeName => "Tube";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Line", (String)"InnerRadius", (String)"OuterRadius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Line), new Dynamic(InnerRadius), new Dynamic(OuterRadius));
-        // Implemented concept functions and type functions
-        // Unimplemented concept functions
-    }
-    public readonly partial struct ConeSegment: IShape3D
-    {
-        public readonly Line3D Line;
-        public readonly Number Radius1;
-        public readonly Number Radius2;
-        public ConeSegment WithLine(Line3D line) => new ConeSegment(line, Radius1, Radius2);
-        public ConeSegment WithRadius1(Number radius1) => new ConeSegment(Line, radius1, Radius2);
-        public ConeSegment WithRadius2(Number radius2) => new ConeSegment(Line, Radius1, radius2);
-        public ConeSegment(Line3D line, Number radius1, Number radius2) => (Line, Radius1, Radius2) = (line, radius1, radius2);
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius1;
+        [DataMember] public readonly Number Radius2;
+        public ConeSegment WithHeight(Number height) => new ConeSegment(height, Radius1, Radius2);
+        public ConeSegment WithRadius1(Number radius1) => new ConeSegment(Height, radius1, Radius2);
+        public ConeSegment WithRadius2(Number radius2) => new ConeSegment(Height, Radius1, radius2);
+        public ConeSegment(Number height, Number radius1, Number radius2) => (Height, Radius1, Radius2) = (height, radius1, radius2);
         public static ConeSegment Default = new ConeSegment();
-        public static ConeSegment New(Line3D line, Number radius1, Number radius2) => new ConeSegment(line, radius1, radius2);
-        public static implicit operator (Line3D, Number, Number)(ConeSegment self) => (self.Line, self.Radius1, self.Radius2);
-        public static implicit operator ConeSegment((Line3D, Number, Number) value) => new ConeSegment(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Line3D line, out Number radius1, out Number radius2) { line = Line; radius1 = Radius1; radius2 = Radius2; }
-        public override bool Equals(object obj) { if (!(obj is ConeSegment)) return false; var other = (ConeSegment)obj; return Line.Equals(other.Line) && Radius1.Equals(other.Radius1) && Radius2.Equals(other.Radius2); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Line, Radius1, Radius2);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public static ConeSegment New(Number height, Number radius1, Number radius2) => new ConeSegment(height, radius1, radius2);
+        public static implicit operator (Number, Number, Number)(ConeSegment self) => (self.Height, self.Radius1, self.Radius2);
+        public static implicit operator ConeSegment((Number, Number, Number) value) => new ConeSegment(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number radius1, out Number radius2) { height = Height; radius1 = Radius1; radius2 = Radius2; }
+        public override bool Equals(object obj) { if (!(obj is ConeSegment)) return false; var other = (ConeSegment)obj; return Height.Equals(other.Height) && Radius1.Equals(other.Radius1) && Radius2.Equals(other.Radius2); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius1, Radius2);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius1\" = {Radius1}, \"Radius2\" = {Radius2} }}";
         public static implicit operator Dynamic(ConeSegment self) => new Dynamic(self);
         public static implicit operator ConeSegment(Dynamic value) => value.As<ConeSegment>();
         public String TypeName => "ConeSegment";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Line", (String)"Radius1", (String)"Radius2");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Line), new Dynamic(Radius1), new Dynamic(Radius2));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius1", (String)"Radius2");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius1), new Dynamic(Radius2));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Box3D: IShape3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Box3D: ISolid
     {
-        public readonly Vector3D Center;
-        public readonly Rotation3D Rotation;
-        public readonly Size3D Extent;
-        public Box3D WithCenter(Vector3D center) => new Box3D(center, Rotation, Extent);
-        public Box3D WithRotation(Rotation3D rotation) => new Box3D(Center, rotation, Extent);
-        public Box3D WithExtent(Size3D extent) => new Box3D(Center, Rotation, extent);
-        public Box3D(Vector3D center, Rotation3D rotation, Size3D extent) => (Center, Rotation, Extent) = (center, rotation, extent);
+        [DataMember] public readonly Vector3D Extent;
+        public Box3D WithExtent(Vector3D extent) => new Box3D(extent);
+        public Box3D(Vector3D extent) => (Extent) = (extent);
         public static Box3D Default = new Box3D();
-        public static Box3D New(Vector3D center, Rotation3D rotation, Size3D extent) => new Box3D(center, rotation, extent);
-        public static implicit operator (Vector3D, Rotation3D, Size3D)(Box3D self) => (self.Center, self.Rotation, self.Extent);
-        public static implicit operator Box3D((Vector3D, Rotation3D, Size3D) value) => new Box3D(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Vector3D center, out Rotation3D rotation, out Size3D extent) { center = Center; rotation = Rotation; extent = Extent; }
-        public override bool Equals(object obj) { if (!(obj is Box3D)) return false; var other = (Box3D)obj; return Center.Equals(other.Center) && Rotation.Equals(other.Rotation) && Extent.Equals(other.Extent); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Rotation, Extent);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public static Box3D New(Vector3D extent) => new Box3D(extent);
+        public static implicit operator Vector3D(Box3D self) => self.Extent;
+        public static implicit operator Box3D(Vector3D value) => new Box3D(value);
+        public override bool Equals(object obj) { if (!(obj is Box3D)) return false; var other = (Box3D)obj; return Extent.Equals(other.Extent); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Extent);
+        public override string ToString() => $"{{ \"Extent\" = {Extent} }}";
         public static implicit operator Dynamic(Box3D self) => new Dynamic(self);
         public static implicit operator Box3D(Dynamic value) => value.As<Box3D>();
         public String TypeName => "Box3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Rotation", (String)"Extent");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Rotation), new Dynamic(Extent));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Extent");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Extent));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct CubicBezier2D: IArray<Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Pyramid: ISolid
     {
-        public readonly Vector2D A;
-        public readonly Vector2D B;
-        public readonly Vector2D C;
-        public readonly Vector2D D;
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number BaseLength;
+        public Pyramid WithHeight(Number height) => new Pyramid(height, BaseLength);
+        public Pyramid WithBaseLength(Number baseLength) => new Pyramid(Height, baseLength);
+        public Pyramid(Number height, Number baseLength) => (Height, BaseLength) = (height, baseLength);
+        public static Pyramid Default = new Pyramid();
+        public static Pyramid New(Number height, Number baseLength) => new Pyramid(height, baseLength);
+        public static implicit operator (Number, Number)(Pyramid self) => (self.Height, self.BaseLength);
+        public static implicit operator Pyramid((Number, Number) value) => new Pyramid(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number baseLength) { height = Height; baseLength = BaseLength; }
+        public override bool Equals(object obj) { if (!(obj is Pyramid)) return false; var other = (Pyramid)obj; return Height.Equals(other.Height) && BaseLength.Equals(other.BaseLength); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, BaseLength);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"BaseLength\" = {BaseLength} }}";
+        public static implicit operator Dynamic(Pyramid self) => new Dynamic(self);
+        public static implicit operator Pyramid(Dynamic value) => value.As<Pyramid>();
+        public String TypeName => "Pyramid";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"BaseLength");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(BaseLength));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Torus: ISolid
+    {
+        [DataMember] public readonly Number MajorRadius;
+        [DataMember] public readonly Number MinorRadius;
+        public Torus WithMajorRadius(Number majorRadius) => new Torus(majorRadius, MinorRadius);
+        public Torus WithMinorRadius(Number minorRadius) => new Torus(MajorRadius, minorRadius);
+        public Torus(Number majorRadius, Number minorRadius) => (MajorRadius, MinorRadius) = (majorRadius, minorRadius);
+        public static Torus Default = new Torus();
+        public static Torus New(Number majorRadius, Number minorRadius) => new Torus(majorRadius, minorRadius);
+        public static implicit operator (Number, Number)(Torus self) => (self.MajorRadius, self.MinorRadius);
+        public static implicit operator Torus((Number, Number) value) => new Torus(value.Item1, value.Item2);
+        public void Deconstruct(out Number majorRadius, out Number minorRadius) { majorRadius = MajorRadius; minorRadius = MinorRadius; }
+        public override bool Equals(object obj) { if (!(obj is Torus)) return false; var other = (Torus)obj; return MajorRadius.Equals(other.MajorRadius) && MinorRadius.Equals(other.MinorRadius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(MajorRadius, MinorRadius);
+        public override string ToString() => $"{{ \"MajorRadius\" = {MajorRadius}, \"MinorRadius\" = {MinorRadius} }}";
+        public static implicit operator Dynamic(Torus self) => new Dynamic(self);
+        public static implicit operator Torus(Dynamic value) => value.As<Torus>();
+        public String TypeName => "Torus";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"MajorRadius", (String)"MinorRadius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(MajorRadius), new Dynamic(MinorRadius));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct NPrism: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Integer NumSides;
+        public NPrism WithHeight(Number height) => new NPrism(height, Radius, NumSides);
+        public NPrism WithRadius(Number radius) => new NPrism(Height, radius, NumSides);
+        public NPrism WithNumSides(Integer numSides) => new NPrism(Height, Radius, numSides);
+        public NPrism(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
+        public static NPrism Default = new NPrism();
+        public static NPrism New(Number height, Number radius, Integer numSides) => new NPrism(height, radius, numSides);
+        public static implicit operator (Number, Number, Integer)(NPrism self) => (self.Height, self.Radius, self.NumSides);
+        public static implicit operator NPrism((Number, Number, Integer) value) => new NPrism(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
+        public override bool Equals(object obj) { if (!(obj is NPrism)) return false; var other = (NPrism)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius) && NumSides.Equals(other.NumSides); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius, NumSides);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius}, \"NumSides\" = {NumSides} }}";
+        public static implicit operator Dynamic(NPrism self) => new Dynamic(self);
+        public static implicit operator NPrism(Dynamic value) => value.As<NPrism>();
+        public String TypeName => "NPrism";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tube: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number InnerRadius;
+        [DataMember] public readonly Number OuterRadius;
+        public Tube WithHeight(Number height) => new Tube(height, InnerRadius, OuterRadius);
+        public Tube WithInnerRadius(Number innerRadius) => new Tube(Height, innerRadius, OuterRadius);
+        public Tube WithOuterRadius(Number outerRadius) => new Tube(Height, InnerRadius, outerRadius);
+        public Tube(Number height, Number innerRadius, Number outerRadius) => (Height, InnerRadius, OuterRadius) = (height, innerRadius, outerRadius);
+        public static Tube Default = new Tube();
+        public static Tube New(Number height, Number innerRadius, Number outerRadius) => new Tube(height, innerRadius, outerRadius);
+        public static implicit operator (Number, Number, Number)(Tube self) => (self.Height, self.InnerRadius, self.OuterRadius);
+        public static implicit operator Tube((Number, Number, Number) value) => new Tube(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number innerRadius, out Number outerRadius) { height = Height; innerRadius = InnerRadius; outerRadius = OuterRadius; }
+        public override bool Equals(object obj) { if (!(obj is Tube)) return false; var other = (Tube)obj; return Height.Equals(other.Height) && InnerRadius.Equals(other.InnerRadius) && OuterRadius.Equals(other.OuterRadius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, InnerRadius, OuterRadius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"InnerRadius\" = {InnerRadius}, \"OuterRadius\" = {OuterRadius} }}";
+        public static implicit operator Dynamic(Tube self) => new Dynamic(self);
+        public static implicit operator Tube(Dynamic value) => value.As<Tube>();
+        public String TypeName => "Tube";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"InnerRadius", (String)"OuterRadius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(InnerRadius), new Dynamic(OuterRadius));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct NPyramid: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Integer NumSides;
+        public NPyramid WithHeight(Number height) => new NPyramid(height, Radius, NumSides);
+        public NPyramid WithRadius(Number radius) => new NPyramid(Height, radius, NumSides);
+        public NPyramid WithNumSides(Integer numSides) => new NPyramid(Height, Radius, numSides);
+        public NPyramid(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
+        public static NPyramid Default = new NPyramid();
+        public static NPyramid New(Number height, Number radius, Integer numSides) => new NPyramid(height, radius, numSides);
+        public static implicit operator (Number, Number, Integer)(NPyramid self) => (self.Height, self.Radius, self.NumSides);
+        public static implicit operator NPyramid((Number, Number, Integer) value) => new NPyramid(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
+        public override bool Equals(object obj) { if (!(obj is NPyramid)) return false; var other = (NPyramid)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius) && NumSides.Equals(other.NumSides); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius, NumSides);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius}, \"NumSides\" = {NumSides} }}";
+        public static implicit operator Dynamic(NPyramid self) => new Dynamic(self);
+        public static implicit operator NPyramid(Dynamic value) => value.As<NPyramid>();
+        public String TypeName => "NPyramid";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ellipsoid: ISolid
+    {
+        [DataMember] public readonly Vector3D Radii;
+        public Ellipsoid WithRadii(Vector3D radii) => new Ellipsoid(radii);
+        public Ellipsoid(Vector3D radii) => (Radii) = (radii);
+        public static Ellipsoid Default = new Ellipsoid();
+        public static Ellipsoid New(Vector3D radii) => new Ellipsoid(radii);
+        public static implicit operator Vector3D(Ellipsoid self) => self.Radii;
+        public static implicit operator Ellipsoid(Vector3D value) => new Ellipsoid(value);
+        public override bool Equals(object obj) { if (!(obj is Ellipsoid)) return false; var other = (Ellipsoid)obj; return Radii.Equals(other.Radii); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radii);
+        public override string ToString() => $"{{ \"Radii\" = {Radii} }}";
+        public static implicit operator Dynamic(Ellipsoid self) => new Dynamic(self);
+        public static implicit operator Ellipsoid(Dynamic value) => value.As<Ellipsoid>();
+        public String TypeName => "Ellipsoid";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radii");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radii));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CubicBezier2D: IPointArray2D, IOpenCurve2D
+    {
+        [DataMember] public readonly Vector2D A;
+        [DataMember] public readonly Vector2D B;
+        [DataMember] public readonly Vector2D C;
+        [DataMember] public readonly Vector2D D;
         public CubicBezier2D WithA(Vector2D a) => new CubicBezier2D(a, B, C, D);
         public CubicBezier2D WithB(Vector2D b) => new CubicBezier2D(A, b, C, D);
         public CubicBezier2D WithC(Vector2D c) => new CubicBezier2D(A, B, c, D);
@@ -4886,35 +4825,298 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is CubicBezier2D)) return false; var other = (CubicBezier2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C}, \"D\" = {D} }}";
         public static implicit operator Dynamic(CubicBezier2D self) => new Dynamic(self);
         public static implicit operator CubicBezier2D(Dynamic value) => value.As<CubicBezier2D>();
         public String TypeName => "CubicBezier2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
-        // Array predefined functions
-        public CubicBezier2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public CubicBezier2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public static CubicBezier2D New(IArray<Vector2D> xs) => new CubicBezier2D(xs);
-        public static CubicBezier2D New(Vector2D[] xs) => new CubicBezier2D(xs);
-        public static implicit operator Vector2D[](CubicBezier2D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector2D>(CubicBezier2D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
+        // Unimplemented concept functions
+        public IArray<Vector2D> Points => Intrinsics.Points(this);
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadraticBezier2D: IPointArray2D, IOpenCurve2D
+    {
+        [DataMember] public readonly Vector2D A;
+        [DataMember] public readonly Vector2D B;
+        [DataMember] public readonly Vector2D C;
+        public QuadraticBezier2D WithA(Vector2D a) => new QuadraticBezier2D(a, B, C);
+        public QuadraticBezier2D WithB(Vector2D b) => new QuadraticBezier2D(A, b, C);
+        public QuadraticBezier2D WithC(Vector2D c) => new QuadraticBezier2D(A, B, c);
+        public QuadraticBezier2D(Vector2D a, Vector2D b, Vector2D c) => (A, B, C) = (a, b, c);
+        public static QuadraticBezier2D Default = new QuadraticBezier2D();
+        public static QuadraticBezier2D New(Vector2D a, Vector2D b, Vector2D c) => new QuadraticBezier2D(a, b, c);
+        public static implicit operator (Vector2D, Vector2D, Vector2D)(QuadraticBezier2D self) => (self.A, self.B, self.C);
+        public static implicit operator QuadraticBezier2D((Vector2D, Vector2D, Vector2D) value) => new QuadraticBezier2D(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
+        public override bool Equals(object obj) { if (!(obj is QuadraticBezier2D)) return false; var other = (QuadraticBezier2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C} }}";
+        public static implicit operator Dynamic(QuadraticBezier2D self) => new Dynamic(self);
+        public static implicit operator QuadraticBezier2D(Dynamic value) => value.As<QuadraticBezier2D>();
+        public String TypeName => "QuadraticBezier2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
+        // Unimplemented concept functions
+        public IArray<Vector2D> Points => Intrinsics.Points(this);
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LinearFunction2D: IOpenCurve2D
+    {
+        [DataMember] public readonly Number Slope;
+        [DataMember] public readonly Number YIntercept;
+        public LinearFunction2D WithSlope(Number slope) => new LinearFunction2D(slope, YIntercept);
+        public LinearFunction2D WithYIntercept(Number yIntercept) => new LinearFunction2D(Slope, yIntercept);
+        public LinearFunction2D(Number slope, Number yIntercept) => (Slope, YIntercept) = (slope, yIntercept);
+        public static LinearFunction2D Default = new LinearFunction2D();
+        public static LinearFunction2D New(Number slope, Number yIntercept) => new LinearFunction2D(slope, yIntercept);
+        public static implicit operator (Number, Number)(LinearFunction2D self) => (self.Slope, self.YIntercept);
+        public static implicit operator LinearFunction2D((Number, Number) value) => new LinearFunction2D(value.Item1, value.Item2);
+        public void Deconstruct(out Number slope, out Number yIntercept) { slope = Slope; yIntercept = YIntercept; }
+        public override bool Equals(object obj) { if (!(obj is LinearFunction2D)) return false; var other = (LinearFunction2D)obj; return Slope.Equals(other.Slope) && YIntercept.Equals(other.YIntercept); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Slope, YIntercept);
+        public override string ToString() => $"{{ \"Slope\" = {Slope}, \"YIntercept\" = {YIntercept} }}";
+        public static implicit operator Dynamic(LinearFunction2D self) => new Dynamic(self);
+        public static implicit operator LinearFunction2D(Dynamic value) => value.As<LinearFunction2D>();
+        public String TypeName => "LinearFunction2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Slope", (String)"YIntercept");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Slope), new Dynamic(YIntercept));
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadraticFunction2D: IOpenCurve2D
+    {
+        [DataMember] public readonly Number A;
+        [DataMember] public readonly Number B;
+        [DataMember] public readonly Number C;
+        public QuadraticFunction2D WithA(Number a) => new QuadraticFunction2D(a, B, C);
+        public QuadraticFunction2D WithB(Number b) => new QuadraticFunction2D(A, b, C);
+        public QuadraticFunction2D WithC(Number c) => new QuadraticFunction2D(A, B, c);
+        public QuadraticFunction2D(Number a, Number b, Number c) => (A, B, C) = (a, b, c);
+        public static QuadraticFunction2D Default = new QuadraticFunction2D();
+        public static QuadraticFunction2D New(Number a, Number b, Number c) => new QuadraticFunction2D(a, b, c);
+        public static implicit operator (Number, Number, Number)(QuadraticFunction2D self) => (self.A, self.B, self.C);
+        public static implicit operator QuadraticFunction2D((Number, Number, Number) value) => new QuadraticFunction2D(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number a, out Number b, out Number c) { a = A; b = B; c = C; }
+        public override bool Equals(object obj) { if (!(obj is QuadraticFunction2D)) return false; var other = (QuadraticFunction2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C} }}";
+        public static implicit operator Dynamic(QuadraticFunction2D self) => new Dynamic(self);
+        public static implicit operator QuadraticFunction2D(Dynamic value) => value.As<QuadraticFunction2D>();
+        public String TypeName => "QuadraticFunction2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CubicFunction2D: IOpenCurve2D
+    {
+        [DataMember] public readonly Number A;
+        [DataMember] public readonly Number B;
+        [DataMember] public readonly Number C;
+        [DataMember] public readonly Number D;
+        public CubicFunction2D WithA(Number a) => new CubicFunction2D(a, B, C, D);
+        public CubicFunction2D WithB(Number b) => new CubicFunction2D(A, b, C, D);
+        public CubicFunction2D WithC(Number c) => new CubicFunction2D(A, B, c, D);
+        public CubicFunction2D WithD(Number d) => new CubicFunction2D(A, B, C, d);
+        public CubicFunction2D(Number a, Number b, Number c, Number d) => (A, B, C, D) = (a, b, c, d);
+        public static CubicFunction2D Default = new CubicFunction2D();
+        public static CubicFunction2D New(Number a, Number b, Number c, Number d) => new CubicFunction2D(a, b, c, d);
+        public static implicit operator (Number, Number, Number, Number)(CubicFunction2D self) => (self.A, self.B, self.C, self.D);
+        public static implicit operator CubicFunction2D((Number, Number, Number, Number) value) => new CubicFunction2D(value.Item1, value.Item2, value.Item3, value.Item4);
+        public void Deconstruct(out Number a, out Number b, out Number c, out Number d) { a = A; b = B; c = C; d = D; }
+        public override bool Equals(object obj) { if (!(obj is CubicFunction2D)) return false; var other = (CubicFunction2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C}, \"D\" = {D} }}";
+        public static implicit operator Dynamic(CubicFunction2D self) => new Dynamic(self);
+        public static implicit operator CubicFunction2D(Dynamic value) => value.As<CubicFunction2D>();
+        public String TypeName => "CubicFunction2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Parabola: IOpenCurve2D
+    {
+        public static Parabola Default = new Parabola();
+        public static Parabola New() => new Parabola();
+        public override bool Equals(object obj) => true;
+        public override int GetHashCode() => Intrinsics.CombineHashCodes();
+        public override string ToString() => $"{{  }}";
+        public static implicit operator Dynamic(Parabola self) => new Dynamic(self);
+        public static implicit operator Parabola(Dynamic value) => value.As<Parabola>();
+        public String TypeName => "Parabola";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>();
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Circle: IClosedCurve2D
+    {
+        [DataMember] public readonly Vector2D Center;
+        [DataMember] public readonly Number Radius;
+        public Circle WithCenter(Vector2D center) => new Circle(center, Radius);
+        public Circle WithRadius(Number radius) => new Circle(Center, radius);
+        public Circle(Vector2D center, Number radius) => (Center, Radius) = (center, radius);
+        public static Circle Default = new Circle();
+        public static Circle New(Vector2D center, Number radius) => new Circle(center, radius);
+        public static implicit operator (Vector2D, Number)(Circle self) => (self.Center, self.Radius);
+        public static implicit operator Circle((Vector2D, Number) value) => new Circle(value.Item1, value.Item2);
+        public void Deconstruct(out Vector2D center, out Number radius) { center = Center; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is Circle)) return false; var other = (Circle)obj; return Center.Equals(other.Center) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Center, Radius);
+        public override string ToString() => $"{{ \"Center\" = {Center}, \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(Circle self) => new Dynamic(self);
+        public static implicit operator Circle(Dynamic value) => value.As<Circle>();
+        public String TypeName => "Circle";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Radius));
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)true);
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Lissajous: IClosedCurve2D
+    {
+        [DataMember] public readonly Integer Kx;
+        [DataMember] public readonly Integer Ky;
+        public Lissajous WithKx(Integer kx) => new Lissajous(kx, Ky);
+        public Lissajous WithKy(Integer ky) => new Lissajous(Kx, ky);
+        public Lissajous(Integer kx, Integer ky) => (Kx, Ky) = (kx, ky);
+        public static Lissajous Default = new Lissajous();
+        public static Lissajous New(Integer kx, Integer ky) => new Lissajous(kx, ky);
+        public static implicit operator (Integer, Integer)(Lissajous self) => (self.Kx, self.Ky);
+        public static implicit operator Lissajous((Integer, Integer) value) => new Lissajous(value.Item1, value.Item2);
+        public void Deconstruct(out Integer kx, out Integer ky) { kx = Kx; ky = Ky; }
+        public override bool Equals(object obj) { if (!(obj is Lissajous)) return false; var other = (Lissajous)obj; return Kx.Equals(other.Kx) && Ky.Equals(other.Ky); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Kx, Ky);
+        public override string ToString() => $"{{ \"Kx\" = {Kx}, \"Ky\" = {Ky} }}";
+        public static implicit operator Dynamic(Lissajous self) => new Dynamic(self);
+        public static implicit operator Lissajous(Dynamic value) => value.As<Lissajous>();
+        public String TypeName => "Lissajous";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Kx", (String)"Ky");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Kx), new Dynamic(Ky));
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)true);
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ButterflyCurve: IClosedCurve2D
+    {
+        public static ButterflyCurve Default = new ButterflyCurve();
+        public static ButterflyCurve New() => new ButterflyCurve();
+        public override bool Equals(object obj) => true;
+        public override int GetHashCode() => Intrinsics.CombineHashCodes();
+        public override string ToString() => $"{{  }}";
+        public static implicit operator Dynamic(ButterflyCurve self) => new Dynamic(self);
+        public static implicit operator ButterflyCurve(Dynamic value) => value.As<ButterflyCurve>();
+        public String TypeName => "ButterflyCurve";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>();
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
+        // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)true);
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Spiral: ICurve2D
+    {
+        [DataMember] public readonly Number Radius1;
+        [DataMember] public readonly Number Radius2;
+        [DataMember] public readonly Number NumTurns;
+        public Spiral WithRadius1(Number radius1) => new Spiral(radius1, Radius2, NumTurns);
+        public Spiral WithRadius2(Number radius2) => new Spiral(Radius1, radius2, NumTurns);
+        public Spiral WithNumTurns(Number numTurns) => new Spiral(Radius1, Radius2, numTurns);
+        public Spiral(Number radius1, Number radius2, Number numTurns) => (Radius1, Radius2, NumTurns) = (radius1, radius2, numTurns);
+        public static Spiral Default = new Spiral();
+        public static Spiral New(Number radius1, Number radius2, Number numTurns) => new Spiral(radius1, radius2, numTurns);
+        public static implicit operator (Number, Number, Number)(Spiral self) => (self.Radius1, self.Radius2, self.NumTurns);
+        public static implicit operator Spiral((Number, Number, Number) value) => new Spiral(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number radius1, out Number radius2, out Number numTurns) { radius1 = Radius1; radius2 = Radius2; numTurns = NumTurns; }
+        public override bool Equals(object obj) { if (!(obj is Spiral)) return false; var other = (Spiral)obj; return Radius1.Equals(other.Radius1) && Radius2.Equals(other.Radius2) && NumTurns.Equals(other.NumTurns); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius1, Radius2, NumTurns);
+        public override string ToString() => $"{{ \"Radius1\" = {Radius1}, \"Radius2\" = {Radius2}, \"NumTurns\" = {NumTurns} }}";
+        public static implicit operator Dynamic(Spiral self) => new Dynamic(self);
+        public static implicit operator Spiral(Dynamic value) => value.As<Spiral>();
+        public String TypeName => "Spiral";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius1", (String)"Radius2", (String)"NumTurns");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius1), new Dynamic(Radius2), new Dynamic(NumTurns));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
-        public Integer Count => 4;
-        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
-        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct CubicBezier3D: IArray<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Sin: ICurve2D
     {
-        public readonly Vector3D A;
-        public readonly Vector3D B;
-        public readonly Vector3D C;
-        public readonly Vector3D D;
+        [DataMember] public readonly Number Amplitude;
+        [DataMember] public readonly Number Frequency;
+        [DataMember] public readonly Number Phase;
+        public Sin WithAmplitude(Number amplitude) => new Sin(amplitude, Frequency, Phase);
+        public Sin WithFrequency(Number frequency) => new Sin(Amplitude, frequency, Phase);
+        public Sin WithPhase(Number phase) => new Sin(Amplitude, Frequency, phase);
+        public Sin(Number amplitude, Number frequency, Number phase) => (Amplitude, Frequency, Phase) = (amplitude, frequency, phase);
+        public static Sin Default = new Sin();
+        public static Sin New(Number amplitude, Number frequency, Number phase) => new Sin(amplitude, frequency, phase);
+        public static implicit operator (Number, Number, Number)(Sin self) => (self.Amplitude, self.Frequency, self.Phase);
+        public static implicit operator Sin((Number, Number, Number) value) => new Sin(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number amplitude, out Number frequency, out Number phase) { amplitude = Amplitude; frequency = Frequency; phase = Phase; }
+        public override bool Equals(object obj) { if (!(obj is Sin)) return false; var other = (Sin)obj; return Amplitude.Equals(other.Amplitude) && Frequency.Equals(other.Frequency) && Phase.Equals(other.Phase); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Amplitude, Frequency, Phase);
+        public override string ToString() => $"{{ \"Amplitude\" = {Amplitude}, \"Frequency\" = {Frequency}, \"Phase\" = {Phase} }}";
+        public static implicit operator Dynamic(Sin self) => new Dynamic(self);
+        public static implicit operator Sin(Dynamic value) => value.As<Sin>();
+        public String TypeName => "Sin";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Amplitude", (String)"Frequency", (String)"Phase");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Amplitude), new Dynamic(Frequency), new Dynamic(Phase));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Cos: ICurve2D
+    {
+        [DataMember] public readonly Number Amplitude;
+        [DataMember] public readonly Number Frequency;
+        [DataMember] public readonly Number Phase;
+        public Cos WithAmplitude(Number amplitude) => new Cos(amplitude, Frequency, Phase);
+        public Cos WithFrequency(Number frequency) => new Cos(Amplitude, frequency, Phase);
+        public Cos WithPhase(Number phase) => new Cos(Amplitude, Frequency, phase);
+        public Cos(Number amplitude, Number frequency, Number phase) => (Amplitude, Frequency, Phase) = (amplitude, frequency, phase);
+        public static Cos Default = new Cos();
+        public static Cos New(Number amplitude, Number frequency, Number phase) => new Cos(amplitude, frequency, phase);
+        public static implicit operator (Number, Number, Number)(Cos self) => (self.Amplitude, self.Frequency, self.Phase);
+        public static implicit operator Cos((Number, Number, Number) value) => new Cos(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number amplitude, out Number frequency, out Number phase) { amplitude = Amplitude; frequency = Frequency; phase = Phase; }
+        public override bool Equals(object obj) { if (!(obj is Cos)) return false; var other = (Cos)obj; return Amplitude.Equals(other.Amplitude) && Frequency.Equals(other.Frequency) && Phase.Equals(other.Phase); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Amplitude, Frequency, Phase);
+        public override string ToString() => $"{{ \"Amplitude\" = {Amplitude}, \"Frequency\" = {Frequency}, \"Phase\" = {Phase} }}";
+        public static implicit operator Dynamic(Cos self) => new Dynamic(self);
+        public static implicit operator Cos(Dynamic value) => value.As<Cos>();
+        public String TypeName => "Cos";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Amplitude", (String)"Frequency", (String)"Phase");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Amplitude), new Dynamic(Frequency), new Dynamic(Phase));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CubicBezier3D: IPointArray3D, ICurve3D
+    {
+        [DataMember] public readonly Vector3D A;
+        [DataMember] public readonly Vector3D B;
+        [DataMember] public readonly Vector3D C;
+        [DataMember] public readonly Vector3D D;
         public CubicBezier3D WithA(Vector3D a) => new CubicBezier3D(a, B, C, D);
         public CubicBezier3D WithB(Vector3D b) => new CubicBezier3D(A, b, C, D);
         public CubicBezier3D WithC(Vector3D c) => new CubicBezier3D(A, B, c, D);
@@ -4927,73 +5129,24 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
         public override bool Equals(object obj) { if (!(obj is CubicBezier3D)) return false; var other = (CubicBezier3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C) && D.Equals(other.D); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C, D);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C}, \"D\" = {D} }}";
         public static implicit operator Dynamic(CubicBezier3D self) => new Dynamic(self);
         public static implicit operator CubicBezier3D(Dynamic value) => value.As<CubicBezier3D>();
         public String TypeName => "CubicBezier3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
-        // Array predefined functions
-        public CubicBezier3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public CubicBezier3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
-        public static CubicBezier3D New(IArray<Vector3D> xs) => new CubicBezier3D(xs);
-        public static CubicBezier3D New(Vector3D[] xs) => new CubicBezier3D(xs);
-        public static implicit operator Vector3D[](CubicBezier3D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector3D>(CubicBezier3D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
         // Unimplemented concept functions
-        public Integer Count => 4;
-        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
-        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct QuadraticBezier2D: IArray<Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadraticBezier3D: IPointArray3D, ICurve3D
     {
-        public readonly Vector2D A;
-        public readonly Vector2D B;
-        public readonly Vector2D C;
-        public QuadraticBezier2D WithA(Vector2D a) => new QuadraticBezier2D(a, B, C);
-        public QuadraticBezier2D WithB(Vector2D b) => new QuadraticBezier2D(A, b, C);
-        public QuadraticBezier2D WithC(Vector2D c) => new QuadraticBezier2D(A, B, c);
-        public QuadraticBezier2D(Vector2D a, Vector2D b, Vector2D c) => (A, B, C) = (a, b, c);
-        public static QuadraticBezier2D Default = new QuadraticBezier2D();
-        public static QuadraticBezier2D New(Vector2D a, Vector2D b, Vector2D c) => new QuadraticBezier2D(a, b, c);
-        public static implicit operator (Vector2D, Vector2D, Vector2D)(QuadraticBezier2D self) => (self.A, self.B, self.C);
-        public static implicit operator QuadraticBezier2D((Vector2D, Vector2D, Vector2D) value) => new QuadraticBezier2D(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
-        public override bool Equals(object obj) { if (!(obj is QuadraticBezier2D)) return false; var other = (QuadraticBezier2D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(QuadraticBezier2D self) => new Dynamic(self);
-        public static implicit operator QuadraticBezier2D(Dynamic value) => value.As<QuadraticBezier2D>();
-        public String TypeName => "QuadraticBezier2D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
-        // Array predefined functions
-        public QuadraticBezier2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2]) { }
-        public QuadraticBezier2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2]) { }
-        public static QuadraticBezier2D New(IArray<Vector2D> xs) => new QuadraticBezier2D(xs);
-        public static QuadraticBezier2D New(Vector2D[] xs) => new QuadraticBezier2D(xs);
-        public static implicit operator Vector2D[](QuadraticBezier2D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector2D>(QuadraticBezier2D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
-        // Implemented concept functions and type functions
-        // Unimplemented concept functions
-        public Integer Count => 3;
-        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
-        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
-    }
-    public readonly partial struct QuadraticBezier3D: IArray<Vector3D>
-    {
-        public readonly Vector3D A;
-        public readonly Vector3D B;
-        public readonly Vector3D C;
+        [DataMember] public readonly Vector3D A;
+        [DataMember] public readonly Vector3D B;
+        [DataMember] public readonly Vector3D C;
         public QuadraticBezier3D WithA(Vector3D a) => new QuadraticBezier3D(a, B, C);
         public QuadraticBezier3D WithB(Vector3D b) => new QuadraticBezier3D(A, b, C);
         public QuadraticBezier3D WithC(Vector3D c) => new QuadraticBezier3D(A, B, c);
@@ -5005,35 +5158,219 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
         public override bool Equals(object obj) { if (!(obj is QuadraticBezier3D)) return false; var other = (QuadraticBezier3D)obj; return A.Equals(other.A) && B.Equals(other.B) && C.Equals(other.C); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B, C);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"A\" = {A}, \"B\" = {B}, \"C\" = {C} }}";
         public static implicit operator Dynamic(QuadraticBezier3D self) => new Dynamic(self);
         public static implicit operator QuadraticBezier3D(Dynamic value) => value.As<QuadraticBezier3D>();
         public String TypeName => "QuadraticBezier3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
-        // Array predefined functions
-        public QuadraticBezier3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2]) { }
-        public QuadraticBezier3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2]) { }
-        public static QuadraticBezier3D New(IArray<Vector3D> xs) => new QuadraticBezier3D(xs);
-        public static QuadraticBezier3D New(Vector3D[] xs) => new QuadraticBezier3D(xs);
-        public static implicit operator Vector3D[](QuadraticBezier3D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector3D>(QuadraticBezier3D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
+        // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
+        // Unimplemented concept functions
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TorusKnot: ICurve3D
+    {
+        [DataMember] public readonly Integer P;
+        [DataMember] public readonly Integer Q;
+        [DataMember] public readonly Number Radius;
+        public TorusKnot WithP(Integer p) => new TorusKnot(p, Q, Radius);
+        public TorusKnot WithQ(Integer q) => new TorusKnot(P, q, Radius);
+        public TorusKnot WithRadius(Number radius) => new TorusKnot(P, Q, radius);
+        public TorusKnot(Integer p, Integer q, Number radius) => (P, Q, Radius) = (p, q, radius);
+        public static TorusKnot Default = new TorusKnot();
+        public static TorusKnot New(Integer p, Integer q, Number radius) => new TorusKnot(p, q, radius);
+        public static implicit operator (Integer, Integer, Number)(TorusKnot self) => (self.P, self.Q, self.Radius);
+        public static implicit operator TorusKnot((Integer, Integer, Number) value) => new TorusKnot(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Integer p, out Integer q, out Number radius) { p = P; q = Q; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is TorusKnot)) return false; var other = (TorusKnot)obj; return P.Equals(other.P) && Q.Equals(other.Q) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(P, Q, Radius);
+        public override string ToString() => $"{{ \"P\" = {P}, \"Q\" = {Q}, \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(TorusKnot self) => new Dynamic(self);
+        public static implicit operator TorusKnot(Dynamic value) => value.As<TorusKnot>();
+        public String TypeName => "TorusKnot";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"P", (String)"Q", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(P), new Dynamic(Q), new Dynamic(Radius));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
-        public Integer Count => 3;
-        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
-        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    public readonly partial struct Quaternion: IValue<Quaternion>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Helix: ICurve3D
     {
-        public readonly Number X;
-        public readonly Number Y;
-        public readonly Number Z;
-        public readonly Number W;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number NumTurns;
+        public Helix WithRadius(Number radius) => new Helix(radius, Height, NumTurns);
+        public Helix WithHeight(Number height) => new Helix(Radius, height, NumTurns);
+        public Helix WithNumTurns(Number numTurns) => new Helix(Radius, Height, numTurns);
+        public Helix(Number radius, Number height, Number numTurns) => (Radius, Height, NumTurns) = (radius, height, numTurns);
+        public static Helix Default = new Helix();
+        public static Helix New(Number radius, Number height, Number numTurns) => new Helix(radius, height, numTurns);
+        public static implicit operator (Number, Number, Number)(Helix self) => (self.Radius, self.Height, self.NumTurns);
+        public static implicit operator Helix((Number, Number, Number) value) => new Helix(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number radius, out Number height, out Number numTurns) { radius = Radius; height = Height; numTurns = NumTurns; }
+        public override bool Equals(object obj) { if (!(obj is Helix)) return false; var other = (Helix)obj; return Radius.Equals(other.Radius) && Height.Equals(other.Height) && NumTurns.Equals(other.NumTurns); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius, Height, NumTurns);
+        public override string ToString() => $"{{ \"Radius\" = {Radius}, \"Height\" = {Height}, \"NumTurns\" = {NumTurns} }}";
+        public static implicit operator Dynamic(Helix self) => new Dynamic(self);
+        public static implicit operator Helix(Dynamic value) => value.As<Helix>();
+        public String TypeName => "Helix";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius", (String)"Height", (String)"NumTurns");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Height), new Dynamic(NumTurns));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TrefoilKnot: ICurve3D
+    {
+        public static TrefoilKnot Default = new TrefoilKnot();
+        public static TrefoilKnot New() => new TrefoilKnot();
+        public override bool Equals(object obj) => true;
+        public override int GetHashCode() => Intrinsics.CombineHashCodes();
+        public override string ToString() => $"{{  }}";
+        public static implicit operator Dynamic(TrefoilKnot self) => new Dynamic(self);
+        public static implicit operator TrefoilKnot(Dynamic value) => value.As<TrefoilKnot>();
+        public String TypeName => "TrefoilKnot";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>();
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct FigureEightKnot: ICurve3D
+    {
+        public static FigureEightKnot Default = new FigureEightKnot();
+        public static FigureEightKnot New() => new FigureEightKnot();
+        public override bool Equals(object obj) => true;
+        public override int GetHashCode() => Intrinsics.CombineHashCodes();
+        public override string ToString() => $"{{  }}";
+        public static implicit operator Dynamic(FigureEightKnot self) => new Dynamic(self);
+        public static implicit operator FigureEightKnot(Dynamic value) => value.As<FigureEightKnot>();
+        public String TypeName => "FigureEightKnot";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>();
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Boolean Closed => Intrinsics.Closed(this);
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Transform3D: IValue<Transform3D>, ITransform3D<Transform3D>
+    {
+        [DataMember] public readonly Vector3D Translation;
+        [DataMember] public readonly Quaternion Rotation;
+        [DataMember] public readonly Vector3D Scale;
+        public Transform3D WithTranslation(Vector3D translation) => new Transform3D(translation, Rotation, Scale);
+        public Transform3D WithRotation(Quaternion rotation) => new Transform3D(Translation, rotation, Scale);
+        public Transform3D WithScale(Vector3D scale) => new Transform3D(Translation, Rotation, scale);
+        public Transform3D(Vector3D translation, Quaternion rotation, Vector3D scale) => (Translation, Rotation, Scale) = (translation, rotation, scale);
+        public static Transform3D Default = new Transform3D();
+        public static Transform3D New(Vector3D translation, Quaternion rotation, Vector3D scale) => new Transform3D(translation, rotation, scale);
+        public static implicit operator (Vector3D, Quaternion, Vector3D)(Transform3D self) => (self.Translation, self.Rotation, self.Scale);
+        public static implicit operator Transform3D((Vector3D, Quaternion, Vector3D) value) => new Transform3D(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Vector3D translation, out Quaternion rotation, out Vector3D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
+        public override bool Equals(object obj) { if (!(obj is Transform3D)) return false; var other = (Transform3D)obj; return Translation.Equals(other.Translation) && Rotation.Equals(other.Rotation) && Scale.Equals(other.Scale); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Translation, Rotation, Scale);
+        public override string ToString() => $"{{ \"Translation\" = {Translation}, \"Rotation\" = {Rotation}, \"Scale\" = {Scale} }}";
+        public static implicit operator Dynamic(Transform3D self) => new Dynamic(self);
+        public static implicit operator Transform3D(Dynamic value) => value.As<Transform3D>();
+        public String TypeName => "Transform3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Translation", (String)"Rotation", (String)"Scale");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Translation), new Dynamic(Rotation), new Dynamic(Scale));
+        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Transform3D)b);
+        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
+        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
+        ITransform3D ITransform3D.Inverse => this.Inverse;
+        // Implemented concept functions and type functions
+        public Boolean Equals(Transform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator ==(Transform3D a, Transform3D b) => a.Equals(b);
+        public Boolean NotEquals(Transform3D b) => this.Equals(b).Not;
+        public static Boolean operator !=(Transform3D a, Transform3D b) => a.NotEquals(b);
+        // Unimplemented concept functions
+        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
+        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
+        public Transform3D Inverse => Intrinsics.Inverse(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Pose3D: IValue<Pose3D>, ITransform3D<Pose3D>
+    {
+        [DataMember] public readonly Vector3D Position;
+        [DataMember] public readonly Rotation3D Rotation;
+        public Pose3D WithPosition(Vector3D position) => new Pose3D(position, Rotation);
+        public Pose3D WithRotation(Rotation3D rotation) => new Pose3D(Position, rotation);
+        public Pose3D(Vector3D position, Rotation3D rotation) => (Position, Rotation) = (position, rotation);
+        public static Pose3D Default = new Pose3D();
+        public static Pose3D New(Vector3D position, Rotation3D rotation) => new Pose3D(position, rotation);
+        public static implicit operator (Vector3D, Rotation3D)(Pose3D self) => (self.Position, self.Rotation);
+        public static implicit operator Pose3D((Vector3D, Rotation3D) value) => new Pose3D(value.Item1, value.Item2);
+        public void Deconstruct(out Vector3D position, out Rotation3D rotation) { position = Position; rotation = Rotation; }
+        public override bool Equals(object obj) { if (!(obj is Pose3D)) return false; var other = (Pose3D)obj; return Position.Equals(other.Position) && Rotation.Equals(other.Rotation); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Position, Rotation);
+        public override string ToString() => $"{{ \"Position\" = {Position}, \"Rotation\" = {Rotation} }}";
+        public static implicit operator Dynamic(Pose3D self) => new Dynamic(self);
+        public static implicit operator Pose3D(Dynamic value) => value.As<Pose3D>();
+        public String TypeName => "Pose3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Position", (String)"Rotation");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Rotation));
+        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Pose3D)b);
+        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
+        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
+        ITransform3D ITransform3D.Inverse => this.Inverse;
+        // Implemented concept functions and type functions
+        public Boolean Equals(Pose3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator ==(Pose3D a, Pose3D b) => a.Equals(b);
+        public Boolean NotEquals(Pose3D b) => this.Equals(b).Not;
+        public static Boolean operator !=(Pose3D a, Pose3D b) => a.NotEquals(b);
+        // Unimplemented concept functions
+        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
+        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
+        public Pose3D Inverse => Intrinsics.Inverse(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Frame3D: IValue<Frame3D>, ITransform3D<Frame3D>
+    {
+        [DataMember] public readonly Vector3D Forward;
+        [DataMember] public readonly Vector3D Up;
+        [DataMember] public readonly Vector3D Position;
+        public Frame3D WithForward(Vector3D forward) => new Frame3D(forward, Up, Position);
+        public Frame3D WithUp(Vector3D up) => new Frame3D(Forward, up, Position);
+        public Frame3D WithPosition(Vector3D position) => new Frame3D(Forward, Up, position);
+        public Frame3D(Vector3D forward, Vector3D up, Vector3D position) => (Forward, Up, Position) = (forward, up, position);
+        public static Frame3D Default = new Frame3D();
+        public static Frame3D New(Vector3D forward, Vector3D up, Vector3D position) => new Frame3D(forward, up, position);
+        public static implicit operator (Vector3D, Vector3D, Vector3D)(Frame3D self) => (self.Forward, self.Up, self.Position);
+        public static implicit operator Frame3D((Vector3D, Vector3D, Vector3D) value) => new Frame3D(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Vector3D forward, out Vector3D up, out Vector3D position) { forward = Forward; up = Up; position = Position; }
+        public override bool Equals(object obj) { if (!(obj is Frame3D)) return false; var other = (Frame3D)obj; return Forward.Equals(other.Forward) && Up.Equals(other.Up) && Position.Equals(other.Position); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Forward, Up, Position);
+        public override string ToString() => $"{{ \"Forward\" = {Forward}, \"Up\" = {Up}, \"Position\" = {Position} }}";
+        public static implicit operator Dynamic(Frame3D self) => new Dynamic(self);
+        public static implicit operator Frame3D(Dynamic value) => value.As<Frame3D>();
+        public String TypeName => "Frame3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Forward", (String)"Up", (String)"Position");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Forward), new Dynamic(Up), new Dynamic(Position));
+        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Frame3D)b);
+        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
+        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
+        ITransform3D ITransform3D.Inverse => this.Inverse;
+        // Implemented concept functions and type functions
+        public Boolean Equals(Frame3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
+        public static Boolean operator ==(Frame3D a, Frame3D b) => a.Equals(b);
+        public Boolean NotEquals(Frame3D b) => this.Equals(b).Not;
+        public static Boolean operator !=(Frame3D a, Frame3D b) => a.NotEquals(b);
+        // Unimplemented concept functions
+        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
+        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
+        public Frame3D Inverse => Intrinsics.Inverse(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Quaternion: IValue<Quaternion>, IArray<Number>, ITransform3D<Quaternion>
+    {
+        [DataMember] public readonly Number X;
+        [DataMember] public readonly Number Y;
+        [DataMember] public readonly Number Z;
+        [DataMember] public readonly Number W;
         public Quaternion WithX(Number x) => new Quaternion(x, Y, Z, W);
         public Quaternion WithY(Number y) => new Quaternion(X, y, Z, W);
         public Quaternion WithZ(Number z) => new Quaternion(X, Y, z, W);
@@ -5046,24 +5383,44 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
         public override bool Equals(object obj) { if (!(obj is Quaternion)) return false; var other = (Quaternion)obj; return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z) && W.Equals(other.W); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(X, Y, Z, W);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"X\" = {X}, \"Y\" = {Y}, \"Z\" = {Z}, \"W\" = {W} }}";
         public static implicit operator Dynamic(Quaternion self) => new Dynamic(self);
         public static implicit operator Quaternion(Dynamic value) => value.As<Quaternion>();
         public String TypeName => "Quaternion";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"X", (String)"Y", (String)"Z", (String)"W");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(X), new Dynamic(Y), new Dynamic(Z), new Dynamic(W));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Quaternion)b);
+        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
+        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
+        ITransform3D ITransform3D.Inverse => this.Inverse;
+        // Array predefined functions
+        public Quaternion(IArray<Number> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public Quaternion(Number[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public static Quaternion New(IArray<Number> xs) => new Quaternion(xs);
+        public static Quaternion New(Number[] xs) => new Quaternion(xs);
+        public static implicit operator Number[](Quaternion self) => self.ToSystemArray();
+        public static implicit operator Array<Number>(Quaternion self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Number> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Equals(Quaternion b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Quaternion a, Quaternion b) => a.Equals(b);
         public Boolean NotEquals(Quaternion b) => this.Equals(b).Not;
         public static Boolean operator !=(Quaternion a, Quaternion b) => a.NotEquals(b);
         // Unimplemented concept functions
+        public Integer Count => 4;
+        public Number At(Integer n) => n == 0 ? X : n == 1 ? Y : n == 2 ? Z : n == 3 ? W : throw new System.IndexOutOfRangeException();
+        public Number this[Integer n] => n == 0 ? X : n == 1 ? Y : n == 2 ? Z : n == 3 ? W : throw new System.IndexOutOfRangeException();
+        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
+        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
+        public Quaternion Inverse => Intrinsics.Inverse(this);
     }
-    public readonly partial struct AxisAngle: IValue<AxisAngle>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct AxisAngle: IValue<AxisAngle>, ITransform3D<AxisAngle>
     {
-        public readonly Vector3D Axis;
-        public readonly Angle Angle;
+        [DataMember] public readonly Vector3D Axis;
+        [DataMember] public readonly Angle Angle;
         public AxisAngle WithAxis(Vector3D axis) => new AxisAngle(axis, Angle);
         public AxisAngle WithAngle(Angle angle) => new AxisAngle(Axis, angle);
         public AxisAngle(Vector3D axis, Angle angle) => (Axis, Angle) = (axis, angle);
@@ -5074,25 +5431,31 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Vector3D axis, out Angle angle) { axis = Axis; angle = Angle; }
         public override bool Equals(object obj) { if (!(obj is AxisAngle)) return false; var other = (AxisAngle)obj; return Axis.Equals(other.Axis) && Angle.Equals(other.Angle); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Axis, Angle);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Axis\" = {Axis}, \"Angle\" = {Angle} }}";
         public static implicit operator Dynamic(AxisAngle self) => new Dynamic(self);
         public static implicit operator AxisAngle(Dynamic value) => value.As<AxisAngle>();
         public String TypeName => "AxisAngle";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Axis", (String)"Angle");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Axis), new Dynamic(Angle));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((AxisAngle)b);
+        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
+        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
+        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
         public Boolean Equals(AxisAngle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(AxisAngle a, AxisAngle b) => a.Equals(b);
         public Boolean NotEquals(AxisAngle b) => this.Equals(b).Not;
         public static Boolean operator !=(AxisAngle a, AxisAngle b) => a.NotEquals(b);
         // Unimplemented concept functions
+        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
+        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
+        public AxisAngle Inverse => Intrinsics.Inverse(this);
     }
-    public readonly partial struct EulerAngles: IValue<EulerAngles>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct EulerAngles: IValue<EulerAngles>, ITransform3D<EulerAngles>
     {
-        public readonly Angle Yaw;
-        public readonly Angle Pitch;
-        public readonly Angle Roll;
+        [DataMember] public readonly Angle Yaw;
+        [DataMember] public readonly Angle Pitch;
+        [DataMember] public readonly Angle Roll;
         public EulerAngles WithYaw(Angle yaw) => new EulerAngles(yaw, Pitch, Roll);
         public EulerAngles WithPitch(Angle pitch) => new EulerAngles(Yaw, pitch, Roll);
         public EulerAngles WithRoll(Angle roll) => new EulerAngles(Yaw, Pitch, roll);
@@ -5104,23 +5467,29 @@ namespace Plato.DoublePrecision
         public void Deconstruct(out Angle yaw, out Angle pitch, out Angle roll) { yaw = Yaw; pitch = Pitch; roll = Roll; }
         public override bool Equals(object obj) { if (!(obj is EulerAngles)) return false; var other = (EulerAngles)obj; return Yaw.Equals(other.Yaw) && Pitch.Equals(other.Pitch) && Roll.Equals(other.Roll); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Yaw, Pitch, Roll);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Yaw\" = {Yaw}, \"Pitch\" = {Pitch}, \"Roll\" = {Roll} }}";
         public static implicit operator Dynamic(EulerAngles self) => new Dynamic(self);
         public static implicit operator EulerAngles(Dynamic value) => value.As<EulerAngles>();
         public String TypeName => "EulerAngles";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Yaw", (String)"Pitch", (String)"Roll");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Yaw), new Dynamic(Pitch), new Dynamic(Roll));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((EulerAngles)b);
+        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
+        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
+        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
         public Boolean Equals(EulerAngles b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(EulerAngles a, EulerAngles b) => a.Equals(b);
         public Boolean NotEquals(EulerAngles b) => this.Equals(b).Not;
         public static Boolean operator !=(EulerAngles a, EulerAngles b) => a.NotEquals(b);
         // Unimplemented concept functions
+        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
+        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
+        public EulerAngles Inverse => Intrinsics.Inverse(this);
     }
-    public readonly partial struct Rotation3D: IValue<Rotation3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Rotation3D: IValue<Rotation3D>, ITransform3D<Rotation3D>
     {
-        public readonly Quaternion Quaternion;
+        [DataMember] public readonly Quaternion Quaternion;
         public Rotation3D WithQuaternion(Quaternion quaternion) => new Rotation3D(quaternion);
         public Rotation3D(Quaternion quaternion) => (Quaternion) = (quaternion);
         public static Rotation3D Default = new Rotation3D();
@@ -5129,115 +5498,57 @@ namespace Plato.DoublePrecision
         public static implicit operator Rotation3D(Quaternion value) => new Rotation3D(value);
         public override bool Equals(object obj) { if (!(obj is Rotation3D)) return false; var other = (Rotation3D)obj; return Quaternion.Equals(other.Quaternion); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Quaternion);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
+        public override string ToString() => $"{{ \"Quaternion\" = {Quaternion} }}";
         public static implicit operator Dynamic(Rotation3D self) => new Dynamic(self);
         public static implicit operator Rotation3D(Dynamic value) => value.As<Rotation3D>();
         public String TypeName => "Rotation3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Quaternion");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Quaternion));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Rotation3D)b);
+        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
+        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
+        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
         public Boolean Equals(Rotation3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Rotation3D a, Rotation3D b) => a.Equals(b);
         public Boolean NotEquals(Rotation3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Rotation3D a, Rotation3D b) => a.NotEquals(b);
         // Unimplemented concept functions
+        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
+        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
+        public Rotation3D Inverse => Intrinsics.Inverse(this);
     }
-    public readonly partial struct Orientation3D: IValue<Orientation3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LineMesh3D: ILineMesh3D
     {
-        public readonly Rotation3D IValue;
-        public Orientation3D WithIValue(Rotation3D iValue) => new Orientation3D(iValue);
-        public Orientation3D(Rotation3D iValue) => (IValue) = (iValue);
-        public static Orientation3D Default = new Orientation3D();
-        public static Orientation3D New(Rotation3D iValue) => new Orientation3D(iValue);
-        public static implicit operator Rotation3D(Orientation3D self) => self.IValue;
-        public static implicit operator Orientation3D(Rotation3D value) => new Orientation3D(value);
-        public override bool Equals(object obj) { if (!(obj is Orientation3D)) return false; var other = (Orientation3D)obj; return IValue.Equals(other.IValue); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(IValue);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Orientation3D self) => new Dynamic(self);
-        public static implicit operator Orientation3D(Dynamic value) => value.As<Orientation3D>();
-        public String TypeName => "Orientation3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"IValue");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(IValue));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Orientation3D)b);
-        // Implemented concept functions and type functions
-        public Boolean Equals(Orientation3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Orientation3D a, Orientation3D b) => a.Equals(b);
-        public Boolean NotEquals(Orientation3D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Orientation3D a, Orientation3D b) => a.NotEquals(b);
-        // Unimplemented concept functions
-    }
-    public readonly partial struct Line4D: IValue<Line4D>, IArray<Vector4D>
-    {
-        public readonly Vector4D A;
-        public readonly Vector4D B;
-        public Line4D WithA(Vector4D a) => new Line4D(a, B);
-        public Line4D WithB(Vector4D b) => new Line4D(A, b);
-        public Line4D(Vector4D a, Vector4D b) => (A, B) = (a, b);
-        public static Line4D Default = new Line4D();
-        public static Line4D New(Vector4D a, Vector4D b) => new Line4D(a, b);
-        public static implicit operator (Vector4D, Vector4D)(Line4D self) => (self.A, self.B);
-        public static implicit operator Line4D((Vector4D, Vector4D) value) => new Line4D(value.Item1, value.Item2);
-        public void Deconstruct(out Vector4D a, out Vector4D b) { a = A; b = B; }
-        public override bool Equals(object obj) { if (!(obj is Line4D)) return false; var other = (Line4D)obj; return A.Equals(other.A) && B.Equals(other.B); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(A, B);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Line4D self) => new Dynamic(self);
-        public static implicit operator Line4D(Dynamic value) => value.As<Line4D>();
-        public String TypeName => "Line4D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
-        Boolean IEquatable.Equals(IEquatable b) => this.Equals((Line4D)b);
-        // Array predefined functions
-        public Line4D(IArray<Vector4D> xs) : this(xs[0], xs[1]) { }
-        public Line4D(Vector4D[] xs) : this(xs[0], xs[1]) { }
-        public static Line4D New(IArray<Vector4D> xs) => new Line4D(xs);
-        public static Line4D New(Vector4D[] xs) => new Line4D(xs);
-        public static implicit operator Vector4D[](Line4D self) => self.ToSystemArray();
-        public static implicit operator Array<Vector4D>(Line4D self) => self.ToPrimitiveArray();
-        public System.Collections.Generic.IEnumerator<Vector4D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        Vector4D System.Collections.Generic.IReadOnlyList<Vector4D>.this[int n] => At(n);
-        int System.Collections.Generic.IReadOnlyCollection<Vector4D>.Count => this.Count;
-        // Implemented concept functions and type functions
-        public Boolean Equals(Line4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
-        public static Boolean operator ==(Line4D a, Line4D b) => a.Equals(b);
-        public Boolean NotEquals(Line4D b) => this.Equals(b).Not;
-        public static Boolean operator !=(Line4D a, Line4D b) => a.NotEquals(b);
-        // Unimplemented concept functions
-        public Integer Count => 2;
-        public Vector4D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
-        public Vector4D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
-    }
-    public readonly partial struct LineMesh: ILineMesh
-    {
-        public readonly IArray<Vector3D> Points;
-        public readonly IArray<Integer> Indices;
-        public LineMesh WithPoints(IArray<Vector3D> points) => new LineMesh(points, Indices);
-        public LineMesh WithIndices(IArray<Integer> indices) => new LineMesh(Points, indices);
-        public LineMesh(IArray<Vector3D> points, IArray<Integer> indices) => (Points, Indices) = (points, indices);
-        public static LineMesh Default = new LineMesh();
-        public static LineMesh New(IArray<Vector3D> points, IArray<Integer> indices) => new LineMesh(points, indices);
-        public static implicit operator (IArray<Vector3D>, IArray<Integer>)(LineMesh self) => (self.Points, self.Indices);
-        public static implicit operator LineMesh((IArray<Vector3D>, IArray<Integer>) value) => new LineMesh(value.Item1, value.Item2);
+        [DataMember] public readonly IArray<Vector3D> Points;
+        [DataMember] public readonly IArray<Integer> Indices;
+        public LineMesh3D WithPoints(IArray<Vector3D> points) => new LineMesh3D(points, Indices);
+        public LineMesh3D WithIndices(IArray<Integer> indices) => new LineMesh3D(Points, indices);
+        public LineMesh3D(IArray<Vector3D> points, IArray<Integer> indices) => (Points, Indices) = (points, indices);
+        public static LineMesh3D Default = new LineMesh3D();
+        public static LineMesh3D New(IArray<Vector3D> points, IArray<Integer> indices) => new LineMesh3D(points, indices);
+        public static implicit operator (IArray<Vector3D>, IArray<Integer>)(LineMesh3D self) => (self.Points, self.Indices);
+        public static implicit operator LineMesh3D((IArray<Vector3D>, IArray<Integer>) value) => new LineMesh3D(value.Item1, value.Item2);
         public void Deconstruct(out IArray<Vector3D> points, out IArray<Integer> indices) { points = Points; indices = Indices; }
-        public override bool Equals(object obj) { if (!(obj is LineMesh)) return false; var other = (LineMesh)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
+        public override bool Equals(object obj) { if (!(obj is LineMesh3D)) return false; var other = (LineMesh3D)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Indices);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(LineMesh self) => new Dynamic(self);
-        public static implicit operator LineMesh(Dynamic value) => value.As<LineMesh>();
-        public String TypeName => "LineMesh";
+        public override string ToString() => $"{{ \"Points\" = {Points}, \"Indices\" = {Indices} }}";
+        public static implicit operator Dynamic(LineMesh3D self) => new Dynamic(self);
+        public static implicit operator LineMesh3D(Dynamic value) => value.As<LineMesh3D>();
+        public String TypeName => "LineMesh3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Indices");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Indices));
-        IArray<Integer> IIndexedGeometry3D.Indices => Indices;
-        IArray<Vector3D> IPoints3D.Points => Points;
+        IArray<Vector3D> IPointGeometry3D.Points => Points;
+        IArray<Integer> IIndexedGeometry.Indices => Indices;
         // Implemented concept functions and type functions
         public IArray<Line3D> Primitives => this.AllFaceVertices.Map((p) => Line3D.New(p));
-        public Lines Lines => Lines.New(this.Primitives);
-        public static implicit operator Lines(LineMesh g) => g.Lines;
-        public Integer PrimitiveSize => ((Integer)2);
+        public PointArray3D PointArray3D => this.Points;
+        public static implicit operator PointArray3D(LineMesh3D g) => g.PointArray3D;
+        public LineArray3D LineArray3D => this.Primitives;
+        public static implicit operator LineArray3D(LineMesh3D g) => g.LineArray3D;
         public Integer NumFaces => this.NumPrimitives;
+        public Integer NumVertices => this.Points.Count;
+        public IArray<Vector3D> Vertices => this;
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
         public IArray<Vector3D> FaceVertices(Integer f){
@@ -5249,41 +5560,45 @@ namespace Plato.DoublePrecision
             var _var36 = this;
             return this.Indices.Map((i) => _var36.Vertices.At(i)).Slices(this.PrimitiveSize);
         }
-         } public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this.Points;
+         } public Integer PrimitiveSize => ((Integer)2);
         // Unimplemented concept functions
     }
-    public readonly partial struct TriangleMesh: ITriangleMesh
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TriangleMesh3D: ITriangleMesh3D
     {
-        public readonly IArray<Vector3D> Points;
-        public readonly IArray<Integer> Indices;
-        public TriangleMesh WithPoints(IArray<Vector3D> points) => new TriangleMesh(points, Indices);
-        public TriangleMesh WithIndices(IArray<Integer> indices) => new TriangleMesh(Points, indices);
-        public TriangleMesh(IArray<Vector3D> points, IArray<Integer> indices) => (Points, Indices) = (points, indices);
-        public static TriangleMesh Default = new TriangleMesh();
-        public static TriangleMesh New(IArray<Vector3D> points, IArray<Integer> indices) => new TriangleMesh(points, indices);
-        public static implicit operator (IArray<Vector3D>, IArray<Integer>)(TriangleMesh self) => (self.Points, self.Indices);
-        public static implicit operator TriangleMesh((IArray<Vector3D>, IArray<Integer>) value) => new TriangleMesh(value.Item1, value.Item2);
+        [DataMember] public readonly IArray<Vector3D> Points;
+        [DataMember] public readonly IArray<Integer> Indices;
+        public TriangleMesh3D WithPoints(IArray<Vector3D> points) => new TriangleMesh3D(points, Indices);
+        public TriangleMesh3D WithIndices(IArray<Integer> indices) => new TriangleMesh3D(Points, indices);
+        public TriangleMesh3D(IArray<Vector3D> points, IArray<Integer> indices) => (Points, Indices) = (points, indices);
+        public static TriangleMesh3D Default = new TriangleMesh3D();
+        public static TriangleMesh3D New(IArray<Vector3D> points, IArray<Integer> indices) => new TriangleMesh3D(points, indices);
+        public static implicit operator (IArray<Vector3D>, IArray<Integer>)(TriangleMesh3D self) => (self.Points, self.Indices);
+        public static implicit operator TriangleMesh3D((IArray<Vector3D>, IArray<Integer>) value) => new TriangleMesh3D(value.Item1, value.Item2);
         public void Deconstruct(out IArray<Vector3D> points, out IArray<Integer> indices) { points = Points; indices = Indices; }
-        public override bool Equals(object obj) { if (!(obj is TriangleMesh)) return false; var other = (TriangleMesh)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
+        public override bool Equals(object obj) { if (!(obj is TriangleMesh3D)) return false; var other = (TriangleMesh3D)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Indices);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(TriangleMesh self) => new Dynamic(self);
-        public static implicit operator TriangleMesh(Dynamic value) => value.As<TriangleMesh>();
-        public String TypeName => "TriangleMesh";
+        public override string ToString() => $"{{ \"Points\" = {Points}, \"Indices\" = {Indices} }}";
+        public static implicit operator Dynamic(TriangleMesh3D self) => new Dynamic(self);
+        public static implicit operator TriangleMesh3D(Dynamic value) => value.As<TriangleMesh3D>();
+        public String TypeName => "TriangleMesh3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Indices");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Indices));
-        IArray<Integer> IIndexedGeometry3D.Indices => Indices;
-        IArray<Vector3D> IPoints3D.Points => Points;
+        IArray<Vector3D> IPointGeometry3D.Points => Points;
+        IArray<Integer> IIndexedGeometry.Indices => Indices;
         // Implemented concept functions and type functions
         public IArray<Triangle3D> Primitives => this.AllFaceVertices.Map((p) => Triangle3D.New(p));
-        public LineMesh LineMesh => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
-        public static implicit operator LineMesh(TriangleMesh g) => g.LineMesh;
-        public Triangles Triangles => Triangles.New(this.Primitives);
-        public static implicit operator Triangles(TriangleMesh g) => g.Triangles;
-        public Integer PrimitiveSize => ((Integer)3);
+        public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
+        public static implicit operator LineMesh3D(TriangleMesh3D g) => g.LineMesh3D;
+        public PointArray3D PointArray3D => this.Points;
+        public static implicit operator PointArray3D(TriangleMesh3D g) => g.PointArray3D;
+        public LineArray3D LineArray3D => this.Primitives.FlatMap((t) => t.Lines);
+        public static implicit operator LineArray3D(TriangleMesh3D g) => g.LineArray3D;
+        public TriangleArray3D TriangleArray3D => this.Primitives;
+        public static implicit operator TriangleArray3D(TriangleMesh3D g) => g.TriangleArray3D;
         public IArray<Triangle3D> Faces => this.Primitives;
         public Integer NumFaces => this.NumPrimitives;
+        public Integer NumVertices => this.Points.Count;
+        public IArray<Vector3D> Vertices => this;
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
         public IArray<Vector3D> FaceVertices(Integer f){
@@ -5295,43 +5610,47 @@ namespace Plato.DoublePrecision
             var _var38 = this;
             return this.Indices.Map((i) => _var38.Vertices.At(i)).Slices(this.PrimitiveSize);
         }
-         } public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this.Points;
+         } public Integer PrimitiveSize => ((Integer)3);
         // Unimplemented concept functions
     }
-    public readonly partial struct QuadMesh: IQuadMesh
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadMesh3D: IQuadMesh3D
     {
-        public readonly IArray<Vector3D> Points;
-        public readonly IArray<Integer> Indices;
-        public QuadMesh WithPoints(IArray<Vector3D> points) => new QuadMesh(points, Indices);
-        public QuadMesh WithIndices(IArray<Integer> indices) => new QuadMesh(Points, indices);
-        public QuadMesh(IArray<Vector3D> points, IArray<Integer> indices) => (Points, Indices) = (points, indices);
-        public static QuadMesh Default = new QuadMesh();
-        public static QuadMesh New(IArray<Vector3D> points, IArray<Integer> indices) => new QuadMesh(points, indices);
-        public static implicit operator (IArray<Vector3D>, IArray<Integer>)(QuadMesh self) => (self.Points, self.Indices);
-        public static implicit operator QuadMesh((IArray<Vector3D>, IArray<Integer>) value) => new QuadMesh(value.Item1, value.Item2);
+        [DataMember] public readonly IArray<Vector3D> Points;
+        [DataMember] public readonly IArray<Integer> Indices;
+        public QuadMesh3D WithPoints(IArray<Vector3D> points) => new QuadMesh3D(points, Indices);
+        public QuadMesh3D WithIndices(IArray<Integer> indices) => new QuadMesh3D(Points, indices);
+        public QuadMesh3D(IArray<Vector3D> points, IArray<Integer> indices) => (Points, Indices) = (points, indices);
+        public static QuadMesh3D Default = new QuadMesh3D();
+        public static QuadMesh3D New(IArray<Vector3D> points, IArray<Integer> indices) => new QuadMesh3D(points, indices);
+        public static implicit operator (IArray<Vector3D>, IArray<Integer>)(QuadMesh3D self) => (self.Points, self.Indices);
+        public static implicit operator QuadMesh3D((IArray<Vector3D>, IArray<Integer>) value) => new QuadMesh3D(value.Item1, value.Item2);
         public void Deconstruct(out IArray<Vector3D> points, out IArray<Integer> indices) { points = Points; indices = Indices; }
-        public override bool Equals(object obj) { if (!(obj is QuadMesh)) return false; var other = (QuadMesh)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
+        public override bool Equals(object obj) { if (!(obj is QuadMesh3D)) return false; var other = (QuadMesh3D)obj; return Points.Equals(other.Points) && Indices.Equals(other.Indices); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Indices);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(QuadMesh self) => new Dynamic(self);
-        public static implicit operator QuadMesh(Dynamic value) => value.As<QuadMesh>();
-        public String TypeName => "QuadMesh";
+        public override string ToString() => $"{{ \"Points\" = {Points}, \"Indices\" = {Indices} }}";
+        public static implicit operator Dynamic(QuadMesh3D self) => new Dynamic(self);
+        public static implicit operator QuadMesh3D(Dynamic value) => value.As<QuadMesh3D>();
+        public String TypeName => "QuadMesh3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Indices");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Indices));
-        IArray<Integer> IIndexedGeometry3D.Indices => Indices;
-        IArray<Vector3D> IPoints3D.Points => Points;
+        IArray<Vector3D> IPointGeometry3D.Points => Points;
+        IArray<Integer> IIndexedGeometry.Indices => Indices;
         // Implemented concept functions and type functions
         public IArray<Quad3D> Primitives => this.AllFaceVertices.Map((p) => Quad3D.New(p));
-        public LineMesh LineMesh => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
-        public static implicit operator LineMesh(QuadMesh g) => g.LineMesh;
-        public TriangleMesh TriangleMesh => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
-        public static implicit operator TriangleMesh(QuadMesh g) => g.TriangleMesh;
-        public Quads Quads => Quads.New(this.Primitives);
-        public static implicit operator Quads(QuadMesh g) => g.Quads;
-        public Integer PrimitiveSize => ((Integer)4);
+        public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
+        public static implicit operator LineMesh3D(QuadMesh3D g) => g.LineMesh3D;
+        public TriangleMesh3D TriangleMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
+        public static implicit operator TriangleMesh3D(QuadMesh3D g) => g.TriangleMesh3D;
+        public PointArray3D PointArray3D => this.Points;
+        public static implicit operator PointArray3D(QuadMesh3D g) => g.PointArray3D;
+        public LineArray3D LineArray3D => this.Primitives.FlatMap((t) => t.Lines);
+        public static implicit operator LineArray3D(QuadMesh3D g) => g.LineArray3D;
+        public QuadArray3D QuadArray3D => this.Primitives;
+        public static implicit operator QuadArray3D(QuadMesh3D g) => g.QuadArray3D;
         public IArray<Quad3D> Faces => this.Primitives;
         public Integer NumFaces => this.NumPrimitives;
+        public Integer NumVertices => this.Points.Count;
+        public IArray<Vector3D> Vertices => this;
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
         public IArray<Vector3D> FaceVertices(Integer f){
@@ -5343,38 +5662,276 @@ namespace Plato.DoublePrecision
             var _var40 = this;
             return this.Indices.Map((i) => _var40.Vertices.At(i)).Slices(this.PrimitiveSize);
         }
-         } public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this.Points;
+         } public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
     }
-    public readonly partial struct Lines: ILines
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PolyLine2D: IPolyLine2D
     {
-        public readonly IArray<Line3D> Primitives;
-        public Lines WithPrimitives(IArray<Line3D> primitives) => new Lines(primitives);
-        public Lines(IArray<Line3D> primitives) => (Primitives) = (primitives);
-        public static Lines Default = new Lines();
-        public static Lines New(IArray<Line3D> primitives) => new Lines(primitives);
-        public override bool Equals(object obj) { if (!(obj is Lines)) return false; var other = (Lines)obj; return Primitives.Equals(other.Primitives); }
+        [DataMember] public readonly IArray<Vector2D> Points;
+        [DataMember] public readonly Boolean Closed;
+        public PolyLine2D WithPoints(IArray<Vector2D> points) => new PolyLine2D(points, Closed);
+        public PolyLine2D WithClosed(Boolean closed) => new PolyLine2D(Points, closed);
+        public PolyLine2D(IArray<Vector2D> points, Boolean closed) => (Points, Closed) = (points, closed);
+        public static PolyLine2D Default = new PolyLine2D();
+        public static PolyLine2D New(IArray<Vector2D> points, Boolean closed) => new PolyLine2D(points, closed);
+        public static implicit operator (IArray<Vector2D>, Boolean)(PolyLine2D self) => (self.Points, self.Closed);
+        public static implicit operator PolyLine2D((IArray<Vector2D>, Boolean) value) => new PolyLine2D(value.Item1, value.Item2);
+        public void Deconstruct(out IArray<Vector2D> points, out Boolean closed) { points = Points; closed = Closed; }
+        public override bool Equals(object obj) { if (!(obj is PolyLine2D)) return false; var other = (PolyLine2D)obj; return Points.Equals(other.Points) && Closed.Equals(other.Closed); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Closed);
+        public override string ToString() => $"{{ \"Points\" = {Points}, \"Closed\" = {Closed} }}";
+        public static implicit operator Dynamic(PolyLine2D self) => new Dynamic(self);
+        public static implicit operator PolyLine2D(Dynamic value) => value.As<PolyLine2D>();
+        public String TypeName => "PolyLine2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Closed");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Closed));
+        IArray<Vector2D> IPointGeometry2D.Points => Points;
+        Boolean IOpenClosedShape.Closed => Closed;
+        // Implemented concept functions and type functions
+        public PolyLine3D To3D => this.Points.Map((p) => p.To3D).Tuple2(this.Closed);
+        public PolyLine3D PolyLine3D => this.To3D;
+        public static implicit operator PolyLine3D(PolyLine2D x) => x.PolyLine3D;
+        // Unimplemented concept functions
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PolyLine3D: IPolyLine3D
+    {
+        [DataMember] public readonly IArray<Vector3D> Points;
+        [DataMember] public readonly Boolean Closed;
+        public PolyLine3D WithPoints(IArray<Vector3D> points) => new PolyLine3D(points, Closed);
+        public PolyLine3D WithClosed(Boolean closed) => new PolyLine3D(Points, closed);
+        public PolyLine3D(IArray<Vector3D> points, Boolean closed) => (Points, Closed) = (points, closed);
+        public static PolyLine3D Default = new PolyLine3D();
+        public static PolyLine3D New(IArray<Vector3D> points, Boolean closed) => new PolyLine3D(points, closed);
+        public static implicit operator (IArray<Vector3D>, Boolean)(PolyLine3D self) => (self.Points, self.Closed);
+        public static implicit operator PolyLine3D((IArray<Vector3D>, Boolean) value) => new PolyLine3D(value.Item1, value.Item2);
+        public void Deconstruct(out IArray<Vector3D> points, out Boolean closed) { points = Points; closed = Closed; }
+        public override bool Equals(object obj) { if (!(obj is PolyLine3D)) return false; var other = (PolyLine3D)obj; return Points.Equals(other.Points) && Closed.Equals(other.Closed); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Points, Closed);
+        public override string ToString() => $"{{ \"Points\" = {Points}, \"Closed\" = {Closed} }}";
+        public static implicit operator Dynamic(PolyLine3D self) => new Dynamic(self);
+        public static implicit operator PolyLine3D(Dynamic value) => value.As<PolyLine3D>();
+        public String TypeName => "PolyLine3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Closed");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Closed));
+        IArray<Vector3D> IPointGeometry3D.Points => Points;
+        Boolean IOpenClosedShape.Closed => Closed;
+        // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
+        // Unimplemented concept functions
+        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PointArray2D: IPointArray2D
+    {
+        [DataMember] public readonly IArray<Vector2D> Points;
+        public PointArray2D WithPoints(IArray<Vector2D> points) => new PointArray2D(points);
+        public PointArray2D(IArray<Vector2D> points) => (Points) = (points);
+        public static PointArray2D Default = new PointArray2D();
+        public static PointArray2D New(IArray<Vector2D> points) => new PointArray2D(points);
+        public override bool Equals(object obj) { if (!(obj is PointArray2D)) return false; var other = (PointArray2D)obj; return Points.Equals(other.Points); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Points);
+        public override string ToString() => $"{{ \"Points\" = {Points} }}";
+        public static implicit operator Dynamic(PointArray2D self) => new Dynamic(self);
+        public static implicit operator PointArray2D(Dynamic value) => value.As<PointArray2D>();
+        public String TypeName => "PointArray2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points));
+        IArray<Vector2D> IPointGeometry2D.Points => Points;
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PointArray3D: IPointArray3D
+    {
+        [DataMember] public readonly IArray<Vector3D> Points;
+        public PointArray3D WithPoints(IArray<Vector3D> points) => new PointArray3D(points);
+        public PointArray3D(IArray<Vector3D> points) => (Points) = (points);
+        public static PointArray3D Default = new PointArray3D();
+        public static PointArray3D New(IArray<Vector3D> points) => new PointArray3D(points);
+        public override bool Equals(object obj) { if (!(obj is PointArray3D)) return false; var other = (PointArray3D)obj; return Points.Equals(other.Points); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Points);
+        public override string ToString() => $"{{ \"Points\" = {Points} }}";
+        public static implicit operator Dynamic(PointArray3D self) => new Dynamic(self);
+        public static implicit operator PointArray3D(Dynamic value) => value.As<PointArray3D>();
+        public String TypeName => "PointArray3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points));
+        IArray<Vector3D> IPointGeometry3D.Points => Points;
+        // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
+        // Unimplemented concept functions
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LineArray2D: ILineArray2D
+    {
+        [DataMember] public readonly IArray<Line2D> Primitives;
+        public LineArray2D WithPrimitives(IArray<Line2D> primitives) => new LineArray2D(primitives);
+        public LineArray2D(IArray<Line2D> primitives) => (Primitives) = (primitives);
+        public static LineArray2D Default = new LineArray2D();
+        public static LineArray2D New(IArray<Line2D> primitives) => new LineArray2D(primitives);
+        public override bool Equals(object obj) { if (!(obj is LineArray2D)) return false; var other = (LineArray2D)obj; return Primitives.Equals(other.Primitives); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Lines self) => new Dynamic(self);
-        public static implicit operator Lines(Dynamic value) => value.As<Lines>();
-        public String TypeName => "Lines";
+        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static implicit operator Dynamic(LineArray2D self) => new Dynamic(self);
+        public static implicit operator LineArray2D(Dynamic value) => value.As<LineArray2D>();
+        public String TypeName => "LineArray2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Line3D> IPrimitives3D<Line3D>.Primitives => Primitives;
+        IArray<Line2D> IPrimitiveArray2D<Line2D>.Primitives => Primitives;
         // Implemented concept functions and type functions
         public Integer PrimitiveSize => ((Integer)2);
-        public Integer NumPrimitives => this.Primitives.Count.Divide(this.PrimitiveSize);
-        public IArray<Integer> Indices => this.NumPrimitives.Range;
-        public IArray<Vector3D> Points => this.Primitives.FlatMap((p) => p);
-        public LineMesh LineMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator LineMesh(Lines g) => g.LineMesh;
-        public TriangleMesh TriangleMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator TriangleMesh(Lines g) => g.TriangleMesh;
-        public QuadMesh QuadMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator QuadMesh(Lines g) => g.QuadMesh;
+        // Unimplemented concept functions
+        public IArray<Vector2D> Points => Intrinsics.Points(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LineArray3D: ILineArray3D
+    {
+        [DataMember] public readonly IArray<Line3D> Primitives;
+        public LineArray3D WithPrimitives(IArray<Line3D> primitives) => new LineArray3D(primitives);
+        public LineArray3D(IArray<Line3D> primitives) => (Primitives) = (primitives);
+        public static LineArray3D Default = new LineArray3D();
+        public static LineArray3D New(IArray<Line3D> primitives) => new LineArray3D(primitives);
+        public override bool Equals(object obj) { if (!(obj is LineArray3D)) return false; var other = (LineArray3D)obj; return Primitives.Equals(other.Primitives); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
+        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static implicit operator Dynamic(LineArray3D self) => new Dynamic(self);
+        public static implicit operator LineArray3D(Dynamic value) => value.As<LineArray3D>();
+        public String TypeName => "LineArray3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
+        IArray<Line3D> IPrimitiveArray3D<Line3D>.Primitives => Primitives;
+        // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
+        public Integer PrimitiveSize => ((Integer)2);
+        // Unimplemented concept functions
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TriangleArray2D: ITriangleArray2D
+    {
+        [DataMember] public readonly IArray<Triangle2D> Primitives;
+        public TriangleArray2D WithPrimitives(IArray<Triangle2D> primitives) => new TriangleArray2D(primitives);
+        public TriangleArray2D(IArray<Triangle2D> primitives) => (Primitives) = (primitives);
+        public static TriangleArray2D Default = new TriangleArray2D();
+        public static TriangleArray2D New(IArray<Triangle2D> primitives) => new TriangleArray2D(primitives);
+        public override bool Equals(object obj) { if (!(obj is TriangleArray2D)) return false; var other = (TriangleArray2D)obj; return Primitives.Equals(other.Primitives); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
+        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static implicit operator Dynamic(TriangleArray2D self) => new Dynamic(self);
+        public static implicit operator TriangleArray2D(Dynamic value) => value.As<TriangleArray2D>();
+        public String TypeName => "TriangleArray2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
+        IArray<Triangle2D> IPrimitiveArray2D<Triangle2D>.Primitives => Primitives;
+        // Implemented concept functions and type functions
+        public Integer PrimitiveSize => ((Integer)3);
+        // Unimplemented concept functions
+        public IArray<Vector2D> Points => Intrinsics.Points(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TriangleArray3D: ITriangleArray3D
+    {
+        [DataMember] public readonly IArray<Triangle3D> Primitives;
+        public TriangleArray3D WithPrimitives(IArray<Triangle3D> primitives) => new TriangleArray3D(primitives);
+        public TriangleArray3D(IArray<Triangle3D> primitives) => (Primitives) = (primitives);
+        public static TriangleArray3D Default = new TriangleArray3D();
+        public static TriangleArray3D New(IArray<Triangle3D> primitives) => new TriangleArray3D(primitives);
+        public override bool Equals(object obj) { if (!(obj is TriangleArray3D)) return false; var other = (TriangleArray3D)obj; return Primitives.Equals(other.Primitives); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
+        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static implicit operator Dynamic(TriangleArray3D self) => new Dynamic(self);
+        public static implicit operator TriangleArray3D(Dynamic value) => value.As<TriangleArray3D>();
+        public String TypeName => "TriangleArray3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
+        IArray<Triangle3D> IPrimitiveArray3D<Triangle3D>.Primitives => Primitives;
+        // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
+        public Integer PrimitiveSize => ((Integer)3);
+        // Unimplemented concept functions
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadArray2D: IQuadArray2D
+    {
+        [DataMember] public readonly IArray<Quad2D> Primitives;
+        public QuadArray2D WithPrimitives(IArray<Quad2D> primitives) => new QuadArray2D(primitives);
+        public QuadArray2D(IArray<Quad2D> primitives) => (Primitives) = (primitives);
+        public static QuadArray2D Default = new QuadArray2D();
+        public static QuadArray2D New(IArray<Quad2D> primitives) => new QuadArray2D(primitives);
+        public override bool Equals(object obj) { if (!(obj is QuadArray2D)) return false; var other = (QuadArray2D)obj; return Primitives.Equals(other.Primitives); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
+        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static implicit operator Dynamic(QuadArray2D self) => new Dynamic(self);
+        public static implicit operator QuadArray2D(Dynamic value) => value.As<QuadArray2D>();
+        public String TypeName => "QuadArray2D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
+        IArray<Quad2D> IPrimitiveArray3D<Quad2D>.Primitives => Primitives;
+        // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
+        public Integer PrimitiveSize => ((Integer)4);
+        // Unimplemented concept functions
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadArray3D: IQuadArray3D
+    {
+        [DataMember] public readonly IArray<Quad3D> Primitives;
+        public QuadArray3D WithPrimitives(IArray<Quad3D> primitives) => new QuadArray3D(primitives);
+        public QuadArray3D(IArray<Quad3D> primitives) => (Primitives) = (primitives);
+        public static QuadArray3D Default = new QuadArray3D();
+        public static QuadArray3D New(IArray<Quad3D> primitives) => new QuadArray3D(primitives);
+        public override bool Equals(object obj) { if (!(obj is QuadArray3D)) return false; var other = (QuadArray3D)obj; return Primitives.Equals(other.Primitives); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
+        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static implicit operator Dynamic(QuadArray3D self) => new Dynamic(self);
+        public static implicit operator QuadArray3D(Dynamic value) => value.As<QuadArray3D>();
+        public String TypeName => "QuadArray3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
+        IArray<Quad3D> IPrimitiveArray3D<Quad3D>.Primitives => Primitives;
+        // Implemented concept functions and type functions
+        public IArray<Vector3D> Vertices => this;
+        public Integer PrimitiveSize => ((Integer)4);
+        // Unimplemented concept functions
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadGrid3D: IQuadGrid3D
+    {
+        [DataMember] public readonly IArray2D<Vector3D> PointGrid;
+        [DataMember] public readonly Boolean ClosedX;
+        [DataMember] public readonly Boolean ClosedY;
+        public QuadGrid3D WithPointGrid(IArray2D<Vector3D> pointGrid) => new QuadGrid3D(pointGrid, ClosedX, ClosedY);
+        public QuadGrid3D WithClosedX(Boolean closedX) => new QuadGrid3D(PointGrid, closedX, ClosedY);
+        public QuadGrid3D WithClosedY(Boolean closedY) => new QuadGrid3D(PointGrid, ClosedX, closedY);
+        public QuadGrid3D(IArray2D<Vector3D> pointGrid, Boolean closedX, Boolean closedY) => (PointGrid, ClosedX, ClosedY) = (pointGrid, closedX, closedY);
+        public static QuadGrid3D Default = new QuadGrid3D();
+        public static QuadGrid3D New(IArray2D<Vector3D> pointGrid, Boolean closedX, Boolean closedY) => new QuadGrid3D(pointGrid, closedX, closedY);
+        public static implicit operator (IArray2D<Vector3D>, Boolean, Boolean)(QuadGrid3D self) => (self.PointGrid, self.ClosedX, self.ClosedY);
+        public static implicit operator QuadGrid3D((IArray2D<Vector3D>, Boolean, Boolean) value) => new QuadGrid3D(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out IArray2D<Vector3D> pointGrid, out Boolean closedX, out Boolean closedY) { pointGrid = PointGrid; closedX = ClosedX; closedY = ClosedY; }
+        public override bool Equals(object obj) { if (!(obj is QuadGrid3D)) return false; var other = (QuadGrid3D)obj; return PointGrid.Equals(other.PointGrid) && ClosedX.Equals(other.ClosedX) && ClosedY.Equals(other.ClosedY); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(PointGrid, ClosedX, ClosedY);
+        public override string ToString() => $"{{ \"PointGrid\" = {PointGrid}, \"ClosedX\" = {ClosedX}, \"ClosedY\" = {ClosedY} }}";
+        public static implicit operator Dynamic(QuadGrid3D self) => new Dynamic(self);
+        public static implicit operator QuadGrid3D(Dynamic value) => value.As<QuadGrid3D>();
+        public String TypeName => "QuadGrid3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"PointGrid", (String)"ClosedX", (String)"ClosedY");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(PointGrid), new Dynamic(ClosedX), new Dynamic(ClosedY));
+        IArray2D<Vector3D> IQuadGrid3D.PointGrid => PointGrid;
+        Boolean IQuadGrid3D.ClosedX => ClosedX;
+        Boolean IQuadGrid3D.ClosedY => ClosedY;
+        // Implemented concept functions and type functions
+        public IArray<Quad3D> Primitives => this.AllFaceVertices.Map((p) => Quad3D.New(p));
+        public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
+        public static implicit operator LineMesh3D(QuadGrid3D g) => g.LineMesh3D;
+        public TriangleMesh3D TriangleMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
+        public static implicit operator TriangleMesh3D(QuadGrid3D g) => g.TriangleMesh3D;
+        public PointArray3D PointArray3D => this.Points;
+        public static implicit operator PointArray3D(QuadGrid3D g) => g.PointArray3D;
+        public LineArray3D LineArray3D => this.Primitives.FlatMap((t) => t.Lines);
+        public static implicit operator LineArray3D(QuadGrid3D g) => g.LineArray3D;
+        public QuadArray3D QuadArray3D => this.Primitives;
+        public static implicit operator QuadArray3D(QuadGrid3D g) => g.QuadArray3D;
+        public IArray<Quad3D> Faces => this.Primitives;
         public Integer NumFaces => this.NumPrimitives;
+        public Integer NumVertices => this.Points.Count;
+        public IArray<Vector3D> Vertices => this;
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
         public IArray<Vector3D> FaceVertices(Integer f){
             var _var41 = this;
@@ -5385,93 +5942,10 @@ namespace Plato.DoublePrecision
             var _var42 = this;
             return this.Indices.Map((i) => _var42.Vertices.At(i)).Slices(this.PrimitiveSize);
         }
-         } public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this.Points;
+         } public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
-    }
-    public readonly partial struct Triangles: ITriangles
-    {
-        public readonly IArray<Triangle3D> Primitives;
-        public Triangles WithPrimitives(IArray<Triangle3D> primitives) => new Triangles(primitives);
-        public Triangles(IArray<Triangle3D> primitives) => (Primitives) = (primitives);
-        public static Triangles Default = new Triangles();
-        public static Triangles New(IArray<Triangle3D> primitives) => new Triangles(primitives);
-        public override bool Equals(object obj) { if (!(obj is Triangles)) return false; var other = (Triangles)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Triangles self) => new Dynamic(self);
-        public static implicit operator Triangles(Dynamic value) => value.As<Triangles>();
-        public String TypeName => "Triangles";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Triangle3D> IPrimitives3D<Triangle3D>.Primitives => Primitives;
-        // Implemented concept functions and type functions
-        public Integer PrimitiveSize => ((Integer)3);
-        public Integer NumPrimitives => this.Primitives.Count.Divide(this.PrimitiveSize);
-        public IArray<Integer> Indices => this.NumPrimitives.Range;
-        public IArray<Vector3D> Points => this.Primitives.FlatMap((p) => p);
-        public LineMesh LineMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator LineMesh(Triangles g) => g.LineMesh;
-        public TriangleMesh TriangleMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator TriangleMesh(Triangles g) => g.TriangleMesh;
-        public QuadMesh QuadMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator QuadMesh(Triangles g) => g.QuadMesh;
-        public Integer NumFaces => this.NumPrimitives;
-        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
-        public IArray<Vector3D> FaceVertices(Integer f){
-            var _var43 = this;
-            return this.FaceIndices(f).Map((i) => _var43.Vertices.At(i));
-        }
-        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
-        public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var44 = this;
-            return this.Indices.Map((i) => _var44.Vertices.At(i)).Slices(this.PrimitiveSize);
-        }
-         } public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this.Points;
-        // Unimplemented concept functions
-    }
-    public readonly partial struct Quads: IQuads
-    {
-        public readonly IArray<Quad3D> Primitives;
-        public Quads WithPrimitives(IArray<Quad3D> primitives) => new Quads(primitives);
-        public Quads(IArray<Quad3D> primitives) => (Primitives) = (primitives);
-        public static Quads Default = new Quads();
-        public static Quads New(IArray<Quad3D> primitives) => new Quads(primitives);
-        public override bool Equals(object obj) { if (!(obj is Quads)) return false; var other = (Quads)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => Intrinsics.MakeString(this, TypeName, FieldNames, FieldValues);
-        public static implicit operator Dynamic(Quads self) => new Dynamic(self);
-        public static implicit operator Quads(Dynamic value) => value.As<Quads>();
-        public String TypeName => "Quads";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Quad3D> IPrimitives3D<Quad3D>.Primitives => Primitives;
-        // Implemented concept functions and type functions
-        public Integer PrimitiveSize => ((Integer)4);
-        public Integer NumPrimitives => this.Primitives.Count.Divide(this.PrimitiveSize);
-        public IArray<Integer> Indices => this.NumPrimitives.Range;
-        public IArray<Vector3D> Points => this.Primitives.FlatMap((p) => p);
-        public LineMesh LineMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator LineMesh(Quads g) => g.LineMesh;
-        public TriangleMesh TriangleMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator TriangleMesh(Quads g) => g.TriangleMesh;
-        public QuadMesh QuadMesh => this.Points.Tuple2(this.Indices);
-        public static implicit operator QuadMesh(Quads g) => g.QuadMesh;
-        public Integer NumFaces => this.NumPrimitives;
-        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
-        public IArray<Vector3D> FaceVertices(Integer f){
-            var _var45 = this;
-            return this.FaceIndices(f).Map((i) => _var45.Vertices.At(i));
-        }
-        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
-        public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var46 = this;
-            return this.Indices.Map((i) => _var46.Vertices.At(i)).Slices(this.PrimitiveSize);
-        }
-         } public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this.Points;
-        // Unimplemented concept functions
+        public IArray<Vector3D> Points => Intrinsics.Points(this);
+        public IArray<Integer> Indices => Intrinsics.Indices(this);
     }
     public static class Constants
     {
@@ -5499,20 +5973,20 @@ namespace Plato.DoublePrecision
         public static T Middle<T>(this IArray<T> xs, Integer n) => xs.At(xs.Count.Divide(((Integer)2)));
         public static IArray<T> Slice<T>(this IArray<T> xs, Integer from, Integer to) => xs.Subarray(from, to.Subtract(from));
         public static IArray<IArray<T>> Slices<T>(this IArray<T> xs, Integer n){
-            var _var49 = n;
+            var _var45 = n;
             {
-                var _var48 = n;
+                var _var44 = n;
                 {
-                    var _var47 = xs;
-                    return xs.Count.Divide(n).MapRange((i) => _var47.Subarray(i.Multiply(_var48), _var49));
+                    var _var43 = xs;
+                    return xs.Count.Divide(n).MapRange((i) => _var43.Subarray(i.Multiply(_var44), _var45));
                 }
             }
         }
         public static IArray<T> Subarray<T>(this IArray<T> xs, Integer from, Integer count){
-            var _var51 = from;
+            var _var47 = from;
             {
-                var _var50 = xs;
-                return count.MapRange((i) => _var50.At(i.Add(_var51)));
+                var _var46 = xs;
+                return count.MapRange((i) => _var46.At(i.Add(_var47)));
             }
         }
         public static IArray<T> Skip<T>(this IArray<T> xs, Integer n) => xs.Subarray(n, xs.Count.Subtract(n));
@@ -5556,58 +6030,65 @@ namespace Plato.DoublePrecision
             return ((Boolean)false);
         }
         public static IArray<TR> Map<T0, TR>(this IArray<T0> xs, System.Func<T0, TR> f){
-            var _var53 = xs;
+            var _var49 = xs;
             {
-                var _var52 = f;
-                return xs.Count.MapRange((i) => _var52.Invoke(_var53.At(i)));
+                var _var48 = f;
+                return xs.Count.MapRange((i) => _var48.Invoke(_var49.At(i)));
             }
         }
         public static IArray<TR> PairwiseMap<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f){
-            var _var56 = xs;
+            var _var52 = xs;
             {
-                var _var55 = xs;
+                var _var51 = xs;
                 {
-                    var _var54 = f;
-                    return xs.Count.Subtract(((Integer)1)).MapRange((i) => _var54.Invoke(_var55.At(i), _var56.At(i.Add(((Integer)1)))));
+                    var _var50 = f;
+                    return xs.Count.Subtract(((Integer)1)).MapRange((i) => _var50.Invoke(_var51.At(i), _var52.At(i.Add(((Integer)1)))));
                 }
             }
         }
         public static IArray<TR> PairwiseMapModulo<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f){
-            var _var60 = xs;
+            var _var56 = xs;
             {
-                var _var59 = xs;
+                var _var55 = xs;
                 {
-                    var _var58 = xs;
+                    var _var54 = xs;
                     {
-                        var _var57 = f;
-                        return xs.Count.MapRange((i) => _var57.Invoke(_var58.At(i), _var59.At(i.Add(((Integer)1)).Modulo(_var60.Count))));
+                        var _var53 = f;
+                        return xs.Count.MapRange((i) => _var53.Invoke(_var54.At(i), _var55.At(i.Add(((Integer)1)).Modulo(_var56.Count))));
                     }
                 }
             }
         }
         public static IArray<TR> Zip<T0, T1, TR>(this IArray<T0> xs, IArray<T1> ys, System.Func<T0, T1, TR> f){
-            var _var63 = ys;
+            var _var59 = ys;
             {
-                var _var62 = xs;
+                var _var58 = xs;
                 {
-                    var _var61 = f;
-                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var61.Invoke(_var62.At(i), _var63.At(i)));
+                    var _var57 = f;
+                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var57.Invoke(_var58.At(i), _var59.At(i)));
                 }
             }
         }
         public static IArray<TR> Zip<T0, T1, T2, TR>(this IArray<T0> xs, IArray<T1> ys, IArray<T2> zs, System.Func<T0, T1, T2, TR> f){
-            var _var67 = zs;
+            var _var63 = zs;
             {
-                var _var66 = ys;
+                var _var62 = ys;
                 {
-                    var _var65 = xs;
+                    var _var61 = xs;
                     {
-                        var _var64 = f;
-                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var64.Invoke(_var65.At(i), _var66.At(i), _var67.At(i)));
+                        var _var60 = f;
+                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var60.Invoke(_var61.At(i), _var62.At(i), _var63.At(i)));
                     }
                 }
             }
         }
+        public static T ModuloAt<T>(this IArray<T> xs, Integer n) => xs.At(n.Modulo(xs.Count));
+        public static IArray<T> Shift<T>(this IArray<T> xs, Integer n){
+            var _var64 = xs;
+            return xs.Count.MapRange((i) => _var64.ModuloAt(i));
+        }
+        public static IArray<Line3D> Lines(this IArray<Vector3D> xs, IArray<Vector3D> ys) => xs.Zip(ys, (a, b) => Line3D.New(a, b));
+        public static IArray<Line2D> Lines(this IArray<Vector2D> xs, IArray<Vector2D> ys) => xs.Zip(ys, (a, b) => Line2D.New(a, b));
         public static IArray<T> FlatMap<T0, T>(this IArray<T0> xs, System.Func<T0, IArray<T>> f) => Intrinsics.FlatMap(xs, f);
     }
 }

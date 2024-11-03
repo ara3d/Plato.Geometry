@@ -13,10 +13,10 @@ namespace Plato.Geometry.IO
     /// </summary> 
     public static class PlyExporter
     {
-        public static void WritePly(this TriangleMesh mesh, string filePath)
+        public static void WritePly(this TriangleMesh3D mesh, string filePath)
             => File.WriteAllLines(filePath, PlyStrings(mesh));
 
-        public static IEnumerable<string> PlyStrings(TriangleMesh g, IArray<Color32> colors = null)
+        public static IEnumerable<string> PlyStrings(TriangleMesh3D g, IArray<Color32> colors = null)
         {
             var vertices = g.Vertices;
             var indices = g.Indices;

@@ -31,7 +31,7 @@ namespace Plato.DoublePrecision
 
         public static implicit operator Curve2D(PolyLine2D poly)
         {
-            var lines = poly.ToLines().ToSystemArray();
+            var lines = poly.Lines().ToSystemArray();
             
             if (lines.Length == 0)
                 return Default;

@@ -12,18 +12,18 @@ namespace Plato.DoublePrecision
         private static readonly double _rt = 1.0 / _t;
         public static readonly double Sqrt2 = Math.Sqrt(2);
 
-        public static TriangleMesh ToTriangleMesh(this IArray<Vector3D> points, params Integer3[] faces)
-            => new TriangleMesh(points, faces.ToIArray().FlatMap(i => i));
+        public static TriangleMesh3D ToTriangleMesh(this IArray<Vector3D> points, params Integer3[] faces)
+            => new TriangleMesh3D(points, faces.ToIArray().FlatMap(i => i));
 
-        public static QuadMesh ToQuadMesh(this IArray<Vector3D> points, params Integer4[] faces)
-            => new QuadMesh(points, faces.ToIArray().FlatMap(i => i));
+        public static QuadMesh3D ToQuadMesh(this IArray<Vector3D> points, params Integer4[] faces)
+            => new QuadMesh3D(points, faces.ToIArray().FlatMap(i => i));
 
         public static IArray<Vector3D> Points(params Vector3D[] points)
             => Intrinsics.MakeArray(points);
 
         // https://mathworld.wolfram.com/RegularTetrahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/TetrahedronGeometry.js
-        public static readonly TriangleMesh Tetrahedron
+        public static readonly TriangleMesh3D Tetrahedron
             = Points(
                 (1, 1, 1), 
                 (-1, -1, 1), 
@@ -35,7 +35,7 @@ namespace Plato.DoublePrecision
                 (2, 1, 0), (0, 3, 2),
                 (1, 3, 0), (2, 3, 1));
 
-        public static readonly QuadMesh Cube
+        public static readonly QuadMesh3D Cube
             = Points(
                 // Front quad
                 (-0.5, -0.5, -0.5),
@@ -58,7 +58,7 @@ namespace Plato.DoublePrecision
 
         // https://mathworld.wolfram.com/RegularOctahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/OctahedronGeometry.js
-        public static readonly TriangleMesh Octahedron
+        public static readonly TriangleMesh3D Octahedron
             = Points(
                 (1, 0, 0), (-1, 0, 0), (0, 1, 0),
                 (0, -1, 0), (0, 0, 1), (0, 0, -1))
@@ -70,7 +70,7 @@ namespace Plato.DoublePrecision
 
         // https://mathworld.wolfram.com/RegularDodecahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/DodecahedronGeometry.js
-        public static readonly TriangleMesh Dodecahedron
+        public static readonly TriangleMesh3D Dodecahedron
             = Points(
                 // (±1, ±1, ±1)
                 (-1, -1, -1), (-1, -1, 1),
@@ -106,7 +106,7 @@ namespace Plato.DoublePrecision
 
         // https://mathworld.wolfram.com/RegularIcosahedron.html
         // https://github.com/mrdoob/three.js/blob/master/src/geometries/IcosahedronGeometry.js
-        public static readonly TriangleMesh Icosahedron
+        public static readonly TriangleMesh3D Icosahedron
             = Points(
                 (-1, _t, 0),
                 (1, _t, 0),

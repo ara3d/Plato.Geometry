@@ -12,20 +12,17 @@ namespace Plato.DoublePrecision
 
         IDeformable3D IDeformable3D.Deform(Func<Vector3D, Vector3D> f)
             => Deform(f);
-
-        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
-            => Transform(matrix);
-
+        
         public static implicit operator PolyLine3D(Quad3D q)
             => q.ToPolyLine3D(true);
 
         public static implicit operator PointArray(Quad3D q)
             => q.ToPoints();
 
-        public static implicit operator QuadMesh(Quad3D q)
+        public static implicit operator QuadMesh3D(Quad3D q)
             => q.ToQuadMesh();
 
-        public static implicit operator TriangleMesh(Quad3D q)
+        public static implicit operator TriangleMesh3D(Quad3D q)
             => q.ToQuadMesh().TriangleMesh;
 
         public Line3D Bottom 

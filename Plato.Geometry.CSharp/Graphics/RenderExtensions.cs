@@ -73,10 +73,10 @@ namespace Plato.Geometry.Graphics
             return half;
         }
 
-        public static RenderMesh ToRenderMesh(this TriangleMesh mesh, Color32 color)
+        public static RenderMesh ToRenderMesh(this TriangleMesh3D mesh, Color32 color)
             => mesh.ToRenderMesh(color.Repeat(mesh.NumVertices));
     
-        public static RenderMesh ToRenderMesh(this TriangleMesh mesh, IArray<Color32> colors = null)
+        public static RenderMesh ToRenderMesh(this TriangleMesh3D mesh, IArray<Color32> colors = null)
             => RenderMesh.Create(mesh.Vertices, mesh.Indices, mesh.ComputeVertexNormalsFaceted(), null, colors);
     }
 }

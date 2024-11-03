@@ -6,15 +6,9 @@ namespace Plato.DoublePrecision
     {
         public Triangle3D Deform(Func<Vector3D, Vector3D> f)
             => new Triangle3D(f(A), f(B), f(C));
-
-        public Triangle3D Transform(Matrix4x4 matrix)
-            => Deform(matrix.TransformPoint);
-
+        
         IDeformable3D IDeformable3D.Deform(Func<Vector3D, Vector3D> f)
             => Deform(f);
-
-        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
-            => Transform(matrix);
 
         public static implicit operator PolyLine3D(Triangle3D t)
             => t.ToPolyLine3D(true);

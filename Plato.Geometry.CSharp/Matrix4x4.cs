@@ -484,16 +484,14 @@ namespace Plato.DoublePrecision
             => CreateTranslation(v);
 
         public static implicit operator Matrix4x4(Transform3D t)
-            => CreateTRS(t.Translation, t.Rotation.Quaternion, t.Scale);
+            => CreateTRS(t.Translation, t.Rotation, t.Scale);
 
         public static implicit operator Matrix4x4(Pose3D p)
-            => CreateTranslation(p.Position) * p.Orientation;
+            => CreateTranslation(p.Position) * p.Rotation;
 
         public static implicit operator Matrix4x4(Rotation3D r)
             => r.Quaternion;
 
-        public static implicit operator Matrix4x4(Orientation3D o)
-            => o.IValue;
 
         public Matrix4x4 Transpose
             => (

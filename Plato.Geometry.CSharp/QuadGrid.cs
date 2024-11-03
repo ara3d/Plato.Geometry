@@ -7,8 +7,9 @@ namespace Plato.DoublePrecision
     /// It may be closed on the X (columns) meaning that the last column is connected to the first column.
     /// And/or it may be closed on the Y (rows) meaning that the last row is connected to the first row.
     /// </summary>
-    public class QuadGrid : IQuadMesh, IDeformable3D<QuadGrid>
+    public partial struct QuadGrid 
     {
+        /*
         public bool ClosedX { get; }
         public bool ClosedY { get; }
         public IArray<Vector3D> Points => PointGrid;
@@ -63,10 +64,7 @@ namespace Plato.DoublePrecision
 
         IDeformable3D IDeformable3D.Deform(Func<Vector3D, Vector3D> f)
             => Deform(f);
-
-        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
-            => Transform(matrix);
-
+        
         public static implicit operator QuadMesh(QuadGrid q)
             => (q.Points, q.Indices);
 
@@ -75,5 +73,6 @@ namespace Plato.DoublePrecision
 
         public static implicit operator TriangleMesh(QuadGrid q)
             => q.ToTriangleMesh();
+        */
     }
 }

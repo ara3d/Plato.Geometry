@@ -70,8 +70,5 @@ namespace Plato.DoublePrecision
 
         public Curve3D Transform(Matrix4x4 matrix)
             => Deform(matrix.TransformPoint);
-
-        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
-            => Transform(matrix);
     }
 }

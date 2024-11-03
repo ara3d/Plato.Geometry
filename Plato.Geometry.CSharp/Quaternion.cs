@@ -80,7 +80,8 @@ namespace Plato.DoublePrecision
             return rotation.Normalize;
         }
 
-        public Vector3D Transform(Vector3D v)
+        // TODO: why is this already implemented? 
+        public Vector3D TransformVector(Vector3D v)
         {
             var x2 = X + X;
             var y2 = Y + Y;

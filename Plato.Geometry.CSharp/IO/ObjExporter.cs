@@ -12,7 +12,7 @@ namespace Plato.Geometry.IO
     /// </summary>
     public static class ObjExporter
     {
-        public static IEnumerable<string> ObjLines(TriangleMesh mesh, IArray<Vector2D> uvs = null)
+        public static IEnumerable<string> ObjLines(TriangleMesh3D mesh, IArray<Vector2D> uvs = null)
         {
             // Write the vertices 
             foreach (var v in mesh.Vertices)
@@ -36,7 +36,7 @@ namespace Plato.Geometry.IO
             }
         }
 
-        public static void WriteObj(this TriangleMesh mesh, string filePath)
+        public static void WriteObj(this TriangleMesh3D mesh, string filePath)
             => File.WriteAllLines(filePath, ObjLines(mesh));
     }
 }

@@ -84,7 +84,7 @@ namespace Plato.DoublePrecision
                 .Map(uv => f((uv.X, uv.Y)))
                 .ToQuadGrid(closedX, closedY);
 
-        public static TriangleMesh ToTriangleMesh(this IQuadMesh q)
+        public static TriangleMesh3D ToTriangleMesh(this IQuadMesh3D q)
         {
             var vertices = q.Points;
             var nFaces = q.Indices.Count / 4;
@@ -92,7 +92,7 @@ namespace Plato.DoublePrecision
             var indices = nFaces.Range.FlatMap(f => Intrinsics.MakeArray(
                 nxs[f * 4 + 0], nxs[f * 4 + 1], nxs[f * 4 + 2],
                 nxs[f * 4 + 2], nxs[f * 4 + 3], nxs[f * 4 + 0]));
-            return new TriangleMesh(vertices, indices);
+            return new TriangleMesh3D(vertices, indices);
         }
 
         // TODO: I'm not confident about this 
@@ -224,34 +224,37 @@ namespace Plato.DoublePrecision
         public static PolyLine3D ToPolyLine3D(this IArray<Vector3D> self, bool closed)
             => new PolyLine3D(self, closed);
 
-        public static TriangleMesh ToMesh(this IArray<Triangle3D> self)
+        public static TriangleMesh3D ToMesh(this IArray<Triangle3D> self)
             => self.Points().ToTriangleMesh();
 
-        public static TriangleMesh ToTriangleMesh(this IArray<Vector3D> points, IArray<Integer> indices)
-            => new TriangleMesh(points, indices);
+        public static TriangleMesh3D ToTriangleMesh(this IArray<Vector3D> points, IArray<Integer> indices)
+            => new TriangleMesh3D(points, indices);
 
-        public static TriangleMesh ToTriangleMesh(this IArray<Vector3D> points)
+        public static TriangleMesh3D ToTriangleMesh(this IArray<Vector3D> points)
             => points.ToTriangleMesh(points.Indices());
 
-        public static TriangleMesh DoubleSided(this TriangleMesh mesh)
+        public static TriangleMesh3D DoubleSided(this TriangleMesh3D mesh)
             => mesh.Points.ToTriangleMesh(mesh.Indices.Concat(mesh.Indices.Reverse()));
 
-        public static TriangleMesh FlipWindingOrder(this TriangleMesh mesh)
+        public static TriangleMesh3D FlipWindingOrder(this TriangleMesh3D mesh)
             => mesh.Points.ToTriangleMesh(mesh.Indices.Reverse());
 
-        public static QuadMesh ToQuadMesh(this IArray<Vector3D> points, IArray<Integer> indices)
-            => new QuadMesh(points, indices);
+        public static QuadMesh3D ToQuadMesh(this IArray<Vector3D> points, IArray<Integer> indices)
+            => new QuadMesh3D(points, indices);
 
-        public static QuadMesh ToQuadMesh(this IArray<Vector3D> points)
+        public static QuadMesh3D ToQuadMesh(this IArray<Vector3D> points)
             => points.ToQuadMesh(points.Indices());
 
         //==
         // Transformation extension functions 
 
-        public static T Translate<T>(this T self, Vector3D v) where T : ITransformable3D<T>
+        public static T Transform<T>(this T self, Matrix4x4 m) where T : IDeformable3D<T>
+            => self.Deform(m.TransformPoint);
+
+        public static T Translate<T>(this T self, Vector3D v) where T : IDeformable3D<T>
             => self.Transform(Matrix4x4.CreateTranslation(v));
 
-        public static T Rotate<T>(this T self, Rotation3D r) where T : ITransformable3D<T>
+        public static T Rotate<T>(this T self, Rotation3D r) where T : IDeformable3D<T>
             => self.Transform(Matrix4x4.CreateRotation(r));
 
         public static Vector3D GetAxis(this int n)
@@ -263,19 +266,19 @@ namespace Plato.DoublePrecision
         public static Vector3D Translate(this Vector3D self, Vector3D v)
             => self + v;
 
-        public static T Rotate<T>(this T self, Ray3D ray, Angle angle) where T : ITransformable3D<T>
-            => self.Translate(-ray.Position).Rotate(ray.Direction, angle).Translate(ray.Position);
+        public static T Rotate<T>(this T self, Ray3D ray, Angle angle) where T : IDeformable3D<T>
+            => self.Translate(-ray.Origin).Rotate(ray.Direction, angle).Translate(ray.Origin);
 
-        public static T Rotate<T>(this T self, Vector3D axis, Angle angle) where T : ITransformable3D<T>
+        public static T Rotate<T>(this T self, Vector3D axis, Angle angle) where T : IDeformable3D<T>
             => self.Rotate((axis, angle));
 
-        public static T Rotate<T>(this T self, AxisAngle axisAngle) where T : ITransformable3D<T>
+        public static T Rotate<T>(this T self, AxisAngle axisAngle) where T : IDeformable3D<T>
             => self.Transform(Matrix4x4.CreateRotation(axisAngle));
 
-        public static T Scale<T>(this T self, Number n) where T : ITransformable3D<T>
+        public static T Scale<T>(this T self, Number n) where T : IDeformable3D<T>
             => self.Scale((n, n, n));
 
-        public static T Scale<T>(this T self, Vector3D v) where T : ITransformable3D<T>
+        public static T Scale<T>(this T self, Vector3D v) where T : IDeformable3D<T>
             => self.Transform(Matrix4x4.CreateScale(v));
 
         //==
@@ -297,9 +300,9 @@ namespace Plato.DoublePrecision
         {
             if (self.Count == 0)
                 return Bounds3D.Default;
-            var tmp = self[0];
-            var min = tmp;
-            var max = tmp;
+            //  NOTE: Vector3D.MaxValue does not work. 
+            var min = new Vector3D(double.MaxValue, double.MaxValue, double.MaxValue);
+            var max = new Vector3D(double.MinValue, double.MinValue, double.MinValue);
             for (var i = 1; i < self.Count; i++)
             {
                 min = Min(min, self[i]);
@@ -366,7 +369,7 @@ namespace Plato.DoublePrecision
         public static QuadGrid ToPrism(this PolyLine2D poly, Number extrusionAmount)
             => poly.Extrude(Vector3D.UnitZ * extrusionAmount, poly.Closed);
 
-        public static TriangleMesh ToCappedPrism(this PolyLine2D poly, Number extrusionAmount)
+        public static TriangleMesh3D ToCappedPrism(this PolyLine2D poly, Number extrusionAmount)
         {
             var r = poly.ToPrism(extrusionAmount);
             var topPoints = r.Points.Skip(poly.Points.Count);
@@ -390,10 +393,10 @@ namespace Plato.DoublePrecision
         //==
         // Fans and Pyramids
 
-        public static TriangleMesh ToPyramid(this IArray<Vector3D> points)
+        public static TriangleMesh3D ToPyramid(this IArray<Vector3D> points)
             => points.ToPyramid(1);
 
-        public static TriangleMesh ToPyramid(this IArray<Vector3D> points, Number height)
+        public static TriangleMesh3D ToPyramid(this IArray<Vector3D> points, Number height)
             => points.ToFan(Vector3D.UnitZ * height, true);
 
         public static IArray<Integer> FanIndices(Integer count, Boolean connected)
@@ -416,13 +419,13 @@ namespace Plato.DoublePrecision
             return r.ToIArray();
         }
 
-        public static TriangleMesh ToFan(this IArray<Vector3D> points)
+        public static TriangleMesh3D ToFan(this IArray<Vector3D> points)
             => points.ToFan(true);
 
-        public static TriangleMesh ToFan(this IArray<Vector3D> points, Boolean connected)
+        public static TriangleMesh3D ToFan(this IArray<Vector3D> points, Boolean connected)
             => points.ToFan(points.Average(), connected);
 
-        public static TriangleMesh ToFan(this IArray<Vector3D> points, Vector3D top, Boolean connected)
+        public static TriangleMesh3D ToFan(this IArray<Vector3D> points, Vector3D top, Boolean connected)
             => (points.Append(top), FanIndices(points.Count, connected));
 
         //==
@@ -591,7 +594,7 @@ namespace Plato.DoublePrecision
 
         //==
 
-        public static TriangleMesh Combine(this TriangleMesh mesh, TriangleMesh other)
+        public static TriangleMesh3D Combine(this TriangleMesh3D mesh, TriangleMesh3D other)
             => mesh.Points.Concat(other.Points).ToTriangleMesh(mesh.Indices.Concat(other.Indices.Map(i => i + mesh.Points.Count)));
     }
 }

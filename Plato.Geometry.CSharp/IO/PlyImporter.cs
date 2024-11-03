@@ -216,7 +216,7 @@ namespace Plato.Geometry.IO
             return System.Text.Encoding.UTF8.GetString(bytes.ToArray());
         }
 
-        public static TriangleMesh LoadMesh(string fileName)
+        public static TriangleMesh3D LoadMesh(string fileName)
             => LoadBuffers(fileName).ToMesh();
 
         public static List<IPlyBuffer> LoadBuffers(string fileName)
@@ -435,7 +435,7 @@ namespace Plato.Geometry.IO
             return allBuffers;
         }
 
-        public static TriangleMesh ToMesh(this IReadOnlyList<IPlyBuffer> buffers)
+        public static TriangleMesh3D ToMesh(this IReadOnlyList<IPlyBuffer> buffers)
         {
             var xs = buffers.First(b => b.Name == "x");
             var ys = buffers.First(b => b.Name == "y");
@@ -471,7 +471,7 @@ namespace Plato.Geometry.IO
                 cur += cnt;
             }
 
-            return new TriangleMesh(vertices.ToIArray(), indices.ToIArray());
+            return new TriangleMesh3D(vertices.ToIArray(), indices.ToIArray());
         }   
     }
 }

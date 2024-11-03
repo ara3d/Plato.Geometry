@@ -8,8 +8,5 @@ namespace Plato.DoublePrecision
             ((-0.5, -Math.Sqrt(3) / 2), 
             (-0.5, Math.Sqrt(3) / 2), 
             (0, 1));
-
-        public Triangle3D To3D
-            => (A.To3D, B.To3D, C.To3D);
     }
 }

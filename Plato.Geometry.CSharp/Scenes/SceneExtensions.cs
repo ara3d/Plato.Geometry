@@ -40,7 +40,7 @@ namespace Plato.Geometry.Scenes
             return obj;
         }
 
-        public static SceneMesh AddMesh(this SceneNode self, TriangleMesh mesh, ITransform3D transform = null, Material material = null, string name = null)
+        public static SceneMesh AddMesh(this SceneNode self, TriangleMesh3D mesh, ITransform3D transform = null, Material material = null, string name = null)
         {
             var obj = new SceneMesh(material ?? DefaultMeshMaterial, mesh);
             var id = Guid.NewGuid().ToString();
@@ -55,12 +55,12 @@ namespace Plato.Geometry.Scenes
             return obj;
         }
 
-        public static TriangleMesh ToTriangleMesh(this IScene scene)
+        public static TriangleMesh3D ToTriangleMesh(this IScene scene)
         {
             var points = new List<Vector3D>();
             var indices = new List<Integer>();
             AddMeshes(scene.Root, points, indices);
-            return new TriangleMesh(new ListArray<Vector3D>(points), new ListArray<Integer>(indices));
+            return new TriangleMesh3D(new ListArray<Vector3D>(points), new ListArray<Integer>(indices));
         }
 
         public static void AddMeshes(ISceneNode node, List<Vector3D> points, List<Integer> indices)
@@ -73,7 +73,7 @@ namespace Plato.Geometry.Scenes
 
         // TODO: this seems to be part of a MeshBuilder
 
-        public static void AddMesh(ITriangleMesh mesh, ITransform3D transform, List<Vector3D> points, List<Integer> indices)
+        public static void AddMesh(ITriangleMesh3D mesh, ITransform3D transform, List<Vector3D> points, List<Integer> indices)
         {
             var offset = points.Count;
             foreach (var p in mesh.Points)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Plato.DoublePrecision
 {
     public readonly struct PointArray 
-        : IArray<Vector3D>, IPoints3D, IDeformable3D<PointArray>
+        : IArray<Vector3D>,  IDeformable3D<PointArray>
     {
         public Vector3D At(Integer n)
             => Points[n];
@@ -32,9 +32,6 @@ namespace Plato.DoublePrecision
 
         IDeformable3D IDeformable3D.Deform(Func<Vector3D, Vector3D> f)
             => Deform(f);
-
-        ITransformable3D ITransformable3D.Transform(Matrix4x4 matrix)
-            => Transform(matrix);
 
         public PolyLine3D AsPolyLine(bool closed)
             => Points.ToIArray().ToPolyLine3D(closed);
