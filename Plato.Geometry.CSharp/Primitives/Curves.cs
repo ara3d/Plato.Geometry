@@ -2,6 +2,7 @@
 {
     public static class Curves
     {
+        /* TODO: this has to be updated. 
         public static Curve2D Circle 
             => new Curve2D(x => x.CircleFunction, true);
 
@@ -44,5 +45,8 @@
             => ((t * revolutions).Turns.Sin,
                 (t * revolutions).Turns.Cos,
                 t);
+
+            */
+
     }
 }

@@ -19,16 +19,7 @@ namespace Plato.DoublePrecision
                 : row == 2 ? Row3 
                 : row == 3 ? Row4 
                 : throw new IndexOutOfRangeException();
-        
-        /// <summary>
-        /// Returns the multiplicative identity matrix.
-        /// </summary>
-        public static Matrix4x4 Identity = (
-            (1, 0, 0, 0),
-            (0, 1, 0, 0),
-            (0, 0, 1, 0),
-            (0, 0, 0, 1));
-
+    
         /// <summary>
         /// Returns whether the matrix is the identity matrix.
         /// </summary>
@@ -515,9 +506,9 @@ namespace Plato.DoublePrecision
             };
 
             var basis = new[] {
-                matrix.Row1.Vector3D,
-                matrix.Row2.Vector3D,
-                matrix.Row3.Vector3D
+                matrix.Row1.ToVector3D,
+                matrix.Row2.ToVector3D,
+                matrix.Row3.ToVector3D
             };
 
             scales[0] = basis[0].Length;
@@ -614,7 +605,7 @@ namespace Plato.DoublePrecision
             else
             {
                 // Generate the quaternion from the matrix
-                rotation = Quaternion.CreateFromRotationMatrix(matTemp);
+                rotation = matTemp.QuaternionFromRotationMatrix;
             }
 
             translation = matrix.Translation;

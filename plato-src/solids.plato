@@ -1,0 +1,351 @@
+﻿library Solids
+{
+    /*
+    
+    //==
+    // Sphere
+
+    Unit(_: Sphere) => 1;
+
+    // Evaluates the 3D position on the sphere surface for given spherical coordinates (u, v)
+    Eval(x: Sphere, uv: Vector2D): Vector3D
+        => (uv.Y.Sin * uv.X.Cos,
+            uv.Y.Sin * uv.X.Sin,
+            uv.Y.Cos) * x.Radius;
+
+    // Finds the spherical coordinates (u, v) closest to a given point p
+    ClosestUV(x: Sphere, p: Vector3D): Vector2D
+        => (Atan2(p.Y, p.X), Acos(p.Z / x.Radius));
+
+    // Computes the signed distance from point p to the sphere surface
+    Distance(x: Sphere, p: Vector3D): Number
+        => p.Length - x.Radius;
+
+    // Evaluates the 3D position on the cylinder surface for given parameters (u, v)
+    Eval(x: Cylinder, uv: Vector2D): Vector3D
+        => (x.Radius * uv.X.Cos,
+            x.Radius * uv.X.Sin,
+            uv.Y * x.Height);
+
+    //==
+    // Cylinder
+
+    Unit(_: Cylinder) => (1, 1);
+
+    // Finds the parameters (u, v) closest to a given point p
+    ClosestUV(x: Cylinder, p: Vector3D): Vector2D
+        => (Atan2(p.Y, p.X), (p.Z / x.Height).Clamp01);
+
+    // Computes the signed distance from point p to the finite cylinder
+    Distance(x: Cylinder, p: Vector3D): Number
+    {
+        var d = p.Vector2D.Length - x.Radius;
+        var dz = Max(p.Z - x.Height, -p.Z, 0.0);
+        if (d > 0.0 && dz > 0.0)
+            return (d.Square + dz.Square).Sqrt;
+        else if (d > 0.0)
+            return d;
+        else if (dz > 0.0)
+            return dz;
+        else
+            return Max(d, dz); // Negative inside
+    }
+
+    //==
+    // Capsule
+
+    Unit(_: Capsule) => (1, 1);
+
+    // Evaluates the 3D position on the capsule surface for given parameters (u, v)
+    Eval(x: Capsule, uv: Vector2D): Vector3D
+    {
+        var angle = uv.X;
+        var v = uv.Y * (x.Height - 2 * x.Radius);
+        var h = v - (x.Height - 2 * x.Radius) / 2.0;
+
+        // Position along the central axis
+        var p = new Vector3D(0, 0, h);
+
+        // Adjust for hemispherical caps
+        if (h > ((x.Height - 2 * x.Radius) / 2.0))
+        {
+            // Top hemisphere
+            var theta = (h - ((x.Height - 2 * x.Radius) / 2.0)) / x.Radius;
+            p = new Vector3D(
+                x.Radius * theta.Cos * angle.Cos,
+                x.Radius * theta.Cos * angle.Sin,
+                ((x.Height - 2 * x.Radius) / 2.0) + x.Radius * theta.Sin
+            );
+        }
+        else if (h < -((x.Height - 2 * x.Radius) / 2.0))
+        {
+            // Bottom hemisphere
+            var theta = (h + ((x.Height - 2 * x.Radius) / 2.0)) / x.Radius;
+            p = new Vector3D(
+                x.Radius * theta.Cos * angle.Cos,
+                x.Radius * theta.Cos * angle.Sin,
+                -((x.Height - 2 * x.Radius) / 2.0) + x.Radius * theta.Sin
+            );
+        }
+        else
+        {
+            // Cylinder part
+            p = new Vector3D(
+                x.Radius * angle.Cos,
+                x.Radius * angle.Sin,
+                h
+            );
+        }
+
+        // Shift to align with capsule's actual position
+        return p + (0, 0, x.Height / 2.0);
+    }
+
+    // Finds the parameters (u, v) closest to a given point p
+    ClosestUV(x: Capsule, p: Vector3D): Vector2D
+    {
+        // Shift point to capsule's local coordinate system
+        var localP = p - (0, 0, x.Height.Half);
+
+        // Project onto capsule axis
+        var h = Clamp(localP.Z, -((x.Height - 2 * x.Radius).Half), ((x.Height - 2 * x.Radius).Half));
+
+        // Angle around the axis
+        var angle = Atan2(localP.Y, localP.X);
+
+        // Normalize v parameter
+        var v = (h + ((x.Height - 2 * x.Radius) / 2.0)) / (x.Height - 2 * x.Radius);
+
+        return (angle, v);
+    }
+
+    // Computes the signed distance from point p to the capsule surface
+    Distance(x: Capsule, p: Vector3D): Number
+    {
+        // Line segment from point A to B along the capsule axis
+        var a = new Vector3D(0, 0, 0);
+        var b = new Vector3D(0, 0, x.Height);
+
+        // Vector from A to B
+        var ab = b - a;
+
+        // Vector from A to point P
+        var ap = p - a;
+
+        // Project point onto capsule axis
+        var t = Clamp(Dot(ap, ab) / Dot(ab, ab), 0.0, 1.0);
+
+        // Closest point on the axis
+        var closestPoint = a + ab * t;
+
+        // Distance from point to capsule surface
+        return (p - closestPoint).Length - x.Radius;
+    }
+
+    //==
+    // Cone
+
+    Unit(_: Cone): Cone => (1, 1);
+
+    // Evaluates the 3D position on the cone surface for given parameters (u, v)
+    Eval(x: Cone, uv: Vector2D): Vector3D
+    {
+        var angle = uv.X;
+        var h = uv.Y * x.Height;
+        var r = ((x.Height - h) / x.Height) * x.Radius;
+        return (r * angle.Cos, r * angle.Sin, h);
+    }
+
+    // Finds the parameters (u, v) closest to a given point p
+    ClosestUV(x: Cone, p: Vector3D): Vector2D
+    {
+        var angle = Atan2(p.Y, p.X);
+        var r = p.Length;
+        var h = Clamp(p.Z, 0.0, Height);
+        var v = h / Height;
+        return (angle, v);
+    }
+
+    // Computes the signed distance from point p to the cone surface
+    Distance(x: Cone, p: Vector3D): Number
+    {
+        var q = Vector2D(p.Length, p.Z);
+        var c = Vector2D(x.Radius, x.Height);
+        var n = c.Normalize;
+        var cosAlpha = n.Y; // Cosine of the cone's angle
+        var m = q.Length;
+        var d = q.Y * cosAlpha - q.X * n.X;
+        return d;
+    }
+
+    //==
+    // ConeSegment
+
+    Unit(_: ConeSegment): ConeSegment => (1, 1, 0.5);
+
+    // Evaluates the 3D position on the truncated cone (frustum) surface for given parameters (u, v)
+    Eval(x: ConeSegment, uv: Vector2D): Vector3D
+    {
+        var angle = uv.X;
+        var h = uv.Y * x.Height;
+        var r = x.Radius1 + (x.Radius2 - x.Radius1) * (h / x.Height);
+        return (uv.X * angle.Cos, uv.X * angle.Sin, h);
+    }
+
+    // Finds the parameters (u, v) closest to a given point p
+    ClosestUV(x: ConeSegment, p: Vector3D): Vector2D
+    {
+        var angle = Atan2(p.Y, p.X);
+        var h = Clamp(p.Z, 0.0, x.Height);
+        return Vector2D(angle, h / x.Height);
+    }
+
+    // Computes the signed distance from point p to the cone segment surface
+    Distance(x: ConeSegment, p: Vector3D): Number
+    {
+        var k0 = (x.Radius2 - x.Radius1) / Height;
+        var k1 = x.Radius1;
+
+        var r = Vector2D(p.X, p.Y).Length;
+        var h = Clamp(p.Z, 0.0, x.Height);
+
+        var d = r - (k0 * h + k1);
+        var dz = Max(p.Z - Height, -p.Z);
+
+        if (d > 0.0 && dz > 0.0)
+            return Sqrt(d * d + dz * dz);
+        else if (d > 0.0)
+            return d;
+        else if (dz > 0.0)
+            return dz;
+        else
+            return Max(d, dz); // Negative inside
+    }
+
+    //==
+    // Box3D
+    
+    Unit(_: Box3D): Box3D 
+        => (1, 1, 1);
+
+    // Evaluates the 3D position on the box surface for given parameters (u, v)
+    Eval(x: Box3D, uv: Vector2D): Vector3D
+    {
+        // Map uv to six faces of the box
+        var face = (uv.Y * 6.0).Floor;
+        var localUV = (uv * 6.0).Fract;
+
+        var x = (localUV.X - 0.5) * x.Extent.X * 2.0;
+        var y = (localUV.Y - 0.5) * x.Extent.Y * 2.0;
+        var z = x.Z;
+
+        if (face == 0) return (z, x, y); // Front face
+        if (face == 1) return (-z, x, y); // Back face
+        if (face == 2) return (x, z, y); // Right face
+        if (face == 3) return (x, -z, y); // Left face
+        if (face == 4) return (x, y, z); // Top face
+        if (face == 5) return (x, y, -z); // Bottom face
+        return (0, 0, 0);
+    }
+
+    // Finds the parameters (u, v) closest to a given point p
+    ClosestUV(x: Box3D, p: Vector3D): Vector2D
+    {
+        // Find the face the point is closest to
+        var maxComponent = p.MaxComponent.Abs;
+
+        var faceIndex = 0;
+        if (maxComponent == p.X.Abs)
+            faceIndex = p.X > 0 ? 2 : 3;
+        else if (maxComponent == p.Y.Abs)
+            faceIndex = p.Y > 0 ? 4 : 5;
+        else
+            faceIndex = p.Z > 0 ? 0 : 1;
+
+        // Map the point to UV on that face
+        var localP = p / x.Extent.ToVector3D();
+
+        var u = (localP.Y + 1.0).Half;
+        var v = (localP.Z + 1.0).Half;
+
+        return ((faceIndex / 6.0) + u / 6.0, v);
+    }
+
+    // Computes the signed distance from point p to the box surface
+    Distance(x: Box3D, p: Vector3D): Number
+    {
+        var d = p.Abs - x.Extent.Vector3D;
+        var maxDist = d.MaxComponent;
+        var outsideDist = d.Max((0, 0, 0)).Length;
+        return (maxDist > 0.0) ? outsideDist : maxDist;
+    }
+
+    //==
+    // Pyramid
+    
+    Unit(_: Pyramid): Pyramid => (1, 1);
+
+    // Evaluates the 3D position on the pyramid surface for given parameters (u, v)
+    Eval(x: Pyramid, uv: Vector2D): Vector3D
+    {
+        var h = uv.Y * x.Height;
+        var b = x.BaseLength.Half * (1.0 - uv.Y);
+        return (b * uv.X.Cos, b * uv.X.Sin, h);
+    }
+
+    // Finds the parameters (u, v) closest to a given point p
+    ClosestUV(x: Pyramid, p: Vector3D): Vector2D
+    {
+        var h = Clamp(p.Z, 0.0, x.Height);
+        var scale = 1.0 - (h / x.Height);
+        var xzLength = p.XY.Length;
+        var u = Atan2(p.Y, p.X) / 1.0.Turns;
+        return (u, h / Height);
+    }
+
+    // Computes the signed distance from point p to the pyramid surface
+    Distance(x: Pyramid, p: Vector3D): Number
+    {
+        var m2 = x.BaseLength.Square / 4.0 + x.Height.Square;
+        var x = p.X.Abs;
+        var y = p.Y.Abs;
+        var z = p.Z;
+
+        var d = Max(x + y - (x.BaseLength * (1.0 - z / x.Height)), z - x.Height);
+        var insideDist = Min(d, Max(-z, x - x.BaseLength / 2.0, y - x.BaseLength / 2.0));
+
+        if (insideDist > 0.0)
+            return d;
+        else
+            return insideDist; // Negative inside
+    }
+
+    //==
+    // Torus
+
+    Unit(x: Torus): Torus => (1, 0.2);
+
+    // Evaluates the 3D position on the torus surface for given parameters (u, v)
+    Eval(x: Torus, uv: Vector2D): Vector3D
+        => ((x.Radius1 + x.Radius2 * uv.Y.Cos) * uv.X.Cos,
+            (x.Radius1 + x.Radius2 * uv.Y.Cos) * uv.X.Sin,
+            x.Radius2 * uv.Y.Sin);
+
+    // Finds the parameters (u, v) closest to a given point p
+    ClosestUV(x: Torus, p: Vector3D): Vector2D
+    {
+        var q = new Vector2D(p.XY.Length, p.Z);
+        var angle1 = Atan2(p.Y, p.X);
+        var angle2 = Atan2(p.Z, q.X - x.Radius1);
+        return (angle1.Turns, angle2.Turns);
+    }
+
+    // Computes the signed distance from point p to the torus surface
+    Distance(x: Torus, p: Vector3D): Number
+    {
+        var q = new Vector2D(p.XY.Length - x.Radius1, p.Z);
+        return q.Length - x.Radius2;
+    }
+
+    */
+}

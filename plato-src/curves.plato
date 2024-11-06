@@ -1,0 +1,303 @@
+library Curves
+{
+    // https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
+    LinearFunction(x: IAlgebraic, m: Number, b: Number): IAlgebraic
+        => m * x + b;
+
+    //  https://en.wikipedia.org/wiki/Quadratic_function
+    QuadraticFunction(x: IAlgebraic, a: Number, b: Number, c: Number): IAlgebraic
+        => a * x.Square + b * x + c;
+
+    //  https://en.wikipedia.org/wiki/Cubic_function
+    CubicFunction(x: IAlgebraic, a: Number, b: Number, c: Number, d: Number): IAlgebraic
+        => a * x.Cube + b * x.Square + c * x + d;
+
+    // https://en.wikipedia.org/wiki/Parabola
+    ParabolaFunction(x: IMultiplicative): IMultiplicative
+        => x.Square;
+
+    // https://mathworld.wolfram.com/StaircaseFunction.html
+    StaircaseFloorFunction(x: Number, steps: Integer): Number   
+        => (x * steps).Floor / steps;
+
+    // https://mathworld.wolfram.com/StaircaseFunction.html
+    StaircaseCeilingFunction(x: Number, steps: Integer): Number
+        => (x * steps).Ceiling / steps;
+
+    // https://mathworld.wolfram.com/StaircaseFunction.html
+    StaircaseRoundFunction(x: Number, steps: Integer): Number
+        => (x * steps).Round / steps;
+
+    //==
+    // Curves 2D 
+    //==
+
+    CircleFunction(t: Number): Vector2D
+        => t.Turns.CircleFunction;
+
+    CircleFunction(t: Angle): Vector2D
+        => (t.Cos, t.Sin);
+
+    // https://en.wikipedia.org/wiki/Lissajous_curve
+    LissajousFunction(t: Angle, kx: Number, ky: Number): Vector2D
+        => ((t * kx).Cos, (t * ky).Sin);
+
+    LissajousFunction(t: Number, kx: Number, ky: Number): Vector2D
+        => t.Turns.LissajousFunction(kx, ky);
+
+    // https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
+    ButterflyCurveFunction(t: Number): Vector2D
+        => (t.Turns / 6.0).ButterflyCurveFunction;
+
+    ButterflyCurveFunction(t: Angle): Vector2D
+        => ((t * (t.Cos.Exp - 2.0 * (t * 4.0).Cos - (t / 12.0).Sin.Pow(5.0))).Sin,
+            (t * (t.Cos.Exp - 2.0 * (t * 4.0).Cos - (t / 12.0).Sin.Pow(5.0))).Cos);
+    
+    //===
+    // 2D parametric functions, created from 1D 
+    //===
+
+    ParabolaFunction2D(t: Number): Vector2D
+        => (t, t.ParabolaFunction);
+
+    LineFunction2D(t: Number, m: Number, b: Number): Vector2D
+        => (t, t.LinearFunction(m, b));
+
+    SinFunction2D(t: Number): Vector2D
+        => (t, t.Turns.Sin);
+
+    CosFunction2D(t: Number): Vector2D
+        => (t, t.Turns.Cos);
+
+    TanFunction2D(t: Number): Vector2D
+        => (t, t.Turns.Tan);
+
+    //==
+    // 3D IVector
+    //== 
+
+    // https://en.wikipedia.org/wiki/Torus_knot
+    TorusKnotFunction(t: Angle, p: Number, q: Number): Vector3D
+    {
+        var r = (t * q).Cos + 2.0;
+        var x = r * (t * p).Cos;
+        var y = r * (t * p).Sin;    
+        var z = -(t * q).Sin;
+        return (x, y, z);
+    }
+
+    // https://en.wikipedia.org/wiki/Trefoil_knot
+    TrefoilKnotFunction(t: Angle): Vector3D
+        => (t.Sin + (t * 2.0).Sin * 2.0,
+            t.Cos + (t * 2.0).Cos * 2.0,
+            -(t * 3.0).Sin);
+
+    // https://en.wikipedia.org/wiki/Figure-eight_knot_(mathematics)
+    FigureEightKnotFunction(t: Angle): Vector3D
+        => ((2.0 + (t * 2.0).Cos) * (t * 3.0).Cos,
+            (2.0 + (t * 2.0).Cos) * (t * 3.0).Sin,
+            (t * 4.0).Sin);
+
+    // https://en.wikipedia.org/wiki/Parametric_equation#Helix
+    HelixFunction(t: Number, revs: Number): Vector3D
+        => ((t * revs).Turns.Sin, 
+            (t * revs).Turns.Cos,
+            t);
+
+    //==
+    // TODO:
+    // https://en.wikipedia.org/wiki/Rose_(mathematics)
+    // Other polar coordinate based functions
+}
+
+/*
+ *
+ *
+   // https://en.wikipedia.org/wiki/B%C3%A9zier_curve    
+   type CubicBezier2D
+       implements IPointArray2D, IOpenCurve2D, IArray<Vector2D>
+   {
+       A: Vector2D;
+       B: Vector2D;
+       C: Vector2D;
+       D: Vector2D;
+   }   
+   
+   // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
+   type QuadraticBezier2D
+       implements IPointArray2D, IOpenCurve2D
+   {
+       A: Vector2D;
+       B: Vector2D;
+       C: Vector2D;
+   }
+   
+   // https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
+   type LinearFunction2D
+       implements IOpenCurve2D
+   {
+       // Also called "M"
+       Slope: Number;
+   
+       // Also called "B"
+       YIntercept: Number; 
+   
+       /*
+       Eval(x: Number): Vector2D
+   		=> (x, Slope * x + YIntercept);
+       * /
+   }
+   
+   type QuadraticFunction2D
+       implements IOpenCurve2D
+   {
+       A: Number;
+       B: Number;
+       C: Number;
+   }
+   
+   type CubicFunction2D
+       implements IOpenCurve2D
+   {
+       A: Number;
+       B: Number;
+       C: Number;
+       D: Number;
+   }
+   
+   type Parabola
+       implements IOpenCurve2D
+   {
+   }
+   
+   type Circle
+       implements IClosedCurve2D
+   { 
+       Center: Vector2D;
+       Radius: Number;
+   }
+   
+   // https://en.wikipedia.org/wiki/Lissajous_curve
+   type Lissajous
+       implements IClosedCurve2D
+   {
+       Kx: Integer;
+   	Ky: Integer;
+   }
+   
+   // https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
+   type ButterflyCurve
+       implements IClosedCurve2D
+   { }
+       
+   type Spiral
+   	implements ICurve2D
+   {
+   	Radius1: Number;
+       Radius2: Number;
+   	NumTurns: Number;
+   }
+   
+   type Sin
+       implements ICurve2D
+   {
+   	Amplitude: Number;
+   	Frequency: Number;
+   	Phase: Number;
+   }
+   
+   type Cos    
+       implements ICurve2D
+   {
+   	Amplitude: Number;
+   	Frequency: Number;
+   	Phase: Number;
+   }
+   
+   //==
+   // 3D Curve Definitions
+   //==
+   
+   // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
+   type CubicBezier3D
+       implements IPointArray3D, ICurve3D, IArray<Vector3D>
+   {
+       A: Vector3D;
+       B: Vector3D;
+       C: Vector3D;
+       D: Vector3D;
+   
+       /*
+       Eval(t: Number): Vector3D
+   	    => A * (1 - t).Cube 
+               + B * 3 * (1 - t).Square * t 
+               + C * 3 * (1 - t) * t.Square 
+               + D * t.Cube;	
+   
+       EvalDerivative(t: Number): Vector3D
+           => (B - A) * 3 * (1 - t).Square
+              + (C - B) * 6 * (1 - t) * t
+              + (D - C) * 3 * t.Square;
+   
+       EvalSecondDerivative(t: Number): Vector3D
+           => (C - 2 * B + A) * 6 * (1 - t)
+              + (D - 2 * C + B) * 6 * t;
+       * /
+   }
+   
+   // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
+   type QuadraticBezier3D
+       implements IPointArray3D, ICurve3D, IArray<Vector3D>
+   {
+       A: Vector3D;
+       B: Vector3D;
+       C: Vector3D;
+   
+       /*
+       Eval(t: Number): Vector3D
+   	    => A * (1 - t).Square 
+   			+ B * 2 * (1 - t) * t 
+   			+ C * t.Square;
+   
+       EvalDerivative(t: Number): Vector3D
+   		=> (B - A) * 2 * (1 - t)
+   		   + (C - B) * 2 * t;
+   
+       EvalSecondDerivative(t: Number): Vector3D)
+           => C - 2 * B + A;
+       * /
+   }
+   
+   type TorusKnot
+       implements ICurve3D
+   {
+       P: Integer;
+   	Q: Integer;
+   	Radius: Number;
+   
+       /*
+       Eval(t: Number): Vector3D
+   		=> ((2 + (Q * t).Cos) * (P * t).Cos,
+   			(2 + (Q * t).Cos) * (P * t).Sin),
+   			(Q * t).Sin));
+       * /
+   }
+   
+   type Helix
+   	implements ICurve3D
+   {
+   	Radius: Number;
+   	Height: Number;
+   	NumTurns: Number;
+   }
+   
+   type TrefoilKnot
+       implements ICurve3D
+   {
+   }
+   
+   type FigureEightKnot
+   	implements ICurve3D
+   {
+   }
+ */

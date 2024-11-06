@@ -24,13 +24,13 @@ namespace Plato.Geometry.Scenes
 
     public class SceneMesh : ISceneMesh
     {
-        public SceneMesh(Material material, TriangleMesh mesh)
+        public SceneMesh(Material material, TriangleMesh3D mesh)
         {
             Material = material;
             Mesh = mesh;
         }
         public Material Material { get; set; }
-        public TriangleMesh Mesh { get; set; }
+        public TriangleMesh3D Mesh { get; set; }
     }
 
     public class SceneLine : ISceneLine

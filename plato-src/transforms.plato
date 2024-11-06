@@ -1,0 +1,250 @@
+library Transforms
+{
+    //==
+    // Transform3D
+
+	Transform(t: Transform3D, v: Vector3D): Vector3D
+		=> (t.Rotation.Transform(v) + t.Translation) * t.Scale;
+
+	TransformNormal(t: Transform3D, v: Vector3D): Vector3D
+		=> t.Rotation.TransformNormal(v);
+
+    //==
+    // Pose3D
+
+	Transform(p: Pose3D, v: Vector3D): Vector3D
+		=> p.Rotation.Transform(v) + p.Position;
+
+	TransformNormal(p: Pose3D, v: Vector3D): Vector3D
+		=> p.Rotation.TransformNormal(v);
+
+    //==
+    // AxisAngle
+    
+    Transform(aa: AxisAngle, v: Vector3D): Vector3D
+		=> aa.Quaternion.Transform(v);
+
+    TransformNormal(aa: AxisAngle, v: Vector3D): Vector3D
+        => aa.Transform( v);
+
+    Quaternion(aa: AxisAngle): Quaternion
+	{
+        var axis = aa.Axis.Normalize;
+        var sinHalfAngle = aa.Angle.Half.Sin;
+        var cosHalfAngle = aa.Angle.Half.Cos;
+        return (
+            axis.X * sinHalfAngle,
+            axis.Y * sinHalfAngle,
+            axis.Z * sinHalfAngle,
+            cosHalfAngle);
+    }
+
+    //==
+    // EulerAngles
+
+    Quaternion(e: EulerAngles): Quaternion
+	{
+		var cy = e.Yaw.Half.Cos;        
+        var sy = e.Yaw.Half.Sin;
+        var cp = e.Pitch.Half.Cos;
+        var sp = e.Pitch.Half.Sin;
+        var cr = e.Roll.Half.Cos;
+        var sr = e.Roll.Half.Sin;
+        return (
+            sr * cp * cy - cr * sp * sy,
+            cr * sp * cy + sr * cp * sy,
+            cr * cp * sy - sr * sp * cy,
+            cr * cp * cy + sr * sp * sy);
+	}
+
+    Transform(e: EulerAngles, v: Vector3D): Vector3D
+        => e.Quaternion.Transform(v);
+
+    TransformNormal(e: EulerAngles, v: Vector3D): Vector3D
+        => e.Quaternion.TransformNormal(v);
+
+    //==
+	// Frame3D
+
+	Pose3D(f: Frame3D): Pose3D
+        => (f.Translation, f.Forward.LookRotation(f.Up));
+
+    Transform(f: Frame3D, v: Vector3D): Vector3D
+		=> f.Pose3D.Transform(v);
+
+	TransformNormal(f: Frame3D, v: Vector3D): Vector3D
+		=> f.Pose3D.TransformNormal(v);
+
+    //==
+    // Rotation
+
+    Transform(r: Rotation3D, v: Vector3D): Vector3D
+    	=> r.Quaternion.Transform(v);
+
+    TransformNormal(r: Rotation3D, v: Vector3D): Vector3D
+    	=> r.Quaternion.TransformNormal(v);
+
+    //==
+    // Quaternion
+
+    Quaternion(v: Vector4D): Quaternion
+        => (v.X, v.Y, v.Z, v.W);
+
+    Vector4D(q: Quaternion): Vector4D
+		=> (q.X, q.Y, q.Z, q.W);
+
+    Magnitude(q: Quaternion): Number
+        => q.Vector4D.Magnitude;
+
+    MagnitudeSquared(q: Quaternion): Number
+        => q.Vector4D.MagnitudeSquared;
+
+	Transform(q: Quaternion, v: Vector3D): Vector3D
+    {
+        var x2 = q.X + q.X;
+        var y2 = q.Y + q.Y;
+        var z2 = q.Z + q.Z;
+
+        var wx2 = q.W * x2;
+        var wy2 = q.W * y2;
+        var wz2 = q.W * z2;
+        var xx2 = q.X * x2; 
+        var xy2 = q.X * y2;
+        var xz2 = q.X * z2;
+        var yy2 = q.Y * y2;
+        var yz2 = q.Y * z2;
+        var zz2 = q.Z * z2;
+
+        return (
+            v.X * (1.0 - yy2 - zz2) + v.Y * (xy2 - wz2) + v.Z * (xz2 + wy2),
+            v.X * (xy2 + wz2) + v.Y * (1.0 - xx2 - zz2) + v.Z * (yz2 - wx2),
+            v.X * (xz2 - wy2) + v.Y * (yz2 + wx2) + v.Z * (1.0 - xx2 - yy2));
+    }
+
+	TransformNormal(q: Quaternion, v: Vector3D): Vector3D
+		=> q.Transform(v);
+
+	Concatenate(q1: Quaternion, q2: Quaternion): Quaternion
+		=> q1.ReverseConcatenate(q2);
+
+    Normalize(q: Quaternion): Quaternion
+        => q.Vector4D.Normalize;
+
+	XYZ(q: Quaternion): Vector3D
+        => (X, Y, Z);
+
+	ReverseConcatenate(q2: Quaternion, q1: Quaternion): Quaternion
+    {
+        var av = q2.XYZ;
+        var bv = q1.XYZ;
+        var cv = av.Cross(bv);
+        var dot = av.Dot(bv);
+        return (
+            q2.X * q1.W + q1.X * q2.W + cv.X,
+            q2.Y * q1.W + q1.Y * q2.W + cv.Y,
+            q2.Z * q1.W + q1.Z * q2.W + cv.Z,
+            q2.W * q1.W - dot);
+    }
+ 
+    AxisAngle(v: Vector3D, a: Angle): AxisAngle
+        => (v, a);
+
+    QuaternionFromRotationMatrix(m: Matrix4x4): Quaternion
+    {
+        var trace = m.M11 + m.M22 + m.M33;
+
+        if (trace > 0.0)
+        {
+            var s = (trace + 1.0).Sqrt;
+            var w = s * 0.5;
+            var s1 = 0.5 / s;
+            return (
+                (m.M23 - m.M32) * s1,
+                (m.M31 - m.M13) * s1,
+                (m.M12 - m.M21) * s1,
+                w);
+        }
+        if (m.M11 >= m.M22 && m.M11 >= m.M33)
+        {
+            var s = (1.0 + m.M11 - m.M22 - m.M33).Sqrt;
+            var invS = 0.5 / s;
+            return (s.Half,
+                (m.M12 + m.M21) * invS,
+                (m.M13 + m.M31) * invS,
+                (m.M23 - m.M32) * invS);
+        }
+        if (m.M22 > m.M33)
+        {
+            var s = (1.0 + m.M22 - m.M11 - m.M33).Sqrt;
+            var invS = 0.5 / s;
+            return (
+               (m.M21 + m.M12) * invS,
+               s.Half,
+               (m.M32 + m.M23) * invS,
+               (m.M31 - m.M13) * invS);
+        }
+        {
+            var s = (1.0 + m.M33 - m.M11 - m.M22).Sqrt;
+            var invS = 0.5 / s;
+            return (
+                (m.M31 + m.M13) * invS,
+                (m.M32 + m.M23) * invS,
+                s.Half, 
+                (m.M12 - m.M21) * invS);
+        }
+    }
+
+    Dot(q1: Quaternion, q2: Quaternion): Number
+        => q1.Vector4D.Dot(q2.Vector4D);
+
+    Slerp(q1: Quaternion, q2: Quaternion, t: Number): Quaternion
+    {
+        var cosOmega = q1.Dot(q2);
+        var flip = cosOmega < 0.0;
+
+        if (cosOmega.Abs > (1.0 - 1e-6))
+        {
+            // Too close, do straight linear interpolation.
+            var s1 = 1.0 - t;
+            var s2 = flip ? -t : t;
+            return q1 * s1 + q2 * s2;
+        } 
+        else
+        {
+            var omega = cosOmega.Abs.Acos;
+            var invSinOmega = 1 / omega.Sin;
+            var s1 = ((1.0 - t) * omega).Sin * invSinOmega;
+            var s2 = flip
+                ? -(t * omega).Sin * invSinOmega
+                : (t * omega).Sin * invSinOmega;
+
+            return q1 * s1 + q2 * s2;
+        }
+    }
+  
+    LookRotation(direction: Vector3D, up: Vector3D): Quaternion
+    {
+        // Normalize the direction vector to get the forward vector
+        var forward = direction.Normalize;
+
+        var up2 = up.IsParallel(forward) ? Vector3D.UnitX : up; 
+
+        // Calculate the right vector and normalize it
+        var right = up2.Cross(forward).Normalize;
+
+        // Recompute the up vector and normalize it
+        var correctedUp = forward.Cross(right).Normalize;
+
+        // Construct the rotation matrix using right, corrected up, and forward vectors
+        var rotationMatrix = new Matrix4x4(
+            (right.X, correctedUp.X, forward.X, 0),
+            (right.Y, correctedUp.Y, forward.Y, 0),
+            (right.Z, correctedUp.Z, forward.Z, 0),
+            (0, 0, 0, 1));
+
+        return rotationMatrix.QuaternionFromRotationMatrix.Normalize;
+    }
+
+    Transform(xs: IArray<Vector3D>, t: ITransform3D): IArray<Vector3D>
+	    => xs.Map(x  => t.Transform(x));
+}

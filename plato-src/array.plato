@@ -27,6 +27,9 @@ concept IArray3D<T>
 
 library ArrayLibrary
 {
+	Repeat(x: IAny, n: Integer): IArray<IAny>
+        => n.MapRange((i) => x);
+
     // Returns n numbers, from 0 to 1, including 0, but not 1. 
     Numbers(n: Integer): IArray<Number>
         => n.MapRange((i) => i.ToNumber / n.ToNumber);
@@ -115,12 +118,6 @@ library ArrayLibrary
     Map(xs: IArray<$T1>, f: Function1<$T1, $T2>): IArray<$T2> 
         => xs.Count.MapRange((i) => f(xs.At(i)));
 
-    PairwiseMap(xs: IArray<$T1>, f: Function2<$T1, $T1, $T2>): IArray<$T2> 
-		=> (xs.Count - 1).MapRange(i => f(xs[i], xs[i + 1]));
-
-    PairwiseMapModulo(xs: IArray<$T1>, f: Function2<$T1, $T1, $T2>): IArray<$T2> 
-		=> xs.Count.MapRange(i => f(xs[i], xs[(i + 1) % xs.Count]));
-
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, f: Function2<$T1, $T2, $T3>): IArray<$T3> 
         => xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i]));  
 
@@ -132,4 +129,37 @@ library ArrayLibrary
 
     Shift(xs: IArray<$T>, n: Integer): IArray<$T>
     	=> xs.Count.MapRange(i => xs.ModuloAt(i));
+
+    WithNext(xs: IArray<$T0>, f: Function2<$T0, $T0, $T1>): IArray<$T1> 
+        => xs.Drop(1).Zip(xs.Skip(1), f);
+
+    WithNextAndBeginning(xs: IArray<$T0>, f: Function2<$T0, $T0, $T1>): IArray<$T1> 
+        => xs.Zip(xs.Shift(1), f);
+
+    WithNext(xs: IArray<$T0>, f: Function2<$T0, $T0, $T1>, connect: Boolean): IArray<$T1> 
+        => connect ? xs.WithNextAndBeginning(f) : xs.WithNext(f);
+
+    CartesianProduct(a: Integer, b: Integer, f: Function2<Integer, Integer, $T>): IArray2D<$T>
+        => a.Range.CartesianProduct(b.Range, f);
+
+    EveryNth(self: IArray<$T>, n: Integer): IArray<$T>
+        => self.Indices().Map(i => self.ModuloAt(i * n));
+
+    CartesianProduct(columns: IArray<$TColumn>, rows: IArray<$TRow>, func: Function2<$TColumn, $TRow, $TResult>): IArray2D<$TResult>
+        => new Array2D<$TResult>(columns.Count, rows.Count, (i, j) => func(columns[i], rows[j]));
+
+    Reverse(self: IArray<$T>): IArray<$T>
+        => self.Indices().Map(i => self[self.Count - 1 - i]);
+
+    Concat(xs: IArray<$T>, ys: IArray<$T>): IArray<$T>
+        => (xs.Count + ys.Count).MapRange(i => i < xs.Count ? xs[i] : ys[i - xs.Count]);
+
+    Prepend(self: IArray<$T>, value: $T): IArray<$T>
+        => (self.Count + 1).MapRange(i => i == 0 ? value : self[i - 1]);
+
+    Append(self: IArray<$T>, value: $T): IArray<$T>
+        => (self.Count + 1).MapRange(i => i == 0 ? value : self[i - 1]);
+
+    PrependAndAppend(self: IArray<$T>, before: $T, after: $T): IArray<$T>
+        => self.Prepend(before).Append(after);
 } 

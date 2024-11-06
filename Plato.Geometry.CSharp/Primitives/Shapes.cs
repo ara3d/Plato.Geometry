@@ -11,19 +11,19 @@
         public static readonly Quad3D QuadYZ 
             = new Quad3D((0, 0, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1));
 
-        public static QuadGrid Sphere(int resolution)
+        public static QuadGrid3D Sphere(int resolution)
             => Extensions2.ToQuadGrid(SphereFunction, resolution, true, true);
 
-        public static QuadGrid Plane(int resolution)
+        public static QuadGrid3D Plane(int resolution)
             => Extensions2.ToQuadGrid(PlaneXYFunction, resolution, true, true);
 
-        public static QuadGrid Cylinder(int resolution)
+        public static QuadGrid3D Cylinder(int resolution)
             => Extensions2.ToQuadGrid(CylinderFunction, resolution, true, true);
 
-        public static QuadGrid Capsule(int resolution)
+        public static QuadGrid3D Capsule(int resolution)
             => Extensions2.ToQuadGrid(CapsuleFunction, resolution, true, true);
 
-        public static QuadGrid Disc(int resolution)
+        public static QuadGrid3D Disc(int resolution)
             => Extensions2.ToQuadGrid(uv => DiscFunction(uv), resolution, true, false);
 
         public static Vector3D SphereFunction(this Vector2D uv)
@@ -34,7 +34,7 @@
 
         // https://en.wikipedia.org/wiki/Torus#Geometry
 
-        public static QuadGrid Torus(int resolution)
+        public static QuadGrid3D Torus(int resolution)
             => Extensions2.ToQuadGrid(uv => TorusFunction(uv, 1.0, 0.2), resolution, true, true);
 
         public static Vector3D TorusFunction(this Vector2D uv, Number r1, Number r2)

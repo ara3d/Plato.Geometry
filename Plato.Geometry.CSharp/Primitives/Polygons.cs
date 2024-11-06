@@ -6,7 +6,7 @@ namespace Plato.DoublePrecision
     public static class Polygons
     {
         public static PolyLine2D RegularPolygon(int n)
-            => Curves.Circle.ToPolyLine2D(n);
+            => Circle.Default.ToPolyLine2D(n);
 
         public static readonly PolyLine2D Triangle = RegularPolygon(3);
         public static readonly PolyLine2D Square = RegularPolygon(4);
@@ -25,7 +25,7 @@ namespace Plato.DoublePrecision
             => CirclePoints(p).EveryNth(q).ToPolyLine2D(true);
 
         public static IArray<Vector2D> CirclePoints(int n)
-            => Curves.Circle.Sample<Vector2D>(n);
+            => Circle.Default.Sample<Vector2D>(n);
 
         public static PolyLine2D StarFigure(Integer p, Integer q)
         {

@@ -21,7 +21,7 @@ namespace Plato.DoublePrecision
         public static IArray<T> MapRange<T>(this int count, Func<Integer, T> func)
             => ((Integer)count).MapRange(func);
 
-        public static QuadGrid UpArrow(double length, double minorRadius, double majorRadius, int radialSegments,
+        public static QuadGrid3D UpArrow(double length, double minorRadius, double majorRadius, int radialSegments,
             double percentTail)
         {
             var first = Vector3D.Default;
@@ -53,13 +53,13 @@ namespace Plato.DoublePrecision
             return new Array2D<T>(nColumns, rows.Count, (i, j) => rows[j][i]);
         }
 
-        public static Transform3D FractionalRotation(Number numerator, Number denominator, Vector3D axis)
-            => Quaternion.FromAxisAngle(axis, FractionalTurn(numerator, denominator)).ToTransform3D();
+        public static ITransform3D FractionalRotation(Number numerator, Number denominator, Vector3D axis)
+            => axis.AxisAngle(FractionalTurn(numerator, denominator));
 
-        public static Transform3D FractionalRotation(Number amount, Vector3D axis)
-            => Quaternion.FromAxisAngle(axis, -amount.Turns).ToTransform3D();
+        public static ITransform3D FractionalRotation(Number amount, Vector3D axis)
+            => axis.AxisAngle(-amount.Turns);
 
-        public static QuadGrid SurfaceOfRevolution(this IArray<Vector3D> points, Vector3D axis, int segments,
+        public static QuadGrid3D SurfaceOfRevolution(this IArray<Vector3D> points, Vector3D axis, int segments,
             bool closedU = false, bool closedV = true)
             => segments
                 .Interpolate()
@@ -67,16 +67,13 @@ namespace Plato.DoublePrecision
                 .ToArray2D()
                 .ToQuadGrid(closedU, closedV);
 
-        public static QuadGrid ToQuadGrid(this IArray2D<Vector3D> points, bool closedX, bool closedY)
-            => new QuadGrid(points, closedX, closedY);
+        public static QuadGrid3D ToQuadGrid(this IArray2D<Vector3D> points, bool closedX, bool closedY)
+            => new QuadGrid3D(points, closedX, closedY);
 
         public static IArray2D<T1> Map<T0, T1>(this IArray2D<T0> self, Func<T0, T1> f)
             => new Array2D<T1>(self.ColumnCount, self.RowCount, (i, j) => f(self.At(i, j)));
 
-        public static IArray2D<T> CartesianProduct<T>(this Integer a, Integer b, Func<Integer, Integer, T> f)
-            => a.Range.CartesianProduct(b.Range, f);
-
-        public static QuadGrid ToQuadGrid(Func<Vector2D, Vector3D> f, Integer nGridSize, Boolean closedX,
+        public static QuadGrid3D ToQuadGrid(Func<Vector2D, Vector3D> f, Integer nGridSize, Boolean closedX,
             Boolean closedY)
             => nGridSize
                 .CartesianProduct(nGridSize, (a, b) =>
@@ -99,26 +96,14 @@ namespace Plato.DoublePrecision
         public static Vector3D Barycentric(this Quad3D q, Vector2D uv)
             => q.A * (1 - uv.X) * (1 - uv.Y) + q.B * uv.X * (1 - uv.Y) + q.C * uv.X * uv.Y + q.D * (1 - uv.X) * uv.Y;
 
-        public static QuadGrid ToGrid(this Quad3D quad, IArray2D<Vector2D> uvs)
+        public static QuadGrid3D ToGrid(this Quad3D quad, IArray2D<Vector2D> uvs)
             => uvs.Map(uv => quad.Barycentric(uv)).ToQuadGrid(false, false);
 
-        public static IArray<T> Prepend<T>(this IArray<T> self, T value)
-            => (self.Count + 1).MapRange(i => i == 0 ? value : self[i - 1]);
-
-        public static IArray<T> Append<T>(this IArray<T> self, T value)
-            => (self.Count + 1).MapRange(i => i < self.Count ? self[i] : value);
-
-        public static IArray<T> PrependAndAppend<T>(this IArray<T> self, T before, T after)
-            => self.Prepend(before).Append(after);
-
-        public static IArray<Number> PrependAndAppend01(this IArray<Number> self)
-            => self.PrependAndAppend(0, 1);
-
-        public static QuadGrid Subdivide(this Quad3D quad, IArray<Number> us, IArray<Number> vs)
+        public static QuadGrid3D Subdivide(this Quad3D quad, IArray<Number> us, IArray<Number> vs)
         {
             return quad.ToGrid(
-                us.PrependAndAppend01().CartesianProduct(
-                    vs.PrependAndAppend01(), (u, v) => new Vector2D(u, v)));
+                us.PrependAndAppend(0, 1).CartesianProduct(
+                    vs.PrependAndAppend(0, 1), (u, v) => new Vector2D(u, v)));
         }
 
         // A handful of transforms things 
@@ -135,23 +120,11 @@ namespace Plato.DoublePrecision
         //==
         // Array helpers 
 
-        public static IArray<Integer> Indices<T>(this IArray<T> self)
-            => self.Count.Range;
-
-        public static IArray<T> EveryNth<T>(this IArray<T> self, int n)
-            => self.Indices().Map(i => self.ModuloAt(i * n));
-
-        public static IArray2D<TResult> CartesianProduct<TColumn, TRow, TResult>(this IArray<TColumn> columns, IArray<TRow> rows, Func<TColumn, TRow, TResult> func)
-            => new Array2D<TResult>(columns.Count, rows.Count, (i, j) => func(columns[i], rows[j]));
-
         public static Vector3D LerpAlong(this Line3D self, double t)
             => self.A.Lerp(self.B, t);
 
         public static Vector2D LerpAlong(this Line2D self, double t)
             => self.A.Lerp(self.B, t);
-
-        public static T ModuloAt<T>(this IArray<T> a, Integer i)
-            => a.At(i % a.Count);
 
         public static IArray<Vector3D> Normalize(this IArray<Vector3D> vectors)
             => vectors.Map(v => v.Normalize);
@@ -182,26 +155,9 @@ namespace Plato.DoublePrecision
         public static IArray<Vector3D> Interpolate(this Line3D self, Integer count)
             => count.InterpolateInclusive(x => self.LerpAlong(x));
 
-        public static IArray<T> Reverse<T>(this IArray<T> self)
-            => self.Indices().Map(i => self[self.Count - 1 - i]);
-
-        public static IArray<T> Concat<T>(this IArray<T> self, IArray<T> other)
-            => (self.Count + other.Count).MapRange(i => i < self.Count ? self[i] : other[i - self.Count]);
-
-        public static IArray<T> Sample<T>(this IProcedural<Number, T> self, Integer n)
-            => n.InterpolateExclusive().Map(self.Eval);
 
         //==
         // Primitives to points 
-
-        public static PointArray Points(this IArray<Triangle3D> self)
-            => self.FlatMap(t => t).ToPoints();
-
-        public static PointArray Points(this IArray<Quad3D> self)
-            => self.FlatMap(t => t).ToPoints();
-
-        public static PointArray ToPoints(this IArray<Vector3D> self)
-            => new PointArray(self);
 
         public static PolyLine2D ToPolyLine2D(this Vector2D[] self, bool closed)
             => self.ToIArray().ToPolyLine2D(closed);
@@ -294,80 +250,38 @@ namespace Plato.DoublePrecision
             => self.Map(v => v.To3D);
 
         //==
-        // Bounds functions
-
-        public static Bounds3D Bounds(this IArray<Vector3D> self)
-        {
-            if (self.Count == 0)
-                return Bounds3D.Default;
-            //  NOTE: Vector3D.MaxValue does not work. 
-            var min = new Vector3D(double.MaxValue, double.MaxValue, double.MaxValue);
-            var max = new Vector3D(double.MinValue, double.MinValue, double.MinValue);
-            for (var i = 1; i < self.Count; i++)
-            {
-                min = Min(min, self[i]);
-                max = Max(max, self[i]);
-            }
-
-            return (min, max);
-        }
-
-        public static Vector3D Min(Vector3D a, Vector3D b)
-            => new Vector3D(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y), Math.Min(a.Z, b.Z));
-
-        public static Vector3D Max(Vector3D a, Vector3D b)
-            => new Vector3D(Math.Max(a.X, b.X), Math.Max(a.Y, b.Y), Math.Max(a.Z, b.Z));
-
-        //==
         // Deformations 
 
         public static Vector3D InverseLerp(this Bounds3D b, Vector3D v)
             => (v - b.Min) / b.Size;
 
-        public static T DeformAlong<T>(this IDeformable3D<T> self, Bounds3D b, int axis,
-            Func<Vector3D, Number, Vector3D> f)
-            where T : IDeformable3D<T>
-            => self.Deform(v => f(v, b.InverseLerp(v)[axis]));
-
-        public static T Twist<T>(this IDeformable3D<T> self, Bounds3D b, int axis, Angle amount)
-            where T : IDeformable3D<T>
-            => self.DeformAlong(b, axis, (v, t) => v.Rotate(axis.GetAxis(), amount * t));
-
-        public static T Skew<T>(this IDeformable3D<T> self, Bounds3D b, int axis, Vector3D offset)
-            where T : IDeformable3D<T>
-            => self.DeformAlong(b, axis, (v, t) => v.Lerp(v.Translate(offset), t));
-
-        public static T Taper<T>(this IDeformable3D<T> self, Bounds3D b, int axis, Number scl)
-            where T : IDeformable3D<T>
-            => self.DeformAlong(b, axis, (v, t) => v.Lerp(v.Scale(scl), t));
-
         //==
         // Quad strips
 
-        public static QuadGrid QuadStrip(this IArray<Vector3D> bottom, IArray<Vector3D> upper, bool closed)
+        public static QuadGrid3D QuadStrip(this IArray<Vector3D> bottom, IArray<Vector3D> upper, bool closed)
         {
             if (bottom.Count != upper.Count)
                 throw new Exception("Bottom and upper arrays must have the same length");
             return Intrinsics.MakeArray(bottom, upper).ToArray2D().ToQuadGrid(closed, false);
         }
 
-        public static QuadGrid Extrude(this PolyLine3D polyLine, Vector3D direction)
+        public static QuadGrid3D Extrude(this PolyLine3D polyLine, Vector3D direction)
             => polyLine.Sweep(v => v.Translate(direction));
 
-        public static QuadGrid Sweep(this PolyLine3D polyLine, Func<Vector3D, Vector3D> f)
+        public static QuadGrid3D Sweep(this PolyLine3D polyLine, Func<Vector3D, Vector3D> f)
             => polyLine.Points.QuadStrip(polyLine.Deform(f).Points, polyLine.Closed);
 
-        public static QuadGrid Extrude(this PolyLine2D polyLine, Vector3D direction)
+        public static QuadGrid3D Extrude(this PolyLine2D polyLine, Vector3D direction)
             => polyLine.To3D.Extrude(direction);
 
-        public static QuadGrid Extrude(this IArray<Vector3D> points, Vector3D direction, bool closed)
+        public static QuadGrid3D Extrude(this IArray<Vector3D> points, Vector3D direction, bool closed)
             => points.ToPolyLine3D(closed).Extrude(direction);
 
-        public static QuadGrid ToPrism(this PolyLine2D poly)
+        public static QuadGrid3D ToPrism(this PolyLine2D poly)
             => poly.ToPrism(1.0);
 
-        public static QuadGrid ToPrism(this PolyLine2D poly, Number extrusionAmount)
-            => poly.Extrude(Vector3D.UnitZ * extrusionAmount, poly.Closed);
+        public static QuadGrid3D ToPrism(this PolyLine2D poly, Number extrusionAmount)
+            => poly.Extrude(Vector3D.UnitZ * extrusionAmount);
 
         public static TriangleMesh3D ToCappedPrism(this PolyLine2D poly, Number extrusionAmount)
         {
@@ -377,17 +291,17 @@ namespace Plato.DoublePrecision
             return Combine(r, cap);
         }
 
-        public static QuadGrid Sweep(this PolyLine2D polyLine, Func<Vector3D, Number, Vector3D> f, Integer segments, Boolean closed)
+        public static QuadGrid3D Sweep(this PolyLine2D polyLine, Func<Vector3D, Number, Vector3D> f, Integer segments, Boolean closed)
             => polyLine.To3D.Sweep(f, segments, closed);
 
-        public static QuadGrid Sweep(this PolyLine3D polyLine, Func<Vector3D, Number, Vector3D> f, Integer segments, Boolean closed)
+        public static QuadGrid3D Sweep(this PolyLine3D polyLine, Func<Vector3D, Number, Vector3D> f, Integer segments, Boolean closed)
             => segments
                 .InterpolateExclusive()
                 .Map(t => polyLine.Deform(p => f(p, t)).Points)
                 .ToArray2D()
                 .ToQuadGrid(polyLine.Closed, closed);
 
-        public static QuadGrid Sweep(this PolyLine3D polyLine, Ray3D pointAndAxis, Integer segments, Angle amount)
+        public static QuadGrid3D Sweep(this PolyLine3D polyLine, Ray3D pointAndAxis, Integer segments, Angle amount)
             => polyLine.Sweep((p, t) => p.Rotate(pointAndAxis, amount * t), segments, false);
 
         //==
@@ -559,14 +473,7 @@ namespace Plato.DoublePrecision
         //==
         // Curve functions
 
-        public static PolyLine3D ToPolyLine3D(this ICurve3D self, Integer count)
-            => self.Sample(count).ToPolyLine3D(self.Closed);
         
-        public static PolyLine3D ToPolyLine3D(this ICurve2D self, Integer count)
-            => self.Sample(count).To3D().ToPolyLine3D(self.Closed);
-
-        public static PolyLine2D ToPolyLine2D(this ICurve2D self, Integer count)
-            => self.Sample(count).ToPolyLine2D(self.Closed);
 
         //==
         // Angle functions

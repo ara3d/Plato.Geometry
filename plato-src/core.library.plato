@@ -137,13 +137,13 @@ library INumerical
     // INumerical Operations 
 
     PlusOne(x: INumerical): INumerical 
-        => x + x.One;
+        => x + One;
 
     MinusOne(x: INumerical): INumerical
-        => x - x.One;
+        => x - One;
     
     FromOne(x: INumerical): INumerical 
-        => x.One - x;
+        => One - x;
 
     //==
     // IWholeNumber Operations 
@@ -314,9 +314,18 @@ library INumerical
     Clamp(x: INumerical, a: INumerical, b: INumerical): INumerical
         => x.FromComponents(x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
 
-    ClampOne(x: INumerical): INumerical
+    ClampZeroOne(x: INumerical): INumerical
         => x.Clamp(x.Zero, x.One);
 
+    Abs(x: INumerical): INumerical
+		=> x.MapComponents((i) => i.Abs);
+    
+    Min(x: INumerical, y: INumerical): INumerical 
+        => x.ZipComponents(y, (a, b) => a.Min(b));
+    
+    Max(x: INumerical, y: INumerical): INumerical 
+        => x.ZipComponents(y, (a, b) => a.Max(b));
+    
     //==
     // IEquatable functions
 
@@ -407,7 +416,6 @@ library INumerical
     // There are many other operations that make sense on INumerical types. 
     // For example, everything that works on a single value. MinValue/MaxValue/Negate/Reciprocal/Inverse/Clamp/SmoothStep/Step/Sign/IsZero/IsOne/IsPositive/IsNegative/IsEven/IsOdd/IsPowerOfTwo/IsPowerOfTen/IsPowerOfTwo/IsPowerOfTen/IsPrime/IsComposite/IsPerfect/IsDeficient/IsAbundant/IsSquare/IsCube/IsPowerOf/IsRootOf/IsFactorOf/IsMultipleOf/IsDivisorOf/IsDivisibleBy
 
-
     //==
     // IInterpolatable functions. 
 
@@ -420,6 +428,4 @@ library INumerical
     // for the range of Interpolatable types (at least not now, based on limitations of the Plato compiler)
     Barycentric(v1: IInterpolatable, v2: IInterpolatable, v3: IInterpolatable, uv: Vector2D): IInterpolatable 
         => (v1 + (v2 - v1)) * uv.X + (v3 - v1) * uv.Y;   
-
-
 }

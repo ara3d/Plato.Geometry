@@ -74,9 +74,9 @@ namespace Plato.Geometry.Graphics
         }
 
         public static RenderMesh ToRenderMesh(this TriangleMesh3D mesh, Color32 color)
-            => mesh.ToRenderMesh(color.Repeat(mesh.NumVertices));
+            => mesh.ToRenderMesh(color.Repeat(mesh.Points.Count));
     
         public static RenderMesh ToRenderMesh(this TriangleMesh3D mesh, IArray<Color32> colors = null)
-            => RenderMesh.Create(mesh.Vertices, mesh.Indices, mesh.ComputeVertexNormalsFaceted(), null, colors);
+            => RenderMesh.Create(mesh.Points, mesh.Indices, mesh.ComputeVertexNormalsFaceted(), null, colors);
     }
 }

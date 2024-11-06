@@ -1,3 +1,56 @@
+
+
+// A 2-dimensional vector
+type Vector2D
+    implements IVector
+{
+    X: Number;
+    Y: Number;
+}
+
+// A 3-dimensional vector    
+type Vector3D
+    implements IVector, IDeformable3D
+{
+    X: Number;
+    Y: Number;
+    Z: Number;
+}
+
+// A 4-dimensional vector
+type Vector4D
+    implements IVector
+{
+    X: Number;
+    Y: Number;
+    Z: Number;
+    W: Number;
+}
+
+// Affine 2D transformation matrix 
+// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
+type Matrix3x3 
+    implements IValue, IArray<Vector3D>
+{
+    Column1: Vector3D;   
+    Column2: Vector3D;   
+    Column3: Vector3D;   
+}
+
+// Affine 3D transformation matrix 
+// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
+// https://mindcontrol.org/~hplus/graphics/matrix-layout.html
+// Column major layout in memory 
+// Translation component is in Column4.XYZ    
+type Matrix4x4
+    implements IValue, IArray<Vector4D>
+{
+    Column1: Vector4D;
+    Column2: Vector4D;
+    Column3: Vector4D;
+    Column4: Vector4D;
+}
+
 //# 2D Shapes
 
 type Transform2D
@@ -26,8 +79,8 @@ type Bounds2D
 type Ray2D
     implements IValue
 {
-    Direction: Vector2D;
     Origin: Vector2D;
+    Direction: Vector2D;
 }
 
 type Triangle2D
@@ -48,7 +101,7 @@ type Quad2D
 }
 
 type Line2D
-    implements IPolyLine2D, IOpenShape3D
+    implements IPolyLine2D, IOpenShape2D, IArray<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
@@ -136,24 +189,24 @@ type Plane
 
 // Axis-Aligned bounding box 
 type Bounds3D
-    implements IInterval<Vector3D>
+    implements IInterval<Vector3D>, IDeformable3D
 {
     Min: Vector3D;
     Max: Vector3D;
 }
 
 type Line3D
-    implements IPolyLine3D, IOpenShape3D
+    implements IPolyLine3D, IOpenShape3D, IDeformable3D, IArray<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
 }
 
 type Ray3D
-    implements IValue
+    implements IValue, IDeformable3D
 {
-    Direction: Vector3D;
     Origin: Vector3D;
+    Direction: Vector3D;
 }
 
 //==
@@ -161,7 +214,7 @@ type Ray3D
 //== 
 
 type Triangle3D
-    implements IPolygon3D
+    implements IPolygon3D, IDeformable3D
 {
     A: Vector3D;
     B: Vector3D;
@@ -169,7 +222,7 @@ type Triangle3D
 }
 
 type Quad3D
-    implements IPolygon3D
+    implements IPolygon3D, IDeformable3D
 {
     A: Vector3D;
     B: Vector3D;
@@ -186,22 +239,6 @@ type Sphere
     implements ISolid
 {
     Radius: Number;
-
-    /*
-    // Evaluates the 3D position on the sphere surface for given spherical coordinates (u, v)
-    Eval(uv: Vector2D): Vector3D
-        => (uv.Y.Sin * uv.X.Cos,
-            uv.Y.Sin * uv.X.Sin,
-            uv.Y.Cos) * Radius;
-
-    // Finds the spherical coordinates (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-        => (Atan2(p.Y, p.X), Acos(p.Z / Radius));
-
-    // Computes the signed distance from point p to the sphere surface
-    Distance(p: Vector3D): Number
-        => p.Length - Radius;
-    */
 }
 
 type Cylinder
@@ -209,33 +246,6 @@ type Cylinder
 {
     Height: Number;
     Radius: Number;
-
-    /*
-    // Evaluates the 3D position on the cylinder surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-        => (Radius * uv.X.Cos,
-            Radius * uv.X.Sin,
-            uv.Y * Height);
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-        => (Atan2(p.Y, p.X), (p.Z / Height).Clamp01);
-
-    // Computes the signed distance from point p to the finite cylinder
-    Distance(p: Vector3D): Number
-    {
-        var d = p.Vector2D.Length - Radius;
-        var dz = Max(p.Z - Height, -p.Z, 0.0);
-        if (d > 0.0 && dz > 0.0)
-            return (d.Square + dz.Sqare).Sqrt;  
-        else if (d > 0.0)
-            return d;
-        else if (dz > 0.0)
-            return dz;
-        else
-            return Max(d, dz); // Negative inside
-    }
-    */
 }
 
 type Capsule
@@ -243,94 +253,6 @@ type Capsule
 {
     Height: Number;
     Radius: Number;
-
-    /*
-    // Evaluates the 3D position on the capsule surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        let angle = uv.X;
-        let v = uv.Y * (Height - 2 * Radius);
-        let h = v - (Height - 2 * Radius) / 2.0;
-
-        // Position along the central axis
-        let p = Vector3D(0, 0, h);
-
-        // Adjust for hemispherical caps
-        if (h > ((Height - 2 * Radius) / 2.0))
-        {
-            // Top hemisphere
-            let theta = (h - ((Height - 2 * Radius) / 2.0)) / Radius;
-            p = Vector3D(
-                Radius * theta.Cos * angle.Cos,
-                Radius * theta.Cos * angle.Sin,
-                ((Height - 2 * Radius) / 2.0) + Radius * theta.Sin
-            );
-        }
-        else if (h < -((Height - 2 * Radius) / 2.0))
-        {
-            // Bottom hemisphere
-            let theta = (h + ((Height - 2 * Radius) / 2.0)) / Radius;
-            p = Vector3D(
-                Radius * theta.Cos * angle.Cos,
-                Radius * theta.Cos * angle.Sin,
-                -((Height - 2 * Radius) / 2.0) + Radius * theta.Sin
-            );
-        }
-        else
-        {
-            // Cylinder part
-            p = Vector3D(
-                Radius * angle.Cos,
-                Radius * angle.Sin,
-                h
-            );
-        }
-
-        // Shift to align with capsule's actual position
-        return p + (0, 0, Height / 2.0);
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        // Shift point to capsule's local coordinate system
-        let localP = p - (0, 0, Height.Half);
-
-        // Project onto capsule axis
-        let h = Clamp(localP.Z, -((Height - 2 * Radius).Half), ((Height - 2 * Radius).Half));
-
-        // Angle around the axis
-        let angle = Atan2(localP.Y, localP.X);
-
-        // Normalize v parameter
-        let v = (h + ((Height - 2 * Radius) / 2.0)) / (Height - 2 * Radius);
-
-        return (angle, v);
-    }
-
-    // Computes the signed distance from point p to the capsule surface
-    Distance(p: Vector3D): Number
-    {
-        // Line segment from point A to B along the capsule axis
-        let a = Vector3D(0, 0, 0);
-        let b = Vector3D(0, 0, Height);
-
-        // Vector from A to B
-        let ab = b - a;
-
-        // Vector from A to point P
-        let ap = p - a;
-
-        // Project point onto capsule axis
-        let t = Clamp(Dot(ap, ab) / Dot(ab, ab), 0.0, 1.0);
-
-        // Closest point on the axis
-        let closestPoint = a + ab * t;
-
-        // Distance from point to capsule surface
-        return (p - closestPoint).Length - Radius;
-    }
-    */
 }
 
 type Cone
@@ -338,40 +260,6 @@ type Cone
 {
     Height: Number;
     Radius: Number;
-
-    /*
-    // Evaluates the 3D position on the cone surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        let angle = uv.X;
-        let h = uv.Y * Height;
-        let r = ((Height - h) / Height) * Radius;
-
-        return (r * angle.Cos, r * angle.Sin, h);
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        let angle = Atan2(p.Y, p.X);
-        let r = p.Length;
-        let h = Clamp(p.Z, 0.0, Height);
-        let v = h / Height;
-        return (angle, v);
-    }
-
-    // Computes the signed distance from point p to the cone surface
-    Distance(p: Vector3D): Number
-    {
-        let q = Vector2D(p.Length, p.Z);
-        let c = Vector2D(Radius, Height);
-        let n = c.Normalize();
-        let cosAlpha = n.Y; // Cosine of the cone's angle
-        let m = q.Length; 
-        let d = q.Y * cosAlpha - q.X * n.X;
-        return d;
-    }
-    */
 }
 
 type ConeSegment
@@ -380,108 +268,12 @@ type ConeSegment
     Height: Number;
     Radius1: Number;
     Radius2: Number;
-
-    /*
-    // Evaluates the 3D position on the truncated cone (frustum) surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        let angle = uv.X;
-        let h = uv.Y * Height;
-        let r = Radius1 + (Radius2 - Radius1) * (h / Height);
-        return (uv.X * angle.Cos, uv.X * angle.Sin, h);
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        let angle = Atan2(p.Y, p.X);
-        let h = Clamp(p.Z, 0.0, Height);
-        return Vector2D(angle, h / Height);
-    }
-
-    // Computes the signed distance from point p to the cone segment surface
-    Distance(p: Vector3D): Number
-    {
-        let k0 = (Radius2 - Radius1) / Height;
-        let k1 = Radius1;
-
-        let r = Vector2D(p.X, p.Y).Length;
-        let h = Clamp(p.Z, 0.0, Height);
-
-        let d = r - (k0 * h + k1);
-        let dz = Max(p.Z - Height, -p.Z);
-
-        if (d > 0.0 && dz > 0.0)
-            return Sqrt(d * d + dz * dz);
-        else if (d > 0.0)
-            return d;
-        else if (dz > 0.0)
-            return dz;
-        else
-            return Max(d, dz); // Negative inside
-    }
-    */
 }
 
 type Box3D
     implements ISolid
 {
     Extent: Vector3D; 
-
-    /*
-    // Evaluates the 3D position on the box surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        // Map uv to six faces of the box
-        var face = (uv.Y * 6.0).Floor;
-        var localUV = (uv * 6.0).Fract;
-
-        var x = (localUV.X - 0.5) * Extent.Width * 2.0;
-        var y = (localUV.Y - 0.5) * Extent.Height * 2.0;
-        var z = Extent.Depth;
-
-        if (face == 0) return (z, x, y); // Front face
-        if (face == 1) return (-z, x, y); // Back face
-        if (face == 2) return (x, z, y); // Right face
-        if (face == 3) return (x, -z, y); // Left face
-        if (face == 4) return (x, y, z); // Top face
-        if (face == 4) return (x, y, -z); // Bottom face
-        return (0, 0, 0);
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        // Find the face the point is closest to
-        var maxComponent = p.MaxComponent.Abs;
-
-        var faceIndex = 0;
-        if (maxComponent == p.X.Abs)
-            faceIndex = p.X > 0 ? 2 : 3;
-        else if (maxComponent == p.Y.Abs)
-            faceIndex = p.Y > 0 ? 4 : 5;
-        else
-            faceIndex = p.Z > 0 ? 0 : 1;
-
-        // Map the point to UV on that face
-        var localP = p / Extent.ToVector3D();
-
-        var u = (localP.Y + 1.0) / 2.0;
-        var v = (localP.Z + 1.0) / 2.0;
-
-        return ((faceIndex / 6.0) + u / 6.0, v);
-    }
-
-    // Computes the signed distance from point p to the box surface
-    Distance(p: Vector3D): Number
-    {
-        var d = p.Abs - Extent.Vector3D;
-        var maxDist = d.MaxComponent;
-        var outsideDist = d.Max((0, 0, 0)).Length;
-
-        return (maxDist > 0.0) ? outsideDist : maxDist;
-    }
-    */
 }
 
 type Pyramid
@@ -489,43 +281,6 @@ type Pyramid
 {
     Height: Number;
     BaseLength: Number;
-
-    /*
-    // Evaluates the 3D position on the pyramid surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        var h = uv.Y * Height;
-        var b = BaseLength.Half * (1.0 - uv.Y);
-        return (b * uv.X.Cos, b * uv.X.Sin, h);
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        var h = Clamp(p.Z, 0.0, Height);
-        var scale = 1.0 - (h / Height);
-        var xzLength = p.Vector2D.Length;
-        var u = Atan2(p.Y, p.X) / 1.Turns;
-        return (u, h / Height);
-    }
-
-    // Computes the signed distance from point p to the pyramid surface
-    Distance(p: Vector3D): Number
-    {
-        var m2 = BaseLength * BaseLength / 4.0 + Height * Height;
-        var x = p.X.Abs;
-        var y = p.Y.Abs;
-        var z = p.Z;
-
-        var d = Max(x + y - (BaseLength * (1.0 - z / Height)), z - Height);
-        var insideDist = Min(d, Max(-z, x - BaseLength / 2.0, y - BaseLength / 2.0));
-
-        if (insideDist > 0.0)
-            return d;
-        else
-            return insideDist; // Negative inside
-    }
-    */
 }
 
 type Torus
@@ -533,30 +288,6 @@ type Torus
 {
     MajorRadius: Number;
     MinorRadius: Number;
-
-    /*
-    // Evaluates the 3D position on the torus surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-        => ((MajorRadius + MinorRadius * uv.Y.Cos) * uv.X.Cos,
-            (MajorRadius + MinorRadius * uv.Y.Cos) * uv.X.Sin,
-            MinorRadius * uv.Y.Sin);
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        var q = Vector2D(p.Vector2.Length, p.Z);
-        var angle1 = Atan2(p.Y, p.X);
-        var angle2 = Atan2(p.Z, q.X - MajorRadius);
-        return (angle1.Turns, angle2.Turns);
-    }
-
-    // Computes the signed distance from point p to the torus surface
-    Distance(p: Vector3D): Number
-    {
-        var q = new Vector2D(new Vector2D(p.X, p.Y).Length - MajorRadius, p.Z);
-        return q.Length - MinorRadius;
-    }
-    */
 }
 
 type NPrism
@@ -565,100 +296,6 @@ type NPrism
     Height: Number;
     Radius: Number;
     NumSides: Integer;
-
-    /*
-    // Evaluates the 3D position on the prism surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        let angleIncrement = 2.0 * Pi / NumSides;
-        let sideIndex = Floor(uv.X * NumSides);
-        let localU = Fract(uv.X * NumSides);
-
-        let angle1 = sideIndex * angleIncrement;
-        let angle2 = (sideIndex + 1) * angleIncrement;
-
-        // Vertices of the side
-        let v1 = Vector3D(Radius * angle1.Cos, Radius * angle1.Sin, 0.0);
-        let v2 = Vector3D(Radius * angle2.Cos, Radius * angle2.Sin, 0.0);
-        let v3 = Vector3D(Radius * angle1.Cos, Radius * angle1.Sin, Height);
-        let v4 = Vector3D(Radius * angle2.Cos, Radius * angle2.Sin, Height);
-
-        // Interpolate along the side face
-        let bottomEdge = v1.Lerp(v2, localU);
-        let topEdge = v3.Lerp(v4, localU);
-        let position = bottomEdge.Lerp(topEdge, uv.Y);
-
-        return position;
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        // Project point onto XY plane
-        let point2D = Vector2D(p.X, p.Y);
-        let angle = Atan2(p.Y, p.X);
-        if (angle < 0.0)
-            angle += 2.0 * Pi;
-
-        let angleIncrement = 2.0 * Pi / NumSides;
-        let sideIndex = Floor(angle / angleIncrement);
-        let angle1 = sideIndex * angleIncrement;
-        let angle2 = (sideIndex + 1) * angleIncrement;
-
-        // Edge vectors
-        let v1 = Vector2D(Radius * angle1.Cos, Radius * angle1.Sin);
-        let v2 = Vector2D(Radius * angle2.Cos, Radius * angle2.Sin);
-        let edge = v2 - v1;
-
-        // Project point onto edge
-        let t = Clamp(Dot(point2D - v1, edge) / edge.LengthSquared(), 0.0, 1.0);
-        let closestPoint2D = v1 + edge * t;
-
-        // Compute local U parameter within the side
-        let localU = t;
-        let u = (sideIndex + localU) / NumSides;
-
-        // Compute V parameter based on height
-        let v = Clamp(p.Z / Height, 0.0, 1.0);
-
-        return Vector2D(u, v);
-    }
-
-    // Computes the signed distance from point p to the prism surface
-    Distance(p: Vector3D): Number
-    {
-        // Distance to the side faces
-        let angleIncrement = 2.0 * Pi / NumSides;
-        let minDist = Infinity;
-
-        for i in 0 .. NumSides
-        {
-            let angle1 = i * angleIncrement;
-            let angle2 = (i + 1) % NumSides * angleIncrement;
-
-            let v1 = Vector2D(Radius * angle1.Cos, Radius * angle1.Sin);
-            let v2 = Vector2D(Radius * angle2.Cos, Radius * angle2.Sin);
-            let edge = v2 - v1;
-
-            let point2D = Vector2D(p.X, p.Y);
-            let t = Clamp(Dot(point2D - v1, edge) / edge.LengthSquared(), 0.0, 1.0);
-            let closestPoint = v1 + edge * t;
-            let dist = (point2D - closestPoint).Length;
-
-            if (dist < minDist)
-                minDist = dist;
-        }
-
-        // Distance to top and bottom faces
-        let dz = Max(-p.Z, p.Z - Height, 0.0);
-
-        // Combine distances
-        if (dz > 0.0)
-            return Sqrt(minDist * minDist + dz * dz);
-        else
-            return minDist; // Negative inside if within height
-    }
-    */
 }
 
 type Tube
@@ -667,51 +304,6 @@ type Tube
     Height: Number;
     InnerRadius: Number;
     OuterRadius: Number;
-
-    /*
-    // Evaluates the 3D position on the tube surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        let angle = uv.X * 2.0 * Pi;
-        let radius = InnerRadius + uv.Y * (OuterRadius - InnerRadius);
-        let x = radius * angle.Cos;
-        let y = radius * angle.Sin;
-        let z = uv.Y * Height;
-
-        return Vector3D(x, y, z);
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        let angle = Atan2(p.Y, p.X);
-        if (angle < 0.0)
-            angle += 2.0 * Pi;
-
-        let u = angle / (2.0 * Pi);
-        let radius = Vector2D(p.X, p.Y).Length;
-        let v = Clamp((radius - InnerRadius) / (OuterRadius - InnerRadius), 0.0, 1.0);
-
-        return Vector2D(u, v);
-    }
-
-    // Computes the signed distance from point p to the tube surface
-    Distance(p: Vector3D): Number
-    {
-        let dXY = Vector2D(p.X, p.Y).Length;
-        let dRadius = Max(InnerRadius - dXY, dXY - OuterRadius);
-        let dz = Max(-p.Z, p.Z - Height, 0.0);
-
-        if (dRadius > 0.0 && dz > 0.0)
-            return Sqrt(dRadius * dRadius + dz * dz);
-        else if (dRadius > 0.0)
-            return dRadius;
-        else if (dz > 0.0)
-            return dz;
-        else
-            return Max(dRadius, dz); // Negative inside
-    }
-    */
 }
 
 type NPyramid
@@ -720,133 +312,12 @@ type NPyramid
     Height: Number;
     Radius: Number;
     NumSides: Integer;
-
-    /*
-    // Evaluates the 3D position on the pyramid surface for given parameters (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        let angleIncrement = 2.0 * Pi / NumSides;
-        let sideIndex = Floor(uv.X * NumSides);
-        let localU = Fract(uv.X * NumSides);
-
-        let angle1 = sideIndex * angleIncrement;
-        let angle2 = (sideIndex + 1) * angleIncrement;
-
-        // Base vertices
-        let v1 = Vector3D(Radius * angle1.Cos, Radius * angle1.Sin, 0.0);
-        let v2 = Vector3D(Radius * angle2.Cos, Radius * angle2.Sin, 0.0);
-        let apex = Vector3D(0.0, 0.0, Height);
-
-        // Interpolate along the base edge
-        let baseEdgePoint = v1.Lerp(v2, localU);
-
-        // Interpolate between base edge point and apex
-        let position = baseEdgePoint.Lerp(apex, uv.Y);
-
-        return position;
-    }
-
-    // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        // Project point onto XY plane
-        let point2D = Vector2D(p.X, p.Y);
-        let angle = Atan2(p.Y, p.X);
-        if (angle < 0.0)
-            angle += 2.0 * Pi;
-
-        let angleIncrement = 2.0 * Pi / NumSides;
-        let sideIndex = Floor(angle / angleIncrement);
-        let angle1 = sideIndex * angleIncrement;
-        let angle2 = (sideIndex + 1) * angleIncrement;
-
-        let v1 = Vector2D(Radius * angle1.Cos, Radius * angle1.Sin);
-        let v2 = Vector2D(Radius * angle2.Cos, Radius * angle2.Sin);
-        let edge = v2 - v1;
-
-        let t = Clamp(Dot(point2D - v1, edge) / edge.LengthSquared(), 0.0, 1.0);
-        let localU = t;
-        let u = (sideIndex + localU) / NumSides;
-
-        let baseEdgePoint = v1.Lerp(v2, t);
-        let apex = Vector2D(0.0, 0.0);
-        let heightVec = apex - baseEdgePoint;
-        let h = Clamp(Dot(point2D - baseEdgePoint, heightVec) / heightVec.LengthSquared(), 0.0, 1.0);
-
-        return Vector2D(u, h);
-    }
-
-    // Computes the signed distance from point p to the pyramid surface
-    Distance(p: Vector3D): Number
-    {
-        let minDist = Infinity;
-
-        // Check distance to each side face
-        for i in 0 .. NumSides
-        {
-            let angle1 = i * 2.0 * Pi / NumSides;
-            let angle2 = (i + 1) % NumSides * 2.0 * Pi / NumSides;
-
-            let v1 = Vector3D(Radius * angle1.Cos, Radius * angle1.Sin, 0.0);
-            let v2 = Vector3D(Radius * angle2.Cos, Radius * angle2.Sin, 0.0);
-            let apex = Vector3D(0.0, 0.0, Height);
-
-            let normal = (v2 - v1).Cross(apex - v1).Normalize();
-            let dist = Abs(Dot(p - v1, normal));
-
-            // Project p onto face plane and check if inside the face
-            // Approximate for simplicity
-
-            if (dist < minDist)
-                minDist = dist;
-        }
-
-        // Distance to base
-        let dBase = p.Z;
-        minDist = Min(minDist, dBase);
-
-        // Determine if point is inside
-        let inside = p.Z >= 0.0 && p.Z <= Height;
-
-        return inside ? -minDist : minDist;
-    }
-    */
 }
 
 type Ellipsoid
     implements ISolid
 {
     Radii: Vector3D;
-
-    /*
-    // Evaluates the 3D position on the ellipsoid surface for given spherical coordinates (u, v)
-    Eval(uv: Vector2D): Vector3D
-    {
-        var theta = uv.X.Turns;
-        var phi = uv.Y.Turns.Half;
-        return Radii * (phi.Sin * theta.Cos, phi.Sin * theta.Sin, phi.Cos);
-    }
-
-    // Finds the spherical coordinates (u, v) closest to a given point p
-    ClosestUV(p: Vector3D): Vector2D
-    {
-        var p1 = p / Radii;
-        var r = p1.Length;
-        var phi = Acos(p1.z / r);
-        var theta = Atan2(p1.y, p1.x);
-        if (theta < 0.0)
-            theta += 1.Turns;
-        return Vector2D(theta.Turns, pi.Turns * 2);
-    }
-
-    // Computes the signed distance from point p to the ellipsoid surface
-    Distance(p: Vector3D): Number
-    {
-        var p1 = p / Radii;
-        var  k = p1.Length;
-        return (k - 1.0) * Radius.MaxComponent;
-    }
-    */
 }
 
 //==
@@ -855,7 +326,7 @@ type Ellipsoid
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve    
 type CubicBezier2D
-    implements IPointArray2D, IOpenCurve2D
+    implements IArray<Vector2D>, IOpenCurve2D
 {
     A: Vector2D;
     B: Vector2D;
@@ -865,7 +336,7 @@ type CubicBezier2D
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier2D
-    implements IPointArray2D, IOpenCurve2D
+    implements IArray<Vector2D>, IOpenCurve2D
 {
     A: Vector2D;
     B: Vector2D;
@@ -881,11 +352,6 @@ type LinearFunction2D
 
     // Also called "B"
     YIntercept: Number; 
-
-    /*
-    Eval(x: Number): Vector2D
-		=> (x, Slope * x + YIntercept);
-    */
 }
 
 type QuadraticFunction2D
@@ -931,7 +397,7 @@ type ButterflyCurve
 { }
     
 type Spiral
-	implements ICurve2D
+	implements IOpenCurve2D
 {
 	Radius1: Number;
     Radius2: Number;
@@ -939,7 +405,7 @@ type Spiral
 }
 
 type Sin
-    implements ICurve2D
+    implements IOpenCurve2D
 {
 	Amplitude: Number;
 	Frequency: Number;
@@ -947,7 +413,7 @@ type Sin
 }
 
 type Cos    
-    implements ICurve2D
+    implements IOpenCurve2D
 {
 	Amplitude: Number;
 	Frequency: Number;
@@ -960,71 +426,33 @@ type Cos
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type CubicBezier3D
-    implements IPointArray3D, ICurve3D
+    implements IArray<Vector3D>, IOpenCurve2D
 {
     A: Vector3D;
     B: Vector3D;
     C: Vector3D;
     D: Vector3D;
-
-    /*
-    Eval(t: Number): Vector3D
-	    => A * (1 - t).Cube 
-            + B * 3 * (1 - t).Square * t 
-            + C * 3 * (1 - t) * t.Square 
-            + D * t.Cube;	
-
-    EvalDerivative(t: Number): Vector3D
-        => (B - A) * 3 * (1 - t).Square
-           + (C - B) * 6 * (1 - t) * t
-           + (D - C) * 3 * t.Square;
-
-    EvalSecondDerivative(t: Number): Vector3D
-        => (C - 2 * B + A) * 6 * (1 - t)
-           + (D - 2 * C + B) * 6 * t;
-    */
 }
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier3D
-    implements IPointArray3D, ICurve3D
+    implements IArray<Vector3D>, IOpenCurve2D
 {
     A: Vector3D;
     B: Vector3D;
     C: Vector3D;
-
-    /*
-    Eval(t: Number): Vector3D
-	    => A * (1 - t).Square 
-			+ B * 2 * (1 - t) * t 
-			+ C * t.Square;
-
-    EvalDerivative(t: Number): Vector3D
-		=> (B - A) * 2 * (1 - t)
-		   + (C - B) * 2 * t;
-
-    EvalSecondDerivative(t: Number): Vector3D)
-        => C - 2 * B + A;
-    */
 }
 
 type TorusKnot
-    implements ICurve3D
+    implements IClosedCurve3D
 {
     P: Integer;
 	Q: Integer;
 	Radius: Number;
-
-    /*
-    Eval(t: Number): Vector3D
-		=> ((2 + (Q * t).Cos) * (P * t).Cos,
-			(2 + (Q * t).Cos) * (P * t).Sin),
-			(Q * t).Sin));
-    */
 }
 
 type Helix
-	implements ICurve3D
+	implements IOpenCurve3D
 {
 	Radius: Number;
 	Height: Number;
@@ -1032,12 +460,12 @@ type Helix
 }
 
 type TrefoilKnot
-    implements ICurve3D
+    implements IClosedCurve3D
 {
 }
 
 type FigureEightKnot
-	implements ICurve3D
+	implements IClosedCurve3D
 {
 }
 
@@ -1145,7 +573,7 @@ type PointArray2D
 }
 
 type PointArray3D
-	implements IPointArray3D
+	implements IPointArray3D 
 {
 	Points: IArray<Vector3D>;
 }
@@ -1153,37 +581,37 @@ type PointArray3D
 type LineArray2D
     implements ILineArray2D
 { 
-    Primitives: IArray<Line2D>;
+    Lines: IArray<Line2D>;
 }
 
 type LineArray3D
     implements ILineArray3D
 { 
-    Primitives: IArray<Line3D>;
+    Lines: IArray<Line3D>;
 }
 
 type TriangleArray2D
     implements ITriangleArray2D
 { 
-    Primitives: IArray<Triangle2D>;
+    Triangles: IArray<Triangle2D>;
 }
 
 type TriangleArray3D
     implements ITriangleArray3D
 { 
-    Primitives: IArray<Triangle3D>;
+    Triangles: IArray<Triangle3D>;
 }
 
 type QuadArray2D
     implements IQuadArray2D
 { 
-    Primitives: IArray<Quad2D>;
+    Quads: IArray<Quad2D>;
 }
 
 type QuadArray3D
     implements IQuadArray3D
 { 
-    Primitives: IArray<Quad3D>;
+    Quads: IArray<Quad3D>;
 }
 
 type QuadGrid3D

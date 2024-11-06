@@ -6,9 +6,6 @@ concept ITransform3D
 
     // Transforms a normal vector using the transformation (ignores scale and translation)
 	TransformNormal(x: Self, v: Vector3D): Vector3D;
-
-    // Returns a new transformation that is the inverse of the current transformation
-    Inverse(x: Self): Self;
 }
 
 // This type provides a 2D bounding-box
@@ -84,6 +81,16 @@ concept ICurve<TRange>
     inherits IProcedural<Number, TRange>, IOpenClosedShape
 { }
 
+concept IDistanceField2D
+{ 
+    Distance(x: Self, p: Vector2D): Number;
+}
+
+concept IDistanceField3D
+{ 
+    Distance(x: Self, p: Vector3D): Number;
+}
+
 // A 1 dimensional shape with a topological space of 1 dimensions
 // Basically a simple function 
 concept ICurve1D 
@@ -92,7 +99,7 @@ concept ICurve1D
 
 // A 2 dimensional shape with a topological space of 1 dimensions
 concept ICurve2D
-    inherits IGeometry2D, ICurve<Vector2D>
+    inherits IGeometry2D, ICurve<Vector2D>, IDistanceField2D
 { }
 
 // A 2D curve which is known to be closed
@@ -107,7 +114,7 @@ concept IOpenCurve2D
 
 // A 3 dimensional shape with a topological space of 1 dimensions
 concept ICurve3D
-    inherits IGeometry3D, ICurve<Vector3D>
+    inherits IGeometry3D, ICurve<Vector3D>, IDistanceField3D
 { }
 
 // A 3D curve which is known to be closed
@@ -122,7 +129,7 @@ concept IOpenCurve3D
 
 // Surfaces are 3 dimensional shapes with a topological space of 2 dimensions
 concept ISurface
-    inherits IGeometry3D, IDistanceField3D 
+    inherits IGeometry3D, IDistanceField3D
 { }
 
 // Parametric surfaces are shapes defined from two variables (U and V)
@@ -133,72 +140,13 @@ concept ISurface
 concept IProceduralSurface
     inherits IProcedural<Vector2D, Vector3D>, ISurface 
 {
-    PeriodicX(x: Self): Boolean;
-    PeriodicY(x: Self): Boolean;
+    ClosedX(x: Self): Boolean;
+    ClosedY(x: Self): Boolean;
 }
 
 // Explicit surfaces are defined as functions from UV space to a z value (height)
 concept IExplicitSurface 
     inherits IProcedural<Vector2D, Number>, ISurface
-{ }
-
-// A IVector or Scalar field in 2-Dimensions
-// https://en.wikipedia.org/wiki/Vector_field
-concept IField2D<T>
-    inherits IGeometry2D, IProcedural<Vector2D, T>
-{ }
-
-// A IVector or Scalar field in 3-Dimensions
-// https://en.wikipedia.org/wiki/Vector_field
-// This is effectively a Trivariate function. 
-// Given three arguments (x, y, z) it returns a single value. 
-// You can think of it as the extension of a curve or surface.
-// An example is a 3D-noise function, or a signed distance field 
-concept IField3D<T>
-    inherits IGeometry3D, IProcedural<Vector3D, T>
-{ }
-
-concept IScalarField2D    
-    inherits IField2D<Number> 
-{ }
-
-concept IDistanceField2D
-    inherits IScalarField2D
-{ 
-    Distance(x: Self, p: Vector2D): Number;
-}
-
-concept IScalarField3D
-    inherits IField3D<Number>
-{ }
-
-concept IDistanceField3D
-    inherits IScalarField3D
-{ 
-    Distance(x: Self, p: Vector2D): Number;
-}
-
-concept IVector3Field2D 
-    inherits IField2D<Vector3D> 
-{ }
-
-concept IVector4Field2D 
-    inherits IField2D<Vector4D> 
-{ }
-
-// A 3D field of 2D Vectors 
-concept IVector2Field3D 
-    inherits IField3D<Vector2D> 
-{ }
-    
-// A 3D field of 3D Vectors (e.g., colors without alpha, or force vectors)
-concept IVector3Field3D 
-    inherits IField3D<Vector3D> 
-{ }
-
-// A 3D field of 4D Vectors (e.g., colors with alpha, or rotations)
-concept IVector4Field3D 
-    inherits IField3D<Vector4D> 
 { }
 
 // An implicit procedural could represent a curve in 2D, a surface, solid, or volume in 3D. 
@@ -235,88 +183,63 @@ concept IPolyLine3D
 
 concept IClosedPolyLine2D inherits IPolyLine2D, IClosedShape2D { }
 concept IClosedPolyLine3D inherits IPolyLine3D, IClosedShape3D { }
-concept IPolygon2D inherits IClosedPolyLine2D { }
-concept IPolygon3D inherits IClosedPolyLine3D { }
+concept IPolygon2D inherits IClosedPolyLine2D, IArray<Vector2D> { }
+concept IPolygon3D inherits IClosedPolyLine3D, IArray<Vector3D> { }
 
 concept ISolid
-    inherits IShape3D, IDistanceField3D, ISurface
+    inherits IProceduralSurface
 { }
-
-// Any geometrical concept defined by a finite number of points 
-concept IPointGeometry2D inherits IGeometry2D
-{ 
-    Points(x: Self): IArray<Vector2D>;
-}
-
-// Any geometrical concept defined by a finite number of points 
-concept IPointGeometry3D inherits IGeometry3D
-{ 
-    Points(x: Self): IArray<Vector3D>;
-}
-
-concept IPointArray2D inherits IPointGeometry2D { }
-concept IPointArray3D inherits IPointGeometry3D { }
-
-concept ILineArray2D inherits IPrimitiveArray2D<Line2D>, ILinePrimitives { }
-concept ILineArray3D inherits IPrimitiveArray3D<Line3D>, ILinePrimitives { }
-
-concept ITriangleArray2D inherits IPrimitiveArray2D<Triangle2D>, ITrianglePrimitives { }
-concept ITriangleArray3D inherits IPrimitiveArray3D<Triangle3D>, ITrianglePrimitives { }
-
-concept IQuadArray2D inherits IPrimitiveArray3D<Quad2D>, IQuadPrimitives { }
-concept IQuadArray3D inherits IPrimitiveArray3D<Quad3D>, IQuadPrimitives { }
 
 concept IPrimitiveGeometry 
 {
 	PrimitiveSize(x: Self): Integer;
+    NumPrimitives(x: Self): Integer;
 }
+
+concept IPointPrimitives inherits IPrimitiveGeometry { }
+concept ILinePrimitives inherits IPrimitiveGeometry { }
+concept ITrianglePrimitives inherits IPrimitiveGeometry { }
+concept IQuadPrimitives inherits IPrimitiveGeometry { }
+
+concept IPointGeometry2D inherits IGeometry2D { Points(x: Self): IArray<Vector2D>; }
+concept IPointGeometry3D inherits IGeometry3D, IDeformable3D { Points(x: Self): IArray<Vector3D>; }
 
 concept IPrimitiveGeometry2D inherits IPointGeometry2D, IPrimitiveGeometry { }
 concept IPrimitiveGeometry3D inherits IPointGeometry3D, IPrimitiveGeometry { }
 
-concept IPrimitiveArray2D<TPrim>
-	where TPrim: IArray<Vector2D>   
-	inherits IPrimitiveGeometry2D
-{ 
-    Primitives(xs: Self): IArray<TPrim>;
-}
+concept ILineGeometry2D inherits IPrimitiveGeometry2D, ILinePrimitives { Lines(x: Self): IArray<Line2D>; }
+concept ILineGeometry3D inherits IPrimitiveGeometry3D, ILinePrimitives { Lines(x: Self): IArray<Line3D>; }
 
-concept IPrimitiveArray3D<TPrim>
-	where TPrim: IArray<Vector3D>   
-	inherits IPrimitiveGeometry3D
-{ 
-    Primitives(xs: Self): IArray<TPrim>;
-}
+concept ITriangleGeometry2D inherits IPrimitiveGeometry2D, ITrianglePrimitives { Triangles(x: Self): IArray<Triangle2D>; }
+concept ITriangleGeometry3D inherits IPrimitiveGeometry3D, ITrianglePrimitives { Triangles(x: Self): IArray<Triangle3D>; }
 
-concept IIndexedGeometry
-{
-	Indices(x: Self): IArray<Integer>;
-}
+concept IQuadGeometry2D inherits IPrimitiveGeometry2D, IQuadPrimitives { Quads(x: Self): IArray<Quad2D>; }
+concept IQuadGeometry3D inherits IPrimitiveGeometry3D, IQuadPrimitives { Quads(x: Self): IArray<Quad3D>; }
 
-concept IIndexedGeometry2D inherits IPrimitiveGeometry2D, IIndexedGeometry { }
-concept IIndexedGeometry3D inherits IPrimitiveGeometry3D, IIndexedGeometry { }
+concept IIndexedGeometry inherits IPrimitiveGeometry { Indices(x: Self): IArray<Integer>; }
+concept IIndexedGeometry2D inherits IIndexedGeometry, IPrimitiveGeometry2D { }
+concept IIndexedGeometry3D inherits IIndexedGeometry, IPrimitiveGeometry3D { }
 
-concept IIndexedPrimitives2D<TPrim>
-    where TPrim: IArray<Vector2D>   
-    inherits IIndexedGeometry2D, IPrimitiveArray2D<TPrim>
-{ }
+concept ILineMesh2D inherits IIndexedGeometry2D, ILineGeometry2D { }
+concept ILineMesh3D inherits IIndexedGeometry3D, ILineGeometry3D { }
 
-concept IIndexedPrimitives3D<TPrim>
-    where TPrim: IArray<Vector3D>   
-    inherits IIndexedGeometry3D, IPrimitiveArray3D<TPrim>
-{ }
+concept ITriangleMesh2D inherits IIndexedGeometry2D, ITriangleGeometry2D { }
+concept ITriangleMesh3D inherits IIndexedGeometry3D, ITriangleGeometry3D { }
 
-concept ILinePrimitives { }
-concept ITrianglePrimitives { }
-concept IQuadPrimitives { }
+concept IQuadMesh2D inherits IIndexedGeometry2D, IQuadGeometry2D { }
+concept IQuadMesh3D inherits IIndexedGeometry3D, IQuadGeometry3D { }
 
-concept ILineMesh2D inherits IIndexedPrimitives2D<Line2D>, ILinePrimitives { }
-concept ITriangleMesh2D inherits IIndexedPrimitives2D<Triangle2D>, ITrianglePrimitives { }
-concept IQuadMesh2D inherits IIndexedPrimitives2D<Quad2D>, IQuadPrimitives { }
+concept IPointArray2D inherits IPointGeometry2D { }
+concept IPointArray3D inherits IPointGeometry3D { }
 
-concept ILineMesh3D inherits IIndexedPrimitives3D<Line3D>, ILinePrimitives { }
-concept ITriangleMesh3D inherits IIndexedPrimitives3D<Triangle3D>, ITrianglePrimitives { }
-concept IQuadMesh3D inherits IIndexedPrimitives3D<Quad3D>, IQuadPrimitives { }
+concept ILineArray2D inherits ILineMesh2D { }
+concept ILineArray3D inherits ILineMesh3D { }
+
+concept ITriangleArray2D inherits ITriangleMesh2D { }
+concept ITriangleArray3D inherits ITriangleMesh3D { }
+
+concept IQuadArray2D inherits IQuadMesh2D { }
+concept IQuadArray3D inherits IQuadMesh3D { }
 
 // Also known as quad strips.
 // Represents a grid of quadrilaterals 

@@ -15,7 +15,7 @@ namespace Plato.Geometry.IO
         public static IEnumerable<string> ObjLines(TriangleMesh3D mesh, IArray<Vector2D> uvs = null)
         {
             // Write the vertices 
-            foreach (var v in mesh.Vertices)
+            foreach (var v in mesh.Points)
                 yield return $"v {v.X} {v.Y} {v.Z}";
 
             if (uvs != null)

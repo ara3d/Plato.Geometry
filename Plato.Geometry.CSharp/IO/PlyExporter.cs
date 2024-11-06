@@ -18,7 +18,7 @@ namespace Plato.Geometry.IO
 
         public static IEnumerable<string> PlyStrings(TriangleMesh3D g, IArray<Color32> colors = null)
         {
-            var vertices = g.Vertices;
+            var vertices = g.Points;
             var indices = g.Indices;
             
             //Write the header

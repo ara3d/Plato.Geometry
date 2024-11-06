@@ -129,6 +129,23 @@ namespace Plato.DoublePrecision
         public static String ToString(this Integer x) => x.Value.ToString();
         public static String ToString(this String x) => $"\"{x.Value}\"";
         public static String ToString(this Type x) => $"\"{x.Value}\"";
+
+        public static Vector2D Eval(this ICurve2D self, Number x) => throw new System.NotImplementedException();
+        public static Vector3D Eval(this ICurve3D self, Number x) => throw new System.NotImplementedException();
+        public static Vector3D Eval(this ISurface self, Vector2D uv) => throw new System.NotImplementedException();
+
+        public static Number Distance(this ICurve2D self, Vector2D uv) => throw new System.NotImplementedException();
+        public static Number Distance(this ICurve3D self, Vector3D p) => throw new System.NotImplementedException();
+        public static Number Distance(this ISurface self, Vector3D p) => throw new System.NotImplementedException();
+    
+        public static Bounds3D Deform(this Bounds3D self, System.Func<Vector3D, Vector3D> f) => throw new System.NotImplementedException();
+    
+        public static Boolean ClosedX(this ISurface self) => throw new System.NotImplementedException();
+        public static Boolean ClosedY(this ISurface self) => throw new System.NotImplementedException();
+
+        public static Vector2D Divide(this Number s, Vector2D v) => (s / v.X, s / v.Y);
+        public static Vector3D Divide(this Number s, Vector3D v) => (s / v.X, s / v.Y, s / v.Z);
+        public static Vector4D Divide(this Number s, Vector4D v) => (s / v.X, s / v.Y, s / v.Z, s / v.W);
     }
     
     public interface IArray<T> : System.Collections.Generic.IReadOnlyList<T>
@@ -163,7 +180,7 @@ namespace Plato.DoublePrecision
         int System.Collections.Generic.IReadOnlyCollection<T>.Count => this.Count;
     }
 
-   public readonly struct Array2D<T> : IArray2D<T>
+    public readonly struct Array2D<T> : IArray2D<T>
     {
         private readonly System.Func<Integer, Integer, T> _func;
         public Integer Count => ColumnCount * RowCount;
@@ -486,17 +503,10 @@ namespace Plato.DoublePrecision
         T Min { get; }
         T Max { get; }
     }
-    public interface ITransform3D<Self>: ITransform3D
-    {
-        Vector3D Transform(Vector3D v);
-        Vector3D TransformNormal(Vector3D v);
-        Self Inverse { get; }
-    }
     public interface ITransform3D
     {
         Vector3D Transform(Vector3D v);
         Vector3D TransformNormal(Vector3D v);
-        ITransform3D Inverse { get; }
     }
     public interface IBounded2D
     {
@@ -566,10 +576,18 @@ namespace Plato.DoublePrecision
     public interface ICurve<TRange>: IProcedural<Number, TRange>, IOpenClosedShape
     {
     }
+    public interface IDistanceField2D
+    {
+        Number Distance(Vector2D p);
+    }
+    public interface IDistanceField3D
+    {
+        Number Distance(Vector3D p);
+    }
     public interface ICurve1D: ICurve<Number>
     {
     }
-    public interface ICurve2D: IGeometry2D, ICurve<Vector2D>
+    public interface ICurve2D: IGeometry2D, ICurve<Vector2D>, IDistanceField2D
     {
     }
     public interface IClosedCurve2D: ICurve2D, IClosedShape2D
@@ -578,7 +596,7 @@ namespace Plato.DoublePrecision
     public interface IOpenCurve2D: ICurve2D, IOpenShape2D
     {
     }
-    public interface ICurve3D: IGeometry3D, ICurve<Vector3D>
+    public interface ICurve3D: IGeometry3D, ICurve<Vector3D>, IDistanceField3D
     {
     }
     public interface IClosedCurve3D: ICurve3D, IClosedShape3D
@@ -592,45 +610,10 @@ namespace Plato.DoublePrecision
     }
     public interface IProceduralSurface: IProcedural<Vector2D, Vector3D>, ISurface
     {
-        Boolean PeriodicX { get; }
-        Boolean PeriodicY { get; }
+        Boolean ClosedX { get; }
+        Boolean ClosedY { get; }
     }
     public interface IExplicitSurface: IProcedural<Vector2D, Number>, ISurface
-    {
-    }
-    public interface IField2D<T>: IGeometry2D, IProcedural<Vector2D, T>
-    {
-    }
-    public interface IField3D<T>: IGeometry3D, IProcedural<Vector3D, T>
-    {
-    }
-    public interface IScalarField2D: IField2D<Number>
-    {
-    }
-    public interface IDistanceField2D: IScalarField2D
-    {
-        Number Distance(Vector2D p);
-    }
-    public interface IScalarField3D: IField3D<Number>
-    {
-    }
-    public interface IDistanceField3D: IScalarField3D
-    {
-        Number Distance(Vector2D p);
-    }
-    public interface IVector3Field2D: IField2D<Vector3D>
-    {
-    }
-    public interface IVector4Field2D: IField2D<Vector4D>
-    {
-    }
-    public interface IVector2Field3D: IField3D<Vector2D>
-    {
-    }
-    public interface IVector3Field3D: IField3D<Vector3D>
-    {
-    }
-    public interface IVector4Field3D: IField3D<Vector4D>
     {
     }
     public interface IImplicitProcedural<TDomain>: IProcedural<TDomain, Boolean>
@@ -648,116 +631,188 @@ namespace Plato.DoublePrecision
     public interface IPolyLine2D: IPointGeometry2D, IOpenClosedShape, ICurve2D
     {
     }
+    public interface IPolyLine3D<Self>: IPointGeometry3D<Self>, IOpenClosedShape, ICurve3D, IPolyLine3D
+    {
+    }
     public interface IPolyLine3D: IPointGeometry3D, IOpenClosedShape, ICurve3D
     {
     }
     public interface IClosedPolyLine2D: IPolyLine2D, IClosedShape2D
     {
     }
+    public interface IClosedPolyLine3D<Self>: IPolyLine3D<Self>, IClosedShape3D, IClosedPolyLine3D
+    {
+    }
     public interface IClosedPolyLine3D: IPolyLine3D, IClosedShape3D
     {
     }
-    public interface IPolygon2D: IClosedPolyLine2D
+    public interface IPolygon2D: IClosedPolyLine2D, IArray<Vector2D>
     {
     }
-    public interface IPolygon3D: IClosedPolyLine3D
+    public interface IPolygon3D<Self>: IClosedPolyLine3D<Self>, IArray<Vector3D>, IPolygon3D
     {
     }
-    public interface ISolid: IShape3D, IDistanceField3D, ISurface
+    public interface IPolygon3D: IClosedPolyLine3D, IArray<Vector3D>
+    {
+    }
+    public interface ISolid: IProceduralSurface
+    {
+    }
+    public interface IPrimitiveGeometry
+    {
+        Integer PrimitiveSize { get; }
+        Integer NumPrimitives { get; }
+    }
+    public interface IPointPrimitives: IPrimitiveGeometry
+    {
+    }
+    public interface ILinePrimitives: IPrimitiveGeometry
+    {
+    }
+    public interface ITrianglePrimitives: IPrimitiveGeometry
+    {
+    }
+    public interface IQuadPrimitives: IPrimitiveGeometry
     {
     }
     public interface IPointGeometry2D: IGeometry2D
     {
         IArray<Vector2D> Points { get; }
     }
-    public interface IPointGeometry3D: IGeometry3D
+    public interface IPointGeometry3D<Self>: IGeometry3D, IDeformable3D<Self>, IPointGeometry3D
     {
         IArray<Vector3D> Points { get; }
     }
-    public interface IPointArray2D: IPointGeometry2D
+    public interface IPointGeometry3D: IGeometry3D, IDeformable3D
     {
-    }
-    public interface IPointArray3D: IPointGeometry3D
-    {
-    }
-    public interface ILineArray2D: IPrimitiveArray2D<Line2D>, ILinePrimitives
-    {
-    }
-    public interface ILineArray3D: IPrimitiveArray3D<Line3D>, ILinePrimitives
-    {
-    }
-    public interface ITriangleArray2D: IPrimitiveArray2D<Triangle2D>, ITrianglePrimitives
-    {
-    }
-    public interface ITriangleArray3D: IPrimitiveArray3D<Triangle3D>, ITrianglePrimitives
-    {
-    }
-    public interface IQuadArray2D: IPrimitiveArray3D<Quad2D>, IQuadPrimitives
-    {
-    }
-    public interface IQuadArray3D: IPrimitiveArray3D<Quad3D>, IQuadPrimitives
-    {
-    }
-    public interface IPrimitiveGeometry
-    {
-        Integer PrimitiveSize { get; }
+        IArray<Vector3D> Points { get; }
     }
     public interface IPrimitiveGeometry2D: IPointGeometry2D, IPrimitiveGeometry
+    {
+    }
+    public interface IPrimitiveGeometry3D<Self>: IPointGeometry3D<Self>, IPrimitiveGeometry, IPrimitiveGeometry3D
     {
     }
     public interface IPrimitiveGeometry3D: IPointGeometry3D, IPrimitiveGeometry
     {
     }
-    public interface IPrimitiveArray2D<TPrim>: IPrimitiveGeometry2D
+    public interface ILineGeometry2D: IPrimitiveGeometry2D, ILinePrimitives
     {
-        IArray<TPrim> Primitives { get; }
+        IArray<Line2D> Lines { get; }
     }
-    public interface IPrimitiveArray3D<TPrim>: IPrimitiveGeometry3D
+    public interface ILineGeometry3D<Self>: IPrimitiveGeometry3D<Self>, ILinePrimitives, ILineGeometry3D
     {
-        IArray<TPrim> Primitives { get; }
+        IArray<Line3D> Lines { get; }
     }
-    public interface IIndexedGeometry
+    public interface ILineGeometry3D: IPrimitiveGeometry3D, ILinePrimitives
+    {
+        IArray<Line3D> Lines { get; }
+    }
+    public interface ITriangleGeometry2D: IPrimitiveGeometry2D, ITrianglePrimitives
+    {
+        IArray<Triangle2D> Triangles { get; }
+    }
+    public interface ITriangleGeometry3D<Self>: IPrimitiveGeometry3D<Self>, ITrianglePrimitives, ITriangleGeometry3D
+    {
+        IArray<Triangle3D> Triangles { get; }
+    }
+    public interface ITriangleGeometry3D: IPrimitiveGeometry3D, ITrianglePrimitives
+    {
+        IArray<Triangle3D> Triangles { get; }
+    }
+    public interface IQuadGeometry2D: IPrimitiveGeometry2D, IQuadPrimitives
+    {
+        IArray<Quad2D> Quads { get; }
+    }
+    public interface IQuadGeometry3D<Self>: IPrimitiveGeometry3D<Self>, IQuadPrimitives, IQuadGeometry3D
+    {
+        IArray<Quad3D> Quads { get; }
+    }
+    public interface IQuadGeometry3D: IPrimitiveGeometry3D, IQuadPrimitives
+    {
+        IArray<Quad3D> Quads { get; }
+    }
+    public interface IIndexedGeometry: IPrimitiveGeometry
     {
         IArray<Integer> Indices { get; }
     }
-    public interface IIndexedGeometry2D: IPrimitiveGeometry2D, IIndexedGeometry
+    public interface IIndexedGeometry2D: IIndexedGeometry, IPrimitiveGeometry2D
     {
     }
-    public interface IIndexedGeometry3D: IPrimitiveGeometry3D, IIndexedGeometry
+    public interface IIndexedGeometry3D<Self>: IIndexedGeometry, IPrimitiveGeometry3D<Self>, IIndexedGeometry3D
     {
     }
-    public interface IIndexedPrimitives2D<TPrim>: IIndexedGeometry2D, IPrimitiveArray2D<TPrim>
+    public interface IIndexedGeometry3D: IIndexedGeometry, IPrimitiveGeometry3D
     {
     }
-    public interface IIndexedPrimitives3D<TPrim>: IIndexedGeometry3D, IPrimitiveArray3D<TPrim>
+    public interface ILineMesh2D: IIndexedGeometry2D, ILineGeometry2D
     {
     }
-    public interface ILinePrimitives
+    public interface ILineMesh3D<Self>: IIndexedGeometry3D<Self>, ILineGeometry3D<Self>, ILineMesh3D
     {
     }
-    public interface ITrianglePrimitives
+    public interface ILineMesh3D: IIndexedGeometry3D, ILineGeometry3D
     {
     }
-    public interface IQuadPrimitives
+    public interface ITriangleMesh2D: IIndexedGeometry2D, ITriangleGeometry2D
     {
     }
-    public interface ILineMesh2D: IIndexedPrimitives2D<Line2D>, ILinePrimitives
+    public interface ITriangleMesh3D<Self>: IIndexedGeometry3D<Self>, ITriangleGeometry3D<Self>, ITriangleMesh3D
     {
     }
-    public interface ITriangleMesh2D: IIndexedPrimitives2D<Triangle2D>, ITrianglePrimitives
+    public interface ITriangleMesh3D: IIndexedGeometry3D, ITriangleGeometry3D
     {
     }
-    public interface IQuadMesh2D: IIndexedPrimitives2D<Quad2D>, IQuadPrimitives
+    public interface IQuadMesh2D: IIndexedGeometry2D, IQuadGeometry2D
     {
     }
-    public interface ILineMesh3D: IIndexedPrimitives3D<Line3D>, ILinePrimitives
+    public interface IQuadMesh3D<Self>: IIndexedGeometry3D<Self>, IQuadGeometry3D<Self>, IQuadMesh3D
     {
     }
-    public interface ITriangleMesh3D: IIndexedPrimitives3D<Triangle3D>, ITrianglePrimitives
+    public interface IQuadMesh3D: IIndexedGeometry3D, IQuadGeometry3D
     {
     }
-    public interface IQuadMesh3D: IIndexedPrimitives3D<Quad3D>, IQuadPrimitives
+    public interface IPointArray2D: IPointGeometry2D
     {
+    }
+    public interface IPointArray3D<Self>: IPointGeometry3D<Self>, IPointArray3D
+    {
+    }
+    public interface IPointArray3D: IPointGeometry3D
+    {
+    }
+    public interface ILineArray2D: ILineMesh2D
+    {
+    }
+    public interface ILineArray3D<Self>: ILineMesh3D<Self>, ILineArray3D
+    {
+    }
+    public interface ILineArray3D: ILineMesh3D
+    {
+    }
+    public interface ITriangleArray2D: ITriangleMesh2D
+    {
+    }
+    public interface ITriangleArray3D<Self>: ITriangleMesh3D<Self>, ITriangleArray3D
+    {
+    }
+    public interface ITriangleArray3D: ITriangleMesh3D
+    {
+    }
+    public interface IQuadArray2D: IQuadMesh2D
+    {
+    }
+    public interface IQuadArray3D<Self>: IQuadMesh3D<Self>, IQuadArray3D
+    {
+    }
+    public interface IQuadArray3D: IQuadMesh3D
+    {
+    }
+    public interface IQuadGrid3D<Self>: IQuadMesh3D<Self>, IQuadGrid3D
+    {
+        IArray2D<Vector3D> PointGrid { get; }
+        Boolean ClosedX { get; }
+        Boolean ClosedY { get; }
     }
     public interface IQuadGrid3D: IQuadMesh3D
     {
@@ -765,7 +820,8 @@ namespace Plato.DoublePrecision
         Boolean ClosedX { get; }
         Boolean ClosedY { get; }
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Number: IReal<Number>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Number: IReal<Number>
     {
         [DataMember] public readonly double Value;
         public Number WithValue(double value) => new Number(value);
@@ -876,9 +932,9 @@ namespace Plato.DoublePrecision
         public Number FromNumber(Number n) => this.FromComponents(Intrinsics.MakeArray(n));
         public Integer Compare(Number b) => this.ToNumber.Compare(b.ToNumber);
         public Number Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Number PlusOne => this.Add(this.One);
-        public Number MinusOne => this.Subtract(this.One);
-        public Number FromOne => this.One.Subtract(this);
+        public Number PlusOne => this.Add(One);
+        public Number MinusOne => this.Subtract(One);
+        public Number FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Number MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -891,7 +947,13 @@ namespace Plato.DoublePrecision
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Number Clamp(Number a, Number b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Number ClampOne => this.Clamp(this.Zero, this.One);
+        public Number ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Number Min(Number y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Number Max(Number y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public IArray<Number> Repeat(Integer n){
+            var _var0 = this;
+            return n.MapRange((i) => _var0);
+        }
         public Boolean NotEquals(Number b) => this.Equals(b).Not;
         public static Boolean operator !=(Number a, Number b) => a.NotEquals(b);
         public Number Half => this.Divide(((Number)2));
@@ -921,7 +983,8 @@ namespace Plato.DoublePrecision
         public Number Cube => this.Pow3;
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer: IWholeNumber<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Integer: IWholeNumber<Integer>
     {
         [DataMember] public readonly int Value;
         public Integer WithValue(int value) => new Integer(value);
@@ -948,16 +1011,35 @@ namespace Plato.DoublePrecision
         IModulo IModulo.Modulo(IModulo b) => this.Modulo((Integer)b);
         // Implemented concept functions and type functions
         public IArray<Number> Numbers { get {
-            var _var0 = this;
-            return this.MapRange((i) => i.ToNumber.Divide(_var0.ToNumber));
+            var _var1 = this;
+            return this.MapRange((i) => i.ToNumber.Divide(_var1.ToNumber));
         }
          } public IArray<Integer> Range => this.MapRange((i) => i);
+        public IArray2D<TR> CartesianProduct<TR>(Integer b, System.Func<Integer, Integer, TR> f) => this.Range.CartesianProduct(b.Range, f);
         public Number FloatDivision(Integer y) => this.ToNumber.Divide(y.ToNumber);
         public IArray<Number> Fractions { get {
-            var _var1 = this;
-            return this.Range.Map((i) => i.FloatDivision(_var1));
+            var _var2 = this;
+            return this.Range.Map((i) => i.FloatDivision(_var2));
         }
          } public IArray<Vector2D> CirclePoints => this.Fractions.Map((x) => x.Turns.CircleFunction);
+        public Integer4 QuadFaceIndices(Integer row, Integer nCols, Integer nRows){
+            var a = row.Multiply(nCols).Add(this);
+            var b = row.Multiply(nCols).Add(this.Add(((Integer)1)).Modulo(nCols));
+            var c = row.Add(((Integer)1)).Modulo(nRows.Multiply(nCols)).Add(this.Add(((Integer)1)).Modulo(nCols));
+            var d = row.Add(((Integer)1)).Modulo(nRows.Multiply(nCols)).Add(this);
+            return a.Tuple4(b, c, d);
+        }
+        public IArray2D<Integer4> AllQuadFaceIndices(Integer nRows, Boolean closedX, Boolean closedY){
+            var _var4 = nRows;
+            {
+                var _var3 = this;
+                {
+                    var nx = this.Subtract(closedX ? ((Integer)0) : ((Integer)1));
+                    var ny = nRows.Subtract(closedY ? ((Integer)0) : ((Integer)1));
+                    return nx.Range.CartesianProduct(ny.Range, (col, row) => col.QuadFaceIndices(row, _var3, _var4));
+                }
+            }
+        }
         public Integer Add(Integer y) => Intrinsics.Add(this, y);
         public static Integer operator +(Integer x, Integer y) => x.Add(y);
         public Integer Subtract(Integer y) => Intrinsics.Subtract(this, y);
@@ -976,6 +1058,10 @@ namespace Plato.DoublePrecision
         public Boolean Equals(Integer y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(Integer x, Integer y) => x.Equals(y);
         public IArray<TR> MapRange<TR>(System.Func<Integer, TR> f) => Intrinsics.MapRange(this, f);
+        public IArray<Integer> Repeat(Integer n){
+            var _var5 = this;
+            return n.MapRange((i) => _var5);
+        }
         public Boolean NotEquals(Integer b) => this.Equals(b).Not;
         public static Boolean operator !=(Integer a, Integer b) => a.NotEquals(b);
         public Boolean LessThan(Integer b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -996,7 +1082,8 @@ namespace Plato.DoublePrecision
         public Integer ParabolaFunction => this.Square;
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct String: IValue<String>, IOrderable<String>, IArray<Character>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct String: IValue<String>, IOrderable<String>, IArray<Character>
     {
         [DataMember] public readonly string Value;
         public String WithValue(string value) => new String(value);
@@ -1030,6 +1117,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator <=(String x, String y) => x.LessThanOrEquals(y);
         public Boolean Equals(String y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(String x, String y) => x.Equals(y);
+        public IArray<String> Repeat(Integer n){
+            var _var6 = this;
+            return n.MapRange((i) => _var6);
+        }
         public Boolean NotEquals(String b) => this.Equals(b).Not;
         public static Boolean operator !=(String a, String b) => a.NotEquals(b);
         public Boolean LessThan(String b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -1043,7 +1134,8 @@ namespace Plato.DoublePrecision
         public Integer CompareTo(String b) => this.LessThanOrEquals(b) ? this.Equals(b) ? ((Integer)0) : ((Integer)1).Negative : ((Integer)1);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Boolean: IValue<Boolean>, IOrderable<Boolean>, IBoolean<Boolean>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Boolean: IValue<Boolean>, IOrderable<Boolean>, IBoolean<Boolean>
     {
         [DataMember] public readonly bool Value;
         public Boolean WithValue(bool value) => new Boolean(value);
@@ -1076,6 +1168,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator <=(Boolean x, Boolean y) => x.LessThanOrEquals(y);
         public Boolean Equals(Boolean y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(Boolean x, Boolean y) => x.Equals(y);
+        public IArray<Boolean> Repeat(Integer n){
+            var _var7 = this;
+            return n.MapRange((i) => _var7);
+        }
         public Boolean NotEquals(Boolean b) => this.Equals(b).Not;
         public static Boolean operator !=(Boolean a, Boolean b) => a.NotEquals(b);
         public Boolean LessThan(Boolean b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -1089,7 +1185,8 @@ namespace Plato.DoublePrecision
         public Integer CompareTo(Boolean b) => this.LessThanOrEquals(b) ? this.Equals(b) ? ((Integer)0) : ((Integer)1).Negative : ((Integer)1);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Character: IValue<Character>, IOrderable<Character>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Character: IValue<Character>, IOrderable<Character>
     {
         [DataMember] public readonly char Value;
         public Character WithValue(char value) => new Character(value);
@@ -1113,6 +1210,10 @@ namespace Plato.DoublePrecision
         public static Boolean operator <=(Character x, Character y) => x.LessThanOrEquals(y);
         public Boolean Equals(Character y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(Character x, Character y) => x.Equals(y);
+        public IArray<Character> Repeat(Integer n){
+            var _var8 = this;
+            return n.MapRange((i) => _var8);
+        }
         public Boolean NotEquals(Character b) => this.Equals(b).Not;
         public static Boolean operator !=(Character a, Character b) => a.NotEquals(b);
         public Boolean LessThan(Character b) => this.LessThanOrEquals(b).And(this.NotEquals(b));
@@ -1126,7 +1227,8 @@ namespace Plato.DoublePrecision
         public Integer CompareTo(Character b) => this.LessThanOrEquals(b) ? this.Equals(b) ? ((Integer)0) : ((Integer)1).Negative : ((Integer)1);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Type
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Type
     {
         [DataMember] public readonly System.Type Value;
         public Type WithValue(System.Type value) => new Type(value);
@@ -1147,7 +1249,8 @@ namespace Plato.DoublePrecision
         public Dynamic New(IArray<IAny> args) => Intrinsics.New(this, args);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Error
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Error
     {
         public static Error Default = new Error();
         public static Error New() => new Error();
@@ -1162,7 +1265,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple2<T0, T1>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple2<T0, T1>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1185,7 +1289,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple3<T0, T1, T2>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple3<T0, T1, T2>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1210,7 +1315,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple4<T0, T1, T2, T3>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple4<T0, T1, T2, T3>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1237,7 +1343,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple5<T0, T1, T2, T3, T4>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple5<T0, T1, T2, T3, T4>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1266,7 +1373,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple6<T0, T1, T2, T3, T4, T5>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple6<T0, T1, T2, T3, T4, T5>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1297,7 +1405,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple7<T0, T1, T2, T3, T4, T5, T6>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple7<T0, T1, T2, T3, T4, T5, T6>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1330,7 +1439,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1365,7 +1475,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1402,7 +1513,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tuple10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
     {
         [DataMember] public readonly T0 X0;
         [DataMember] public readonly T1 X1;
@@ -1441,7 +1553,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function4<T0, T1, T2, T3, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Function4<T0, T1, T2, T3, TR>
     {
         public static Function4<T0, T1, T2, T3, TR> Default = new Function4<T0, T1, T2, T3, TR>();
         public static Function4<T0, T1, T2, T3, TR> New() => new Function4<T0, T1, T2, T3, TR>();
@@ -1457,7 +1570,8 @@ namespace Plato.DoublePrecision
         public TR Invoke(T0 a0, T1 a1, T2 a2, T3 a3) => Intrinsics.Invoke(this, a0, a1, a2, a3);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function5<T0, T1, T2, T3, T4, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Function5<T0, T1, T2, T3, T4, TR>
     {
         public static Function5<T0, T1, T2, T3, T4, TR> Default = new Function5<T0, T1, T2, T3, T4, TR>();
         public static Function5<T0, T1, T2, T3, T4, TR> New() => new Function5<T0, T1, T2, T3, T4, TR>();
@@ -1472,7 +1586,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function6<T0, T1, T2, T3, T4, T5, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Function6<T0, T1, T2, T3, T4, T5, TR>
     {
         public static Function6<T0, T1, T2, T3, T4, T5, TR> Default = new Function6<T0, T1, T2, T3, T4, T5, TR>();
         public static Function6<T0, T1, T2, T3, T4, T5, TR> New() => new Function6<T0, T1, T2, T3, T4, T5, TR>();
@@ -1487,7 +1602,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function7<T0, T1, T2, T3, T4, T5, T6, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Function7<T0, T1, T2, T3, T4, T5, T6, TR>
     {
         public static Function7<T0, T1, T2, T3, T4, T5, T6, TR> Default = new Function7<T0, T1, T2, T3, T4, T5, T6, TR>();
         public static Function7<T0, T1, T2, T3, T4, T5, T6, TR> New() => new Function7<T0, T1, T2, T3, T4, T5, T6, TR>();
@@ -1502,7 +1618,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>
     {
         public static Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR> Default = new Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>();
         public static Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR> New() => new Function8<T0, T1, T2, T3, T4, T5, T6, T7, TR>();
@@ -1517,7 +1634,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>
     {
         public static Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR> Default = new Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>();
         public static Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR> New() => new Function9<T0, T1, T2, T3, T4, T5, T6, T7, T8, TR>();
@@ -1532,7 +1650,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>
     {
         public static Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> Default = new Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>();
         public static Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> New() => new Function10<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>();
@@ -1547,7 +1666,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Unit: IReal<Unit>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Unit: IReal<Unit>
     {
         [DataMember] public readonly Number Value;
         public Unit WithValue(Number value) => new Unit(value);
@@ -1610,9 +1730,9 @@ namespace Plato.DoublePrecision
         public Unit Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
         public static Unit operator +(Unit x, Number y) => x.Add(y);
         public Unit Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Unit PlusOne => this.Add(this.One);
-        public Unit MinusOne => this.Subtract(this.One);
-        public Unit FromOne => this.One.Subtract(this);
+        public Unit PlusOne => this.Add(One);
+        public Unit MinusOne => this.Subtract(One);
+        public Unit FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Unit MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -1626,20 +1746,22 @@ namespace Plato.DoublePrecision
         public Boolean Between(Unit a, Unit b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Unit Clamp(Unit a, Unit b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Unit ClampOne => this.Clamp(this.Zero, this.One);
+        public Unit ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Unit Min(Unit y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Unit Max(Unit y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Unit Multiply(Number s){
-            var _var2 = s;
-            return this.MapComponents((i) => i.Multiply(_var2));
+            var _var9 = s;
+            return this.MapComponents((i) => i.Multiply(_var9));
         }
         public static Unit operator *(Unit x, Number s) => x.Multiply(s);
         public Unit Divide(Number s){
-            var _var3 = s;
-            return this.MapComponents((i) => i.Divide(_var3));
+            var _var10 = s;
+            return this.MapComponents((i) => i.Divide(_var10));
         }
         public static Unit operator /(Unit x, Number s) => x.Divide(s);
         public Unit Modulo(Number s){
-            var _var4 = s;
-            return this.MapComponents((i) => i.Modulo(_var4));
+            var _var11 = s;
+            return this.MapComponents((i) => i.Modulo(_var11));
         }
         public static Unit operator %(Unit x, Number s) => x.Modulo(s);
         public Unit Add(Unit y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -1648,6 +1770,10 @@ namespace Plato.DoublePrecision
         public static Unit operator -(Unit x, Unit y) => x.Subtract(y);
         public Unit Negative => this.MapComponents((a) => a.Negative);
         public static Unit operator -(Unit x) => x.Negative;
+        public IArray<Unit> Repeat(Integer n){
+            var _var12 = this;
+            return n.MapRange((i) => _var12);
+        }
         public Boolean Equals(Unit b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Unit a, Unit b) => a.Equals(b);
         public Boolean NotEquals(Unit b) => this.Equals(b).Not;
@@ -1681,7 +1807,8 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Unit y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Unit x, Unit y) => x.LessThanOrEquals(y);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Probability: IMeasure<Probability>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Probability: IMeasure<Probability>
     {
         [DataMember] public readonly Number Value;
         public Probability WithValue(Number value) => new Probability(value);
@@ -1730,9 +1857,9 @@ namespace Plato.DoublePrecision
         public Probability Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
         public static Probability operator +(Probability x, Number y) => x.Add(y);
         public Probability Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Probability PlusOne => this.Add(this.One);
-        public Probability MinusOne => this.Subtract(this.One);
-        public Probability FromOne => this.One.Subtract(this);
+        public Probability PlusOne => this.Add(One);
+        public Probability MinusOne => this.Subtract(One);
+        public Probability FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Probability MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -1746,20 +1873,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Probability a, Probability b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Probability Clamp(Probability a, Probability b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Probability ClampOne => this.Clamp(this.Zero, this.One);
+        public Probability ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Probability Abs => this.MapComponents((i) => i.Abs);
+        public Probability Min(Probability y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Probability Max(Probability y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Probability Multiply(Number s){
-            var _var5 = s;
-            return this.MapComponents((i) => i.Multiply(_var5));
+            var _var13 = s;
+            return this.MapComponents((i) => i.Multiply(_var13));
         }
         public static Probability operator *(Probability x, Number s) => x.Multiply(s);
         public Probability Divide(Number s){
-            var _var6 = s;
-            return this.MapComponents((i) => i.Divide(_var6));
+            var _var14 = s;
+            return this.MapComponents((i) => i.Divide(_var14));
         }
         public static Probability operator /(Probability x, Number s) => x.Divide(s);
         public Probability Modulo(Number s){
-            var _var7 = s;
-            return this.MapComponents((i) => i.Modulo(_var7));
+            var _var15 = s;
+            return this.MapComponents((i) => i.Modulo(_var15));
         }
         public static Probability operator %(Probability x, Number s) => x.Modulo(s);
         public Probability Add(Probability y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -1768,6 +1898,10 @@ namespace Plato.DoublePrecision
         public static Probability operator -(Probability x, Probability y) => x.Subtract(y);
         public Probability Negative => this.MapComponents((a) => a.Negative);
         public static Probability operator -(Probability x) => x.Negative;
+        public IArray<Probability> Repeat(Integer n){
+            var _var16 = this;
+            return n.MapRange((i) => _var16);
+        }
         public Boolean Equals(Probability b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Probability a, Probability b) => a.Equals(b);
         public Boolean NotEquals(Probability b) => this.Equals(b).Not;
@@ -1791,7 +1925,8 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Probability y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Probability x, Probability y) => x.LessThanOrEquals(y);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Complex: IVector<Complex>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Complex: IVector<Complex>
     {
         [DataMember] public readonly Number IReal;
         [DataMember] public readonly Number Imaginary;
@@ -1861,9 +1996,9 @@ namespace Plato.DoublePrecision
         public Number Distance(Complex b) => b.Subtract(this).Magnitude;
         public Number DistanceSquared(Complex b) => b.Subtract(this).Magnitude;
         public Angle Angle(Complex b) => this.Dot(b).Divide(this.Magnitude.Multiply(b.Magnitude)).Acos;
-        public Complex PlusOne => this.Add(this.One);
-        public Complex MinusOne => this.Subtract(this.One);
-        public Complex FromOne => this.One.Subtract(this);
+        public Complex PlusOne => this.Add(One);
+        public Complex MinusOne => this.Subtract(One);
+        public Complex FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Complex MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -1877,20 +2012,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Complex a, Complex b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Complex Clamp(Complex a, Complex b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Complex ClampOne => this.Clamp(this.Zero, this.One);
+        public Complex ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Complex Abs => this.MapComponents((i) => i.Abs);
+        public Complex Min(Complex y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Complex Max(Complex y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Complex Multiply(Number s){
-            var _var8 = s;
-            return this.MapComponents((i) => i.Multiply(_var8));
+            var _var17 = s;
+            return this.MapComponents((i) => i.Multiply(_var17));
         }
         public static Complex operator *(Complex x, Number s) => x.Multiply(s);
         public Complex Divide(Number s){
-            var _var9 = s;
-            return this.MapComponents((i) => i.Divide(_var9));
+            var _var18 = s;
+            return this.MapComponents((i) => i.Divide(_var18));
         }
         public static Complex operator /(Complex x, Number s) => x.Divide(s);
         public Complex Modulo(Number s){
-            var _var10 = s;
-            return this.MapComponents((i) => i.Modulo(_var10));
+            var _var19 = s;
+            return this.MapComponents((i) => i.Modulo(_var19));
         }
         public static Complex operator %(Complex x, Number s) => x.Modulo(s);
         public Complex Add(Complex y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -1899,6 +2037,10 @@ namespace Plato.DoublePrecision
         public static Complex operator -(Complex x, Complex y) => x.Subtract(y);
         public Complex Negative => this.MapComponents((a) => a.Negative);
         public static Complex operator -(Complex x) => x.Negative;
+        public IArray<Complex> Repeat(Integer n){
+            var _var20 = this;
+            return n.MapRange((i) => _var20);
+        }
         public Boolean Equals(Complex b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Complex a, Complex b) => a.Equals(b);
         public Boolean NotEquals(Complex b) => this.Equals(b).Not;
@@ -1918,7 +2060,8 @@ namespace Plato.DoublePrecision
         public Complex Barycentric(Complex v2, Complex v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer2: IValue<Integer2>, IArray<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Integer2: IValue<Integer2>, IArray<Integer>
     {
         [DataMember] public readonly Integer A;
         [DataMember] public readonly Integer B;
@@ -1951,6 +2094,10 @@ namespace Plato.DoublePrecision
         Integer System.Collections.Generic.IReadOnlyList<Integer>.this[int n] => At(n);
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
+        public IArray<Integer2> Repeat(Integer n){
+            var _var21 = this;
+            return n.MapRange((i) => _var21);
+        }
         public Boolean Equals(Integer2 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer2 a, Integer2 b) => a.Equals(b);
         public Boolean NotEquals(Integer2 b) => this.Equals(b).Not;
@@ -1960,7 +2107,8 @@ namespace Plato.DoublePrecision
         public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
         public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer3: IValue<Integer3>, IArray<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Integer3: IValue<Integer3>, IArray<Integer>
     {
         [DataMember] public readonly Integer A;
         [DataMember] public readonly Integer B;
@@ -1995,6 +2143,10 @@ namespace Plato.DoublePrecision
         Integer System.Collections.Generic.IReadOnlyList<Integer>.this[int n] => At(n);
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
+        public IArray<Integer3> Repeat(Integer n){
+            var _var22 = this;
+            return n.MapRange((i) => _var22);
+        }
         public Boolean Equals(Integer3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer3 a, Integer3 b) => a.Equals(b);
         public Boolean NotEquals(Integer3 b) => this.Equals(b).Not;
@@ -2004,7 +2156,8 @@ namespace Plato.DoublePrecision
         public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
         public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Integer4: IValue<Integer4>, IArray<Integer>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Integer4: IValue<Integer4>, IArray<Integer>
     {
         [DataMember] public readonly Integer A;
         [DataMember] public readonly Integer B;
@@ -2041,6 +2194,10 @@ namespace Plato.DoublePrecision
         Integer System.Collections.Generic.IReadOnlyList<Integer>.this[int n] => At(n);
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
+        public IArray<Integer4> Repeat(Integer n){
+            var _var23 = this;
+            return n.MapRange((i) => _var23);
+        }
         public Boolean Equals(Integer4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer4 a, Integer4 b) => a.Equals(b);
         public Boolean NotEquals(Integer4 b) => this.Equals(b).Not;
@@ -2050,7 +2207,8 @@ namespace Plato.DoublePrecision
         public Integer At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
         public Integer this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Color: ICoordinate<Color>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Color: ICoordinate<Color>
     {
         [DataMember] public readonly Unit R;
         [DataMember] public readonly Unit G;
@@ -2076,13 +2234,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(R), new Dynamic(G), new Dynamic(B), new Dynamic(A));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Color)b);
         // Implemented concept functions and type functions
+        public IArray<Color> Repeat(Integer n){
+            var _var24 = this;
+            return n.MapRange((i) => _var24);
+        }
         public Boolean Equals(Color b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Color a, Color b) => a.Equals(b);
         public Boolean NotEquals(Color b) => this.Equals(b).Not;
         public static Boolean operator !=(Color a, Color b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorLUV: ICoordinate<ColorLUV>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ColorLUV: ICoordinate<ColorLUV>
     {
         [DataMember] public readonly Unit Lightness;
         [DataMember] public readonly Unit U;
@@ -2106,13 +2269,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lightness), new Dynamic(U), new Dynamic(V));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLUV)b);
         // Implemented concept functions and type functions
+        public IArray<ColorLUV> Repeat(Integer n){
+            var _var25 = this;
+            return n.MapRange((i) => _var25);
+        }
         public Boolean Equals(ColorLUV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLUV a, ColorLUV b) => a.Equals(b);
         public Boolean NotEquals(ColorLUV b) => this.Equals(b).Not;
         public static Boolean operator !=(ColorLUV a, ColorLUV b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorLAB: ICoordinate<ColorLAB>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ColorLAB: ICoordinate<ColorLAB>
     {
         [DataMember] public readonly Unit Lightness;
         [DataMember] public readonly Number A;
@@ -2136,13 +2304,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lightness), new Dynamic(A), new Dynamic(B));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLAB)b);
         // Implemented concept functions and type functions
+        public IArray<ColorLAB> Repeat(Integer n){
+            var _var26 = this;
+            return n.MapRange((i) => _var26);
+        }
         public Boolean Equals(ColorLAB b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLAB a, ColorLAB b) => a.Equals(b);
         public Boolean NotEquals(ColorLAB b) => this.Equals(b).Not;
         public static Boolean operator !=(ColorLAB a, ColorLAB b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorLCh: ICoordinate<ColorLCh>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ColorLCh: ICoordinate<ColorLCh>
     {
         [DataMember] public readonly Unit Lightness;
         [DataMember] public readonly PolarCoordinate ChromaHue;
@@ -2164,13 +2337,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lightness), new Dynamic(ChromaHue));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLCh)b);
         // Implemented concept functions and type functions
+        public IArray<ColorLCh> Repeat(Integer n){
+            var _var27 = this;
+            return n.MapRange((i) => _var27);
+        }
         public Boolean Equals(ColorLCh b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLCh a, ColorLCh b) => a.Equals(b);
         public Boolean NotEquals(ColorLCh b) => this.Equals(b).Not;
         public static Boolean operator !=(ColorLCh a, ColorLCh b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorHSV: ICoordinate<ColorHSV>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ColorHSV: ICoordinate<ColorHSV>
     {
         [DataMember] public readonly Angle Hue;
         [DataMember] public readonly Unit S;
@@ -2194,13 +2372,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Hue), new Dynamic(S), new Dynamic(V));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorHSV)b);
         // Implemented concept functions and type functions
+        public IArray<ColorHSV> Repeat(Integer n){
+            var _var28 = this;
+            return n.MapRange((i) => _var28);
+        }
         public Boolean Equals(ColorHSV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorHSV a, ColorHSV b) => a.Equals(b);
         public Boolean NotEquals(ColorHSV b) => this.Equals(b).Not;
         public static Boolean operator !=(ColorHSV a, ColorHSV b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorHSL: ICoordinate<ColorHSL>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ColorHSL: ICoordinate<ColorHSL>
     {
         [DataMember] public readonly Angle Hue;
         [DataMember] public readonly Unit Saturation;
@@ -2224,13 +2407,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Hue), new Dynamic(Saturation), new Dynamic(Luminance));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorHSL)b);
         // Implemented concept functions and type functions
+        public IArray<ColorHSL> Repeat(Integer n){
+            var _var29 = this;
+            return n.MapRange((i) => _var29);
+        }
         public Boolean Equals(ColorHSL b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorHSL a, ColorHSL b) => a.Equals(b);
         public Boolean NotEquals(ColorHSL b) => this.Equals(b).Not;
         public static Boolean operator !=(ColorHSL a, ColorHSL b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ColorYCbCr: ICoordinate<ColorYCbCr>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ColorYCbCr: ICoordinate<ColorYCbCr>
     {
         [DataMember] public readonly Unit Y;
         [DataMember] public readonly Unit Cb;
@@ -2254,13 +2442,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Y), new Dynamic(Cb), new Dynamic(Cr));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorYCbCr)b);
         // Implemented concept functions and type functions
+        public IArray<ColorYCbCr> Repeat(Integer n){
+            var _var30 = this;
+            return n.MapRange((i) => _var30);
+        }
         public Boolean Equals(ColorYCbCr b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorYCbCr a, ColorYCbCr b) => a.Equals(b);
         public Boolean NotEquals(ColorYCbCr b) => this.Equals(b).Not;
         public static Boolean operator !=(ColorYCbCr a, ColorYCbCr b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct SphericalCoordinate: ICoordinate<SphericalCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct SphericalCoordinate: ICoordinate<SphericalCoordinate>
     {
         [DataMember] public readonly Number Radius;
         [DataMember] public readonly Angle Azimuth;
@@ -2284,13 +2477,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Azimuth), new Dynamic(Polar));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((SphericalCoordinate)b);
         // Implemented concept functions and type functions
+        public IArray<SphericalCoordinate> Repeat(Integer n){
+            var _var31 = this;
+            return n.MapRange((i) => _var31);
+        }
         public Boolean Equals(SphericalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(SphericalCoordinate a, SphericalCoordinate b) => a.Equals(b);
         public Boolean NotEquals(SphericalCoordinate b) => this.Equals(b).Not;
         public static Boolean operator !=(SphericalCoordinate a, SphericalCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PolarCoordinate: ICoordinate<PolarCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct PolarCoordinate: ICoordinate<PolarCoordinate>
     {
         [DataMember] public readonly Number Radius;
         [DataMember] public readonly Angle Angle;
@@ -2312,13 +2510,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Angle));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((PolarCoordinate)b);
         // Implemented concept functions and type functions
+        public IArray<PolarCoordinate> Repeat(Integer n){
+            var _var32 = this;
+            return n.MapRange((i) => _var32);
+        }
         public Boolean Equals(PolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(PolarCoordinate a, PolarCoordinate b) => a.Equals(b);
         public Boolean NotEquals(PolarCoordinate b) => this.Equals(b).Not;
         public static Boolean operator !=(PolarCoordinate a, PolarCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LogPolarCoordinate: ICoordinate<LogPolarCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct LogPolarCoordinate: ICoordinate<LogPolarCoordinate>
     {
         [DataMember] public readonly Number Rho;
         [DataMember] public readonly Angle Azimuth;
@@ -2340,13 +2543,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Rho), new Dynamic(Azimuth));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((LogPolarCoordinate)b);
         // Implemented concept functions and type functions
+        public IArray<LogPolarCoordinate> Repeat(Integer n){
+            var _var33 = this;
+            return n.MapRange((i) => _var33);
+        }
         public Boolean Equals(LogPolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(LogPolarCoordinate a, LogPolarCoordinate b) => a.Equals(b);
         public Boolean NotEquals(LogPolarCoordinate b) => this.Equals(b).Not;
         public static Boolean operator !=(LogPolarCoordinate a, LogPolarCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CylindricalCoordinate: ICoordinate<CylindricalCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct CylindricalCoordinate: ICoordinate<CylindricalCoordinate>
     {
         [DataMember] public readonly Number RadialDistance;
         [DataMember] public readonly Angle Azimuth;
@@ -2370,13 +2578,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(RadialDistance), new Dynamic(Azimuth), new Dynamic(Height));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((CylindricalCoordinate)b);
         // Implemented concept functions and type functions
+        public IArray<CylindricalCoordinate> Repeat(Integer n){
+            var _var34 = this;
+            return n.MapRange((i) => _var34);
+        }
         public Boolean Equals(CylindricalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(CylindricalCoordinate a, CylindricalCoordinate b) => a.Equals(b);
         public Boolean NotEquals(CylindricalCoordinate b) => this.Equals(b).Not;
         public static Boolean operator !=(CylindricalCoordinate a, CylindricalCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct HorizontalCoordinate: ICoordinate<HorizontalCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct HorizontalCoordinate: ICoordinate<HorizontalCoordinate>
     {
         [DataMember] public readonly Number Radius;
         [DataMember] public readonly Angle Azimuth;
@@ -2400,13 +2613,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Azimuth), new Dynamic(Height));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((HorizontalCoordinate)b);
         // Implemented concept functions and type functions
+        public IArray<HorizontalCoordinate> Repeat(Integer n){
+            var _var35 = this;
+            return n.MapRange((i) => _var35);
+        }
         public Boolean Equals(HorizontalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(HorizontalCoordinate a, HorizontalCoordinate b) => a.Equals(b);
         public Boolean NotEquals(HorizontalCoordinate b) => this.Equals(b).Not;
         public static Boolean operator !=(HorizontalCoordinate a, HorizontalCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct GeoCoordinate: ICoordinate<GeoCoordinate>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct GeoCoordinate: ICoordinate<GeoCoordinate>
     {
         [DataMember] public readonly Angle Latitude;
         [DataMember] public readonly Angle Longitude;
@@ -2428,13 +2646,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Latitude), new Dynamic(Longitude));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((GeoCoordinate)b);
         // Implemented concept functions and type functions
+        public IArray<GeoCoordinate> Repeat(Integer n){
+            var _var36 = this;
+            return n.MapRange((i) => _var36);
+        }
         public Boolean Equals(GeoCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(GeoCoordinate a, GeoCoordinate b) => a.Equals(b);
         public Boolean NotEquals(GeoCoordinate b) => this.Equals(b).Not;
         public static Boolean operator !=(GeoCoordinate a, GeoCoordinate b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct GeoCoordinateWithAltitude: ICoordinate<GeoCoordinateWithAltitude>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct GeoCoordinateWithAltitude: ICoordinate<GeoCoordinateWithAltitude>
     {
         [DataMember] public readonly GeoCoordinate ICoordinate;
         [DataMember] public readonly Number Altitude;
@@ -2456,13 +2679,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(ICoordinate), new Dynamic(Altitude));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((GeoCoordinateWithAltitude)b);
         // Implemented concept functions and type functions
+        public IArray<GeoCoordinateWithAltitude> Repeat(Integer n){
+            var _var37 = this;
+            return n.MapRange((i) => _var37);
+        }
         public Boolean Equals(GeoCoordinateWithAltitude b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => a.Equals(b);
         public Boolean NotEquals(GeoCoordinateWithAltitude b) => this.Equals(b).Not;
         public static Boolean operator !=(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Rational: IValue<Rational>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Rational: IValue<Rational>
     {
         [DataMember] public readonly Integer Numerator;
         [DataMember] public readonly Integer Denominator;
@@ -2484,13 +2712,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Numerator), new Dynamic(Denominator));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Rational)b);
         // Implemented concept functions and type functions
+        public IArray<Rational> Repeat(Integer n){
+            var _var38 = this;
+            return n.MapRange((i) => _var38);
+        }
         public Boolean Equals(Rational b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Rational a, Rational b) => a.Equals(b);
         public Boolean NotEquals(Rational b) => this.Equals(b).Not;
         public static Boolean operator !=(Rational a, Rational b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Fraction: IValue<Fraction>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Fraction: IValue<Fraction>
     {
         [DataMember] public readonly Number Numerator;
         [DataMember] public readonly Number Denominator;
@@ -2512,13 +2745,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Numerator), new Dynamic(Denominator));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Fraction)b);
         // Implemented concept functions and type functions
+        public IArray<Fraction> Repeat(Integer n){
+            var _var39 = this;
+            return n.MapRange((i) => _var39);
+        }
         public Boolean Equals(Fraction b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Fraction a, Fraction b) => a.Equals(b);
         public Boolean NotEquals(Fraction b) => this.Equals(b).Not;
         public static Boolean operator !=(Fraction a, Fraction b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Angle: IMeasure<Angle>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Angle: IMeasure<Angle>
     {
         [DataMember] public readonly Number Radians;
         public Angle WithRadians(Number radians) => new Angle(radians);
@@ -2585,9 +2823,9 @@ namespace Plato.DoublePrecision
         public Angle Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
         public static Angle operator +(Angle x, Number y) => x.Add(y);
         public Angle Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Angle PlusOne => this.Add(this.One);
-        public Angle MinusOne => this.Subtract(this.One);
-        public Angle FromOne => this.One.Subtract(this);
+        public Angle PlusOne => this.Add(One);
+        public Angle MinusOne => this.Subtract(One);
+        public Angle FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Angle MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -2601,20 +2839,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Angle a, Angle b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Angle Clamp(Angle a, Angle b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Angle ClampOne => this.Clamp(this.Zero, this.One);
+        public Angle ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Angle Abs => this.MapComponents((i) => i.Abs);
+        public Angle Min(Angle y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Angle Max(Angle y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Angle Multiply(Number s){
-            var _var11 = s;
-            return this.MapComponents((i) => i.Multiply(_var11));
+            var _var40 = s;
+            return this.MapComponents((i) => i.Multiply(_var40));
         }
         public static Angle operator *(Angle x, Number s) => x.Multiply(s);
         public Angle Divide(Number s){
-            var _var12 = s;
-            return this.MapComponents((i) => i.Divide(_var12));
+            var _var41 = s;
+            return this.MapComponents((i) => i.Divide(_var41));
         }
         public static Angle operator /(Angle x, Number s) => x.Divide(s);
         public Angle Modulo(Number s){
-            var _var13 = s;
-            return this.MapComponents((i) => i.Modulo(_var13));
+            var _var42 = s;
+            return this.MapComponents((i) => i.Modulo(_var42));
         }
         public static Angle operator %(Angle x, Number s) => x.Modulo(s);
         public Angle Add(Angle y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2623,6 +2864,10 @@ namespace Plato.DoublePrecision
         public static Angle operator -(Angle x, Angle y) => x.Subtract(y);
         public Angle Negative => this.MapComponents((a) => a.Negative);
         public static Angle operator -(Angle x) => x.Negative;
+        public IArray<Angle> Repeat(Integer n){
+            var _var43 = this;
+            return n.MapRange((i) => _var43);
+        }
         public Boolean Equals(Angle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Angle a, Angle b) => a.Equals(b);
         public Boolean NotEquals(Angle b) => this.Equals(b).Not;
@@ -2646,7 +2891,8 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Angle y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Angle x, Angle y) => x.LessThanOrEquals(y);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Length: IMeasure<Length>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Length: IMeasure<Length>
     {
         [DataMember] public readonly Number Meters;
         public Length WithMeters(Number meters) => new Length(meters);
@@ -2695,9 +2941,9 @@ namespace Plato.DoublePrecision
         public Length Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
         public static Length operator +(Length x, Number y) => x.Add(y);
         public Length Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Length PlusOne => this.Add(this.One);
-        public Length MinusOne => this.Subtract(this.One);
-        public Length FromOne => this.One.Subtract(this);
+        public Length PlusOne => this.Add(One);
+        public Length MinusOne => this.Subtract(One);
+        public Length FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Length MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -2711,20 +2957,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Length a, Length b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Length Clamp(Length a, Length b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Length ClampOne => this.Clamp(this.Zero, this.One);
+        public Length ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Length Abs => this.MapComponents((i) => i.Abs);
+        public Length Min(Length y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Length Max(Length y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Length Multiply(Number s){
-            var _var14 = s;
-            return this.MapComponents((i) => i.Multiply(_var14));
+            var _var44 = s;
+            return this.MapComponents((i) => i.Multiply(_var44));
         }
         public static Length operator *(Length x, Number s) => x.Multiply(s);
         public Length Divide(Number s){
-            var _var15 = s;
-            return this.MapComponents((i) => i.Divide(_var15));
+            var _var45 = s;
+            return this.MapComponents((i) => i.Divide(_var45));
         }
         public static Length operator /(Length x, Number s) => x.Divide(s);
         public Length Modulo(Number s){
-            var _var16 = s;
-            return this.MapComponents((i) => i.Modulo(_var16));
+            var _var46 = s;
+            return this.MapComponents((i) => i.Modulo(_var46));
         }
         public static Length operator %(Length x, Number s) => x.Modulo(s);
         public Length Add(Length y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2733,6 +2982,10 @@ namespace Plato.DoublePrecision
         public static Length operator -(Length x, Length y) => x.Subtract(y);
         public Length Negative => this.MapComponents((a) => a.Negative);
         public static Length operator -(Length x) => x.Negative;
+        public IArray<Length> Repeat(Integer n){
+            var _var47 = this;
+            return n.MapRange((i) => _var47);
+        }
         public Boolean Equals(Length b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Length a, Length b) => a.Equals(b);
         public Boolean NotEquals(Length b) => this.Equals(b).Not;
@@ -2756,7 +3009,8 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Length y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Length x, Length y) => x.LessThanOrEquals(y);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Mass: IMeasure<Mass>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Mass: IMeasure<Mass>
     {
         [DataMember] public readonly Number Kilograms;
         public Mass WithKilograms(Number kilograms) => new Mass(kilograms);
@@ -2805,9 +3059,9 @@ namespace Plato.DoublePrecision
         public Mass Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
         public static Mass operator +(Mass x, Number y) => x.Add(y);
         public Mass Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Mass PlusOne => this.Add(this.One);
-        public Mass MinusOne => this.Subtract(this.One);
-        public Mass FromOne => this.One.Subtract(this);
+        public Mass PlusOne => this.Add(One);
+        public Mass MinusOne => this.Subtract(One);
+        public Mass FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Mass MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -2821,20 +3075,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Mass a, Mass b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Mass Clamp(Mass a, Mass b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Mass ClampOne => this.Clamp(this.Zero, this.One);
+        public Mass ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Mass Abs => this.MapComponents((i) => i.Abs);
+        public Mass Min(Mass y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Mass Max(Mass y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Mass Multiply(Number s){
-            var _var17 = s;
-            return this.MapComponents((i) => i.Multiply(_var17));
+            var _var48 = s;
+            return this.MapComponents((i) => i.Multiply(_var48));
         }
         public static Mass operator *(Mass x, Number s) => x.Multiply(s);
         public Mass Divide(Number s){
-            var _var18 = s;
-            return this.MapComponents((i) => i.Divide(_var18));
+            var _var49 = s;
+            return this.MapComponents((i) => i.Divide(_var49));
         }
         public static Mass operator /(Mass x, Number s) => x.Divide(s);
         public Mass Modulo(Number s){
-            var _var19 = s;
-            return this.MapComponents((i) => i.Modulo(_var19));
+            var _var50 = s;
+            return this.MapComponents((i) => i.Modulo(_var50));
         }
         public static Mass operator %(Mass x, Number s) => x.Modulo(s);
         public Mass Add(Mass y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2843,6 +3100,10 @@ namespace Plato.DoublePrecision
         public static Mass operator -(Mass x, Mass y) => x.Subtract(y);
         public Mass Negative => this.MapComponents((a) => a.Negative);
         public static Mass operator -(Mass x) => x.Negative;
+        public IArray<Mass> Repeat(Integer n){
+            var _var51 = this;
+            return n.MapRange((i) => _var51);
+        }
         public Boolean Equals(Mass b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Mass a, Mass b) => a.Equals(b);
         public Boolean NotEquals(Mass b) => this.Equals(b).Not;
@@ -2866,7 +3127,8 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Mass y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Mass x, Mass y) => x.LessThanOrEquals(y);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Temperature: IMeasure<Temperature>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Temperature: IMeasure<Temperature>
     {
         [DataMember] public readonly Number Celsius;
         public Temperature WithCelsius(Number celsius) => new Temperature(celsius);
@@ -2915,9 +3177,9 @@ namespace Plato.DoublePrecision
         public Temperature Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
         public static Temperature operator +(Temperature x, Number y) => x.Add(y);
         public Temperature Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Temperature PlusOne => this.Add(this.One);
-        public Temperature MinusOne => this.Subtract(this.One);
-        public Temperature FromOne => this.One.Subtract(this);
+        public Temperature PlusOne => this.Add(One);
+        public Temperature MinusOne => this.Subtract(One);
+        public Temperature FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Temperature MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -2931,20 +3193,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Temperature a, Temperature b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Temperature Clamp(Temperature a, Temperature b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Temperature ClampOne => this.Clamp(this.Zero, this.One);
+        public Temperature ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Temperature Abs => this.MapComponents((i) => i.Abs);
+        public Temperature Min(Temperature y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Temperature Max(Temperature y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Temperature Multiply(Number s){
-            var _var20 = s;
-            return this.MapComponents((i) => i.Multiply(_var20));
+            var _var52 = s;
+            return this.MapComponents((i) => i.Multiply(_var52));
         }
         public static Temperature operator *(Temperature x, Number s) => x.Multiply(s);
         public Temperature Divide(Number s){
-            var _var21 = s;
-            return this.MapComponents((i) => i.Divide(_var21));
+            var _var53 = s;
+            return this.MapComponents((i) => i.Divide(_var53));
         }
         public static Temperature operator /(Temperature x, Number s) => x.Divide(s);
         public Temperature Modulo(Number s){
-            var _var22 = s;
-            return this.MapComponents((i) => i.Modulo(_var22));
+            var _var54 = s;
+            return this.MapComponents((i) => i.Modulo(_var54));
         }
         public static Temperature operator %(Temperature x, Number s) => x.Modulo(s);
         public Temperature Add(Temperature y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2953,6 +3218,10 @@ namespace Plato.DoublePrecision
         public static Temperature operator -(Temperature x, Temperature y) => x.Subtract(y);
         public Temperature Negative => this.MapComponents((a) => a.Negative);
         public static Temperature operator -(Temperature x) => x.Negative;
+        public IArray<Temperature> Repeat(Integer n){
+            var _var55 = this;
+            return n.MapRange((i) => _var55);
+        }
         public Boolean Equals(Temperature b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Temperature a, Temperature b) => a.Equals(b);
         public Boolean NotEquals(Temperature b) => this.Equals(b).Not;
@@ -2976,7 +3245,8 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Temperature y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Temperature x, Temperature y) => x.LessThanOrEquals(y);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Time: IMeasure<Time>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Time: IMeasure<Time>
     {
         [DataMember] public readonly Number Seconds;
         public Time WithSeconds(Number seconds) => new Time(seconds);
@@ -3025,9 +3295,9 @@ namespace Plato.DoublePrecision
         public Time Add(Number y) => this.FromNumber(this.ToNumber.Add(y));
         public static Time operator +(Time x, Number y) => x.Add(y);
         public Time Subract(Number y) => this.FromNumber(this.ToNumber.Subtract(y));
-        public Time PlusOne => this.Add(this.One);
-        public Time MinusOne => this.Subtract(this.One);
-        public Time FromOne => this.One.Subtract(this);
+        public Time PlusOne => this.Add(One);
+        public Time MinusOne => this.Subtract(One);
+        public Time FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Time MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -3041,20 +3311,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Time a, Time b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Time Clamp(Time a, Time b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Time ClampOne => this.Clamp(this.Zero, this.One);
+        public Time ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Time Abs => this.MapComponents((i) => i.Abs);
+        public Time Min(Time y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Time Max(Time y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Time Multiply(Number s){
-            var _var23 = s;
-            return this.MapComponents((i) => i.Multiply(_var23));
+            var _var56 = s;
+            return this.MapComponents((i) => i.Multiply(_var56));
         }
         public static Time operator *(Time x, Number s) => x.Multiply(s);
         public Time Divide(Number s){
-            var _var24 = s;
-            return this.MapComponents((i) => i.Divide(_var24));
+            var _var57 = s;
+            return this.MapComponents((i) => i.Divide(_var57));
         }
         public static Time operator /(Time x, Number s) => x.Divide(s);
         public Time Modulo(Number s){
-            var _var25 = s;
-            return this.MapComponents((i) => i.Modulo(_var25));
+            var _var58 = s;
+            return this.MapComponents((i) => i.Modulo(_var58));
         }
         public static Time operator %(Time x, Number s) => x.Modulo(s);
         public Time Add(Time y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -3063,6 +3336,10 @@ namespace Plato.DoublePrecision
         public static Time operator -(Time x, Time y) => x.Subtract(y);
         public Time Negative => this.MapComponents((a) => a.Negative);
         public static Time operator -(Time x) => x.Negative;
+        public IArray<Time> Repeat(Integer n){
+            var _var59 = this;
+            return n.MapRange((i) => _var59);
+        }
         public Boolean Equals(Time b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Time a, Time b) => a.Equals(b);
         public Boolean NotEquals(Time b) => this.Equals(b).Not;
@@ -3086,7 +3363,8 @@ namespace Plato.DoublePrecision
         public Boolean LessThanOrEquals(Time y) => Intrinsics.LessThanOrEquals(this, y);
         public static Boolean operator <=(Time x, Time y) => x.LessThanOrEquals(y);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct DateTime: ICoordinate<DateTime>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct DateTime: ICoordinate<DateTime>
     {
         [DataMember] public readonly Number Value;
         public DateTime WithValue(Number value) => new DateTime(value);
@@ -3109,13 +3387,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Value));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((DateTime)b);
         // Implemented concept functions and type functions
+        public IArray<DateTime> Repeat(Integer n){
+            var _var60 = this;
+            return n.MapRange((i) => _var60);
+        }
         public Boolean Equals(DateTime b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(DateTime a, DateTime b) => a.Equals(b);
         public Boolean NotEquals(DateTime b) => this.Equals(b).Not;
         public static Boolean operator !=(DateTime a, DateTime b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct AnglePair: IInterval<AnglePair, Angle>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct AnglePair: IInterval<AnglePair, Angle>
     {
         [DataMember] public readonly Angle Min;
         [DataMember] public readonly Angle Max;
@@ -3173,12 +3456,17 @@ namespace Plato.DoublePrecision
         public static Boolean operator ==(AnglePair a, AnglePair b) => a.Equals(b);
         public Boolean NotEquals(AnglePair b) => this.Equals(b).Not;
         public static Boolean operator !=(AnglePair a, AnglePair b) => a.NotEquals(b);
+        public IArray<AnglePair> Repeat(Integer n){
+            var _var61 = this;
+            return n.MapRange((i) => _var61);
+        }
         // Unimplemented concept functions
         public Integer Count => 2;
         public Angle At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Angle this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct NumberInterval: IInterval<NumberInterval, Number>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct NumberInterval: IInterval<NumberInterval, Number>
     {
         [DataMember] public readonly Number Min;
         [DataMember] public readonly Number Max;
@@ -3236,12 +3524,17 @@ namespace Plato.DoublePrecision
         public static Boolean operator ==(NumberInterval a, NumberInterval b) => a.Equals(b);
         public Boolean NotEquals(NumberInterval b) => this.Equals(b).Not;
         public static Boolean operator !=(NumberInterval a, NumberInterval b) => a.NotEquals(b);
+        public IArray<NumberInterval> Repeat(Integer n){
+            var _var62 = this;
+            return n.MapRange((i) => _var62);
+        }
         // Unimplemented concept functions
         public Integer Count => 2;
         public Number At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Number this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Vector2D: IVector<Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Vector2D: IVector<Vector2D>
     {
         [DataMember] public readonly Number X;
         [DataMember] public readonly Number Y;
@@ -3288,10 +3581,19 @@ namespace Plato.DoublePrecision
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(X, Y);
         public Vector2D FromComponents(IArray<Number> numbers) => new Vector2D(numbers[0], numbers[1]);
         // Implemented concept functions and type functions
+        public Vector3D Vector3D => this.X.Tuple3(this.Y, ((Integer)0));
+        public static implicit operator Vector3D(Vector2D v) => v.Vector3D;
+        public Vector2D MidPoint(Vector2D b) => this.Add(b).Divide(((Number)2));
+        public Line2D Line(Vector2D b) => this.Tuple2(b);
+        public Ray2D Ray(Vector2D b) => this.Tuple2(b);
+        public Ray2D RayTo(Vector2D b) => this.Tuple2(b.Subtract(this));
+        public Number Cross(Vector2D b) => this.X.Multiply(b.Y).Subtract(this.Y.Multiply(b.X));
         public Integer Count => ((Integer)2);
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : this.Y;
         public Number this[Integer n] => At(n);
-        public Number Cross(Vector2D b) => this.X.Multiply(b.Y).Subtract(this.Y.Multiply(b.X));
+        public Vector3D To3D => this;
+        public static Vector2D UnitX => ((Integer)1).Tuple2(((Integer)0));
+        public static Vector2D UnitY => ((Integer)0).Tuple2(((Integer)1));
         public Vector2D Multiply(Vector2D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
         public static Vector2D operator *(Vector2D x, Vector2D y) => x.Multiply(y);
         public Vector2D Divide(Vector2D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
@@ -3312,9 +3614,9 @@ namespace Plato.DoublePrecision
         public Number Distance(Vector2D b) => b.Subtract(this).Magnitude;
         public Number DistanceSquared(Vector2D b) => b.Subtract(this).Magnitude;
         public Angle Angle(Vector2D b) => this.Dot(b).Divide(this.Magnitude.Multiply(b.Magnitude)).Acos;
-        public Vector2D PlusOne => this.Add(this.One);
-        public Vector2D MinusOne => this.Subtract(this.One);
-        public Vector2D FromOne => this.One.Subtract(this);
+        public Vector2D PlusOne => this.Add(One);
+        public Vector2D MinusOne => this.Subtract(One);
+        public Vector2D FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Vector2D MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -3328,20 +3630,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Vector2D a, Vector2D b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector2D Clamp(Vector2D a, Vector2D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Vector2D ClampOne => this.Clamp(this.Zero, this.One);
+        public Vector2D ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Vector2D Abs => this.MapComponents((i) => i.Abs);
+        public Vector2D Min(Vector2D y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Vector2D Max(Vector2D y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Vector2D Multiply(Number s){
-            var _var26 = s;
-            return this.MapComponents((i) => i.Multiply(_var26));
+            var _var63 = s;
+            return this.MapComponents((i) => i.Multiply(_var63));
         }
         public static Vector2D operator *(Vector2D x, Number s) => x.Multiply(s);
         public Vector2D Divide(Number s){
-            var _var27 = s;
-            return this.MapComponents((i) => i.Divide(_var27));
+            var _var64 = s;
+            return this.MapComponents((i) => i.Divide(_var64));
         }
         public static Vector2D operator /(Vector2D x, Number s) => x.Divide(s);
         public Vector2D Modulo(Number s){
-            var _var28 = s;
-            return this.MapComponents((i) => i.Modulo(_var28));
+            var _var65 = s;
+            return this.MapComponents((i) => i.Modulo(_var65));
         }
         public static Vector2D operator %(Vector2D x, Number s) => x.Modulo(s);
         public Vector2D Add(Vector2D y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -3350,6 +3655,10 @@ namespace Plato.DoublePrecision
         public static Vector2D operator -(Vector2D x, Vector2D y) => x.Subtract(y);
         public Vector2D Negative => this.MapComponents((a) => a.Negative);
         public static Vector2D operator -(Vector2D x) => x.Negative;
+        public IArray<Vector2D> Repeat(Integer n){
+            var _var66 = this;
+            return n.MapRange((i) => _var66);
+        }
         public Boolean Equals(Vector2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector2D a, Vector2D b) => a.Equals(b);
         public Boolean NotEquals(Vector2D b) => this.Equals(b).Not;
@@ -3369,7 +3678,8 @@ namespace Plato.DoublePrecision
         public Vector2D Barycentric(Vector2D v2, Vector2D v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Vector3D: IVector<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Vector3D: IVector<Vector3D>, IDeformable3D<Vector3D>
     {
         [DataMember] public readonly Number X;
         [DataMember] public readonly Number Y;
@@ -3403,6 +3713,7 @@ namespace Plato.DoublePrecision
         IMultiplicative IMultiplicative.Multiply(IMultiplicative b) => this.Multiply((Vector3D)b);
         IDivisible IDivisible.Divide(IDivisible b) => this.Divide((Vector3D)b);
         IModulo IModulo.Modulo(IModulo b) => this.Modulo((Vector3D)b);
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
         // Array predefined functions
         public Vector3D(IArray<Number> xs) : this(xs[0], xs[1], xs[2]) { }
         public Vector3D(Number[] xs) : this(xs[0], xs[1], xs[2]) { }
@@ -3418,9 +3729,9 @@ namespace Plato.DoublePrecision
         public IArray<Number> Components => Intrinsics.MakeArray<Number>(X, Y, Z);
         public Vector3D FromComponents(IArray<Number> numbers) => new Vector3D(numbers[0], numbers[1], numbers[2]);
         // Implemented concept functions and type functions
-        public Vector4D Vector4D => this.Vector4D(((Integer)0));
+        public Vector4D Vector4D => this.ToVector4D(((Integer)0));
         public static implicit operator Vector4D(Vector3D v) => v.Vector4D;
-        public Vector4D Vector4D(Number w) => this.X.Tuple4(this.Y, this.Z, w);
+        public Vector4D ToVector4D(Number w) => this.X.Tuple4(this.Y, this.Z, w);
         public Vector3D XZY => this.X.Tuple3(this.Z, this.Y);
         public Vector3D YXZ => this.Y.Tuple3(this.X, this.Z);
         public Vector3D YZX => this.Y.Tuple3(this.Z, this.X);
@@ -3433,15 +3744,30 @@ namespace Plato.DoublePrecision
         public Ray3D Ray(Vector3D b) => this.Tuple2(b);
         public Ray3D RayTo(Vector3D b) => this.Tuple2(b.Subtract(this));
         public Vector3D Project(Plane p) => this.Subtract(p.Normal.Multiply(p.Normal.Dot(this)));
+        public Vector3D Deform(System.Func<Vector3D, Vector3D> f) => f.Invoke(this);
         public Vector2D To2D => this.X.Tuple2(this.Y);
+        public Vector3D Cross(Vector3D b) => this.Y.Multiply(b.Z).Subtract(this.Z.Multiply(b.Y)).Tuple3(this.Z.Multiply(b.X).Subtract(this.X.Multiply(b.Z)), this.X.Multiply(b.Y).Subtract(this.Y.Multiply(b.X)));
+        public Number MixedProduct(Vector3D b, Vector3D c) => this.Cross(b).Dot(c);
         public Integer Count => ((Integer)3);
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : n.Equals(((Integer)1)) ? this.Y : this.Z;
         public Number this[Integer n] => At(n);
-        public Vector3D Cross(Vector3D b) => this.Y.Multiply(b.Z).Subtract(this.Z.Multiply(b.Y)).Tuple3(this.Z.Multiply(b.X).Subtract(this.X.Multiply(b.Z)), this.X.Multiply(b.Y).Subtract(this.Y.Multiply(b.X)));
-        public Number MixedProduct(Vector3D b, Vector3D c) => this.Cross(b).Dot(c);
-        public Boolean IsParallel(Vector3D b) => this.Dot(b).Abs.GreaterThan(((Integer)1).Subtract(((Number)1E-06)));
+        public Boolean IsParallel(Vector3D b) => this.Dot(b).Abs.GreaterThan(((Number)1).Subtract(((Number)1E-06)));
+        public static Vector3D UnitX => ((Integer)1).Tuple3(((Integer)0), ((Integer)0));
+        public static Vector3D UnitY => ((Integer)0).Tuple3(((Integer)1), ((Integer)0));
+        public static Vector3D UnitZ => ((Integer)0).Tuple3(((Integer)0), ((Integer)1));
+        public AxisAngle AxisAngle(Angle a) => this.Tuple2(a);
+        public Quaternion LookRotation(Vector3D up){
+            var forward = this.Normalize;
+            var up2 = up.IsParallel(forward) ? Vector3D.UnitX : up;
+            var right = up2.Cross(forward).Normalize;
+            var correctedUp = forward.Cross(right).Normalize;
+            var rotationMatrix = Matrix4x4.New(right.X.Tuple4(correctedUp.X, forward.X, ((Integer)0)), right.Y.Tuple4(correctedUp.Y, forward.Y, ((Integer)0)), right.Z.Tuple4(correctedUp.Z, forward.Z, ((Integer)0)), ((Integer)0).Tuple4(((Integer)0), ((Integer)0), ((Integer)1)));
+            return rotationMatrix.QuaternionFromRotationMatrix.Normalize;
+        }
+        // Ambiguous: could not choose a best function implementation for Multiply(Vector3D, Vector3D):Vector3D:Vector3D.
         public Vector3D Multiply(Vector3D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
         public static Vector3D operator *(Vector3D x, Vector3D y) => x.Multiply(y);
+        // Ambiguous: could not choose a best function implementation for Divide(Vector3D, Vector3D):Vector3D:Vector3D.
         public Vector3D Divide(Vector3D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
         public static Vector3D operator /(Vector3D x, Vector3D y) => x.Divide(y);
         public Vector3D Modulo(Vector3D y) => this.ZipComponents(y, (a, b) => a.Modulo(b));
@@ -3460,9 +3786,9 @@ namespace Plato.DoublePrecision
         public Number Distance(Vector3D b) => b.Subtract(this).Magnitude;
         public Number DistanceSquared(Vector3D b) => b.Subtract(this).Magnitude;
         public Angle Angle(Vector3D b) => this.Dot(b).Divide(this.Magnitude.Multiply(b.Magnitude)).Acos;
-        public Vector3D PlusOne => this.Add(this.One);
-        public Vector3D MinusOne => this.Subtract(this.One);
-        public Vector3D FromOne => this.One.Subtract(this);
+        public Vector3D PlusOne => this.Add(One);
+        public Vector3D MinusOne => this.Subtract(One);
+        public Vector3D FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Vector3D MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -3476,28 +3802,29 @@ namespace Plato.DoublePrecision
         public Boolean Between(Vector3D a, Vector3D b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector3D Clamp(Vector3D a, Vector3D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Vector3D ClampOne => this.Clamp(this.Zero, this.One);
-        public Vector3D Multiply(Number s){
-            var _var29 = s;
-            return this.MapComponents((i) => i.Multiply(_var29));
-        }
+        public Vector3D ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Vector3D Abs => this.MapComponents((i) => i.Abs);
+        public Vector3D Min(Vector3D y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Vector3D Max(Vector3D y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Vector3D Multiply(Number s) => this.Scale(s);
         public static Vector3D operator *(Vector3D x, Number s) => x.Multiply(s);
-        public Vector3D Divide(Number s){
-            var _var30 = s;
-            return this.MapComponents((i) => i.Divide(_var30));
-        }
+        public Vector3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
         public static Vector3D operator /(Vector3D x, Number s) => x.Divide(s);
         public Vector3D Modulo(Number s){
-            var _var31 = s;
-            return this.MapComponents((i) => i.Modulo(_var31));
+            var _var67 = s;
+            return this.MapComponents((i) => i.Modulo(_var67));
         }
         public static Vector3D operator %(Vector3D x, Number s) => x.Modulo(s);
-        public Vector3D Add(Vector3D y) => this.ZipComponents(y, (a, b) => a.Add(b));
-        public static Vector3D operator +(Vector3D x, Vector3D y) => x.Add(y);
-        public Vector3D Subtract(Vector3D y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
-        public static Vector3D operator -(Vector3D x, Vector3D y) => x.Subtract(y);
+        public Vector3D Add(Vector3D v) => this.Translate(v);
+        public static Vector3D operator +(Vector3D x, Vector3D v) => x.Add(v);
+        public Vector3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static Vector3D operator -(Vector3D x, Vector3D v) => x.Subtract(v);
         public Vector3D Negative => this.MapComponents((a) => a.Negative);
         public static Vector3D operator -(Vector3D x) => x.Negative;
+        public IArray<Vector3D> Repeat(Integer n){
+            var _var68 = this;
+            return n.MapRange((i) => _var68);
+        }
         public Boolean Equals(Vector3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector3D a, Vector3D b) => a.Equals(b);
         public Boolean NotEquals(Vector3D b) => this.Equals(b).Not;
@@ -3515,9 +3842,35 @@ namespace Plato.DoublePrecision
         public Vector3D ParabolaFunction => this.Square;
         public Vector3D Lerp(Vector3D b, Number t) => this.Multiply(t.FromOne).Add(b.Multiply(t));
         public Vector3D Barycentric(Vector3D v2, Vector3D v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
+        public Vector3D Transform(Matrix4x4 m){
+            var _var69 = m;
+            return this.Deform((v) => _var69.Multiply(v));
+        }
+        public Vector3D Transform(ITransform3D t){
+            var _var70 = t;
+            return this.Deform((v) => _var70.Transform(v));
+        }
+        public Vector3D Transform(Rotation3D r){
+            var _var71 = r;
+            return this.Deform((v) => _var71.Transform(v));
+        }
+        public Vector3D Translate(Vector3D v){
+            var _var72 = v;
+            return this.Deform((p) => p.Add(_var72));
+        }
+        public Vector3D Rotate(Rotation3D r) => this.Transform(r);
+        public Vector3D Scale(Vector3D v){
+            var _var73 = v;
+            return this.Deform((p) => p.Multiply(_var73));
+        }
+        public Vector3D Scale(Number s){
+            var _var74 = s;
+            return this.Deform((p) => p.Multiply(_var74));
+        }
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Vector4D: IVector<Vector4D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Vector4D: IVector<Vector4D>
     {
         [DataMember] public readonly Number X;
         [DataMember] public readonly Number Y;
@@ -3571,6 +3924,13 @@ namespace Plato.DoublePrecision
         public Integer Count => ((Integer)4);
         public Number At(Integer n) => n.Equals(((Integer)0)) ? this.X : n.Equals(((Integer)1)) ? this.Y : n.Equals(((Integer)2)) ? this.Z : this.W;
         public Number this[Integer n] => At(n);
+        public Vector3D ToVector3D => this.X.Tuple3(this.Y, this.Z);
+        public static Vector4D UnitX => ((Integer)1).Tuple4(((Integer)0), ((Integer)0), ((Integer)0));
+        public static Vector4D UnitY => ((Integer)0).Tuple4(((Integer)1), ((Integer)0), ((Integer)0));
+        public static Vector4D UnitZ => ((Integer)0).Tuple4(((Integer)0), ((Integer)1), ((Integer)0));
+        public static Vector4D UnitW => ((Integer)0).Tuple4(((Integer)0), ((Integer)0), ((Integer)1));
+        public Quaternion Quaternion => this.X.Tuple4(this.Y, this.Z, this.W);
+        public static implicit operator Quaternion(Vector4D v) => v.Quaternion;
         public Vector4D Multiply(Vector4D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
         public static Vector4D operator *(Vector4D x, Vector4D y) => x.Multiply(y);
         public Vector4D Divide(Vector4D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
@@ -3591,9 +3951,9 @@ namespace Plato.DoublePrecision
         public Number Distance(Vector4D b) => b.Subtract(this).Magnitude;
         public Number DistanceSquared(Vector4D b) => b.Subtract(this).Magnitude;
         public Angle Angle(Vector4D b) => this.Dot(b).Divide(this.Magnitude.Multiply(b.Magnitude)).Acos;
-        public Vector4D PlusOne => this.Add(this.One);
-        public Vector4D MinusOne => this.Subtract(this.One);
-        public Vector4D FromOne => this.One.Subtract(this);
+        public Vector4D PlusOne => this.Add(One);
+        public Vector4D MinusOne => this.Subtract(One);
+        public Vector4D FromOne => One.Subtract(this);
         public Number Component(Integer n) => this.Components.At(n);
         public Integer NumComponents => this.Components.Count;
         public Vector4D MapComponents(System.Func<Number, Number> f) => this.FromComponents(this.Components.Map(f));
@@ -3607,20 +3967,23 @@ namespace Plato.DoublePrecision
         public Boolean Between(Vector4D a, Vector4D b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector4D Clamp(Vector4D a, Vector4D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
-        public Vector4D ClampOne => this.Clamp(this.Zero, this.One);
+        public Vector4D ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Vector4D Abs => this.MapComponents((i) => i.Abs);
+        public Vector4D Min(Vector4D y) => this.ZipComponents(y, (a, b) => a.Min(b));
+        public Vector4D Max(Vector4D y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Vector4D Multiply(Number s){
-            var _var32 = s;
-            return this.MapComponents((i) => i.Multiply(_var32));
+            var _var75 = s;
+            return this.MapComponents((i) => i.Multiply(_var75));
         }
         public static Vector4D operator *(Vector4D x, Number s) => x.Multiply(s);
         public Vector4D Divide(Number s){
-            var _var33 = s;
-            return this.MapComponents((i) => i.Divide(_var33));
+            var _var76 = s;
+            return this.MapComponents((i) => i.Divide(_var76));
         }
         public static Vector4D operator /(Vector4D x, Number s) => x.Divide(s);
         public Vector4D Modulo(Number s){
-            var _var34 = s;
-            return this.MapComponents((i) => i.Modulo(_var34));
+            var _var77 = s;
+            return this.MapComponents((i) => i.Modulo(_var77));
         }
         public static Vector4D operator %(Vector4D x, Number s) => x.Modulo(s);
         public Vector4D Add(Vector4D y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -3629,6 +3992,10 @@ namespace Plato.DoublePrecision
         public static Vector4D operator -(Vector4D x, Vector4D y) => x.Subtract(y);
         public Vector4D Negative => this.MapComponents((a) => a.Negative);
         public static Vector4D operator -(Vector4D x) => x.Negative;
+        public IArray<Vector4D> Repeat(Integer n){
+            var _var78 = this;
+            return n.MapRange((i) => _var78);
+        }
         public Boolean Equals(Vector4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector4D a, Vector4D b) => a.Equals(b);
         public Boolean NotEquals(Vector4D b) => this.Equals(b).Not;
@@ -3648,7 +4015,8 @@ namespace Plato.DoublePrecision
         public Vector4D Barycentric(Vector4D v2, Vector4D v3, Vector2D uv) => this.Add(v2.Subtract(this)).Multiply(uv.X).Add(v3.Subtract(this).Multiply(uv.Y));
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Matrix3x3: IValue<Matrix3x3>, IArray<Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Matrix3x3: IValue<Matrix3x3>, IArray<Vector3D>
     {
         [DataMember] public readonly Vector3D Column1;
         [DataMember] public readonly Vector3D Column2;
@@ -3683,6 +4051,11 @@ namespace Plato.DoublePrecision
         Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
         int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
+        public static Matrix3x3 Identity => ((Integer)1).Tuple3(((Integer)0), ((Integer)0)).Tuple3(((Integer)0).Tuple3(((Integer)1), ((Integer)0)), ((Integer)0).Tuple3(((Integer)0), ((Integer)1)));
+        public IArray<Matrix3x3> Repeat(Integer n){
+            var _var79 = this;
+            return n.MapRange((i) => _var79);
+        }
         public Boolean Equals(Matrix3x3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Matrix3x3 a, Matrix3x3 b) => a.Equals(b);
         public Boolean NotEquals(Matrix3x3 b) => this.Equals(b).Not;
@@ -3692,7 +4065,8 @@ namespace Plato.DoublePrecision
         public Vector3D At(Integer n) => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : throw new System.IndexOutOfRangeException();
         public Vector3D this[Integer n] => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Matrix4x4: IValue<Matrix4x4>, IArray<Vector4D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Matrix4x4: IValue<Matrix4x4>, IArray<Vector4D>
     {
         [DataMember] public readonly Vector4D Column1;
         [DataMember] public readonly Vector4D Column2;
@@ -3747,6 +4121,19 @@ namespace Plato.DoublePrecision
         public Number M44 => this.Column4.W;
         public Vector3D Multiply(Vector3D v) => v.X.Multiply(this.M11).Add(v.Y.Multiply(this.M21).Add(v.Z.Multiply(this.M31).Add(this.M41))).Tuple3(v.X.Multiply(this.M12).Add(v.Y.Multiply(this.M22).Add(v.Z.Multiply(this.M32).Add(this.M42))), v.X.Multiply(this.M13).Add(v.Y.Multiply(this.M23).Add(v.Z.Multiply(this.M33).Add(this.M43))));
         public static Vector3D operator *(Matrix4x4 m, Vector3D v) => m.Multiply(v);
+        public static Matrix4x4 Identity => ((Integer)1).Tuple4(((Integer)0), ((Integer)0), ((Integer)0)).Tuple4(((Integer)0).Tuple4(((Integer)1), ((Integer)0), ((Integer)0)), ((Integer)0).Tuple4(((Integer)0), ((Integer)1), ((Integer)0)), ((Integer)0).Tuple4(((Integer)0), ((Integer)0), ((Integer)1)));
+        public Quaternion QuaternionFromRotationMatrix { get {
+            var trace = this.M11.Add(this.M22.Add(this.M33));
+            {
+                var s = ((Number)1).Add(this.M33.Subtract(this.M11.Subtract(this.M22))).Sqrt;
+                var invS = ((Number)0.5).Divide(s);
+                return this.M31.Add(this.M13).Multiply(invS).Tuple4(this.M32.Add(this.M23).Multiply(invS), s.Half, this.M12.Subtract(this.M21).Multiply(invS));
+            }
+        }
+         } public IArray<Matrix4x4> Repeat(Integer n){
+            var _var80 = this;
+            return n.MapRange((i) => _var80);
+        }
         public Boolean Equals(Matrix4x4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Matrix4x4 a, Matrix4x4 b) => a.Equals(b);
         public Boolean NotEquals(Matrix4x4 b) => this.Equals(b).Not;
@@ -3756,7 +4143,8 @@ namespace Plato.DoublePrecision
         public Vector4D At(Integer n) => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : n == 3 ? Column4 : throw new System.IndexOutOfRangeException();
         public Vector4D this[Integer n] => n == 0 ? Column1 : n == 1 ? Column2 : n == 2 ? Column3 : n == 3 ? Column4 : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Transform2D: IValue<Transform2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Transform2D: IValue<Transform2D>
     {
         [DataMember] public readonly Vector2D Translation;
         [DataMember] public readonly Angle Rotation;
@@ -3780,13 +4168,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Translation), new Dynamic(Rotation), new Dynamic(Scale));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Transform2D)b);
         // Implemented concept functions and type functions
+        public IArray<Transform2D> Repeat(Integer n){
+            var _var81 = this;
+            return n.MapRange((i) => _var81);
+        }
         public Boolean Equals(Transform2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Transform2D a, Transform2D b) => a.Equals(b);
         public Boolean NotEquals(Transform2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Transform2D a, Transform2D b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Pose2D: IValue<Pose2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Pose2D: IValue<Pose2D>
     {
         [DataMember] public readonly Vector2D Position;
         [DataMember] public readonly Angle Rotation;
@@ -3808,13 +4201,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Rotation));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Pose2D)b);
         // Implemented concept functions and type functions
+        public IArray<Pose2D> Repeat(Integer n){
+            var _var82 = this;
+            return n.MapRange((i) => _var82);
+        }
         public Boolean Equals(Pose2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Pose2D a, Pose2D b) => a.Equals(b);
         public Boolean NotEquals(Pose2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Pose2D a, Pose2D b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Bounds2D: IInterval<Bounds2D, Vector2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Bounds2D: IInterval<Bounds2D, Vector2D>
     {
         [DataMember] public readonly Vector2D Min;
         [DataMember] public readonly Vector2D Max;
@@ -3875,43 +4273,53 @@ namespace Plato.DoublePrecision
         public static Boolean operator ==(Bounds2D a, Bounds2D b) => a.Equals(b);
         public Boolean NotEquals(Bounds2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Bounds2D a, Bounds2D b) => a.NotEquals(b);
+        public IArray<Bounds2D> Repeat(Integer n){
+            var _var83 = this;
+            return n.MapRange((i) => _var83);
+        }
         // Unimplemented concept functions
         public Integer Count => 2;
         public Vector2D At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Vector2D this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ray2D: IValue<Ray2D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Ray2D: IValue<Ray2D>
     {
-        [DataMember] public readonly Vector2D Direction;
         [DataMember] public readonly Vector2D Origin;
-        public Ray2D WithDirection(Vector2D direction) => new Ray2D(direction, Origin);
-        public Ray2D WithOrigin(Vector2D origin) => new Ray2D(Direction, origin);
-        public Ray2D(Vector2D direction, Vector2D origin) => (Direction, Origin) = (direction, origin);
+        [DataMember] public readonly Vector2D Direction;
+        public Ray2D WithOrigin(Vector2D origin) => new Ray2D(origin, Direction);
+        public Ray2D WithDirection(Vector2D direction) => new Ray2D(Origin, direction);
+        public Ray2D(Vector2D origin, Vector2D direction) => (Origin, Direction) = (origin, direction);
         public static Ray2D Default = new Ray2D();
-        public static Ray2D New(Vector2D direction, Vector2D origin) => new Ray2D(direction, origin);
-        public static implicit operator (Vector2D, Vector2D)(Ray2D self) => (self.Direction, self.Origin);
+        public static Ray2D New(Vector2D origin, Vector2D direction) => new Ray2D(origin, direction);
+        public static implicit operator (Vector2D, Vector2D)(Ray2D self) => (self.Origin, self.Direction);
         public static implicit operator Ray2D((Vector2D, Vector2D) value) => new Ray2D(value.Item1, value.Item2);
-        public void Deconstruct(out Vector2D direction, out Vector2D origin) { direction = Direction; origin = Origin; }
-        public override bool Equals(object obj) { if (!(obj is Ray2D)) return false; var other = (Ray2D)obj; return Direction.Equals(other.Direction) && Origin.Equals(other.Origin); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Direction, Origin);
-        public override string ToString() => $"{{ \"Direction\" = {Direction}, \"Origin\" = {Origin} }}";
+        public void Deconstruct(out Vector2D origin, out Vector2D direction) { origin = Origin; direction = Direction; }
+        public override bool Equals(object obj) { if (!(obj is Ray2D)) return false; var other = (Ray2D)obj; return Origin.Equals(other.Origin) && Direction.Equals(other.Direction); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Origin, Direction);
+        public override string ToString() => $"{{ \"Origin\" = {Origin}, \"Direction\" = {Direction} }}";
         public static implicit operator Dynamic(Ray2D self) => new Dynamic(self);
         public static implicit operator Ray2D(Dynamic value) => value.As<Ray2D>();
         public String TypeName => "Ray2D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Direction", (String)"Origin");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Direction), new Dynamic(Origin));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Origin", (String)"Direction");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Origin), new Dynamic(Direction));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Ray2D)b);
         // Implemented concept functions and type functions
         public Ray3D To3D => this.Origin.To3D.Tuple2(this.Direction.To3D);
         public Ray3D Ray3D => this.To3D;
         public static implicit operator Ray3D(Ray2D x) => x.Ray3D;
+        public IArray<Ray2D> Repeat(Integer n){
+            var _var84 = this;
+            return n.MapRange((i) => _var84);
+        }
         public Boolean Equals(Ray2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Ray2D a, Ray2D b) => a.Equals(b);
         public Boolean NotEquals(Ray2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Ray2D a, Ray2D b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Triangle2D: IPolygon2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Triangle2D: IPolygon2D
     {
         [DataMember] public readonly Vector2D A;
         [DataMember] public readonly Vector2D B;
@@ -3933,8 +4341,18 @@ namespace Plato.DoublePrecision
         public String TypeName => "Triangle2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
+        // Array predefined functions
+        public Triangle2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2]) { }
+        public Triangle2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2]) { }
+        public static Triangle2D New(IArray<Vector2D> xs) => new Triangle2D(xs);
+        public static Triangle2D New(Vector2D[] xs) => new Triangle2D(xs);
+        public static implicit operator Vector2D[](Triangle2D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector2D>(Triangle2D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public IArray<Vector2D> Points => Intrinsics.MakeArray(this.A, this.B, this.C);
         public Number Area => this.A.X.Multiply(this.C.Y.Subtract(this.B.Y)).Add(this.B.X.Multiply(this.A.Y.Subtract(this.C.Y)).Add(this.C.X.Multiply(this.B.Y.Subtract(this.A.Y)))).Half;
         public Triangle2D Flip => this.C.Tuple3(this.B, this.A);
         public Vector2D Center => this.A.Add(this.B.Add(this.C)).Divide(((Number)3));
@@ -3944,11 +4362,19 @@ namespace Plato.DoublePrecision
         public Triangle3D To3D => this.A.To3D.Tuple3(this.B.To3D, this.C.To3D);
         public Triangle3D Triangle3D => this.To3D;
         public static implicit operator Triangle3D(Triangle2D x) => x.Triangle3D;
+        public static Triangle2D Unit => ((Number)0.5).Negative.Tuple2(((Number)3).Sqrt.Half.Negative).Tuple3(((Number)0.5).Negative.Tuple2(((Number)3).Sqrt.Half), ((Integer)0).Tuple2(((Integer)1)));
+        public IArray<Vector2D> Points => Intrinsics.MakeArray<Vector2D>(this.A, this.B, this.C);
+        public IArray<Line2D> Lines => Intrinsics.MakeArray<Line2D>(Line2D.New(this.A, this.B), Line2D.New(this.B, this.C), Line2D.New(this.C, this.A));
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Integer Count => 3;
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Quad2D: IPolygon2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Quad2D: IPolygon2D
     {
         [DataMember] public readonly Vector2D A;
         [DataMember] public readonly Vector2D B;
@@ -3972,21 +4398,47 @@ namespace Plato.DoublePrecision
         public String TypeName => "Quad2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
+        // Array predefined functions
+        public Quad2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public Quad2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public static Quad2D New(IArray<Vector2D> xs) => new Quad2D(xs);
+        public static Quad2D New(Vector2D[] xs) => new Quad2D(xs);
+        public static implicit operator Vector2D[](Quad2D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector2D>(Quad2D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public IArray<Triangle2D> Triangles => Intrinsics.MakeArray(this.A.Tuple3(this.B, this.C), this.C.Tuple3(this.D, this.A));
-        public LineArray2D LineArray2D => this.Lines;
+        public Quad2D Flip => this.D.Tuple4(this.C, this.B, this.A);
+        public Vector2D Center => this.A.Add(this.B.Add(this.C.Add(this.D))).Divide(((Number)4));
+        public Line2D LineA => this.A.Tuple2(this.B);
+        public Line2D LineB => this.B.Tuple2(this.C);
+        public Line2D LineC => this.C.Tuple2(this.D);
+        public Line2D LineD => this.D.Tuple2(this.A);
+        public Triangle2D TriangleA => this.A.Tuple3(this.B, this.C);
+        public Triangle2D TriangleB => this.C.Tuple3(this.D, this.A);
+        public LineArray2D LineArray2D => LineArray2D.New(this.Lines);
         public static implicit operator LineArray2D(Quad2D q) => q.LineArray2D;
-        public TriangleArray2D TriangleArray2D => this.Triangles;
+        public TriangleArray2D TriangleArray2D => TriangleArray2D.New(this.Triangles);
         public static implicit operator TriangleArray2D(Quad2D q) => q.TriangleArray2D;
         public Quad3D To3D => this.A.To3D.Tuple4(this.B.To3D, this.C.To3D, this.D.To3D);
         public Quad3D Quad3D => this.To3D;
         public static implicit operator Quad3D(Quad2D x) => x.Quad3D;
+        public static Quad2D Unit => ((Integer)0).Tuple2(((Integer)0)).Tuple4(((Integer)1).Tuple2(((Integer)0)), ((Integer)1).Tuple2(((Integer)1)), ((Integer)0).Tuple2(((Integer)1)));
+        public IArray<Vector2D> Points => Intrinsics.MakeArray<Vector2D>(this.A, this.B, this.C, this.D);
+        public IArray<Line2D> Lines => Intrinsics.MakeArray<Line2D>(Line2D.New(this.A, this.B), Line2D.New(this.B, this.C), Line2D.New(this.C, this.D), Line2D.New(this.D, this.A));
+        public IArray<Triangle2D> Triangles => Intrinsics.MakeArray<Triangle2D>(Triangle2D.New(this.A, this.B, this.C), Triangle2D.New(this.C, this.D, this.A));
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Integer Count => 4;
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
-        public IArray<Vector2D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Line2D: IPolyLine2D, IOpenShape3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Line2D: IPolyLine2D, IOpenShape2D, IArray<Vector2D>
     {
         [DataMember] public readonly Vector2D A;
         [DataMember] public readonly Vector2D B;
@@ -4006,8 +4458,18 @@ namespace Plato.DoublePrecision
         public String TypeName => "Line2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
+        // Array predefined functions
+        public Line2D(IArray<Vector2D> xs) : this(xs[0], xs[1]) { }
+        public Line2D(Vector2D[] xs) : this(xs[0], xs[1]) { }
+        public static Line2D New(IArray<Vector2D> xs) => new Line2D(xs);
+        public static Line2D New(Vector2D[] xs) => new Line2D(xs);
+        public static implicit operator Vector2D[](Line2D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector2D>(Line2D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public IArray<Vector2D> Points => this;
         public Number Length => this.B.Subtract(this.A).Length;
         public Vector2D Direction => this.B.Subtract(this.A);
         public Ray2D Ray2D => this.A.Tuple2(this.Direction);
@@ -4017,10 +4479,17 @@ namespace Plato.DoublePrecision
         public Line3D To3D => this.A.To3D.Tuple2(this.B.To3D);
         public Line3D Line3D => this.To3D;
         public static implicit operator Line3D(Line2D x) => x.Line3D;
+        public IArray<Vector2D> Points => Intrinsics.MakeArray<Vector2D>(this.A, this.B);
+        public IArray<Line2D> Lines => this.Points.WithNext((a, b) => Line2D.New(a, b), this.Closed);
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Integer Count => 2;
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Lens: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Lens: IClosedShape2D
     {
         [DataMember] public readonly Circle A;
         [DataMember] public readonly Circle B;
@@ -4044,7 +4513,8 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Rect2D: IPolygon2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Rect2D: IPolygon2D
     {
         [DataMember] public readonly Vector2D Center;
         [DataMember] public readonly Vector2D Size;
@@ -4064,25 +4534,42 @@ namespace Plato.DoublePrecision
         public String TypeName => "Rect2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Center", (String)"Size");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Size));
+        // Array predefined functions
+        public Rect2D(IArray<Vector2D> xs) : this(xs[0], xs[1]) { }
+        public Rect2D(Vector2D[] xs) : this(xs[0], xs[1]) { }
+        public static Rect2D New(IArray<Vector2D> xs) => new Rect2D(xs);
+        public static Rect2D New(Vector2D[] xs) => new Rect2D(xs);
+        public static implicit operator Vector2D[](Rect2D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector2D>(Rect2D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Number Width => this.Size.X;
         public Number Height => this.Size.Y;
-        public Number HalfWidth => this.Width.Half;
-        public Number HalfHeight => this.Height.Half;
-        public Number Top => this.Center.Y.Add(HalfHeight);
-        public Number Bottom => this.Top.Add(this.Height);
-        public Number Left => this.Center.X.Subtract(HalfWidth);
+        public Number Left => this.Center.X.Subtract(this.Width.Half);
         public Number Right => this.Left.Add(this.Width);
-        public Vector2D TopLeft => this.Left.Tuple2(this.Top);
-        public Vector2D TopRight => this.Right.Tuple2(this.Top);
-        public Vector2D BottomRight => this.Right.Tuple2(this.Bottom);
+        public Number Bottom => this.Center.Y.Subtract(this.Height.Half);
+        public Number Top => this.Bottom.Add(this.Height);
         public Vector2D BottomLeft => this.Left.Tuple2(this.Bottom);
-        public IArray<Vector2D> Points => Intrinsics.MakeArray(this.TopLeft, this.TopRight, this.BottomRight, this.BottomLeft);
+        public Vector2D BottomRight => this.Right.Tuple2(this.Bottom);
+        public Vector2D TopRight => this.Right.Tuple2(this.Top);
+        public Vector2D TopLeft => this.Left.Tuple2(this.Top);
+        public Quad2D Quad2D => Intrinsics.MakeArray(this.BottomLeft, this.BottomRight, this.TopRight, this.TopLeft);
+        public static implicit operator Quad2D(Rect2D x) => x.Quad2D;
+        public IArray<Vector2D> Points => this.Quad2D;
+        public IArray<Line2D> Lines => this.Points.WithNext((a, b) => Line2D.New(a, b), this.Closed);
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Integer Count => 2;
+        public Vector2D At(Integer n) => n == 0 ? Center : n == 1 ? Size : throw new System.IndexOutOfRangeException();
+        public Vector2D this[Integer n] => n == 0 ? Center : n == 1 ? Size : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ellipse: ICurve2D, IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Ellipse: ICurve2D, IClosedShape2D
     {
         [DataMember] public readonly Vector2D Center;
         [DataMember] public readonly Vector2D Size;
@@ -4106,8 +4593,10 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => t.CircleFunction.Multiply(this.Size).Add(this.Center);
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ring: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Ring: IClosedShape2D
     {
         [DataMember] public readonly Vector2D Center;
         [DataMember] public readonly Number InnerRadius;
@@ -4133,7 +4622,8 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Arc: IOpenShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Arc: IOpenShape2D
     {
         [DataMember] public readonly AnglePair Angles;
         [DataMember] public readonly Circle Circle;
@@ -4157,7 +4647,8 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Sector: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Sector: IClosedShape2D
     {
         [DataMember] public readonly Arc Arc;
         public Sector WithArc(Arc arc) => new Sector(arc);
@@ -4178,7 +4669,8 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Chord: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Chord: IClosedShape2D
     {
         [DataMember] public readonly Arc Arc;
         public Chord WithArc(Arc arc) => new Chord(arc);
@@ -4199,7 +4691,8 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Segment: IClosedShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Segment: IClosedShape2D
     {
         [DataMember] public readonly Arc Arc;
         public Segment WithArc(Arc arc) => new Segment(arc);
@@ -4220,7 +4713,8 @@ namespace Plato.DoublePrecision
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct RegularPolygon: IPolygon2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct RegularPolygon: IPolygon2D
     {
         [DataMember] public readonly Integer NumPoints;
         public RegularPolygon WithNumPoints(Integer numPoints) => new RegularPolygon(numPoints);
@@ -4237,13 +4731,26 @@ namespace Plato.DoublePrecision
         public String TypeName => "RegularPolygon";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"NumPoints");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(NumPoints));
+        // Array predefined functions
+        public static implicit operator Vector2D[](RegularPolygon self) => self.ToSystemArray();
+        public static implicit operator Array<Vector2D>(RegularPolygon self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Vector2D> Points => this.NumPoints.CirclePoints;
+        public Vector2D At(Integer n) => ((Number)1).Divide(n).Turns.CircleFunction;
+        public Vector2D this[Integer n] => At(n);
+        public Integer Count => this.NumPoints;
+        public IArray<Line2D> Lines => this.Points.WithNext((a, b) => Line2D.New(a, b), this.Closed);
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Box2D: IShape2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Box2D: IShape2D
     {
         [DataMember] public readonly Vector2D Center;
         [DataMember] public readonly Angle Rotation;
@@ -4268,7 +4775,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Plane: IValue<Plane>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Plane: IValue<Plane>
     {
         [DataMember] public readonly Vector3D Normal;
         [DataMember] public readonly Number D;
@@ -4290,13 +4798,18 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Normal), new Dynamic(D));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Plane)b);
         // Implemented concept functions and type functions
+        public IArray<Plane> Repeat(Integer n){
+            var _var85 = this;
+            return n.MapRange((i) => _var85);
+        }
         public Boolean Equals(Plane b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Plane a, Plane b) => a.Equals(b);
         public Boolean NotEquals(Plane b) => this.Equals(b).Not;
         public static Boolean operator !=(Plane a, Plane b) => a.NotEquals(b);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Bounds3D: IInterval<Bounds3D, Vector3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Bounds3D: IInterval<Bounds3D, Vector3D>, IDeformable3D<Bounds3D>
     {
         [DataMember] public readonly Vector3D Min;
         [DataMember] public readonly Vector3D Max;
@@ -4321,6 +4834,7 @@ namespace Plato.DoublePrecision
         Vector3D IInterval<Vector3D>.Min => this.Min;
         Vector3D IInterval<Vector3D>.Max => this.Max;
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Bounds3D)b);
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
         // Array predefined functions
         public Bounds3D(IArray<Vector3D> xs) : this(xs[0], xs[1]) { }
         public Bounds3D(Vector3D[] xs) : this(xs[0], xs[1]) { }
@@ -4333,10 +4847,11 @@ namespace Plato.DoublePrecision
         Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
         int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
+        public Vector3D Center => this.Min.Add(this.Max).Half;
+        public IArray<Vector3D> Corners => Intrinsics.MakeArray<Vector3D>(this.Min.X.Tuple3(this.Min.Y, this.Min.Z), this.Max.X.Tuple3(this.Min.Y, this.Min.Z), this.Min.X.Tuple3(this.Max.Y, this.Min.Z), this.Max.X.Tuple3(this.Max.Y, this.Min.Z), this.Min.X.Tuple3(this.Min.Y, this.Max.Z), this.Max.X.Tuple3(this.Min.Y, this.Max.Z), this.Min.X.Tuple3(this.Max.Y, this.Max.Z), this.Max.X.Tuple3(this.Max.Y, this.Max.Z));
         public Vector3D Size => this.Max.Subtract(this.Min);
         public Vector3D Lerp(Number amount) => this.Min.Lerp(this.Max, amount);
         public Bounds3D Reverse => this.Max.Tuple2(this.Min);
-        public Vector3D Center => this.Lerp(((Number)0.5));
         public Boolean Contains(Vector3D value) => value.Between(this.Min, this.Max);
         public Boolean Contains(Bounds3D y) => this.Contains(y.Min).And(this.Contains(y.Max));
         public Boolean Overlaps(Bounds3D y) => this.Contains(y.Min).Or(this.Contains(y.Max).Or(y.Contains(this.Min).Or(y.Contains(this.Max))));
@@ -4354,12 +4869,55 @@ namespace Plato.DoublePrecision
         public static Boolean operator ==(Bounds3D a, Bounds3D b) => a.Equals(b);
         public Boolean NotEquals(Bounds3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Bounds3D a, Bounds3D b) => a.NotEquals(b);
+        public IArray<Bounds3D> Repeat(Integer n){
+            var _var86 = this;
+            return n.MapRange((i) => _var86);
+        }
+        public Bounds3D Transform(Matrix4x4 m){
+            var _var87 = m;
+            return this.Deform((v) => _var87.Multiply(v));
+        }
+        public Bounds3D Transform(ITransform3D t){
+            var _var88 = t;
+            return this.Deform((v) => _var88.Transform(v));
+        }
+        public Bounds3D Transform(Rotation3D r){
+            var _var89 = r;
+            return this.Deform((v) => _var89.Transform(v));
+        }
+        public Bounds3D Translate(Vector3D v){
+            var _var90 = v;
+            return this.Deform((p) => p.Add(_var90));
+        }
+        public Bounds3D Rotate(Rotation3D r) => this.Transform(r);
+        public Bounds3D Scale(Vector3D v){
+            var _var91 = v;
+            return this.Deform((p) => p.Multiply(_var91));
+        }
+        public Bounds3D Scale(Number s){
+            var _var92 = s;
+            return this.Deform((p) => p.Multiply(_var92));
+        }
+        public Bounds3D Add(Vector3D v) => this.Translate(v);
+        public static Bounds3D operator +(Bounds3D x, Vector3D v) => x.Add(v);
+        public Bounds3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static Bounds3D operator -(Bounds3D x, Vector3D v) => x.Subtract(v);
+        public Bounds3D Multiply(Vector3D v) => this.Scale(v);
+        public static Bounds3D operator *(Bounds3D x, Vector3D v) => x.Multiply(v);
+        public Bounds3D Multiply(Number s) => this.Scale(s);
+        public static Bounds3D operator *(Bounds3D x, Number s) => x.Multiply(s);
+        public Bounds3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static Bounds3D operator /(Bounds3D x, Vector3D v) => x.Divide(v);
+        public Bounds3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static Bounds3D operator /(Bounds3D x, Number s) => x.Divide(s);
         // Unimplemented concept functions
         public Integer Count => 2;
         public Vector3D At(Integer n) => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
         public Vector3D this[Integer n] => n == 0 ? Min : n == 1 ? Max : throw new System.IndexOutOfRangeException();
+        public Bounds3D Deform(System.Func<Vector3D, Vector3D> f) => Intrinsics.Deform(this, f);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Line3D: IPolyLine3D, IOpenShape3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Line3D: IPolyLine3D<Line3D>, IOpenShape3D, IDeformable3D<Line3D>, IArray<Vector3D>
     {
         [DataMember] public readonly Vector3D A;
         [DataMember] public readonly Vector3D B;
@@ -4379,48 +4937,149 @@ namespace Plato.DoublePrecision
         public String TypeName => "Line3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B));
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        // Array predefined functions
+        public Line3D(IArray<Vector3D> xs) : this(xs[0], xs[1]) { }
+        public Line3D(Vector3D[] xs) : this(xs[0], xs[1]) { }
+        public static Line3D New(IArray<Vector3D> xs) => new Line3D(xs);
+        public static Line3D New(Vector3D[] xs) => new Line3D(xs);
+        public static implicit operator Vector3D[](Line3D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector3D>(Line3D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Points => this;
         public Number Length => this.B.Subtract(this.A).Length;
         public Vector3D Direction => this.B.Subtract(this.A);
-        public Ray3D Ray3D => this.A.Tuple2(this.Direction);
+        public Ray3D Ray3D => this.A.Tuple2(this.Direction.Normalize);
         public static implicit operator Ray3D(Line3D x) => x.Ray3D;
-        public Line2D Reverse => this.B.Tuple2(this.A);
+        public Line3D Reverse => this.B.Tuple2(this.A);
+        public Line3D Deform(System.Func<Vector3D, Vector3D> f) => f.Invoke(this.A).Tuple2(f.Invoke(this.B));
+        public Bounds3D Bounds3D => this.A.Min(this.B).Tuple2(this.A.Max(this.B));
+        public static implicit operator Bounds3D(Line3D x) => x.Bounds3D;
         public Vector3D Eval(Number t) => this.A.Lerp(this.B, t);
-        public IArray<Vector3D> Vertices => this;
+        public IArray<Vector3D> Points => Intrinsics.MakeArray<Vector3D>(this.A, this.B);
+        public IArray<Line3D> Lines => this.Points.WithNext((a, b) => Line3D.New(a, b), this.Closed);
+        public Line3D Transform(Matrix4x4 m){
+            var _var93 = m;
+            return this.Deform((v) => _var93.Multiply(v));
+        }
+        public Line3D Transform(Rotation3D r){
+            var _var94 = r;
+            return this.Deform((v) => _var94.Transform(v));
+        }
+        public Line3D Translate(Vector3D v){
+            var _var95 = v;
+            return this.Deform((p) => p.Add(_var95));
+        }
+        public Line3D Rotate(Rotation3D r) => this.Transform(r);
+        public Line3D Scale(Vector3D v){
+            var _var96 = v;
+            return this.Deform((p) => p.Multiply(_var96));
+        }
+        public Line3D Scale(Number s){
+            var _var97 = s;
+            return this.Deform((p) => p.Multiply(_var97));
+        }
+        public Line3D Add(Vector3D v) => this.Translate(v);
+        public static Line3D operator +(Line3D x, Vector3D v) => x.Add(v);
+        public Line3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static Line3D operator -(Line3D x, Vector3D v) => x.Subtract(v);
+        public Line3D Multiply(Vector3D v) => this.Scale(v);
+        public static Line3D operator *(Line3D x, Vector3D v) => x.Multiply(v);
+        public Line3D Multiply(Number s) => this.Scale(s);
+        public static Line3D operator *(Line3D x, Number s) => x.Multiply(s);
+        public Line3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static Line3D operator /(Line3D x, Vector3D v) => x.Divide(v);
+        public Line3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static Line3D operator /(Line3D x, Number s) => x.Divide(s);
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Integer Count => 2;
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : throw new System.IndexOutOfRangeException();
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ray3D: IValue<Ray3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Ray3D: IValue<Ray3D>, IDeformable3D<Ray3D>
     {
-        [DataMember] public readonly Vector3D Direction;
         [DataMember] public readonly Vector3D Origin;
-        public Ray3D WithDirection(Vector3D direction) => new Ray3D(direction, Origin);
-        public Ray3D WithOrigin(Vector3D origin) => new Ray3D(Direction, origin);
-        public Ray3D(Vector3D direction, Vector3D origin) => (Direction, Origin) = (direction, origin);
+        [DataMember] public readonly Vector3D Direction;
+        public Ray3D WithOrigin(Vector3D origin) => new Ray3D(origin, Direction);
+        public Ray3D WithDirection(Vector3D direction) => new Ray3D(Origin, direction);
+        public Ray3D(Vector3D origin, Vector3D direction) => (Origin, Direction) = (origin, direction);
         public static Ray3D Default = new Ray3D();
-        public static Ray3D New(Vector3D direction, Vector3D origin) => new Ray3D(direction, origin);
-        public static implicit operator (Vector3D, Vector3D)(Ray3D self) => (self.Direction, self.Origin);
+        public static Ray3D New(Vector3D origin, Vector3D direction) => new Ray3D(origin, direction);
+        public static implicit operator (Vector3D, Vector3D)(Ray3D self) => (self.Origin, self.Direction);
         public static implicit operator Ray3D((Vector3D, Vector3D) value) => new Ray3D(value.Item1, value.Item2);
-        public void Deconstruct(out Vector3D direction, out Vector3D origin) { direction = Direction; origin = Origin; }
-        public override bool Equals(object obj) { if (!(obj is Ray3D)) return false; var other = (Ray3D)obj; return Direction.Equals(other.Direction) && Origin.Equals(other.Origin); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Direction, Origin);
-        public override string ToString() => $"{{ \"Direction\" = {Direction}, \"Origin\" = {Origin} }}";
+        public void Deconstruct(out Vector3D origin, out Vector3D direction) { origin = Origin; direction = Direction; }
+        public override bool Equals(object obj) { if (!(obj is Ray3D)) return false; var other = (Ray3D)obj; return Origin.Equals(other.Origin) && Direction.Equals(other.Direction); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Origin, Direction);
+        public override string ToString() => $"{{ \"Origin\" = {Origin}, \"Direction\" = {Direction} }}";
         public static implicit operator Dynamic(Ray3D self) => new Dynamic(self);
         public static implicit operator Ray3D(Dynamic value) => value.As<Ray3D>();
         public String TypeName => "Ray3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Direction", (String)"Origin");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Direction), new Dynamic(Origin));
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Origin", (String)"Direction");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Origin), new Dynamic(Direction));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Ray3D)b);
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
         // Implemented concept functions and type functions
         public Angle Angle(Ray3D b) => this.Direction.Angle(b.Direction);
+        public Ray3D Deform(System.Func<Vector3D, Vector3D> f) => f.Invoke(this.Origin).Tuple2(f.Invoke(this.Origin.Add(this.Direction)).Normalize);
+        public Line3D Line3D => this.Origin.Tuple2(this.Origin.Add(this.Direction));
+        public static implicit operator Line3D(Ray3D r) => r.Line3D;
+        public Ray3D Reverse => this.Origin.Tuple2(this.Direction.Negative);
+        public IArray<Ray3D> Repeat(Integer n){
+            var _var98 = this;
+            return n.MapRange((i) => _var98);
+        }
         public Boolean Equals(Ray3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Ray3D a, Ray3D b) => a.Equals(b);
         public Boolean NotEquals(Ray3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Ray3D a, Ray3D b) => a.NotEquals(b);
+        public Ray3D Transform(Matrix4x4 m){
+            var _var99 = m;
+            return this.Deform((v) => _var99.Multiply(v));
+        }
+        public Ray3D Transform(ITransform3D t){
+            var _var100 = t;
+            return this.Deform((v) => _var100.Transform(v));
+        }
+        public Ray3D Transform(Rotation3D r){
+            var _var101 = r;
+            return this.Deform((v) => _var101.Transform(v));
+        }
+        public Ray3D Translate(Vector3D v){
+            var _var102 = v;
+            return this.Deform((p) => p.Add(_var102));
+        }
+        public Ray3D Rotate(Rotation3D r) => this.Transform(r);
+        public Ray3D Scale(Vector3D v){
+            var _var103 = v;
+            return this.Deform((p) => p.Multiply(_var103));
+        }
+        public Ray3D Scale(Number s){
+            var _var104 = s;
+            return this.Deform((p) => p.Multiply(_var104));
+        }
+        public Ray3D Add(Vector3D v) => this.Translate(v);
+        public static Ray3D operator +(Ray3D x, Vector3D v) => x.Add(v);
+        public Ray3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static Ray3D operator -(Ray3D x, Vector3D v) => x.Subtract(v);
+        public Ray3D Multiply(Vector3D v) => this.Scale(v);
+        public static Ray3D operator *(Ray3D x, Vector3D v) => x.Multiply(v);
+        public Ray3D Multiply(Number s) => this.Scale(s);
+        public static Ray3D operator *(Ray3D x, Number s) => x.Multiply(s);
+        public Ray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static Ray3D operator /(Ray3D x, Vector3D v) => x.Divide(v);
+        public Ray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static Ray3D operator /(Ray3D x, Number s) => x.Divide(s);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Triangle3D: IPolygon3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Triangle3D: IPolygon3D<Triangle3D>, IDeformable3D<Triangle3D>
     {
         [DataMember] public readonly Vector3D A;
         [DataMember] public readonly Vector3D B;
@@ -4442,25 +5101,78 @@ namespace Plato.DoublePrecision
         public String TypeName => "Triangle3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        // Array predefined functions
+        public Triangle3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2]) { }
+        public Triangle3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2]) { }
+        public static Triangle3D New(IArray<Vector3D> xs) => new Triangle3D(xs);
+        public static Triangle3D New(Vector3D[] xs) => new Triangle3D(xs);
+        public static implicit operator Vector3D[](Triangle3D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector3D>(Triangle3D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Triangle3D Flip => this.C.Tuple3(this.B, this.A);
         public Vector3D Normal => this.B.Subtract(this.A).Cross(this.C.Subtract(this.A)).Normalize;
         public Vector3D Center => this.A.Add(this.B.Add(this.C)).Divide(((Number)3));
         public Plane Plane => this.Normal.Tuple2(this.Normal.Dot(this.A));
         public static implicit operator Plane(Triangle3D t) => t.Plane;
+        // Ambiguous: could not choose a best function implementation for Barycentric(Triangle3D, Vector2D):Vector3D:Vector3D.
         public Vector3D Barycentric(Vector2D uv) => this.A.Barycentric(this.B, this.C, uv);
         public Line3D LineA => this.A.Tuple2(this.B);
         public Line3D LineB => this.B.Tuple2(this.C);
         public Line3D LineC => this.C.Tuple2(this.A);
-        public LineArray3D LineArray3D => this.Lines;
+        public Triangle3D Deform(System.Func<Vector3D, Vector3D> f) => f.Invoke(this.A).Tuple3(f.Invoke(this.B), f.Invoke(this.C));
+        public LineArray3D LineArray3D => LineArray3D.New(this.Lines);
         public static implicit operator LineArray3D(Triangle3D t) => t.LineArray3D;
-        public IArray<Vector3D> Vertices => this;
+        public IArray<Vector3D> Points => Intrinsics.MakeArray<Vector3D>(this.A, this.B, this.C);
+        public IArray<Line3D> Lines => Intrinsics.MakeArray<Line3D>(Line3D.New(this.A, this.B), Line3D.New(this.B, this.C), Line3D.New(this.C, this.A));
+        public Triangle3D Transform(Matrix4x4 m){
+            var _var105 = m;
+            return this.Deform((v) => _var105.Multiply(v));
+        }
+        public Triangle3D Transform(Rotation3D r){
+            var _var106 = r;
+            return this.Deform((v) => _var106.Transform(v));
+        }
+        public Triangle3D Translate(Vector3D v){
+            var _var107 = v;
+            return this.Deform((p) => p.Add(_var107));
+        }
+        public Triangle3D Rotate(Rotation3D r) => this.Transform(r);
+        public Triangle3D Scale(Vector3D v){
+            var _var108 = v;
+            return this.Deform((p) => p.Multiply(_var108));
+        }
+        public Triangle3D Scale(Number s){
+            var _var109 = s;
+            return this.Deform((p) => p.Multiply(_var109));
+        }
+        public Triangle3D Add(Vector3D v) => this.Translate(v);
+        public static Triangle3D operator +(Triangle3D x, Vector3D v) => x.Add(v);
+        public Triangle3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static Triangle3D operator -(Triangle3D x, Vector3D v) => x.Subtract(v);
+        public Triangle3D Multiply(Vector3D v) => this.Scale(v);
+        public static Triangle3D operator *(Triangle3D x, Vector3D v) => x.Multiply(v);
+        public Triangle3D Multiply(Number s) => this.Scale(s);
+        public static Triangle3D operator *(Triangle3D x, Number s) => x.Multiply(s);
+        public Triangle3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static Triangle3D operator /(Triangle3D x, Vector3D v) => x.Divide(v);
+        public Triangle3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static Triangle3D operator /(Triangle3D x, Number s) => x.Divide(s);
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Integer Count => 3;
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Quad3D: IPolygon3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Quad3D: IPolygon3D<Quad3D>, IDeformable3D<Quad3D>
     {
         [DataMember] public readonly Vector3D A;
         [DataMember] public readonly Vector3D B;
@@ -4484,6 +5196,19 @@ namespace Plato.DoublePrecision
         public String TypeName => "Quad3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        // Array predefined functions
+        public Quad3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public Quad3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public static Quad3D New(IArray<Vector3D> xs) => new Quad3D(xs);
+        public static Quad3D New(Vector3D[] xs) => new Quad3D(xs);
+        public static implicit operator Vector3D[](Quad3D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector3D>(Quad3D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Quad3D Flip => this.D.Tuple4(this.C, this.B, this.A);
         public Vector3D Center => this.A.Add(this.B.Add(this.C.Add(this.D))).Divide(((Number)4));
@@ -4493,18 +5218,57 @@ namespace Plato.DoublePrecision
         public Line3D LineD => this.D.Tuple2(this.A);
         public Triangle3D TriangleA => this.A.Tuple3(this.B, this.C);
         public Triangle3D TriangleB => this.C.Tuple3(this.D, this.A);
-        public IArray<Triangle3D> Triangles => Intrinsics.MakeArray(this.A.Tuple3(this.B, this.C), this.C.Tuple3(this.D, this.A));
-        public LineArray3D LineArray3D => this.Lines;
+        public Quad3D Deform(System.Func<Vector3D, Vector3D> f) => f.Invoke(this.A).Tuple4(f.Invoke(this.B), f.Invoke(this.C), f.Invoke(this.D));
+        public LineArray3D LineArray3D => LineArray3D.New(this.Lines);
         public static implicit operator LineArray3D(Quad3D q) => q.LineArray3D;
-        public TriangleArray3D TriangleArray3D => this.Triangles;
+        public TriangleArray3D TriangleArray3D => TriangleArray3D.New(this.Triangles);
         public static implicit operator TriangleArray3D(Quad3D q) => q.TriangleArray3D;
-        public IArray<Vector3D> Vertices => this;
+        public IArray<Vector3D> Points => Intrinsics.MakeArray<Vector3D>(this.A, this.B, this.C, this.D);
+        public IArray<Line3D> Lines => Intrinsics.MakeArray<Line3D>(Line3D.New(this.A, this.B), Line3D.New(this.B, this.C), Line3D.New(this.C, this.D), Line3D.New(this.D, this.A));
+        public IArray<Triangle3D> Triangles => Intrinsics.MakeArray<Triangle3D>(Triangle3D.New(this.A, this.B, this.C), Triangle3D.New(this.C, this.D, this.A));
+        public Quad3D Transform(Matrix4x4 m){
+            var _var110 = m;
+            return this.Deform((v) => _var110.Multiply(v));
+        }
+        public Quad3D Transform(Rotation3D r){
+            var _var111 = r;
+            return this.Deform((v) => _var111.Transform(v));
+        }
+        public Quad3D Translate(Vector3D v){
+            var _var112 = v;
+            return this.Deform((p) => p.Add(_var112));
+        }
+        public Quad3D Rotate(Rotation3D r) => this.Transform(r);
+        public Quad3D Scale(Vector3D v){
+            var _var113 = v;
+            return this.Deform((p) => p.Multiply(_var113));
+        }
+        public Quad3D Scale(Number s){
+            var _var114 = s;
+            return this.Deform((p) => p.Multiply(_var114));
+        }
+        public Quad3D Add(Vector3D v) => this.Translate(v);
+        public static Quad3D operator +(Quad3D x, Vector3D v) => x.Add(v);
+        public Quad3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static Quad3D operator -(Quad3D x, Vector3D v) => x.Subtract(v);
+        public Quad3D Multiply(Vector3D v) => this.Scale(v);
+        public static Quad3D operator *(Quad3D x, Vector3D v) => x.Multiply(v);
+        public Quad3D Multiply(Number s) => this.Scale(s);
+        public static Quad3D operator *(Quad3D x, Number s) => x.Multiply(s);
+        public Quad3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static Quad3D operator /(Quad3D x, Vector3D v) => x.Divide(v);
+        public Quad3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static Quad3D operator /(Quad3D x, Number s) => x.Divide(s);
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Integer Count => 4;
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Sphere: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Sphere: ISolid
     {
         [DataMember] public readonly Number Radius;
         public Sphere WithRadius(Number radius) => new Sphere(radius);
@@ -4526,11 +5290,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Cylinder: ISurface
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Cylinder: ISurface
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number Radius;
@@ -4552,10 +5319,10 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
         // Implemented concept functions and type functions
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Capsule: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Capsule: ISolid
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number Radius;
@@ -4576,11 +5343,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Cone: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Cone: ISolid
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number Radius;
@@ -4601,11 +5371,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ConeSegment: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ConeSegment: ISolid
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number Radius1;
@@ -4628,11 +5401,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius1", (String)"Radius2");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius1), new Dynamic(Radius2));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Box3D: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Box3D: ISolid
     {
         [DataMember] public readonly Vector3D Extent;
         public Box3D WithExtent(Vector3D extent) => new Box3D(extent);
@@ -4650,11 +5426,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Extent");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Extent));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Pyramid: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Pyramid: ISolid
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number BaseLength;
@@ -4675,11 +5454,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"BaseLength");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(BaseLength));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Torus: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Torus: ISolid
     {
         [DataMember] public readonly Number MajorRadius;
         [DataMember] public readonly Number MinorRadius;
@@ -4700,11 +5482,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"MajorRadius", (String)"MinorRadius");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(MajorRadius), new Dynamic(MinorRadius));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct NPrism: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct NPrism: ISolid
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number Radius;
@@ -4727,11 +5512,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Tube: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Tube: ISolid
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number InnerRadius;
@@ -4754,11 +5542,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"InnerRadius", (String)"OuterRadius");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(InnerRadius), new Dynamic(OuterRadius));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct NPyramid: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct NPyramid: ISolid
     {
         [DataMember] public readonly Number Height;
         [DataMember] public readonly Number Radius;
@@ -4781,11 +5572,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Ellipsoid: ISolid
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Ellipsoid: ISolid
     {
         [DataMember] public readonly Vector3D Radii;
         public Ellipsoid WithRadii(Vector3D radii) => new Ellipsoid(radii);
@@ -4803,11 +5597,14 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radii");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radii));
         // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
         // Unimplemented concept functions
-        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
-        public Number Eval(Vector3D amount) => Intrinsics.Eval(this, amount);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CubicBezier2D: IPointArray2D, IOpenCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct CubicBezier2D: IArray<Vector2D>, IOpenCurve2D
     {
         [DataMember] public readonly Vector2D A;
         [DataMember] public readonly Vector2D B;
@@ -4831,13 +5628,28 @@ namespace Plato.DoublePrecision
         public String TypeName => "CubicBezier2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
+        // Array predefined functions
+        public CubicBezier2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public CubicBezier2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public static CubicBezier2D New(IArray<Vector2D> xs) => new CubicBezier2D(xs);
+        public static CubicBezier2D New(Vector2D[] xs) => new CubicBezier2D(xs);
+        public static implicit operator Vector2D[](CubicBezier2D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector2D>(CubicBezier2D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public IArray<Vector2D> Points => Intrinsics.Points(this);
+        public Integer Count => 4;
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadraticBezier2D: IPointArray2D, IOpenCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct QuadraticBezier2D: IArray<Vector2D>, IOpenCurve2D
     {
         [DataMember] public readonly Vector2D A;
         [DataMember] public readonly Vector2D B;
@@ -4859,13 +5671,28 @@ namespace Plato.DoublePrecision
         public String TypeName => "QuadraticBezier2D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
+        // Array predefined functions
+        public QuadraticBezier2D(IArray<Vector2D> xs) : this(xs[0], xs[1], xs[2]) { }
+        public QuadraticBezier2D(Vector2D[] xs) : this(xs[0], xs[1], xs[2]) { }
+        public static QuadraticBezier2D New(IArray<Vector2D> xs) => new QuadraticBezier2D(xs);
+        public static QuadraticBezier2D New(Vector2D[] xs) => new QuadraticBezier2D(xs);
+        public static implicit operator Vector2D[](QuadraticBezier2D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector2D>(QuadraticBezier2D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector2D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector2D System.Collections.Generic.IReadOnlyList<Vector2D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector2D>.Count => this.Count;
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public IArray<Vector2D> Points => Intrinsics.Points(this);
+        public Integer Count => 3;
+        public Vector2D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector2D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LinearFunction2D: IOpenCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct LinearFunction2D: IOpenCurve2D
     {
         [DataMember] public readonly Number Slope;
         [DataMember] public readonly Number YIntercept;
@@ -4888,9 +5715,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadraticFunction2D: IOpenCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct QuadraticFunction2D: IOpenCurve2D
     {
         [DataMember] public readonly Number A;
         [DataMember] public readonly Number B;
@@ -4915,9 +5744,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CubicFunction2D: IOpenCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct CubicFunction2D: IOpenCurve2D
     {
         [DataMember] public readonly Number A;
         [DataMember] public readonly Number B;
@@ -4944,9 +5775,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Parabola: IOpenCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Parabola: IOpenCurve2D
     {
         public static Parabola Default = new Parabola();
         public static Parabola New() => new Parabola();
@@ -4961,9 +5794,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Circle: IClosedCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Circle: IClosedCurve2D
     {
         [DataMember] public readonly Vector2D Center;
         [DataMember] public readonly Number Radius;
@@ -4986,9 +5821,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Lissajous: IClosedCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Lissajous: IClosedCurve2D
     {
         [DataMember] public readonly Integer Kx;
         [DataMember] public readonly Integer Ky;
@@ -5011,9 +5848,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct ButterflyCurve: IClosedCurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct ButterflyCurve: IClosedCurve2D
     {
         public static ButterflyCurve Default = new ButterflyCurve();
         public static ButterflyCurve New() => new ButterflyCurve();
@@ -5028,9 +5867,11 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Spiral: ICurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Spiral: IOpenCurve2D
     {
         [DataMember] public readonly Number Radius1;
         [DataMember] public readonly Number Radius2;
@@ -5053,11 +5894,13 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius1", (String)"Radius2", (String)"NumTurns");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius1), new Dynamic(Radius2), new Dynamic(NumTurns));
         // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public Boolean Closed => Intrinsics.Closed(this);
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Sin: ICurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Sin: IOpenCurve2D
     {
         [DataMember] public readonly Number Amplitude;
         [DataMember] public readonly Number Frequency;
@@ -5080,11 +5923,13 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Amplitude", (String)"Frequency", (String)"Phase");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Amplitude), new Dynamic(Frequency), new Dynamic(Phase));
         // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public Boolean Closed => Intrinsics.Closed(this);
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Cos: ICurve2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Cos: IOpenCurve2D
     {
         [DataMember] public readonly Number Amplitude;
         [DataMember] public readonly Number Frequency;
@@ -5107,11 +5952,13 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Amplitude", (String)"Frequency", (String)"Phase");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Amplitude), new Dynamic(Frequency), new Dynamic(Phase));
         // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public Boolean Closed => Intrinsics.Closed(this);
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct CubicBezier3D: IPointArray3D, ICurve3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct CubicBezier3D: IArray<Vector3D>, IOpenCurve2D
     {
         [DataMember] public readonly Vector3D A;
         [DataMember] public readonly Vector3D B;
@@ -5135,14 +5982,28 @@ namespace Plato.DoublePrecision
         public String TypeName => "CubicBezier3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C", (String)"D");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C), new Dynamic(D));
+        // Array predefined functions
+        public CubicBezier3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public CubicBezier3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
+        public static CubicBezier3D New(IArray<Vector3D> xs) => new CubicBezier3D(xs);
+        public static CubicBezier3D New(Vector3D[] xs) => new CubicBezier3D(xs);
+        public static implicit operator Vector3D[](CubicBezier3D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector3D>(CubicBezier3D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
-        public Boolean Closed => Intrinsics.Closed(this);
-        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+        public Integer Count => 4;
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadraticBezier3D: IPointArray3D, ICurve3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct QuadraticBezier3D: IArray<Vector3D>, IOpenCurve2D
     {
         [DataMember] public readonly Vector3D A;
         [DataMember] public readonly Vector3D B;
@@ -5164,14 +6025,28 @@ namespace Plato.DoublePrecision
         public String TypeName => "QuadraticBezier3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"A", (String)"B", (String)"C");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(A), new Dynamic(B), new Dynamic(C));
+        // Array predefined functions
+        public QuadraticBezier3D(IArray<Vector3D> xs) : this(xs[0], xs[1], xs[2]) { }
+        public QuadraticBezier3D(Vector3D[] xs) : this(xs[0], xs[1], xs[2]) { }
+        public static QuadraticBezier3D New(IArray<Vector3D> xs) => new QuadraticBezier3D(xs);
+        public static QuadraticBezier3D New(Vector3D[] xs) => new QuadraticBezier3D(xs);
+        public static implicit operator Vector3D[](QuadraticBezier3D self) => self.ToSystemArray();
+        public static implicit operator Array<Vector3D>(QuadraticBezier3D self) => self.ToPrimitiveArray();
+        public System.Collections.Generic.IEnumerator<Vector3D> GetEnumerator() { for (var i=0; i < Count; i++) yield return At(i); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        Vector3D System.Collections.Generic.IReadOnlyList<Vector3D>.this[int n] => At(n);
+        int System.Collections.Generic.IReadOnlyCollection<Vector3D>.Count => this.Count;
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
-        public Boolean Closed => Intrinsics.Closed(this);
-        public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
+        public Integer Count => 3;
+        public Vector3D At(Integer n) => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : throw new System.IndexOutOfRangeException();
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
+        public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TorusKnot: ICurve3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct TorusKnot: IClosedCurve3D
     {
         [DataMember] public readonly Integer P;
         [DataMember] public readonly Integer Q;
@@ -5194,11 +6069,13 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"P", (String)"Q", (String)"Radius");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(P), new Dynamic(Q), new Dynamic(Radius));
         // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
-        public Boolean Closed => Intrinsics.Closed(this);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Helix: ICurve3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Helix: IOpenCurve3D
     {
         [DataMember] public readonly Number Radius;
         [DataMember] public readonly Number Height;
@@ -5221,11 +6098,13 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius", (String)"Height", (String)"NumTurns");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Height), new Dynamic(NumTurns));
         // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)false);
         // Unimplemented concept functions
-        public Boolean Closed => Intrinsics.Closed(this);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TrefoilKnot: ICurve3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct TrefoilKnot: IClosedCurve3D
     {
         public static TrefoilKnot Default = new TrefoilKnot();
         public static TrefoilKnot New() => new TrefoilKnot();
@@ -5238,11 +6117,13 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>();
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
         // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
-        public Boolean Closed => Intrinsics.Closed(this);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct FigureEightKnot: ICurve3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct FigureEightKnot: IClosedCurve3D
     {
         public static FigureEightKnot Default = new FigureEightKnot();
         public static FigureEightKnot New() => new FigureEightKnot();
@@ -5255,11 +6136,13 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>();
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
         // Implemented concept functions and type functions
+        public Boolean Closed => ((Boolean)true);
         // Unimplemented concept functions
-        public Boolean Closed => Intrinsics.Closed(this);
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Transform3D: IValue<Transform3D>, ITransform3D<Transform3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Transform3D: IValue<Transform3D>, ITransform3D
     {
         [DataMember] public readonly Vector3D Translation;
         [DataMember] public readonly Quaternion Rotation;
@@ -5282,20 +6165,21 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Translation", (String)"Rotation", (String)"Scale");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Translation), new Dynamic(Rotation), new Dynamic(Scale));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Transform3D)b);
-        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
-        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
-        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
+        public Vector3D Transform(Vector3D v) => this.Rotation.Transform(v).Add(this.Translation).Multiply(this.Scale);
+        public Vector3D TransformNormal(Vector3D v) => this.Rotation.TransformNormal(v);
+        public IArray<Transform3D> Repeat(Integer n){
+            var _var115 = this;
+            return n.MapRange((i) => _var115);
+        }
         public Boolean Equals(Transform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Transform3D a, Transform3D b) => a.Equals(b);
         public Boolean NotEquals(Transform3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Transform3D a, Transform3D b) => a.NotEquals(b);
         // Unimplemented concept functions
-        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
-        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
-        public Transform3D Inverse => Intrinsics.Inverse(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Pose3D: IValue<Pose3D>, ITransform3D<Pose3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Pose3D: IValue<Pose3D>, ITransform3D
     {
         [DataMember] public readonly Vector3D Position;
         [DataMember] public readonly Rotation3D Rotation;
@@ -5316,20 +6200,21 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Position", (String)"Rotation");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Position), new Dynamic(Rotation));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Pose3D)b);
-        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
-        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
-        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
+        public Vector3D Transform(Vector3D v) => this.Rotation.Transform(v).Add(this.Position);
+        public Vector3D TransformNormal(Vector3D v) => this.Rotation.TransformNormal(v);
+        public IArray<Pose3D> Repeat(Integer n){
+            var _var116 = this;
+            return n.MapRange((i) => _var116);
+        }
         public Boolean Equals(Pose3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Pose3D a, Pose3D b) => a.Equals(b);
         public Boolean NotEquals(Pose3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Pose3D a, Pose3D b) => a.NotEquals(b);
         // Unimplemented concept functions
-        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
-        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
-        public Pose3D Inverse => Intrinsics.Inverse(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Frame3D: IValue<Frame3D>, ITransform3D<Frame3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Frame3D: IValue<Frame3D>, ITransform3D
     {
         [DataMember] public readonly Vector3D Forward;
         [DataMember] public readonly Vector3D Up;
@@ -5352,20 +6237,23 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Forward", (String)"Up", (String)"Position");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Forward), new Dynamic(Up), new Dynamic(Position));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Frame3D)b);
-        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
-        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
-        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
+        public Pose3D Pose3D => this.Translation.Tuple2(this.Forward.LookRotation(this.Up));
+        public static implicit operator Pose3D(Frame3D f) => f.Pose3D;
+        public Vector3D Transform(Vector3D v) => this.Pose3D.Transform(v);
+        public Vector3D TransformNormal(Vector3D v) => this.Pose3D.TransformNormal(v);
+        public IArray<Frame3D> Repeat(Integer n){
+            var _var117 = this;
+            return n.MapRange((i) => _var117);
+        }
         public Boolean Equals(Frame3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Frame3D a, Frame3D b) => a.Equals(b);
         public Boolean NotEquals(Frame3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Frame3D a, Frame3D b) => a.NotEquals(b);
         // Unimplemented concept functions
-        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
-        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
-        public Frame3D Inverse => Intrinsics.Inverse(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Quaternion: IValue<Quaternion>, IArray<Number>, ITransform3D<Quaternion>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Quaternion: IValue<Quaternion>, IArray<Number>, ITransform3D
     {
         [DataMember] public readonly Number X;
         [DataMember] public readonly Number Y;
@@ -5390,9 +6278,6 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"X", (String)"Y", (String)"Z", (String)"W");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(X), new Dynamic(Y), new Dynamic(Z), new Dynamic(W));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Quaternion)b);
-        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
-        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
-        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Array predefined functions
         public Quaternion(IArray<Number> xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
         public Quaternion(Number[] xs) : this(xs[0], xs[1], xs[2], xs[3]) { }
@@ -5405,6 +6290,46 @@ namespace Plato.DoublePrecision
         Number System.Collections.Generic.IReadOnlyList<Number>.this[int n] => At(n);
         int System.Collections.Generic.IReadOnlyCollection<Number>.Count => this.Count;
         // Implemented concept functions and type functions
+        public static Quaternion Identity => ((Integer)0).Tuple4(((Integer)0), ((Integer)0), ((Integer)1));
+        public Vector4D Vector4D => this.X.Tuple4(this.Y, this.Z, this.W);
+        public static implicit operator Vector4D(Quaternion q) => q.Vector4D;
+        public Number Magnitude => this.Vector4D.Magnitude;
+        public Number MagnitudeSquared => this.Vector4D.MagnitudeSquared;
+        public Vector3D Transform(Vector3D v){
+            var x2 = this.X.Add(this.X);
+            var y2 = this.Y.Add(this.Y);
+            var z2 = this.Z.Add(this.Z);
+            var wx2 = this.W.Multiply(x2);
+            var wy2 = this.W.Multiply(y2);
+            var wz2 = this.W.Multiply(z2);
+            var xx2 = this.X.Multiply(x2);
+            var xy2 = this.X.Multiply(y2);
+            var xz2 = this.X.Multiply(z2);
+            var yy2 = this.Y.Multiply(y2);
+            var yz2 = this.Y.Multiply(z2);
+            var zz2 = this.Z.Multiply(z2);
+            return v.X.Multiply(((Number)1).Subtract(yy2.Subtract(zz2))).Add(v.Y.Multiply(xy2.Subtract(wz2)).Add(v.Z.Multiply(xz2.Add(wy2)))).Tuple3(v.X.Multiply(xy2.Add(wz2)).Add(v.Y.Multiply(((Number)1).Subtract(xx2.Subtract(zz2))).Add(v.Z.Multiply(yz2.Subtract(wx2)))), v.X.Multiply(xz2.Subtract(wy2)).Add(v.Y.Multiply(yz2.Add(wx2)).Add(v.Z.Multiply(((Number)1).Subtract(xx2.Subtract(yy2))))));
+        }
+        public Vector3D TransformNormal(Vector3D v) => this.Transform(v);
+        public Quaternion Concatenate(Quaternion q2) => this.ReverseConcatenate(q2);
+        public Quaternion Normalize => this.Vector4D.Normalize;
+        public Vector3D XYZ => X.Tuple3(Y, Z);
+        public Quaternion ReverseConcatenate(Quaternion q1){
+            var av = this.XYZ;
+            var bv = q1.XYZ;
+            var cv = av.Cross(bv);
+            var dot = av.Dot(bv);
+            return this.X.Multiply(q1.W).Add(q1.X.Multiply(this.W).Add(cv.X)).Tuple4(this.Y.Multiply(q1.W).Add(q1.Y.Multiply(this.W).Add(cv.Y)), this.Z.Multiply(q1.W).Add(q1.Z.Multiply(this.W).Add(cv.Z)), this.W.Multiply(q1.W).Subtract(dot));
+        }
+        public Number Dot(Quaternion q2) => this.Vector4D.Dot(q2.Vector4D);
+        public Quaternion Slerp(Quaternion q2, Number t){
+            var cosOmega = this.Dot(q2);
+            var flip = cosOmega.LessThan(((Number)0));
+        }
+        public IArray<Quaternion> Repeat(Integer n){
+            var _var118 = this;
+            return n.MapRange((i) => _var118);
+        }
         public Boolean Equals(Quaternion b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Quaternion a, Quaternion b) => a.Equals(b);
         public Boolean NotEquals(Quaternion b) => this.Equals(b).Not;
@@ -5413,11 +6338,9 @@ namespace Plato.DoublePrecision
         public Integer Count => 4;
         public Number At(Integer n) => n == 0 ? X : n == 1 ? Y : n == 2 ? Z : n == 3 ? W : throw new System.IndexOutOfRangeException();
         public Number this[Integer n] => n == 0 ? X : n == 1 ? Y : n == 2 ? Z : n == 3 ? W : throw new System.IndexOutOfRangeException();
-        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
-        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
-        public Quaternion Inverse => Intrinsics.Inverse(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct AxisAngle: IValue<AxisAngle>, ITransform3D<AxisAngle>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct AxisAngle: IValue<AxisAngle>, ITransform3D
     {
         [DataMember] public readonly Vector3D Axis;
         [DataMember] public readonly Angle Angle;
@@ -5438,20 +6361,28 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Axis", (String)"Angle");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Axis), new Dynamic(Angle));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((AxisAngle)b);
-        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
-        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
-        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
+        public Vector3D Transform(Vector3D v) => this.Quaternion.Transform(v);
+        public Vector3D TransformNormal(Vector3D v) => this.Transform(v);
+        public Quaternion Quaternion { get {
+            var axis = this.Axis.Normalize;
+            var sinHalfAngle = this.Angle.Half.Sin;
+            var cosHalfAngle = this.Angle.Half.Cos;
+            return axis.X.Multiply(sinHalfAngle).Tuple4(axis.Y.Multiply(sinHalfAngle), axis.Z.Multiply(sinHalfAngle), cosHalfAngle);
+        }
+         } public static implicit operator Quaternion(AxisAngle aa) => aa.Quaternion;
+        public IArray<AxisAngle> Repeat(Integer n){
+            var _var119 = this;
+            return n.MapRange((i) => _var119);
+        }
         public Boolean Equals(AxisAngle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(AxisAngle a, AxisAngle b) => a.Equals(b);
         public Boolean NotEquals(AxisAngle b) => this.Equals(b).Not;
         public static Boolean operator !=(AxisAngle a, AxisAngle b) => a.NotEquals(b);
         // Unimplemented concept functions
-        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
-        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
-        public AxisAngle Inverse => Intrinsics.Inverse(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct EulerAngles: IValue<EulerAngles>, ITransform3D<EulerAngles>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct EulerAngles: IValue<EulerAngles>, ITransform3D
     {
         [DataMember] public readonly Angle Yaw;
         [DataMember] public readonly Angle Pitch;
@@ -5474,20 +6405,31 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Yaw", (String)"Pitch", (String)"Roll");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Yaw), new Dynamic(Pitch), new Dynamic(Roll));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((EulerAngles)b);
-        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
-        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
-        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
+        public Quaternion Quaternion { get {
+            var cy = this.Yaw.Half.Cos;
+            var sy = this.Yaw.Half.Sin;
+            var cp = this.Pitch.Half.Cos;
+            var sp = this.Pitch.Half.Sin;
+            var cr = this.Roll.Half.Cos;
+            var sr = this.Roll.Half.Sin;
+            return sr.Multiply(cp.Multiply(cy)).Subtract(cr.Multiply(sp.Multiply(sy))).Tuple4(cr.Multiply(sp.Multiply(cy)).Add(sr.Multiply(cp.Multiply(sy))), cr.Multiply(cp.Multiply(sy)).Subtract(sr.Multiply(sp.Multiply(cy))), cr.Multiply(cp.Multiply(cy)).Add(sr.Multiply(sp.Multiply(sy))));
+        }
+         } public static implicit operator Quaternion(EulerAngles e) => e.Quaternion;
+        public Vector3D Transform(Vector3D v) => this.Quaternion.Transform(v);
+        public Vector3D TransformNormal(Vector3D v) => this.Quaternion.TransformNormal(v);
+        public IArray<EulerAngles> Repeat(Integer n){
+            var _var120 = this;
+            return n.MapRange((i) => _var120);
+        }
         public Boolean Equals(EulerAngles b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(EulerAngles a, EulerAngles b) => a.Equals(b);
         public Boolean NotEquals(EulerAngles b) => this.Equals(b).Not;
         public static Boolean operator !=(EulerAngles a, EulerAngles b) => a.NotEquals(b);
         // Unimplemented concept functions
-        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
-        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
-        public EulerAngles Inverse => Intrinsics.Inverse(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct Rotation3D: IValue<Rotation3D>, ITransform3D<Rotation3D>
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct Rotation3D: IValue<Rotation3D>, ITransform3D
     {
         [DataMember] public readonly Quaternion Quaternion;
         public Rotation3D WithQuaternion(Quaternion quaternion) => new Rotation3D(quaternion);
@@ -5505,20 +6447,21 @@ namespace Plato.DoublePrecision
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Quaternion");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Quaternion));
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Rotation3D)b);
-        Vector3D ITransform3D.Transform(Vector3D v) => this.Transform((Vector3D)v);
-        Vector3D ITransform3D.TransformNormal(Vector3D v) => this.TransformNormal((Vector3D)v);
-        ITransform3D ITransform3D.Inverse => this.Inverse;
         // Implemented concept functions and type functions
+        public Vector3D Transform(Vector3D v) => this.Quaternion.Transform(v);
+        public Vector3D TransformNormal(Vector3D v) => this.Quaternion.TransformNormal(v);
+        public IArray<Rotation3D> Repeat(Integer n){
+            var _var121 = this;
+            return n.MapRange((i) => _var121);
+        }
         public Boolean Equals(Rotation3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Rotation3D a, Rotation3D b) => a.Equals(b);
         public Boolean NotEquals(Rotation3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Rotation3D a, Rotation3D b) => a.NotEquals(b);
         // Unimplemented concept functions
-        public Vector3D Transform(Vector3D v) => Intrinsics.Transform(this, v);
-        public Vector3D TransformNormal(Vector3D v) => Intrinsics.TransformNormal(this, v);
-        public Rotation3D Inverse => Intrinsics.Inverse(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LineMesh3D: ILineMesh3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct LineMesh3D: ILineMesh3D<LineMesh3D>
     {
         [DataMember] public readonly IArray<Vector3D> Points;
         [DataMember] public readonly IArray<Integer> Indices;
@@ -5538,32 +6481,74 @@ namespace Plato.DoublePrecision
         public String TypeName => "LineMesh3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Indices");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Indices));
-        IArray<Vector3D> IPointGeometry3D.Points => Points;
         IArray<Integer> IIndexedGeometry.Indices => Indices;
+        IArray<Vector3D> IPointGeometry3D<LineMesh3D>.Points => Points;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        IArray<Line3D> ILineGeometry3D.Lines => this.Lines;
         // Implemented concept functions and type functions
-        public IArray<Line3D> Primitives => this.AllFaceVertices.Map((p) => Line3D.New(p));
-        public PointArray3D PointArray3D => this.Points;
-        public static implicit operator PointArray3D(LineMesh3D g) => g.PointArray3D;
-        public LineArray3D LineArray3D => this.Primitives;
-        public static implicit operator LineArray3D(LineMesh3D g) => g.LineArray3D;
-        public Integer NumFaces => this.NumPrimitives;
-        public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this;
-        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
-        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public LineMesh3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Indices);
+        public IArray<Line3D> Lines => this.AllFaceVertices.Map((xs) => Line3D.New(xs.At(((Integer)0)), xs.At(((Integer)1))));
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var35 = this;
-            return this.FaceIndices(f).Map((i) => _var35.Vertices.At(i));
+            var _var122 = this;
+            return this.FaceIndices(f).Map((i) => _var122.Vertices.At(i));
         }
-        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector3D> Vertices(IArray<Integer> xs){
+            var _var123 = this;
+            return xs.Map((i) => _var123.Vertex(i));
+        }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var36 = this;
-            return this.Indices.Map((i) => _var36.Vertices.At(i)).Slices(this.PrimitiveSize);
+            var _var124 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var124.Vertices(xs));
         }
-         } public Integer PrimitiveSize => ((Integer)2);
+         } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
+        public LineMesh3D Transform(Matrix4x4 m){
+            var _var125 = m;
+            return this.Deform((v) => _var125.Multiply(v));
+        }
+        public LineMesh3D Transform(ITransform3D t){
+            var _var126 = t;
+            return this.Deform((v) => _var126.Transform(v));
+        }
+        public LineMesh3D Transform(Rotation3D r){
+            var _var127 = r;
+            return this.Deform((v) => _var127.Transform(v));
+        }
+        public LineMesh3D Translate(Vector3D v){
+            var _var128 = v;
+            return this.Deform((p) => p.Add(_var128));
+        }
+        public LineMesh3D Rotate(Rotation3D r) => this.Transform(r);
+        public LineMesh3D Scale(Vector3D v){
+            var _var129 = v;
+            return this.Deform((p) => p.Multiply(_var129));
+        }
+        public LineMesh3D Scale(Number s){
+            var _var130 = s;
+            return this.Deform((p) => p.Multiply(_var130));
+        }
+        public LineMesh3D Add(Vector3D v) => this.Translate(v);
+        public static LineMesh3D operator +(LineMesh3D x, Vector3D v) => x.Add(v);
+        public LineMesh3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static LineMesh3D operator -(LineMesh3D x, Vector3D v) => x.Subtract(v);
+        public LineMesh3D Multiply(Vector3D v) => this.Scale(v);
+        public static LineMesh3D operator *(LineMesh3D x, Vector3D v) => x.Multiply(v);
+        public LineMesh3D Multiply(Number s) => this.Scale(s);
+        public static LineMesh3D operator *(LineMesh3D x, Number s) => x.Multiply(s);
+        public LineMesh3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static LineMesh3D operator /(LineMesh3D x, Vector3D v) => x.Divide(v);
+        public LineMesh3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static LineMesh3D operator /(LineMesh3D x, Number s) => x.Divide(s);
+        public Integer PrimitiveSize => ((Integer)2);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TriangleMesh3D: ITriangleMesh3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct TriangleMesh3D: ITriangleMesh3D<TriangleMesh3D>
     {
         [DataMember] public readonly IArray<Vector3D> Points;
         [DataMember] public readonly IArray<Integer> Indices;
@@ -5583,37 +6568,77 @@ namespace Plato.DoublePrecision
         public String TypeName => "TriangleMesh3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Indices");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Indices));
-        IArray<Vector3D> IPointGeometry3D.Points => Points;
         IArray<Integer> IIndexedGeometry.Indices => Indices;
+        IArray<Vector3D> IPointGeometry3D<TriangleMesh3D>.Points => Points;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        IArray<Triangle3D> ITriangleGeometry3D.Triangles => this.Triangles;
         // Implemented concept functions and type functions
-        public IArray<Triangle3D> Primitives => this.AllFaceVertices.Map((p) => Triangle3D.New(p));
+        public TriangleMesh3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Indices);
+        public IArray<Triangle3D> Faces => this.Triangles;
+        public IArray<Triangle3D> Triangles => this.AllFaceVertices.Map((xs) => Triangle3D.New(xs.At(((Integer)0)), xs.At(((Integer)1)), xs.At(((Integer)2))));
         public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(TriangleMesh3D g) => g.LineMesh3D;
-        public PointArray3D PointArray3D => this.Points;
-        public static implicit operator PointArray3D(TriangleMesh3D g) => g.PointArray3D;
-        public LineArray3D LineArray3D => this.Primitives.FlatMap((t) => t.Lines);
-        public static implicit operator LineArray3D(TriangleMesh3D g) => g.LineArray3D;
-        public TriangleArray3D TriangleArray3D => this.Primitives;
-        public static implicit operator TriangleArray3D(TriangleMesh3D g) => g.TriangleArray3D;
-        public IArray<Triangle3D> Faces => this.Primitives;
-        public Integer NumFaces => this.NumPrimitives;
-        public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this;
-        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
-        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var37 = this;
-            return this.FaceIndices(f).Map((i) => _var37.Vertices.At(i));
+            var _var131 = this;
+            return this.FaceIndices(f).Map((i) => _var131.Vertices.At(i));
         }
-        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector3D> Vertices(IArray<Integer> xs){
+            var _var132 = this;
+            return xs.Map((i) => _var132.Vertex(i));
+        }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var38 = this;
-            return this.Indices.Map((i) => _var38.Vertices.At(i)).Slices(this.PrimitiveSize);
+            var _var133 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var133.Vertices(xs));
         }
-         } public Integer PrimitiveSize => ((Integer)3);
+         } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
+        public TriangleMesh3D Transform(Matrix4x4 m){
+            var _var134 = m;
+            return this.Deform((v) => _var134.Multiply(v));
+        }
+        public TriangleMesh3D Transform(ITransform3D t){
+            var _var135 = t;
+            return this.Deform((v) => _var135.Transform(v));
+        }
+        public TriangleMesh3D Transform(Rotation3D r){
+            var _var136 = r;
+            return this.Deform((v) => _var136.Transform(v));
+        }
+        public TriangleMesh3D Translate(Vector3D v){
+            var _var137 = v;
+            return this.Deform((p) => p.Add(_var137));
+        }
+        public TriangleMesh3D Rotate(Rotation3D r) => this.Transform(r);
+        public TriangleMesh3D Scale(Vector3D v){
+            var _var138 = v;
+            return this.Deform((p) => p.Multiply(_var138));
+        }
+        public TriangleMesh3D Scale(Number s){
+            var _var139 = s;
+            return this.Deform((p) => p.Multiply(_var139));
+        }
+        public TriangleMesh3D Add(Vector3D v) => this.Translate(v);
+        public static TriangleMesh3D operator +(TriangleMesh3D x, Vector3D v) => x.Add(v);
+        public TriangleMesh3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static TriangleMesh3D operator -(TriangleMesh3D x, Vector3D v) => x.Subtract(v);
+        public TriangleMesh3D Multiply(Vector3D v) => this.Scale(v);
+        public static TriangleMesh3D operator *(TriangleMesh3D x, Vector3D v) => x.Multiply(v);
+        public TriangleMesh3D Multiply(Number s) => this.Scale(s);
+        public static TriangleMesh3D operator *(TriangleMesh3D x, Number s) => x.Multiply(s);
+        public TriangleMesh3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static TriangleMesh3D operator /(TriangleMesh3D x, Vector3D v) => x.Divide(v);
+        public TriangleMesh3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static TriangleMesh3D operator /(TriangleMesh3D x, Number s) => x.Divide(s);
+        public Integer PrimitiveSize => ((Integer)3);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadMesh3D: IQuadMesh3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct QuadMesh3D: IQuadMesh3D<QuadMesh3D>
     {
         [DataMember] public readonly IArray<Vector3D> Points;
         [DataMember] public readonly IArray<Integer> Indices;
@@ -5633,39 +6658,79 @@ namespace Plato.DoublePrecision
         public String TypeName => "QuadMesh3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Indices");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Indices));
-        IArray<Vector3D> IPointGeometry3D.Points => Points;
         IArray<Integer> IIndexedGeometry.Indices => Indices;
+        IArray<Vector3D> IPointGeometry3D<QuadMesh3D>.Points => Points;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        IArray<Quad3D> IQuadGeometry3D.Quads => this.Quads;
         // Implemented concept functions and type functions
-        public IArray<Quad3D> Primitives => this.AllFaceVertices.Map((p) => Quad3D.New(p));
+        public QuadMesh3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Indices);
+        public IArray<Quad3D> Faces => this.Quads;
+        public IArray<Quad3D> Quads => this.AllFaceVertices.Map((xs) => Quad3D.New(xs.At(((Integer)0)), xs.At(((Integer)1)), xs.At(((Integer)2)), xs.At(((Integer)3))));
         public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(QuadMesh3D g) => g.LineMesh3D;
         public TriangleMesh3D TriangleMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator TriangleMesh3D(QuadMesh3D g) => g.TriangleMesh3D;
-        public PointArray3D PointArray3D => this.Points;
-        public static implicit operator PointArray3D(QuadMesh3D g) => g.PointArray3D;
-        public LineArray3D LineArray3D => this.Primitives.FlatMap((t) => t.Lines);
-        public static implicit operator LineArray3D(QuadMesh3D g) => g.LineArray3D;
-        public QuadArray3D QuadArray3D => this.Primitives;
-        public static implicit operator QuadArray3D(QuadMesh3D g) => g.QuadArray3D;
-        public IArray<Quad3D> Faces => this.Primitives;
-        public Integer NumFaces => this.NumPrimitives;
-        public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this;
-        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
-        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var39 = this;
-            return this.FaceIndices(f).Map((i) => _var39.Vertices.At(i));
+            var _var140 = this;
+            return this.FaceIndices(f).Map((i) => _var140.Vertices.At(i));
         }
-        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector3D> Vertices(IArray<Integer> xs){
+            var _var141 = this;
+            return xs.Map((i) => _var141.Vertex(i));
+        }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var40 = this;
-            return this.Indices.Map((i) => _var40.Vertices.At(i)).Slices(this.PrimitiveSize);
+            var _var142 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var142.Vertices(xs));
         }
-         } public Integer PrimitiveSize => ((Integer)4);
+         } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
+        public QuadMesh3D Transform(Matrix4x4 m){
+            var _var143 = m;
+            return this.Deform((v) => _var143.Multiply(v));
+        }
+        public QuadMesh3D Transform(ITransform3D t){
+            var _var144 = t;
+            return this.Deform((v) => _var144.Transform(v));
+        }
+        public QuadMesh3D Transform(Rotation3D r){
+            var _var145 = r;
+            return this.Deform((v) => _var145.Transform(v));
+        }
+        public QuadMesh3D Translate(Vector3D v){
+            var _var146 = v;
+            return this.Deform((p) => p.Add(_var146));
+        }
+        public QuadMesh3D Rotate(Rotation3D r) => this.Transform(r);
+        public QuadMesh3D Scale(Vector3D v){
+            var _var147 = v;
+            return this.Deform((p) => p.Multiply(_var147));
+        }
+        public QuadMesh3D Scale(Number s){
+            var _var148 = s;
+            return this.Deform((p) => p.Multiply(_var148));
+        }
+        public QuadMesh3D Add(Vector3D v) => this.Translate(v);
+        public static QuadMesh3D operator +(QuadMesh3D x, Vector3D v) => x.Add(v);
+        public QuadMesh3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static QuadMesh3D operator -(QuadMesh3D x, Vector3D v) => x.Subtract(v);
+        public QuadMesh3D Multiply(Vector3D v) => this.Scale(v);
+        public static QuadMesh3D operator *(QuadMesh3D x, Vector3D v) => x.Multiply(v);
+        public QuadMesh3D Multiply(Number s) => this.Scale(s);
+        public static QuadMesh3D operator *(QuadMesh3D x, Number s) => x.Multiply(s);
+        public QuadMesh3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static QuadMesh3D operator /(QuadMesh3D x, Vector3D v) => x.Divide(v);
+        public QuadMesh3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static QuadMesh3D operator /(QuadMesh3D x, Number s) => x.Divide(s);
+        public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PolyLine2D: IPolyLine2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct PolyLine2D: IPolyLine2D
     {
         [DataMember] public readonly IArray<Vector2D> Points;
         [DataMember] public readonly Boolean Closed;
@@ -5691,10 +6756,13 @@ namespace Plato.DoublePrecision
         public PolyLine3D To3D => this.Points.Map((p) => p.To3D).Tuple2(this.Closed);
         public PolyLine3D PolyLine3D => this.To3D;
         public static implicit operator PolyLine3D(PolyLine2D x) => x.PolyLine3D;
+        public IArray<Line2D> Lines => this.Points.WithNext((a, b) => Line2D.New(a, b), this.Closed);
         // Unimplemented concept functions
+        public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
         public Vector2D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PolyLine3D: IPolyLine3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct PolyLine3D: IPolyLine3D<PolyLine3D>
     {
         [DataMember] public readonly IArray<Vector3D> Points;
         [DataMember] public readonly Boolean Closed;
@@ -5714,14 +6782,56 @@ namespace Plato.DoublePrecision
         public String TypeName => "PolyLine3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points", (String)"Closed");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points), new Dynamic(Closed));
-        IArray<Vector3D> IPointGeometry3D.Points => Points;
+        IArray<Vector3D> IPointGeometry3D<PolyLine3D>.Points => Points;
         Boolean IOpenClosedShape.Closed => Closed;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public PolyLine3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Closed);
+        public IArray<Line3D> Lines => this.Points.WithNext((a, b) => Line3D.New(a, b), this.Closed);
+        public PolyLine3D Transform(Matrix4x4 m){
+            var _var149 = m;
+            return this.Deform((v) => _var149.Multiply(v));
+        }
+        public PolyLine3D Transform(ITransform3D t){
+            var _var150 = t;
+            return this.Deform((v) => _var150.Transform(v));
+        }
+        public PolyLine3D Transform(Rotation3D r){
+            var _var151 = r;
+            return this.Deform((v) => _var151.Transform(v));
+        }
+        public PolyLine3D Translate(Vector3D v){
+            var _var152 = v;
+            return this.Deform((p) => p.Add(_var152));
+        }
+        public PolyLine3D Rotate(Rotation3D r) => this.Transform(r);
+        public PolyLine3D Scale(Vector3D v){
+            var _var153 = v;
+            return this.Deform((p) => p.Multiply(_var153));
+        }
+        public PolyLine3D Scale(Number s){
+            var _var154 = s;
+            return this.Deform((p) => p.Multiply(_var154));
+        }
+        public PolyLine3D Add(Vector3D v) => this.Translate(v);
+        public static PolyLine3D operator +(PolyLine3D x, Vector3D v) => x.Add(v);
+        public PolyLine3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static PolyLine3D operator -(PolyLine3D x, Vector3D v) => x.Subtract(v);
+        public PolyLine3D Multiply(Vector3D v) => this.Scale(v);
+        public static PolyLine3D operator *(PolyLine3D x, Vector3D v) => x.Multiply(v);
+        public PolyLine3D Multiply(Number s) => this.Scale(s);
+        public static PolyLine3D operator *(PolyLine3D x, Number s) => x.Multiply(s);
+        public PolyLine3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static PolyLine3D operator /(PolyLine3D x, Vector3D v) => x.Divide(v);
+        public PolyLine3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static PolyLine3D operator /(PolyLine3D x, Number s) => x.Divide(s);
         // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number amount) => Intrinsics.Eval(this, amount);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PointArray2D: IPointArray2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct PointArray2D: IPointArray2D
     {
         [DataMember] public readonly IArray<Vector2D> Points;
         public PointArray2D WithPoints(IArray<Vector2D> points) => new PointArray2D(points);
@@ -5738,9 +6848,11 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points));
         IArray<Vector2D> IPointGeometry2D.Points => Points;
         // Implemented concept functions and type functions
+        public IArray<Integer> Indices => this.Points.Indices();
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct PointArray3D: IPointArray3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct PointArray3D: IPointArray3D<PointArray3D>
     {
         [DataMember] public readonly IArray<Vector3D> Points;
         public PointArray3D WithPoints(IArray<Vector3D> points) => new PointArray3D(points);
@@ -5755,142 +6867,447 @@ namespace Plato.DoublePrecision
         public String TypeName => "PointArray3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Points");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Points));
-        IArray<Vector3D> IPointGeometry3D.Points => Points;
+        IArray<Vector3D> IPointGeometry3D<PointArray3D>.Points => Points;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public PointArray3D Deform(System.Func<Vector3D, Vector3D> f) => PointArray3D.New(this.Points.Map(f));
+        public IArray<Integer> Indices => this.Points.Indices();
+        public PointArray3D Transform(Matrix4x4 m){
+            var _var155 = m;
+            return this.Deform((v) => _var155.Multiply(v));
+        }
+        public PointArray3D Transform(ITransform3D t){
+            var _var156 = t;
+            return this.Deform((v) => _var156.Transform(v));
+        }
+        public PointArray3D Transform(Rotation3D r){
+            var _var157 = r;
+            return this.Deform((v) => _var157.Transform(v));
+        }
+        public PointArray3D Translate(Vector3D v){
+            var _var158 = v;
+            return this.Deform((p) => p.Add(_var158));
+        }
+        public PointArray3D Rotate(Rotation3D r) => this.Transform(r);
+        public PointArray3D Scale(Vector3D v){
+            var _var159 = v;
+            return this.Deform((p) => p.Multiply(_var159));
+        }
+        public PointArray3D Scale(Number s){
+            var _var160 = s;
+            return this.Deform((p) => p.Multiply(_var160));
+        }
+        public PointArray3D Add(Vector3D v) => this.Translate(v);
+        public static PointArray3D operator +(PointArray3D x, Vector3D v) => x.Add(v);
+        public PointArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static PointArray3D operator -(PointArray3D x, Vector3D v) => x.Subtract(v);
+        public PointArray3D Multiply(Vector3D v) => this.Scale(v);
+        public static PointArray3D operator *(PointArray3D x, Vector3D v) => x.Multiply(v);
+        public PointArray3D Multiply(Number s) => this.Scale(s);
+        public static PointArray3D operator *(PointArray3D x, Number s) => x.Multiply(s);
+        public PointArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static PointArray3D operator /(PointArray3D x, Vector3D v) => x.Divide(v);
+        public PointArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static PointArray3D operator /(PointArray3D x, Number s) => x.Divide(s);
         // Unimplemented concept functions
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LineArray2D: ILineArray2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct LineArray2D: ILineArray2D
     {
-        [DataMember] public readonly IArray<Line2D> Primitives;
-        public LineArray2D WithPrimitives(IArray<Line2D> primitives) => new LineArray2D(primitives);
-        public LineArray2D(IArray<Line2D> primitives) => (Primitives) = (primitives);
+        [DataMember] public readonly IArray<Line2D> Lines;
+        public LineArray2D WithLines(IArray<Line2D> lines) => new LineArray2D(lines);
+        public LineArray2D(IArray<Line2D> lines) => (Lines) = (lines);
         public static LineArray2D Default = new LineArray2D();
-        public static LineArray2D New(IArray<Line2D> primitives) => new LineArray2D(primitives);
-        public override bool Equals(object obj) { if (!(obj is LineArray2D)) return false; var other = (LineArray2D)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static LineArray2D New(IArray<Line2D> lines) => new LineArray2D(lines);
+        public override bool Equals(object obj) { if (!(obj is LineArray2D)) return false; var other = (LineArray2D)obj; return Lines.Equals(other.Lines); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Lines);
+        public override string ToString() => $"{{ \"Lines\" = {Lines} }}";
         public static implicit operator Dynamic(LineArray2D self) => new Dynamic(self);
         public static implicit operator LineArray2D(Dynamic value) => value.As<LineArray2D>();
         public String TypeName => "LineArray2D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Line2D> IPrimitiveArray2D<Line2D>.Primitives => Primitives;
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Lines");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lines));
+        IArray<Line2D> ILineGeometry2D.Lines => Lines;
         // Implemented concept functions and type functions
+        public IArray<Integer> Indices => this.Points.Indices();
+        public IArray<Vector2D> Points => this.Lines.FlatMap((x) => x.Points);
+        public IArray<Vector2D> FaceVertices(Integer f){
+            var _var161 = this;
+            return this.FaceIndices(f).Map((i) => _var161.Vertices.At(i));
+        }
+        public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector2D> Vertices(IArray<Integer> xs){
+            var _var162 = this;
+            return xs.Map((i) => _var162.Vertex(i));
+        }
+        public IArray<IArray<Vector2D>> AllFaceVertices { get {
+            var _var163 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var163.Vertices(xs));
+        }
+         } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public Integer PrimitiveSize => ((Integer)2);
         // Unimplemented concept functions
-        public IArray<Vector2D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct LineArray3D: ILineArray3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct LineArray3D: ILineArray3D<LineArray3D>
     {
-        [DataMember] public readonly IArray<Line3D> Primitives;
-        public LineArray3D WithPrimitives(IArray<Line3D> primitives) => new LineArray3D(primitives);
-        public LineArray3D(IArray<Line3D> primitives) => (Primitives) = (primitives);
+        [DataMember] public readonly IArray<Line3D> Lines;
+        public LineArray3D WithLines(IArray<Line3D> lines) => new LineArray3D(lines);
+        public LineArray3D(IArray<Line3D> lines) => (Lines) = (lines);
         public static LineArray3D Default = new LineArray3D();
-        public static LineArray3D New(IArray<Line3D> primitives) => new LineArray3D(primitives);
-        public override bool Equals(object obj) { if (!(obj is LineArray3D)) return false; var other = (LineArray3D)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static LineArray3D New(IArray<Line3D> lines) => new LineArray3D(lines);
+        public override bool Equals(object obj) { if (!(obj is LineArray3D)) return false; var other = (LineArray3D)obj; return Lines.Equals(other.Lines); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Lines);
+        public override string ToString() => $"{{ \"Lines\" = {Lines} }}";
         public static implicit operator Dynamic(LineArray3D self) => new Dynamic(self);
         public static implicit operator LineArray3D(Dynamic value) => value.As<LineArray3D>();
         public String TypeName => "LineArray3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Line3D> IPrimitiveArray3D<Line3D>.Primitives => Primitives;
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Lines");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Lines));
+        IArray<Line3D> ILineGeometry3D<LineArray3D>.Lines => Lines;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        IArray<Line3D> ILineGeometry3D.Lines => this.Lines;
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public LineArray3D Deform(System.Func<Vector3D, Vector3D> f){
+            var _var164 = f;
+            return LineArray3D.New(this.Lines.Map((l) => l.Deform(_var164)));
+        }
+        public IArray<Integer> Indices => this.Points.Indices();
+        public IArray<Vector3D> Points => this.Lines.FlatMap((x) => x.Points);
+        public IArray<Vector3D> FaceVertices(Integer f){
+            var _var165 = this;
+            return this.FaceIndices(f).Map((i) => _var165.Vertices.At(i));
+        }
+        public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector3D> Vertices(IArray<Integer> xs){
+            var _var166 = this;
+            return xs.Map((i) => _var166.Vertex(i));
+        }
+        public IArray<IArray<Vector3D>> AllFaceVertices { get {
+            var _var167 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var167.Vertices(xs));
+        }
+         } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
+        public LineArray3D Transform(Matrix4x4 m){
+            var _var168 = m;
+            return this.Deform((v) => _var168.Multiply(v));
+        }
+        public LineArray3D Transform(ITransform3D t){
+            var _var169 = t;
+            return this.Deform((v) => _var169.Transform(v));
+        }
+        public LineArray3D Transform(Rotation3D r){
+            var _var170 = r;
+            return this.Deform((v) => _var170.Transform(v));
+        }
+        public LineArray3D Translate(Vector3D v){
+            var _var171 = v;
+            return this.Deform((p) => p.Add(_var171));
+        }
+        public LineArray3D Rotate(Rotation3D r) => this.Transform(r);
+        public LineArray3D Scale(Vector3D v){
+            var _var172 = v;
+            return this.Deform((p) => p.Multiply(_var172));
+        }
+        public LineArray3D Scale(Number s){
+            var _var173 = s;
+            return this.Deform((p) => p.Multiply(_var173));
+        }
+        public LineArray3D Add(Vector3D v) => this.Translate(v);
+        public static LineArray3D operator +(LineArray3D x, Vector3D v) => x.Add(v);
+        public LineArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static LineArray3D operator -(LineArray3D x, Vector3D v) => x.Subtract(v);
+        public LineArray3D Multiply(Vector3D v) => this.Scale(v);
+        public static LineArray3D operator *(LineArray3D x, Vector3D v) => x.Multiply(v);
+        public LineArray3D Multiply(Number s) => this.Scale(s);
+        public static LineArray3D operator *(LineArray3D x, Number s) => x.Multiply(s);
+        public LineArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static LineArray3D operator /(LineArray3D x, Vector3D v) => x.Divide(v);
+        public LineArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static LineArray3D operator /(LineArray3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)2);
         // Unimplemented concept functions
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TriangleArray2D: ITriangleArray2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct TriangleArray2D: ITriangleArray2D
     {
-        [DataMember] public readonly IArray<Triangle2D> Primitives;
-        public TriangleArray2D WithPrimitives(IArray<Triangle2D> primitives) => new TriangleArray2D(primitives);
-        public TriangleArray2D(IArray<Triangle2D> primitives) => (Primitives) = (primitives);
+        [DataMember] public readonly IArray<Triangle2D> Triangles;
+        public TriangleArray2D WithTriangles(IArray<Triangle2D> triangles) => new TriangleArray2D(triangles);
+        public TriangleArray2D(IArray<Triangle2D> triangles) => (Triangles) = (triangles);
         public static TriangleArray2D Default = new TriangleArray2D();
-        public static TriangleArray2D New(IArray<Triangle2D> primitives) => new TriangleArray2D(primitives);
-        public override bool Equals(object obj) { if (!(obj is TriangleArray2D)) return false; var other = (TriangleArray2D)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static TriangleArray2D New(IArray<Triangle2D> triangles) => new TriangleArray2D(triangles);
+        public override bool Equals(object obj) { if (!(obj is TriangleArray2D)) return false; var other = (TriangleArray2D)obj; return Triangles.Equals(other.Triangles); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Triangles);
+        public override string ToString() => $"{{ \"Triangles\" = {Triangles} }}";
         public static implicit operator Dynamic(TriangleArray2D self) => new Dynamic(self);
         public static implicit operator TriangleArray2D(Dynamic value) => value.As<TriangleArray2D>();
         public String TypeName => "TriangleArray2D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Triangle2D> IPrimitiveArray2D<Triangle2D>.Primitives => Primitives;
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Triangles");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Triangles));
+        IArray<Triangle2D> ITriangleGeometry2D.Triangles => Triangles;
         // Implemented concept functions and type functions
+        public IArray<Integer> Indices => this.Points.Indices();
+        public IArray<Vector2D> Points => this.Triangles.FlatMap((x) => x.Points);
+        public IArray<Line2D> Lines => this.Triangles.FlatMap((x) => x.Lines);
+        public IArray<Triangle2D> Faces => this.Triangles;
+        public IArray<Vector2D> FaceVertices(Integer f){
+            var _var174 = this;
+            return this.FaceIndices(f).Map((i) => _var174.Vertices.At(i));
+        }
+        public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector2D> Vertices(IArray<Integer> xs){
+            var _var175 = this;
+            return xs.Map((i) => _var175.Vertex(i));
+        }
+        public IArray<IArray<Vector2D>> AllFaceVertices { get {
+            var _var176 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var176.Vertices(xs));
+        }
+         } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public Integer PrimitiveSize => ((Integer)3);
         // Unimplemented concept functions
-        public IArray<Vector2D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct TriangleArray3D: ITriangleArray3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct TriangleArray3D: ITriangleArray3D<TriangleArray3D>
     {
-        [DataMember] public readonly IArray<Triangle3D> Primitives;
-        public TriangleArray3D WithPrimitives(IArray<Triangle3D> primitives) => new TriangleArray3D(primitives);
-        public TriangleArray3D(IArray<Triangle3D> primitives) => (Primitives) = (primitives);
+        [DataMember] public readonly IArray<Triangle3D> Triangles;
+        public TriangleArray3D WithTriangles(IArray<Triangle3D> triangles) => new TriangleArray3D(triangles);
+        public TriangleArray3D(IArray<Triangle3D> triangles) => (Triangles) = (triangles);
         public static TriangleArray3D Default = new TriangleArray3D();
-        public static TriangleArray3D New(IArray<Triangle3D> primitives) => new TriangleArray3D(primitives);
-        public override bool Equals(object obj) { if (!(obj is TriangleArray3D)) return false; var other = (TriangleArray3D)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static TriangleArray3D New(IArray<Triangle3D> triangles) => new TriangleArray3D(triangles);
+        public override bool Equals(object obj) { if (!(obj is TriangleArray3D)) return false; var other = (TriangleArray3D)obj; return Triangles.Equals(other.Triangles); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Triangles);
+        public override string ToString() => $"{{ \"Triangles\" = {Triangles} }}";
         public static implicit operator Dynamic(TriangleArray3D self) => new Dynamic(self);
         public static implicit operator TriangleArray3D(Dynamic value) => value.As<TriangleArray3D>();
         public String TypeName => "TriangleArray3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Triangle3D> IPrimitiveArray3D<Triangle3D>.Primitives => Primitives;
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Triangles");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Triangles));
+        IArray<Triangle3D> ITriangleGeometry3D<TriangleArray3D>.Triangles => Triangles;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        IArray<Triangle3D> ITriangleGeometry3D.Triangles => this.Triangles;
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public TriangleArray3D Deform(System.Func<Vector3D, Vector3D> f){
+            var _var177 = f;
+            return TriangleArray3D.New(this.Triangles.Map((t) => t.Deform(_var177)));
+        }
+        public IArray<Integer> Indices => this.Points.Indices();
+        public IArray<Vector3D> Points => this.Triangles.FlatMap((x) => x.Points);
+        public IArray<Line3D> Lines => this.Triangles.FlatMap((x) => x.Lines);
+        public IArray<Triangle3D> Faces => this.Triangles;
+        public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
+        public static implicit operator LineMesh3D(TriangleArray3D g) => g.LineMesh3D;
+        public IArray<Vector3D> FaceVertices(Integer f){
+            var _var178 = this;
+            return this.FaceIndices(f).Map((i) => _var178.Vertices.At(i));
+        }
+        public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector3D> Vertices(IArray<Integer> xs){
+            var _var179 = this;
+            return xs.Map((i) => _var179.Vertex(i));
+        }
+        public IArray<IArray<Vector3D>> AllFaceVertices { get {
+            var _var180 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var180.Vertices(xs));
+        }
+         } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
+        public TriangleArray3D Transform(Matrix4x4 m){
+            var _var181 = m;
+            return this.Deform((v) => _var181.Multiply(v));
+        }
+        public TriangleArray3D Transform(ITransform3D t){
+            var _var182 = t;
+            return this.Deform((v) => _var182.Transform(v));
+        }
+        public TriangleArray3D Transform(Rotation3D r){
+            var _var183 = r;
+            return this.Deform((v) => _var183.Transform(v));
+        }
+        public TriangleArray3D Translate(Vector3D v){
+            var _var184 = v;
+            return this.Deform((p) => p.Add(_var184));
+        }
+        public TriangleArray3D Rotate(Rotation3D r) => this.Transform(r);
+        public TriangleArray3D Scale(Vector3D v){
+            var _var185 = v;
+            return this.Deform((p) => p.Multiply(_var185));
+        }
+        public TriangleArray3D Scale(Number s){
+            var _var186 = s;
+            return this.Deform((p) => p.Multiply(_var186));
+        }
+        public TriangleArray3D Add(Vector3D v) => this.Translate(v);
+        public static TriangleArray3D operator +(TriangleArray3D x, Vector3D v) => x.Add(v);
+        public TriangleArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static TriangleArray3D operator -(TriangleArray3D x, Vector3D v) => x.Subtract(v);
+        public TriangleArray3D Multiply(Vector3D v) => this.Scale(v);
+        public static TriangleArray3D operator *(TriangleArray3D x, Vector3D v) => x.Multiply(v);
+        public TriangleArray3D Multiply(Number s) => this.Scale(s);
+        public static TriangleArray3D operator *(TriangleArray3D x, Number s) => x.Multiply(s);
+        public TriangleArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static TriangleArray3D operator /(TriangleArray3D x, Vector3D v) => x.Divide(v);
+        public TriangleArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static TriangleArray3D operator /(TriangleArray3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)3);
         // Unimplemented concept functions
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadArray2D: IQuadArray2D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct QuadArray2D: IQuadArray2D
     {
-        [DataMember] public readonly IArray<Quad2D> Primitives;
-        public QuadArray2D WithPrimitives(IArray<Quad2D> primitives) => new QuadArray2D(primitives);
-        public QuadArray2D(IArray<Quad2D> primitives) => (Primitives) = (primitives);
+        [DataMember] public readonly IArray<Quad2D> Quads;
+        public QuadArray2D WithQuads(IArray<Quad2D> quads) => new QuadArray2D(quads);
+        public QuadArray2D(IArray<Quad2D> quads) => (Quads) = (quads);
         public static QuadArray2D Default = new QuadArray2D();
-        public static QuadArray2D New(IArray<Quad2D> primitives) => new QuadArray2D(primitives);
-        public override bool Equals(object obj) { if (!(obj is QuadArray2D)) return false; var other = (QuadArray2D)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static QuadArray2D New(IArray<Quad2D> quads) => new QuadArray2D(quads);
+        public override bool Equals(object obj) { if (!(obj is QuadArray2D)) return false; var other = (QuadArray2D)obj; return Quads.Equals(other.Quads); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Quads);
+        public override string ToString() => $"{{ \"Quads\" = {Quads} }}";
         public static implicit operator Dynamic(QuadArray2D self) => new Dynamic(self);
         public static implicit operator QuadArray2D(Dynamic value) => value.As<QuadArray2D>();
         public String TypeName => "QuadArray2D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Quad2D> IPrimitiveArray3D<Quad2D>.Primitives => Primitives;
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Quads");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Quads));
+        IArray<Quad2D> IQuadGeometry2D.Quads => Quads;
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public IArray<Integer> Indices => this.Points.Indices();
+        public IArray<Vector2D> Points => this.Quads.FlatMap((x) => x.Points);
+        public IArray<Line2D> Lines => this.Quads.FlatMap((x) => x.Lines);
+        public IArray<Triangle2D> Triangles => this.Quads.FlatMap((x) => x.Triangles);
+        public IArray<Quad2D> Faces => this.Quads;
+        public IArray<Vector2D> FaceVertices(Integer f){
+            var _var187 = this;
+            return this.FaceIndices(f).Map((i) => _var187.Vertices.At(i));
+        }
+        public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector2D> Vertices(IArray<Integer> xs){
+            var _var188 = this;
+            return xs.Map((i) => _var188.Vertex(i));
+        }
+        public IArray<IArray<Vector2D>> AllFaceVertices { get {
+            var _var189 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var189.Vertices(xs));
+        }
+         } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadArray3D: IQuadArray3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct QuadArray3D: IQuadArray3D<QuadArray3D>
     {
-        [DataMember] public readonly IArray<Quad3D> Primitives;
-        public QuadArray3D WithPrimitives(IArray<Quad3D> primitives) => new QuadArray3D(primitives);
-        public QuadArray3D(IArray<Quad3D> primitives) => (Primitives) = (primitives);
+        [DataMember] public readonly IArray<Quad3D> Quads;
+        public QuadArray3D WithQuads(IArray<Quad3D> quads) => new QuadArray3D(quads);
+        public QuadArray3D(IArray<Quad3D> quads) => (Quads) = (quads);
         public static QuadArray3D Default = new QuadArray3D();
-        public static QuadArray3D New(IArray<Quad3D> primitives) => new QuadArray3D(primitives);
-        public override bool Equals(object obj) { if (!(obj is QuadArray3D)) return false; var other = (QuadArray3D)obj; return Primitives.Equals(other.Primitives); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Primitives);
-        public override string ToString() => $"{{ \"Primitives\" = {Primitives} }}";
+        public static QuadArray3D New(IArray<Quad3D> quads) => new QuadArray3D(quads);
+        public override bool Equals(object obj) { if (!(obj is QuadArray3D)) return false; var other = (QuadArray3D)obj; return Quads.Equals(other.Quads); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Quads);
+        public override string ToString() => $"{{ \"Quads\" = {Quads} }}";
         public static implicit operator Dynamic(QuadArray3D self) => new Dynamic(self);
         public static implicit operator QuadArray3D(Dynamic value) => value.As<QuadArray3D>();
         public String TypeName => "QuadArray3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Primitives");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Primitives));
-        IArray<Quad3D> IPrimitiveArray3D<Quad3D>.Primitives => Primitives;
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Quads");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Quads));
+        IArray<Quad3D> IQuadGeometry3D<QuadArray3D>.Quads => Quads;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        IArray<Quad3D> IQuadGeometry3D.Quads => this.Quads;
         // Implemented concept functions and type functions
-        public IArray<Vector3D> Vertices => this;
+        public QuadArray3D Deform(System.Func<Vector3D, Vector3D> f){
+            var _var190 = f;
+            return QuadArray3D.New(this.Quads.Map((q) => q.Deform(_var190)));
+        }
+        public IArray<Integer> Indices => this.Points.Indices();
+        public IArray<Vector3D> Points => this.Quads.FlatMap((x) => x.Points);
+        public IArray<Line3D> Lines => this.Quads.FlatMap((x) => x.Lines);
+        public IArray<Triangle3D> Triangles => this.Quads.FlatMap((x) => x.Triangles);
+        public IArray<Quad3D> Faces => this.Quads;
+        public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
+        public static implicit operator LineMesh3D(QuadArray3D g) => g.LineMesh3D;
+        public TriangleMesh3D TriangleMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
+        public static implicit operator TriangleMesh3D(QuadArray3D g) => g.TriangleMesh3D;
+        public IArray<Vector3D> FaceVertices(Integer f){
+            var _var191 = this;
+            return this.FaceIndices(f).Map((i) => _var191.Vertices.At(i));
+        }
+        public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector3D> Vertices(IArray<Integer> xs){
+            var _var192 = this;
+            return xs.Map((i) => _var192.Vertex(i));
+        }
+        public IArray<IArray<Vector3D>> AllFaceVertices { get {
+            var _var193 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var193.Vertices(xs));
+        }
+         } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
+        public QuadArray3D Transform(Matrix4x4 m){
+            var _var194 = m;
+            return this.Deform((v) => _var194.Multiply(v));
+        }
+        public QuadArray3D Transform(ITransform3D t){
+            var _var195 = t;
+            return this.Deform((v) => _var195.Transform(v));
+        }
+        public QuadArray3D Transform(Rotation3D r){
+            var _var196 = r;
+            return this.Deform((v) => _var196.Transform(v));
+        }
+        public QuadArray3D Translate(Vector3D v){
+            var _var197 = v;
+            return this.Deform((p) => p.Add(_var197));
+        }
+        public QuadArray3D Rotate(Rotation3D r) => this.Transform(r);
+        public QuadArray3D Scale(Vector3D v){
+            var _var198 = v;
+            return this.Deform((p) => p.Multiply(_var198));
+        }
+        public QuadArray3D Scale(Number s){
+            var _var199 = s;
+            return this.Deform((p) => p.Multiply(_var199));
+        }
+        public QuadArray3D Add(Vector3D v) => this.Translate(v);
+        public static QuadArray3D operator +(QuadArray3D x, Vector3D v) => x.Add(v);
+        public QuadArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static QuadArray3D operator -(QuadArray3D x, Vector3D v) => x.Subtract(v);
+        public QuadArray3D Multiply(Vector3D v) => this.Scale(v);
+        public static QuadArray3D operator *(QuadArray3D x, Vector3D v) => x.Multiply(v);
+        public QuadArray3D Multiply(Number s) => this.Scale(s);
+        public static QuadArray3D operator *(QuadArray3D x, Number s) => x.Multiply(s);
+        public QuadArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static QuadArray3D operator /(QuadArray3D x, Vector3D v) => x.Divide(v);
+        public QuadArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static QuadArray3D operator /(QuadArray3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
     }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)] public readonly partial struct QuadGrid3D: IQuadGrid3D
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+ public readonly partial struct QuadGrid3D: IQuadGrid3D<QuadGrid3D>
     {
         [DataMember] public readonly IArray2D<Vector3D> PointGrid;
         [DataMember] public readonly Boolean ClosedX;
@@ -5912,40 +7329,82 @@ namespace Plato.DoublePrecision
         public String TypeName => "QuadGrid3D";
         public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"PointGrid", (String)"ClosedX", (String)"ClosedY");
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(PointGrid), new Dynamic(ClosedX), new Dynamic(ClosedY));
-        IArray2D<Vector3D> IQuadGrid3D.PointGrid => PointGrid;
-        Boolean IQuadGrid3D.ClosedX => ClosedX;
-        Boolean IQuadGrid3D.ClosedY => ClosedY;
+        IArray2D<Vector3D> IQuadGrid3D<QuadGrid3D>.PointGrid => PointGrid;
+        Boolean IQuadGrid3D<QuadGrid3D>.ClosedX => ClosedX;
+        Boolean IQuadGrid3D<QuadGrid3D>.ClosedY => ClosedY;
+        IArray2D<Vector3D> IQuadGrid3D.PointGrid => this.PointGrid;
+        Boolean IQuadGrid3D.ClosedX => this.ClosedX;
+        Boolean IQuadGrid3D.ClosedY => this.ClosedY;
+        IArray<Vector3D> IPointGeometry3D.Points => this.Points;
+        IDeformable3D IDeformable3D.Deform(System.Func<Vector3D, Vector3D> f) => this.Deform((System.Func<Vector3D, Vector3D>)f);
+        IArray<Quad3D> IQuadGeometry3D.Quads => this.Quads;
         // Implemented concept functions and type functions
-        public IArray<Quad3D> Primitives => this.AllFaceVertices.Map((p) => Quad3D.New(p));
+        public QuadGrid3D Deform(System.Func<Vector3D, Vector3D> f) => QuadGrid3D.New(this.Points.Map(f), this.ClosedX, this.ClosedY);
+        public IArray<Vector3D> Points => this.PointGrid;
+        public IArray<Integer> Indices => this.PointGrid.Indices();
+        public IArray<Quad3D> Faces => this.Quads;
+        public IArray<Quad3D> Quads => this.AllFaceVertices.Map((xs) => Quad3D.New(xs.At(((Integer)0)), xs.At(((Integer)1)), xs.At(((Integer)2)), xs.At(((Integer)3))));
         public LineMesh3D LineMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(QuadGrid3D g) => g.LineMesh3D;
         public TriangleMesh3D TriangleMesh3D => this.Vertices.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator TriangleMesh3D(QuadGrid3D g) => g.TriangleMesh3D;
-        public PointArray3D PointArray3D => this.Points;
-        public static implicit operator PointArray3D(QuadGrid3D g) => g.PointArray3D;
-        public LineArray3D LineArray3D => this.Primitives.FlatMap((t) => t.Lines);
-        public static implicit operator LineArray3D(QuadGrid3D g) => g.LineArray3D;
-        public QuadArray3D QuadArray3D => this.Primitives;
-        public static implicit operator QuadArray3D(QuadGrid3D g) => g.QuadArray3D;
-        public IArray<Quad3D> Faces => this.Primitives;
-        public Integer NumFaces => this.NumPrimitives;
-        public Integer NumVertices => this.Points.Count;
-        public IArray<Vector3D> Vertices => this;
-        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
-        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var41 = this;
-            return this.FaceIndices(f).Map((i) => _var41.Vertices.At(i));
+            var _var200 = this;
+            return this.FaceIndices(f).Map((i) => _var200.Vertices.At(i));
         }
-        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
+        public IArray<Vector3D> Vertices(IArray<Integer> xs){
+            var _var201 = this;
+            return xs.Map((i) => _var201.Vertex(i));
+        }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var42 = this;
-            return this.Indices.Map((i) => _var42.Vertices.At(i)).Slices(this.PrimitiveSize);
+            var _var202 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var202.Vertices(xs));
         }
-         } public Integer PrimitiveSize => ((Integer)4);
+         } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
+        public Integer NumFaces => this.NumPrimitives;
+        public IArray<Integer> FaceIndices(Integer f) => this.Indices.Subarray(f.Multiply(this.PrimitiveSize), PrimitiveSize);
+        public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
+        public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
+        public QuadGrid3D Transform(Matrix4x4 m){
+            var _var203 = m;
+            return this.Deform((v) => _var203.Multiply(v));
+        }
+        public QuadGrid3D Transform(ITransform3D t){
+            var _var204 = t;
+            return this.Deform((v) => _var204.Transform(v));
+        }
+        public QuadGrid3D Transform(Rotation3D r){
+            var _var205 = r;
+            return this.Deform((v) => _var205.Transform(v));
+        }
+        public QuadGrid3D Translate(Vector3D v){
+            var _var206 = v;
+            return this.Deform((p) => p.Add(_var206));
+        }
+        public QuadGrid3D Rotate(Rotation3D r) => this.Transform(r);
+        public QuadGrid3D Scale(Vector3D v){
+            var _var207 = v;
+            return this.Deform((p) => p.Multiply(_var207));
+        }
+        public QuadGrid3D Scale(Number s){
+            var _var208 = s;
+            return this.Deform((p) => p.Multiply(_var208));
+        }
+        public QuadGrid3D Add(Vector3D v) => this.Translate(v);
+        public static QuadGrid3D operator +(QuadGrid3D x, Vector3D v) => x.Add(v);
+        public QuadGrid3D Subtract(Vector3D v) => this.Translate(v.Negative);
+        public static QuadGrid3D operator -(QuadGrid3D x, Vector3D v) => x.Subtract(v);
+        public QuadGrid3D Multiply(Vector3D v) => this.Scale(v);
+        public static QuadGrid3D operator *(QuadGrid3D x, Vector3D v) => x.Multiply(v);
+        public QuadGrid3D Multiply(Number s) => this.Scale(s);
+        public static QuadGrid3D operator *(QuadGrid3D x, Number s) => x.Multiply(s);
+        public QuadGrid3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
+        public static QuadGrid3D operator /(QuadGrid3D x, Vector3D v) => x.Divide(v);
+        public QuadGrid3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public static QuadGrid3D operator /(QuadGrid3D x, Number s) => x.Divide(s);
+        public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
-        public IArray<Vector3D> Points => Intrinsics.Points(this);
-        public IArray<Integer> Indices => Intrinsics.Indices(this);
     }
     public static class Constants
     {
@@ -5970,23 +7429,27 @@ namespace Plato.DoublePrecision
     }
     public static class Extensions
     {
+        public static IArray<Integer> Indices<T>(this IArray<T> xs) => xs.Count.Range;
+        public static Boolean IsEmpty<T>(this IArray<T> xs) => xs.Count.Equals(((Integer)0));
+        public static T First<T>(this IArray<T> xs) => xs.At(((Integer)0));
+        public static T Last<T>(this IArray<T> xs) => xs.At(xs.Count.Subtract(((Integer)1)));
         public static T Middle<T>(this IArray<T> xs, Integer n) => xs.At(xs.Count.Divide(((Integer)2)));
         public static IArray<T> Slice<T>(this IArray<T> xs, Integer from, Integer to) => xs.Subarray(from, to.Subtract(from));
         public static IArray<IArray<T>> Slices<T>(this IArray<T> xs, Integer n){
-            var _var45 = n;
+            var _var211 = n;
             {
-                var _var44 = n;
+                var _var210 = n;
                 {
-                    var _var43 = xs;
-                    return xs.Count.Divide(n).MapRange((i) => _var43.Subarray(i.Multiply(_var44), _var45));
+                    var _var209 = xs;
+                    return xs.Count.Divide(n).MapRange((i) => _var209.Subarray(i.Multiply(_var210), _var211));
                 }
             }
         }
         public static IArray<T> Subarray<T>(this IArray<T> xs, Integer from, Integer count){
-            var _var47 = from;
+            var _var213 = from;
             {
-                var _var46 = xs;
-                return count.MapRange((i) => _var46.At(i.Add(_var47)));
+                var _var212 = xs;
+                return count.MapRange((i) => _var212.At(i.Add(_var213)));
             }
         }
         public static IArray<T> Skip<T>(this IArray<T> xs, Integer n) => xs.Subarray(n, xs.Count.Subtract(n));
@@ -5994,6 +7457,7 @@ namespace Plato.DoublePrecision
         public static IArray<T> TakeLast<T>(this IArray<T> xs, Integer n) => xs.Skip(xs.Count.Subtract(((Integer)1)));
         public static IArray<T> Drop<T>(this IArray<T> xs, Integer n) => xs.Take(xs.Count.Subtract(n));
         public static IArray<T> Trim<T>(this IArray<T> xs, Integer first, Integer last) => xs.Skip(first).Drop(last);
+        public static IArray<T> Rest<T>(this IArray<T> xs) => xs.Skip(((Integer)1));
         public static TR Reduce<T0, TR>(this IArray<T0> xs, TR acc, System.Func<T0, TR, TR> f){
             var r = acc;
             {
@@ -6030,65 +7494,117 @@ namespace Plato.DoublePrecision
             return ((Boolean)false);
         }
         public static IArray<TR> Map<T0, TR>(this IArray<T0> xs, System.Func<T0, TR> f){
-            var _var49 = xs;
+            var _var215 = xs;
             {
-                var _var48 = f;
-                return xs.Count.MapRange((i) => _var48.Invoke(_var49.At(i)));
-            }
-        }
-        public static IArray<TR> PairwiseMap<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f){
-            var _var52 = xs;
-            {
-                var _var51 = xs;
-                {
-                    var _var50 = f;
-                    return xs.Count.Subtract(((Integer)1)).MapRange((i) => _var50.Invoke(_var51.At(i), _var52.At(i.Add(((Integer)1)))));
-                }
-            }
-        }
-        public static IArray<TR> PairwiseMapModulo<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f){
-            var _var56 = xs;
-            {
-                var _var55 = xs;
-                {
-                    var _var54 = xs;
-                    {
-                        var _var53 = f;
-                        return xs.Count.MapRange((i) => _var53.Invoke(_var54.At(i), _var55.At(i.Add(((Integer)1)).Modulo(_var56.Count))));
-                    }
-                }
+                var _var214 = f;
+                return xs.Count.MapRange((i) => _var214.Invoke(_var215.At(i)));
             }
         }
         public static IArray<TR> Zip<T0, T1, TR>(this IArray<T0> xs, IArray<T1> ys, System.Func<T0, T1, TR> f){
-            var _var59 = ys;
+            var _var218 = ys;
             {
-                var _var58 = xs;
+                var _var217 = xs;
                 {
-                    var _var57 = f;
-                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var57.Invoke(_var58.At(i), _var59.At(i)));
+                    var _var216 = f;
+                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var216.Invoke(_var217.At(i), _var218.At(i)));
                 }
             }
         }
         public static IArray<TR> Zip<T0, T1, T2, TR>(this IArray<T0> xs, IArray<T1> ys, IArray<T2> zs, System.Func<T0, T1, T2, TR> f){
-            var _var63 = zs;
+            var _var222 = zs;
             {
-                var _var62 = ys;
+                var _var221 = ys;
                 {
-                    var _var61 = xs;
+                    var _var220 = xs;
                     {
-                        var _var60 = f;
-                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var60.Invoke(_var61.At(i), _var62.At(i), _var63.At(i)));
+                        var _var219 = f;
+                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var219.Invoke(_var220.At(i), _var221.At(i), _var222.At(i)));
                     }
                 }
             }
         }
         public static T ModuloAt<T>(this IArray<T> xs, Integer n) => xs.At(n.Modulo(xs.Count));
         public static IArray<T> Shift<T>(this IArray<T> xs, Integer n){
-            var _var64 = xs;
-            return xs.Count.MapRange((i) => _var64.ModuloAt(i));
+            var _var223 = xs;
+            return xs.Count.MapRange((i) => _var223.ModuloAt(i));
         }
-        public static IArray<Line3D> Lines(this IArray<Vector3D> xs, IArray<Vector3D> ys) => xs.Zip(ys, (a, b) => Line3D.New(a, b));
-        public static IArray<Line2D> Lines(this IArray<Vector2D> xs, IArray<Vector2D> ys) => xs.Zip(ys, (a, b) => Line2D.New(a, b));
+        public static IArray<TR> WithNext<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f) => xs.Drop(((Integer)1)).Zip(xs.Skip(((Integer)1)), f);
+        public static IArray<TR> WithNextAndBeginning<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f) => xs.Zip(xs.Shift(((Integer)1)), f);
+        public static IArray<TR> WithNext<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f, Boolean connect) => connect ? xs.WithNextAndBeginning(f) : xs.WithNext(f);
+        public static IArray<T> EveryNth<T>(this IArray<T> self, Integer n){
+            var _var225 = n;
+            {
+                var _var224 = self;
+                return self.Indices().Map((i) => _var224.ModuloAt(i.Multiply(_var225)));
+            }
+        }
+        public static IArray2D<TR> CartesianProduct<T0, T1, TR>(this IArray<T0> columns, IArray<T1> rows, System.Func<T0, T1, TR> func){
+            var _var228 = rows;
+            {
+                var _var227 = columns;
+                {
+                    var _var226 = func;
+                    return Array2D.New(columns.Count, rows.Count, (i, j) => _var226.Invoke(_var227.At(i), _var228.At(j)));
+                }
+            }
+        }
+        public static IArray<T> Reverse<T>(this IArray<T> self){
+            var _var230 = self;
+            {
+                var _var229 = self;
+                return self.Indices().Map((i) => _var229.At(_var230.Count.Subtract(((Integer)1).Subtract(i))));
+            }
+        }
+        public static IArray<T> Concat<T>(this IArray<T> xs, IArray<T> ys){
+            var _var234 = xs;
+            {
+                var _var233 = ys;
+                {
+                    var _var232 = xs;
+                    {
+                        var _var231 = xs;
+                        return xs.Count.Add(ys.Count).MapRange((i) => i.LessThan(_var231.Count) ? _var232.At(i) : _var233.At(i.Subtract(_var234.Count)));
+                    }
+                }
+            }
+        }
+        public static IArray<T> Prepend<T>(this IArray<T> self, T value){
+            var _var236 = self;
+            {
+                var _var235 = value;
+                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var235 : _var236.At(i.Subtract(((Integer)1))));
+            }
+        }
+        public static IArray<T> Append<T>(this IArray<T> self, T value){
+            var _var238 = self;
+            {
+                var _var237 = value;
+                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var237 : _var238.At(i.Subtract(((Integer)1))));
+            }
+        }
+        public static IArray<T> PrependAndAppend<T>(this IArray<T> self, T before, T after) => self.Prepend(before).Append(after);
+        public static IArray<Vector2D> Points(this IArray<Line2D> xs) => xs.FlatMap((x) => x);
+        public static IArray<Vector3D> Points(this IArray<Line3D> xs) => xs.FlatMap((x) => x);
+        public static IArray<Vector2D> Points(this IArray<Triangle2D> xs) => xs.FlatMap((x) => x);
+        public static IArray<Vector3D> Points(this IArray<Triangle3D> xs) => xs.FlatMap((x) => x);
+        public static IArray<Vector2D> Points(this IArray<Quad2D> xs) => xs.FlatMap((x) => x);
+        public static IArray<Vector3D> Points(this IArray<Quad3D> xs) => xs.FlatMap((x) => x);
+        public static IArray<Line2D> Lines(this IArray<Line2D> xs) => xs;
+        public static IArray<Line3D> Lines(this IArray<Line3D> xs) => xs;
+        public static IArray<Line2D> Lines(this IArray<Triangle2D> xs) => xs.FlatMap((x) => x.Lines);
+        public static IArray<Line3D> Lines(this IArray<Triangle3D> xs) => xs.FlatMap((x) => x.Lines);
+        public static IArray<Line2D> Lines(this IArray<Quad2D> xs) => xs.FlatMap((x) => x.Lines);
+        public static IArray<Line3D> Lines(this IArray<Quad3D> xs) => xs.FlatMap((x) => x.Lines);
+        public static IArray<Triangle2D> Triangles(this IArray<Triangle2D> xs) => xs;
+        public static IArray<Triangle3D> Triangles(this IArray<Triangle3D> xs) => xs;
+        public static IArray<Triangle2D> Triangles(this IArray<Quad2D> xs) => xs.FlatMap((x) => x.Triangles);
+        public static IArray<Triangle3D> Triangles(this IArray<Quad3D> xs) => xs.FlatMap((x) => x.Triangles);
+        public static IArray<Line2D> ToLines(this IArray<Vector2D> xs, IArray<Vector2D> ys) => xs.Zip(ys, (a, b) => Line2D.New(a, b));
+        public static IArray<Line3D> ToLines(this IArray<Vector3D> xs, IArray<Vector3D> ys) => xs.Zip(ys, (a, b) => Line3D.New(a, b));
         public static IArray<T> FlatMap<T0, T>(this IArray<T0> xs, System.Func<T0, IArray<T>> f) => Intrinsics.FlatMap(xs, f);
+        public static IArray<Vector3D> Transform(this IArray<Vector3D> xs, ITransform3D t){
+            var _var239 = t;
+            return xs.Map((x) => _var239.Transform(x));
+        }
     }
 }
