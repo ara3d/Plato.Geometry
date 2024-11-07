@@ -3,6 +3,18 @@ library INumerical
     //==
     // Constants
 
+    XAxis(): Vector3D
+		=> (1, 0, 0);
+
+    YAxis(): Vector3D
+        => (0, 1, 0);
+
+    ZAxis(): Vector3D
+		=> (0, 0, 1);
+
+    UnitInterval(): NumberInterval
+        => (0.0, 1.0);
+
     Pi(): Number 
         => 3.1415926535897;
     
@@ -148,16 +160,28 @@ library INumerical
     //==
     // IWholeNumber Operations 
 
-
     //==
     // Integer operations
 
-    // TODO: can these be promoted to a concept? 
+    ToNumber(x: Integer): Number
+        => x.Number;
+
+    PlusOne(x: Integer): Integer
+        => x + 1;
+
+    MinusOne(x: Integer): Integer
+        => x - 1;
+    
+    FromOne(x: Integer): Integer
+        => 1 - x;
 
     FloatDivision(x: Integer, y: Integer): Number
 		=> x.ToNumber / y.ToNumber;
-
+        
 	Fractions(x: Integer): IArray<Number>
+		=> x.Range.Map((i) => i.FloatDivision(x - 1));
+
+	FractionsExclusive(x: Integer): IArray<Number>
 		=> x.Range.Map((i) => i.FloatDivision(x));
 
     //==
@@ -273,6 +297,18 @@ library INumerical
 		=> x.Turns * 400.0;
 
     //==
+    // Trig functions on Numbers
+
+    Sin(x: Number): Number
+        => x.Turns.Sin;
+
+    Cos(x: Number): Number
+        => x.Turns.Cos;
+
+    Tan(x: Number): Number
+        => x.Turns.Tan;
+
+    //==
     // INumerical functions
 
     Component(x: INumerical, n: Integer): Number
@@ -359,6 +395,12 @@ library INumerical
     //==
     // Number-like
 
+    ToNumber(x: Number): Number
+        => x;
+
+    Number(x: INumberLike): Number
+        => x.ToNumber;
+
     ToNumber(x: INumberLike): Number
         => x.Component(0);
 
@@ -428,4 +470,7 @@ library INumerical
     // for the range of Interpolatable types (at least not now, based on limitations of the Plato compiler)
     Barycentric(v1: IInterpolatable, v2: IInterpolatable, v3: IInterpolatable, uv: Vector2D): IInterpolatable 
         => (v1 + (v2 - v1)) * uv.X + (v3 - v1) * uv.Y;   
+
+    //==
+    // 
 }

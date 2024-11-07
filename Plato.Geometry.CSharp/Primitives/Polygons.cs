@@ -25,7 +25,7 @@ namespace Plato.DoublePrecision
             => CirclePoints(p).EveryNth(q).ToPolyLine2D(true);
 
         public static IArray<Vector2D> CirclePoints(int n)
-            => Circle.Default.Sample<Vector2D>(n);
+            => Circle.Default.Sample(n);
 
         public static PolyLine2D StarFigure(Integer p, Integer q)
         {

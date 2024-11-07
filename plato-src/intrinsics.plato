@@ -37,8 +37,10 @@
     And(x: Boolean, y: Boolean): Boolean;
     Or(x: Boolean, y: Boolean): Boolean;
     Not(x: Boolean): Boolean;
-
-    ToNumber(x: Integer): Number;
+   
+    Number(x: Integer): Number;
+    Number(x: Character): Number;
+    Integer(x: Character): Integer;
 
     Invoke(f: Function0<$TR>): $TR;
     Invoke(f: Function1<$T0, $TR>, a0: $T0): $TR;
@@ -75,4 +77,5 @@
     MapRange(x: Integer, f: Function1<Integer, $T>): IArray<$T>;
     FlatMap(xs: IArray<$T1>, f: Function1<$T1, IArray<$T2>>): IArray<$T2>;
 
+    MakeArray2D(columns: Integer, rows: Integer, f: Function2<Integer, Integer, $T>): IArray2D<$T>;
 }

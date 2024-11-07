@@ -1,6 +1,15 @@
 library Transforms
 {
     //==
+    // IdentityTransform3D
+
+	Transform(t: IdentityTransform3D, v: Vector3D): Vector3D
+		=> v;
+
+	TransformNormal(t: IdentityTransform3D, v: Vector3D): Vector3D
+		=> v;
+
+    //==
     // Transform3D
 
 	Transform(t: Transform3D, v: Vector3D): Vector3D
@@ -67,7 +76,7 @@ library Transforms
 	// Frame3D
 
 	Pose3D(f: Frame3D): Pose3D
-        => (f.Translation, f.Forward.LookRotation(f.Up));
+        => (f.Position, f.Forward.LookRotation(f.Up));
 
     Transform(f: Frame3D, v: Vector3D): Vector3D
 		=> f.Pose3D.Transform(v);
@@ -126,6 +135,12 @@ library Transforms
 
 	Concatenate(q1: Quaternion, q2: Quaternion): Quaternion
 		=> q1.ReverseConcatenate(q2);
+
+    Conjugate(q: Quaternion): Quaternion
+		=> (-q.X, -q.Y, -q.Z, q.W);
+
+    Inverse(q: Quaternion): Quaternion
+        => q.Conjugate * q.MagnitudeSquared.Inverse;
 
     Normalize(q: Quaternion): Quaternion
         => q.Vector4D.Normalize;
@@ -194,6 +209,33 @@ library Transforms
         }
     }
 
+    Multiply(q: Quaternion, scalar: Number): Quaternion
+        => q.Vector4D * scalar;
+
+    Divide(q: Quaternion, scalar: Number): Quaternion
+        => q.Vector4D / scalar;
+
+    Rotation(v: Vector3D, theta: Angle): Quaternion
+		=> v.AxisAngle(theta);
+
+    XRotation(theta: Angle): Quaternion
+        => XAxis.Rotation(theta);
+
+    YRotation(theta: Angle): Quaternion
+        => XAxis.Rotation(theta);
+
+    ZRotation(theta: Angle): Quaternion
+        => ZAxis.Rotation(theta);
+
+    Add(q1: Quaternion, q2: Quaternion): Quaternion
+        => q1.Vector4D + q2.Vector4D;
+
+    Negate(q: Quaternion): Quaternion
+        => -q.Vector4D;
+
+    Subtract(q1: Quaternion, q2: Quaternion): Quaternion
+        => q1.Vector4D - q2.Vector4D;
+
     Dot(q1: Quaternion, q2: Quaternion): Number
         => q1.Vector4D.Dot(q2.Vector4D);
 
@@ -212,7 +254,7 @@ library Transforms
         else
         {
             var omega = cosOmega.Abs.Acos;
-            var invSinOmega = 1 / omega.Sin;
+            var invSinOmega = omega.Sin.Inverse;
             var s1 = ((1.0 - t) * omega).Sin * invSinOmega;
             var s2 = flip
                 ? -(t * omega).Sin * invSinOmega
@@ -247,4 +289,25 @@ library Transforms
 
     Transform(xs: IArray<Vector3D>, t: ITransform3D): IArray<Vector3D>
 	    => xs.Map(x  => t.Transform(x));
+
+    Multiply(q1: Quaternion, q2: Quaternion): Quaternion
+    {
+        // 9 muls, 27 adds
+        var tmp_00 = (q1.Z - q1.Y) * (q2.Y - q2.Z);
+        var tmp_01 = (q1.W + q1.X) * (q2.W + q2.X);
+        var tmp_02 = (q1.W - q1.X) * (q2.Y + q2.Z);
+        var tmp_03 = (q1.Y + q1.Z) * (q2.W - q2.X);
+        var tmp_04 = (q1.Z - q1.X) * (q2.X - q2.Y);
+        var tmp_05 = (q1.Z + q1.X) * (q2.X + q2.Y);
+        var tmp_06 = (q1.W + q1.Y) * (q2.W - q2.Z);
+        var tmp_07 = (q1.W - q1.Y) * (q2.W + q2.Z);
+        var tmp_08 = tmp_05 + tmp_06 + tmp_07;
+        var tmp_09 = (tmp_04 + tmp_08) * 0.5;
+
+        return (
+            tmp_01 + tmp_09 - tmp_08,
+            tmp_02 + tmp_09 - tmp_07,
+            tmp_03 + tmp_09 - tmp_06,
+            tmp_00 + tmp_09 - tmp_05);
+    }
 }

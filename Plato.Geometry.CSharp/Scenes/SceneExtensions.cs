@@ -48,7 +48,7 @@ namespace Plato.Geometry.Scenes
             {
                 Id = id,
                 Name = name ?? $"Mesh {id}",
-                Transform = transform ?? NullTransform.Instance,
+                Transform = transform ?? IdentityTransform3D.Default,
             };
             node.Objects.Add(obj);
             self.Children.Add(node);
@@ -77,7 +77,7 @@ namespace Plato.Geometry.Scenes
         {
             var offset = points.Count;
             foreach (var p in mesh.Points)
-                points.Add(transform.TransformPoint(p));
+                points.Add(transform.Transform(p));
             foreach (var i in mesh.Indices)
                 indices.Add(i + offset);
         }

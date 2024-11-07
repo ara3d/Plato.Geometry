@@ -50,4 +50,28 @@ library IInterval
     
     Clamp(x: IInterval<$T>, value: $T): $T
         => value.Clamp(x.Min, x.Max);
+        
+    LinearSpace(count: Integer): IArray<Number>
+        => count.Fractions;
+
+    LinearSpaceExclusive(count: Integer): IArray<Number>
+        => count.FractionsExclusive;
+
+    LinearSpace(interval: IInterval<$T>, count: Integer): IArray<$T>
+        => count.LinearSpace.Map(x => interval.Lerp(x));
+
+    LinearSpaceExclusive(interval: IInterval<$T>, count: Integer): IArray<$T>
+        => count.LinearSpaceExclusive.Map(x => interval.Lerp(x));
+
+    GeometricSpace(count: Integer): IArray<Number>
+        => count.LinearSpace.Map(x => 1.0.Pow(x));
+
+    GeometricSpaceExclusive(count: Integer): IArray<Number>
+        => count.LinearSpaceExclusive.Map(x => 1.0.Pow(x));
+
+    GeometricSpace(interval: IInterval<$T>, count: Integer): IArray<$T>
+        => count.GeometricSpace.Map(x => interval.Lerp(x));
+
+    GeometricSpaceExclusive(interval: IInterval<$T>, count: Integer): IArray<$T>
+        => count.GeometricSpaceExclusive.Map(x => interval.Lerp(x));
 }

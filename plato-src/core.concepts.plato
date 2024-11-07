@@ -26,6 +26,7 @@ concept INumerical
 
 // These are things that can be converted to and from numbers. It includes measures, and reals.
 // Whole numbers are not included because converting to/from a number would change the result.
+// It also includes Numbers of-course. 
 concept INumberLike
     inherits INumerical, IOrderable
 {

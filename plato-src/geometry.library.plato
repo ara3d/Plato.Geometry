@@ -66,7 +66,7 @@ library IGeometry
     BottomRight(x: Rect2D): Vector2D => (x.Right, x.Bottom);
     TopRight(x: Rect2D): Vector2D => (x.Right, x.Top);
     TopLeft(x: Rect2D): Vector2D => (x.Left, x.Top);
-    Quad2D(x: Rect2D): Quad2D => [x.BottomLeft, x.BottomRight, x.TopRight, x.TopLeft];
+    Quad2D(x: Rect2D): Quad2D => (x.BottomLeft, x.BottomRight, x.TopRight, x.TopLeft);
     Points(x: Rect2D): IArray<Vector2D> => x.Quad2D;
 
     //==
@@ -249,7 +249,7 @@ library IGeometry
 
     LineMesh3D(g: ITriangleMesh3D): LineMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[0]]));
     LineMesh3D(g: IQuadMesh3D): LineMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]));
-    TriangleMesh3D(g: IQuadMesh3D): TriangleMesh3D => g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));  
+    TriangleMesh3D(g: IQuadMesh3D): TriangleMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));  
 
     LineArray2D(t: Triangle2D): LineArray2D => new LineArray2D(t.Lines);
     LineArray2D(q: Quad2D): LineArray2D => new LineArray2D(q.Lines);
@@ -340,7 +340,7 @@ library IGeometry
     Deform(x: TriangleArray3D, f: Function1<Vector3D, Vector3D>): TriangleArray3D => new TriangleArray3D(x.Triangles.Map(t => t.Deform(f)));
     Deform(x: PointArray3D, f: Function1<Vector3D, Vector3D>): PointArray3D => new PointArray3D(x.Points.Map(f));
     Deform(x: QuadArray3D, f: Function1<Vector3D, Vector3D>): QuadArray3D => new QuadArray3D(x.Quads.Map(q => q.Deform(f)));
-    Deform(x: QuadGrid3D, f: Function1<Vector3D, Vector3D>): QuadGrid3D => new QuadGrid3D(x.Points.Map(f), x.ClosedX, x.ClosedY);
+    Deform(x: QuadGrid3D, f: Function1<Vector3D, Vector3D>): QuadGrid3D => new QuadGrid3D(x.PointGrid.Map(f), x.ClosedX, x.ClosedY);
 
     // TODO: deform the 8 bounds, and compute the new bounds.
     // Deform(x: Bounds3D, f: Function1<Vector3D, Vector3D>): Bounds3D => (f(x.Min), f(x.Max));

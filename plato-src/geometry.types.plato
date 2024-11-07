@@ -473,6 +473,11 @@ type FigureEightKnot
 // 3D Transforms
 //==
 
+type IdentityTransform3D
+	implements IValue, ITransform3D
+{
+}
+
 type Transform3D
     implements IValue, ITransform3D
 {

@@ -30,10 +30,6 @@ library ArrayLibrary
 	Repeat(x: IAny, n: Integer): IArray<IAny>
         => n.MapRange((i) => x);
 
-    // Returns n numbers, from 0 to 1, including 0, but not 1. 
-    Numbers(n: Integer): IArray<Number>
-        => n.MapRange((i) => i.ToNumber / n.ToNumber);
-            
     Range(n: Integer): IArray<Integer>
         => n.MapRange((i) => i);
 
@@ -118,6 +114,9 @@ library ArrayLibrary
     Map(xs: IArray<$T1>, f: Function1<$T1, $T2>): IArray<$T2> 
         => xs.Count.MapRange((i) => f(xs.At(i)));
 
+    Map(xs: IArray2D<$T1>, f: Function1<$T1, $T2>): IArray2D<$T2> 
+        => new Array2D(xs.ColumnCount, xs.RowCount, (a, b) => f(xs.At(a, b)));
+
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, f: Function2<$T1, $T2, $T3>): IArray<$T3> 
         => xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i]));  
 
@@ -146,7 +145,7 @@ library ArrayLibrary
         => self.Indices().Map(i => self.ModuloAt(i * n));
 
     CartesianProduct(columns: IArray<$TColumn>, rows: IArray<$TRow>, func: Function2<$TColumn, $TRow, $TResult>): IArray2D<$TResult>
-        => new Array2D<$TResult>(columns.Count, rows.Count, (i, j) => func(columns[i], rows[j]));
+        => columns.Count.MakeArray2D(rows.Count, (i, j) => func(columns[i], rows[j]));
 
     Reverse(self: IArray<$T>): IArray<$T>
         => self.Indices().Map(i => self[self.Count - 1 - i]);

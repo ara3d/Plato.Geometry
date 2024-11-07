@@ -1,5 +1,17 @@
 library Curves
 {
+    Sample(curve: ICurve2D, numPoints: Integer): IArray<Vector2D>
+		=> numPoints.LinearSpace.Map(x => curve.Eval(x));
+
+    Sample(curve: ICurve3D, numPoints: Integer): IArray<Vector3D>
+		=> numPoints.LinearSpace.Map(x => curve.Eval(x));
+
+    ToPolyLine2D(curve: ICurve2D, numPoints: Integer): PolyLine2D
+	    => (curve.Sample(numPoints), curve.Closed);    
+
+    ToPolyLine3D(curve: ICurve3D, numPoints: Integer): PolyLine3D
+	    => (curve.Sample(numPoints), curve.Closed);    
+
     // https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
     LinearFunction(x: IAlgebraic, m: Number, b: Number): IAlgebraic
         => m * x + b;
@@ -110,7 +122,7 @@ library Curves
     // Other polar coordinate based functions
 }
 
-/*
+/* TODO: this needs to 
  *
  *
    // https://en.wikipedia.org/wiki/B%C3%A9zier_curve    
