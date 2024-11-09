@@ -75,9 +75,9 @@ namespace Plato.Geometry.WPF
         public static SpecularMaterial ToSpecularMaterial(this Color color, double power)
             => new SpecularMaterial(new SolidColorBrush(color.ToWpf()), power);
 
-        public static MeshGeometry3D ToWpfFaceted(this TriangleMesh mesh)
+        public static MeshGeometry3D ToWpfFaceted(this ITriangleMesh3D mesh)
         {
-            var triangles = mesh.Primitives;
+            var triangles = mesh.Triangles;
             var r = new MeshGeometry3D();
 
             foreach (var t in triangles)
@@ -88,13 +88,13 @@ namespace Plato.Geometry.WPF
             return r;
         }
 
-        public static MeshGeometry3D ToWpf(this TriangleMesh mesh)
+        public static MeshGeometry3D ToWpf(this ITriangleMesh3D mesh)
         {
             var r = new MeshGeometry3D();
 
-            for (var i = 0; i < mesh.Vertices.Count; ++i)
+            for (var i = 0; i < mesh.Points.Count; ++i)
             {
-                var v = mesh.Vertices[i];
+                var v = mesh.Points[i];
                 r.Positions.Add(new Point3D(v.X, v.Y, v.Z));
             }
 
@@ -138,7 +138,7 @@ namespace Plato.Geometry.WPF
         }
 
         public static WTransform3D ToWpf(this ITransform3D t)
-            => t == null || t is NullTransform
+            => t == null || t is IdentityTransform3D
                 ? WTransform3D.Identity 
                 : new MatrixTransform3D(t.Matrix.ToWpf());
 

@@ -18,9 +18,6 @@ namespace Plato.Geometry.Unity
 
         public static UQuaternion ToUnity(this Rotation3D r) => r.Quaternion.ToUnity();
 
-        public static Vector3 ToUnity(this Size3D v) => new Vector3((float)v.Width, (float)v.Height, (float)v.Depth);
-        public static Vector2 ToUnity(this Size2D v) => new Vector2((float)v.Width, (float)v.Height);
-
         public static UQuaternion ToUnity(this Quaternion q) => new UQuaternion((float)q.X, (float)q.Y, (float)q.Z, (float)q.W);
 
         public static UMatrix4x4 ToUnity(this Matrix4x4 m)
@@ -43,10 +40,10 @@ namespace Plato.Geometry.Unity
         public static int[] ToUnity(this IArray<Integer> indices)
             => indices.Map(i => (int)i.Value).ToSystemArray();
 
-        public static Mesh ToUnity(this IQuadMesh mesh)
+        public static Mesh ToUnity(this IQuadMesh3D mesh)
             => mesh.ToTriangleMesh().ToUnity();
 
-        public static Mesh ToUnity(this ITriangleMesh mesh)
+        public static Mesh ToUnity(this ITriangleMesh3D mesh)
         {
             var unityMesh = new Mesh
             {

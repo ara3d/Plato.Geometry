@@ -12,7 +12,7 @@ Implements: IAdditive, IAny, IEquatable, IInterpolatable, IMeasure, INumberLike,
 
 ## Type AnglePair
 
-Fields: Max:ConcreteType:Angle, Min:ConcreteType:Angle.
+Fields: End:ConcreteType:Angle, Start:ConcreteType:Angle.
 
 Implements: IAny, IArray, IEquatable, IInterval, IValue.
 
@@ -21,6 +21,12 @@ Implements: IAny, IArray, IEquatable, IInterval, IValue.
 Fields: Angles:ConcreteType:AnglePair, Circle:ConcreteType:Circle.
 
 Implements: IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IOpenShape2D.
+
+## Type ArchimedeanSpiral
+
+Fields: A:ConcreteType:Number, B:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
 
 ## Type Array
 
@@ -56,13 +62,13 @@ Implements: IAny, IBoolean, IEquatable, IOrderable, IValue.
 
 Fields: Max:ConcreteType:Vector2D, Min:ConcreteType:Vector2D.
 
-Implements: IAny, IArray, IEquatable, IInterval, IValue.
+Implements: IAny, IBounds, IEquatable, IValue.
 
 ## Type Bounds3D
 
 Fields: Max:ConcreteType:Vector3D, Min:ConcreteType:Vector3D.
 
-Implements: IAny, IArray, IDeformable3D, IEquatable, IInterval, IValue.
+Implements: IAny, IBounds, IDeformable3D, IEquatable, IValue.
 
 ## Type Box2D
 
@@ -80,13 +86,19 @@ Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSu
 
 Fields: .
 
-Implements: IClosedCurve2D, IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IProcedural.
 
 ## Type Capsule
 
 Fields: Height:ConcreteType:Number, Radius:ConcreteType:Number.
 
 Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSurface, ISolid, ISurface.
+
+## Type Cardoid
+
+Fields: .
+
+Implements: IAngularCurve2D, IClosedShape, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IPolarCurve, IProcedural.
 
 ## Type Character
 
@@ -104,7 +116,7 @@ Implements: IClosedShape, IClosedShape2D, IGeometry, IGeometry2D, IOpenClosedSha
 
 Fields: Center:ConcreteType:Vector2D, Radius:ConcreteType:Number.
 
-Implements: IClosedCurve2D, IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
+Implements: IAngularCurve2D, IClosedCurve2D, IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
 
 ## Type Color
 
@@ -152,7 +164,13 @@ Implements: IAny, ICoordinate, IEquatable, IValue.
 
 Fields: Imaginary:ConcreteType:Number, IReal:ConcreteType:Number.
 
-Implements: IAdditive, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
+Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
+
+## Type ConchoidOfDeSluze
+
+Fields: A:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
 
 ## Type Cone
 
@@ -166,11 +184,17 @@ Fields: Height:ConcreteType:Number, Radius1:ConcreteType:Number, Radius2:Concret
 
 Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSurface, ISolid, ISurface.
 
-## Type Cos
+## Type ConicSection
 
-Fields: Amplitude:ConcreteType:Number, Frequency:ConcreteType:Number, Phase:ConcreteType:Number.
+Fields: Eccentricity:ConcreteType:Number, SemiLatusRectum:ConcreteType:Number.
 
-Implements: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
+
+## Type Cubic
+
+Fields: A:ConcreteType:Number, B:ConcreteType:Number, C:ConcreteType:Number, D:ConcreteType:Number.
+
+Implements: IRealFunction.
 
 ## Type CubicBezier2D
 
@@ -182,13 +206,13 @@ Implements: IArray, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, 
 
 Fields: A:ConcreteType:Vector3D, B:ConcreteType:Vector3D, C:ConcreteType:Vector3D, D:ConcreteType:Vector3D.
 
-Implements: IArray, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
+Implements: IArray, IOpenClosedShape, IOpenShape.
 
-## Type CubicFunction2D
+## Type CycloidOfCeva
 
-Fields: A:ConcreteType:Number, B:ConcreteType:Number, C:ConcreteType:Number, D:ConcreteType:Number.
+Fields: .
 
-Implements: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
 
 ## Type Cylinder
 
@@ -218,13 +242,25 @@ Implements: .
 
 Fields: Center:ConcreteType:Vector2D, Size:ConcreteType:Vector2D.
 
-Implements: IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
+Implements: IAngularCurve2D, IClosedCurve2D, IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
 
 ## Type Ellipsoid
 
 Fields: Radii:ConcreteType:Vector3D.
 
 Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSurface, ISolid, ISurface.
+
+## Type Epicycloid
+
+Fields: Radius1:ConcreteType:Number, Radius2:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IProcedural.
+
+## Type Epitrochoid
+
+Fields: Dist:ConcreteType:Number, Radius1:ConcreteType:Number, Radius2:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IProcedural.
 
 ## Type Error
 
@@ -238,11 +274,17 @@ Fields: Pitch:ConcreteType:Angle, Roll:ConcreteType:Angle, Yaw:ConcreteType:Angl
 
 Implements: IAny, IEquatable, ITransform3D, IValue.
 
+## Type FermatsSpiral
+
+Fields: A:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
+
 ## Type FigureEightKnot
 
 Fields: .
 
-Implements: IClosedCurve3D, IClosedShape, IClosedShape3D, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
+Implements: IAngularCurve3D, IClosedShape, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
 
 ## Type Fraction
 
@@ -338,13 +380,25 @@ Implements: IAny, ICoordinate, IEquatable, IValue.
 
 Fields: Height:ConcreteType:Number, NumTurns:ConcreteType:Number, Radius:ConcreteType:Number.
 
-Implements: ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IOpenCurve3D, IOpenShape, IOpenShape3D, IProcedural.
+Implements: IAngularCurve3D, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IOpenShape, IProcedural.
 
 ## Type HorizontalCoordinate
 
-Fields: Azimuth:ConcreteType:Angle, Height:ConcreteType:Number, Radius:ConcreteType:Number.
+Fields: Altitude:ConcreteType:Angle, Azimuth:ConcreteType:Angle.
 
 Implements: IAny, ICoordinate, IEquatable, IValue.
+
+## Type Hypocycloid
+
+Fields: Radius1:ConcreteType:Number, Radius2:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IProcedural.
+
+## Type Hypotrochoid
+
+Fields: Dist:ConcreteType:Number, Radius1:ConcreteType:Number, Radius2:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IProcedural.
 
 ## Type IdentityTransform3D
 
@@ -376,6 +430,12 @@ Fields: A:ConcreteType:Integer, B:ConcreteType:Integer, C:ConcreteType:Integer, 
 
 Implements: IAny, IArray, IEquatable, IValue.
 
+## Type LemniscateOfBernoulli
+
+Fields: A:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
+
 ## Type Length
 
 Fields: Meters:ConcreteType:Number.
@@ -388,23 +448,29 @@ Fields: A:ConcreteType:Circle, B:ConcreteType:Circle.
 
 Implements: IClosedShape, IClosedShape2D, IGeometry, IGeometry2D, IOpenClosedShape.
 
+## Type Limacon
+
+Fields: A:ConcreteType:Number, B:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
+
 ## Type Line2D
 
 Fields: A:ConcreteType:Vector2D, B:ConcreteType:Vector2D.
 
-Implements: IArray, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IOpenShape2D, IPointGeometry2D, IPolyLine2D, IProcedural.
+Implements: IAny, IArray, IArray, ICurve, ICurve2D, IDistanceField2D, IEquatable, IGeometry, IGeometry2D, IInterval, IOpenClosedShape, IOpenShape, IOpenShape2D, IPointGeometry2D, IPolyLine2D, IProcedural, IValue.
 
 ## Type Line3D
 
 Fields: A:ConcreteType:Vector3D, B:ConcreteType:Vector3D.
 
-Implements: IArray, ICurve, ICurve3D, IDeformable3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IOpenShape, IOpenShape3D, IPointGeometry3D, IPolyLine3D, IProcedural.
+Implements: IAny, IArray, IArray, ICurve, ICurve3D, IDeformable3D, IDistanceField3D, IEquatable, IGeometry, IGeometry3D, IInterval, IOpenClosedShape, IOpenShape, IOpenShape3D, IPointGeometry3D, IPolyLine3D, IProcedural, IValue.
 
-## Type LinearFunction2D
+## Type LinearEquation
 
 Fields: Slope:ConcreteType:Number, YIntercept:ConcreteType:Number.
 
-Implements: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
+Implements: IRealFunction.
 
 ## Type LineArray2D
 
@@ -426,9 +492,15 @@ Implements: IDeformable3D, IGeometry, IGeometry3D, IIndexedGeometry, IIndexedGeo
 
 ## Type Lissajous
 
-Fields: Kx:ConcreteType:Integer, Ky:ConcreteType:Integer.
+Fields: A:ConcreteType:Number, B:ConcreteType:Number, Delta:ConcreteType:Angle.
 
-Implements: IClosedCurve2D, IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IProcedural.
+
+## Type LogarithmicSpiral
+
+Fields: A:ConcreteType:Number, K:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
 
 ## Type LogPolarCoordinate
 
@@ -470,11 +542,11 @@ Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSu
 
 Fields: .
 
-Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IDivisible, IEquatable, IInterpolatable, IInvertible, IModulo, IMultiplicative, IMultiplicativeWithInverse, INumberLike, INumerical, IOrderable, IReal, IScalarArithmetic, IValue.
+Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumberLike, INumerical, IOrderable, IReal, IScalarArithmetic, IValue.
 
 ## Type NumberInterval
 
-Fields: Max:ConcreteType:Number, Min:ConcreteType:Number.
+Fields: End:ConcreteType:Number, Start:ConcreteType:Number.
 
 Implements: IAny, IArray, IEquatable, IInterval, IValue.
 
@@ -482,7 +554,7 @@ Implements: IAny, IArray, IEquatable, IInterval, IValue.
 
 Fields: .
 
-Implements: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
+Implements: IOpenClosedShape, IOpenShape, IRealFunction.
 
 ## Type Plane
 
@@ -580,6 +652,12 @@ Fields: Indices:Concept:IArray<ConcreteType:Integer>, Points:Concept:IArray<Conc
 
 Implements: IDeformable3D, IGeometry, IGeometry3D, IIndexedGeometry, IIndexedGeometry3D, IPointGeometry3D, IPrimitiveGeometry, IPrimitiveGeometry3D, IQuadGeometry3D, IQuadMesh3D, IQuadPrimitives.
 
+## Type Quadratic
+
+Fields: A:ConcreteType:Number, B:ConcreteType:Number, C:ConcreteType:Number.
+
+Implements: IRealFunction.
+
 ## Type QuadraticBezier2D
 
 Fields: A:ConcreteType:Vector2D, B:ConcreteType:Vector2D, C:ConcreteType:Vector2D.
@@ -590,13 +668,7 @@ Implements: IArray, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, 
 
 Fields: A:ConcreteType:Vector3D, B:ConcreteType:Vector3D, C:ConcreteType:Vector3D.
 
-Implements: IArray, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
-
-## Type QuadraticFunction2D
-
-Fields: A:ConcreteType:Number, B:ConcreteType:Number, C:ConcreteType:Number.
-
-Implements: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
+Implements: IArray, IOpenClosedShape, IOpenShape.
 
 ## Type Quaternion
 
@@ -640,6 +712,12 @@ Fields: Center:ConcreteType:Vector2D, InnerRadius:ConcreteType:Number, OuterRadi
 
 Implements: IClosedShape, IClosedShape2D, IGeometry, IGeometry2D, IOpenClosedShape.
 
+## Type Rose
+
+Fields: K:ConcreteType:Integer.
+
+Implements: IAngularCurve2D, IClosedShape, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IPolarCurve, IProcedural.
+
 ## Type Rotation3D
 
 Fields: Quaternion:ConcreteType:Quaternion.
@@ -658,11 +736,17 @@ Fields: Arc:ConcreteType:Arc.
 
 Implements: IClosedShape, IClosedShape2D, IGeometry, IGeometry2D, IOpenClosedShape.
 
-## Type Sin
+## Type SineWave
 
 Fields: Amplitude:ConcreteType:Number, Frequency:ConcreteType:Number, Phase:ConcreteType:Number.
 
-Implements: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenCurve2D, IOpenShape, IOpenShape2D, IProcedural.
+Implements: IOpenClosedShape, IOpenShape, IRealFunction.
+
+## Type SinusoidalSpiral
+
+Fields: A:ConcreteType:Number, N:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
 
 ## Type Sphere
 
@@ -672,7 +756,7 @@ Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSu
 
 ## Type SphericalCoordinate
 
-Fields: Azimuth:ConcreteType:Angle, Polar:ConcreteType:Angle, Radius:ConcreteType:Number.
+Fields: Azimuth:ConcreteType:Angle, Polar:ConcreteType:Angle, RadialDistance:ConcreteType:Number.
 
 Implements: IAny, ICoordinate, IEquatable, IValue.
 
@@ -710,7 +794,7 @@ Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSu
 
 Fields: P:ConcreteType:Integer, Q:ConcreteType:Integer, Radius:ConcreteType:Number.
 
-Implements: IClosedCurve3D, IClosedShape, IClosedShape3D, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
+Implements: IAngularCurve3D, IClosedShape, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
 
 ## Type Transform2D
 
@@ -728,7 +812,7 @@ Implements: IAny, IEquatable, ITransform3D, IValue.
 
 Fields: .
 
-Implements: IClosedCurve3D, IClosedShape, IClosedShape3D, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
+Implements: IAngularCurve3D, IClosedShape, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
 
 ## Type Triangle2D
 
@@ -759,6 +843,18 @@ Implements: IDeformable3D, IGeometry, IGeometry3D, IIndexedGeometry, IIndexedGeo
 Fields: Indices:Concept:IArray<ConcreteType:Integer>, Points:Concept:IArray<ConcreteType:Vector3D>.
 
 Implements: IDeformable3D, IGeometry, IGeometry3D, IIndexedGeometry, IIndexedGeometry3D, IPointGeometry3D, IPrimitiveGeometry, IPrimitiveGeometry3D, ITriangleGeometry3D, ITriangleMesh3D, ITrianglePrimitives.
+
+## Type TrisectrixOfMaclaurin
+
+Fields: A:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
+
+## Type TschirnhausenCubic
+
+Fields: A:ConcreteType:Number.
+
+Implements: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape, IPolarCurve, IProcedural.
 
 ## Type Tube
 
@@ -830,25 +926,25 @@ Implements: .
 
 Fields: Value:ConcreteType:Number.
 
-Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IDivisible, IEquatable, IInterpolatable, IInvertible, IModulo, IMultiplicative, IMultiplicativeWithInverse, INumberLike, INumerical, IOrderable, IReal, IScalarArithmetic, IValue.
+Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumberLike, INumerical, IOrderable, IReal, IScalarArithmetic, IValue.
 
 ## Type Vector2D
 
 Fields: X:ConcreteType:Number, Y:ConcreteType:Number.
 
-Implements: IAdditive, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
+Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
 
 ## Type Vector3D
 
 Fields: X:ConcreteType:Number, Y:ConcreteType:Number, Z:ConcreteType:Number.
 
-Implements: IAdditive, IAny, IArithmetic, IArray, IDeformable3D, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
+Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IArray, IDeformable3D, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
 
 ## Type Vector4D
 
 Fields: W:ConcreteType:Number, X:ConcreteType:Number, Y:ConcreteType:Number, Z:ConcreteType:Number.
 
-Implements: IAdditive, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
+Implements: IAdditive, IAlgebraic, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IValue, IVector.
 
 <Details>
 <Summary>
@@ -891,20 +987,54 @@ Functions: Add, Negative, Subtract.
 
 ## IAlgebraic
 
-Inherits: IAdditive, IAny, IAny, IAny, IAny, IInterpolatable, IInvertible, IMultiplicative, IMultiplicativeWithInverse, IScalarArithmetic.
+Inherits: IAdditive, IAny, IAny, IAny, IInterpolatable, IMultiplicative, IScalarArithmetic.
 
-Implemented by: Unit, Number.
+Implemented by: Unit, Complex, Vector2D, Vector3D, Vector4D, Number.
 
-Inherited by: IReal.
+Inherited by: IReal, IVector.
 
 Functions: .
+## IAngularCurve2D
+
+Inherits: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
+
+Implemented by: Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral.
+
+Inherited by: IPolarCurve.
+
+Functions: GetPoint.
+
+
+
+
+
+
+
+
+## IAngularCurve3D
+
+Inherits: ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
+
+Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix.
+
+Inherited by: .
+
+Functions: GetPoint.
+
+
+
+
+
+
+
+
 ## IAny
 
 Inherits: .
 
-Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Plane, Bounds3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
+Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
 
-Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IEquatable, IAdditive, IScalarArithmetic, IMultiplicative, IInvertible, IMultiplicativeWithInverse, IAlgebraic, IInterpolatable, IDivisible, IModulo, IArithmetic, IBoolean, IInterval.
+Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IEquatable, IAdditive, IScalarArithmetic, IMultiplicative, IInvertible, IMultiplicativeWithInverse, IAlgebraic, IInterpolatable, IDivisible, IModulo, IArithmetic, IBoolean, IInterval, IBounds.
 
 Functions: FieldNames, FieldValues, TypeName.
 
@@ -953,7 +1083,7 @@ Functions: .
 
 Inherits: .
 
-Implemented by: Complex, Integer2, Integer3, Integer4, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Bounds2D, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Bounds3D, Line3D, Triangle3D, Quad3D, CubicBezier2D, QuadraticBezier2D, CubicBezier3D, QuadraticBezier3D, Quaternion, String, Array, Array2D, Array3D.
+Implemented by: Complex, Integer2, Integer3, Integer4, AnglePair, NumberInterval, QuadraticBezier2D, CubicBezier2D, CubicBezier3D, QuadraticBezier3D, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Line3D, Triangle3D, Quad3D, Quaternion, String, Array, Array2D, Array3D.
 
 Inherited by: IArray2D, IArray3D, IVector, IInterval, IPolygon2D, IPolygon3D.
 
@@ -1098,11 +1228,28 @@ Functions: Bounds.
 
 
 
+## IBounds
+
+Inherits: IAny, IAny, IAny, IEquatable, IEquatable, IValue.
+
+Implemented by: Bounds2D, Bounds3D.
+
+Inherited by: .
+
+Functions: Max, Min.
+
+
+
+
+
+
+
+
 ## IClosedCurve2D
 
 Inherits: IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry, IGeometry2D, IGeometry2D, IOpenClosedShape, IOpenClosedShape, IProcedural.
 
-Implemented by: Circle, Lissajous, ButterflyCurve.
+Implemented by: Circle, Ellipse.
 
 Inherited by: .
 
@@ -1111,7 +1258,7 @@ Functions: .
 
 Inherits: IClosedShape, IClosedShape3D, ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry, IGeometry3D, IGeometry3D, IOpenClosedShape, IOpenClosedShape, IProcedural.
 
-Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot.
+Implemented by: .
 
 Inherited by: .
 
@@ -1138,7 +1285,7 @@ Functions: .
 
 Inherits: IOpenClosedShape.
 
-Implemented by: Triangle2D, Quad2D, Lens, Rect2D, Ellipse, Ring, Sector, Chord, Segment, RegularPolygon, Triangle3D, Quad3D, Circle, Lissajous, ButterflyCurve, TorusKnot, TrefoilKnot, FigureEightKnot.
+Implemented by: Circle, Ellipse, Cardoid, Rose, TorusKnot, TrefoilKnot, FigureEightKnot, Triangle2D, Quad2D, Lens, Rect2D, Ring, Sector, Chord, Segment, RegularPolygon, Triangle3D, Quad3D.
 
 Inherited by: IClosedShape2D, IClosedShape3D, IClosedCurve2D, IClosedCurve3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D.
 
@@ -1147,7 +1294,7 @@ Functions: .
 
 Inherits: IClosedShape, IGeometry, IGeometry2D, IOpenClosedShape.
 
-Implemented by: Triangle2D, Quad2D, Lens, Rect2D, Ellipse, Ring, Sector, Chord, Segment, RegularPolygon, Circle, Lissajous, ButterflyCurve.
+Implemented by: Circle, Ellipse, Triangle2D, Quad2D, Lens, Rect2D, Ring, Sector, Chord, Segment, RegularPolygon.
 
 Inherited by: IClosedCurve2D, IClosedPolyLine2D, IPolygon2D.
 
@@ -1156,7 +1303,7 @@ Functions: .
 
 Inherits: IClosedShape, IGeometry, IGeometry3D, IOpenClosedShape.
 
-Implemented by: Triangle3D, Quad3D, TorusKnot, TrefoilKnot, FigureEightKnot.
+Implemented by: Triangle3D, Quad3D.
 
 Inherited by: IClosedCurve3D, IClosedPolyLine3D, IPolygon3D.
 
@@ -1174,9 +1321,9 @@ Functions: .
 
 Inherits: IOpenClosedShape, IProcedural.
 
-Implemented by: Triangle2D, Quad2D, Line2D, Rect2D, Ellipse, RegularPolygon, Line3D, Triangle3D, Quad3D, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Circle, Lissajous, ButterflyCurve, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, TorusKnot, Helix, TrefoilKnot, FigureEightKnot, PolyLine2D, PolyLine3D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Line3D, Triangle3D, Quad3D, PolyLine2D, PolyLine3D.
 
-Inherited by: ICurve1D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D.
+Inherited by: IAngularCurve2D, IPolarCurve, IAngularCurve3D, ICurve1D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D.
 
 Functions: .
 ## ICurve1D
@@ -1192,18 +1339,18 @@ Functions: .
 
 Inherits: ICurve, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
 
-Implemented by: Triangle2D, Quad2D, Line2D, Rect2D, Ellipse, RegularPolygon, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Circle, Lissajous, ButterflyCurve, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, PolyLine2D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, PolyLine2D.
 
-Inherited by: IClosedCurve2D, IOpenCurve2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
+Inherited by: IAngularCurve2D, IPolarCurve, IClosedCurve2D, IOpenCurve2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
 
 Functions: .
 ## ICurve3D
 
 Inherits: ICurve, IDistanceField3D, IGeometry, IGeometry3D, IOpenClosedShape, IProcedural.
 
-Implemented by: Line3D, Triangle3D, Quad3D, TorusKnot, Helix, TrefoilKnot, FigureEightKnot, PolyLine3D.
+Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Line3D, Triangle3D, Quad3D, PolyLine3D.
 
-Inherited by: IClosedCurve3D, IOpenCurve3D, IPolyLine3D, IClosedPolyLine3D, IPolygon3D.
+Inherited by: IAngularCurve3D, IClosedCurve3D, IOpenCurve3D, IPolyLine3D, IClosedPolyLine3D, IPolygon3D.
 
 Functions: .
 ## IDeformable2D
@@ -1240,9 +1387,9 @@ Functions: Deform.
 
 Inherits: .
 
-Implemented by: Triangle2D, Quad2D, Line2D, Rect2D, Ellipse, RegularPolygon, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Circle, Lissajous, ButterflyCurve, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, PolyLine2D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, PolyLine2D.
 
-Inherited by: ICurve2D, IClosedCurve2D, IOpenCurve2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
+Inherited by: IAngularCurve2D, IPolarCurve, ICurve2D, IClosedCurve2D, IOpenCurve2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D.
 
 Functions: Distance.
 
@@ -1257,9 +1404,9 @@ Functions: Distance.
 
 Inherits: .
 
-Implemented by: Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, TorusKnot, Helix, TrefoilKnot, FigureEightKnot, PolyLine3D.
+Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, PolyLine3D.
 
-Inherited by: ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, ISolid.
+Inherited by: IAngularCurve3D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, ISolid.
 
 Functions: Distance.
 
@@ -1289,9 +1436,9 @@ Functions: Divide.
 
 Inherits: IAny.
 
-Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Plane, Bounds3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
+Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
 
-Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IInterval.
+Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IInterval, IBounds.
 
 Functions: Equals.
 
@@ -1313,27 +1460,27 @@ Functions: .
 
 Inherits: .
 
-Implemented by: Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Circle, Lissajous, ButterflyCurve, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, TorusKnot, Helix, TrefoilKnot, FigureEightKnot, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine2D, PolyLine3D, PointArray2D, PointArray3D, LineArray2D, LineArray3D, TriangleArray2D, TriangleArray3D, QuadArray2D, QuadArray3D, QuadGrid3D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine2D, PolyLine3D, PointArray2D, PointArray3D, LineArray2D, LineArray3D, TriangleArray2D, TriangleArray3D, QuadArray2D, QuadArray3D, QuadGrid3D.
 
-Inherited by: IGeometry2D, IGeometry3D, IShape2D, IShape3D, IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, ISolid, IPointGeometry2D, IPointGeometry3D, IPrimitiveGeometry2D, IPrimitiveGeometry3D, ILineGeometry2D, ILineGeometry3D, ITriangleGeometry2D, ITriangleGeometry3D, IQuadGeometry2D, IQuadGeometry3D, IIndexedGeometry2D, IIndexedGeometry3D, ILineMesh2D, ILineMesh3D, ITriangleMesh2D, ITriangleMesh3D, IQuadMesh2D, IQuadMesh3D, IPointArray2D, IPointArray3D, ILineArray2D, ILineArray3D, ITriangleArray2D, ITriangleArray3D, IQuadArray2D, IQuadArray3D, IQuadGrid3D.
+Inherited by: IAngularCurve2D, IPolarCurve, IAngularCurve3D, IGeometry2D, IGeometry3D, IShape2D, IShape3D, IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, ISolid, IPointGeometry2D, IPointGeometry3D, IPrimitiveGeometry2D, IPrimitiveGeometry3D, ILineGeometry2D, ILineGeometry3D, ITriangleGeometry2D, ITriangleGeometry3D, IQuadGeometry2D, IQuadGeometry3D, IIndexedGeometry2D, IIndexedGeometry3D, ILineMesh2D, ILineMesh3D, ITriangleMesh2D, ITriangleMesh3D, IQuadMesh2D, IQuadMesh3D, IPointArray2D, IPointArray3D, ILineArray2D, ILineArray3D, ITriangleArray2D, ITriangleArray3D, IQuadArray2D, IQuadArray3D, IQuadGrid3D.
 
 Functions: .
 ## IGeometry2D
 
 Inherits: IGeometry.
 
-Implemented by: Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Circle, Lissajous, ButterflyCurve, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, PolyLine2D, PointArray2D, LineArray2D, TriangleArray2D, QuadArray2D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, PolyLine2D, PointArray2D, LineArray2D, TriangleArray2D, QuadArray2D.
 
-Inherited by: IShape2D, IOpenShape2D, IClosedShape2D, ICurve2D, IClosedCurve2D, IOpenCurve2D, IImplicitCurve2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D, IPointGeometry2D, IPrimitiveGeometry2D, ILineGeometry2D, ITriangleGeometry2D, IQuadGeometry2D, IIndexedGeometry2D, ILineMesh2D, ITriangleMesh2D, IQuadMesh2D, IPointArray2D, ILineArray2D, ITriangleArray2D, IQuadArray2D.
+Inherited by: IAngularCurve2D, IPolarCurve, IShape2D, IOpenShape2D, IClosedShape2D, ICurve2D, IClosedCurve2D, IOpenCurve2D, IImplicitCurve2D, IPolyLine2D, IClosedPolyLine2D, IPolygon2D, IPointGeometry2D, IPrimitiveGeometry2D, ILineGeometry2D, ITriangleGeometry2D, IQuadGeometry2D, IIndexedGeometry2D, ILineMesh2D, ITriangleMesh2D, IQuadMesh2D, IPointArray2D, ILineArray2D, ITriangleArray2D, IQuadArray2D.
 
 Functions: .
 ## IGeometry3D
 
 Inherits: IGeometry.
 
-Implemented by: Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, TorusKnot, Helix, TrefoilKnot, FigureEightKnot, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine3D, PointArray3D, LineArray3D, TriangleArray3D, QuadArray3D, QuadGrid3D.
+Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine3D, PointArray3D, LineArray3D, TriangleArray3D, QuadArray3D, QuadGrid3D.
 
-Inherited by: IShape3D, IOpenShape3D, IClosedShape3D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IImplicitVolume, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, ISolid, IPointGeometry3D, IPrimitiveGeometry3D, ILineGeometry3D, ITriangleGeometry3D, IQuadGeometry3D, IIndexedGeometry3D, ILineMesh3D, ITriangleMesh3D, IQuadMesh3D, IPointArray3D, ILineArray3D, ITriangleArray3D, IQuadArray3D, IQuadGrid3D.
+Inherited by: IAngularCurve3D, IShape3D, IOpenShape3D, IClosedShape3D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IImplicitVolume, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, ISolid, IPointGeometry3D, IPrimitiveGeometry3D, ILineGeometry3D, ITriangleGeometry3D, IQuadGeometry3D, IIndexedGeometry3D, ILineMesh3D, ITriangleMesh3D, IQuadMesh3D, IPointArray3D, ILineArray3D, ITriangleArray3D, IQuadArray3D, IQuadGrid3D.
 
 Functions: .
 ## IImplicitCurve2D
@@ -1419,11 +1566,13 @@ Functions: .
 
 Inherits: IAny, IAny, IAny, IArray, IEquatable, IEquatable, IValue.
 
-Implemented by: AnglePair, NumberInterval, Bounds2D, Bounds3D.
+Implemented by: AnglePair, NumberInterval, Line2D, Line3D.
 
 Inherited by: .
 
-Functions: Max, Min.
+Functions: End, Start.
+
+
 
 
 
@@ -1436,9 +1585,9 @@ Functions: Max, Min.
 
 Inherits: IAny.
 
-Implemented by: Unit, Number.
+Implemented by: .
 
-Inherited by: IReal, IMultiplicativeWithInverse, IAlgebraic.
+Inherited by: IMultiplicativeWithInverse.
 
 Functions: Inverse.
 
@@ -1566,9 +1715,9 @@ Functions: Multiply.
 
 Inherits: IAny, IAny, IInvertible, IMultiplicative.
 
-Implemented by: Unit, Number.
+Implemented by: .
 
-Inherited by: IReal, IAlgebraic.
+Inherited by: .
 
 Functions: .
 ## INumberLike
@@ -1639,9 +1788,9 @@ Functions: Components, FromComponents.
 
 Inherits: .
 
-Implemented by: Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ellipse, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Line3D, Triangle3D, Quad3D, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Circle, Lissajous, ButterflyCurve, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, TorusKnot, Helix, TrefoilKnot, FigureEightKnot, PolyLine2D, PolyLine3D.
+Implemented by: Parabola, SineWave, Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, CubicBezier3D, QuadraticBezier3D, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Line3D, Triangle3D, Quad3D, PolyLine2D, PolyLine3D.
 
-Inherited by: IOpenShape, IClosedShape, IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve, ICurve1D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D.
+Inherited by: IAngularCurve2D, IPolarCurve, IAngularCurve3D, IOpenShape, IClosedShape, IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve, ICurve1D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D.
 
 Functions: Closed.
 
@@ -1654,7 +1803,7 @@ Functions: Closed.
 
 Inherits: ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry, IGeometry2D, IGeometry2D, IOpenClosedShape, IOpenClosedShape, IOpenShape, IOpenShape2D, IProcedural.
 
-Implemented by: CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D.
 
 Inherited by: .
 
@@ -1663,7 +1812,7 @@ Functions: .
 
 Inherits: ICurve, ICurve3D, IDistanceField3D, IGeometry, IGeometry, IGeometry3D, IGeometry3D, IOpenClosedShape, IOpenClosedShape, IOpenShape, IOpenShape3D, IProcedural.
 
-Implemented by: Helix.
+Implemented by: .
 
 Inherited by: .
 
@@ -1672,7 +1821,7 @@ Functions: .
 
 Inherits: IOpenClosedShape.
 
-Implemented by: Line2D, Arc, Line3D, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, Helix.
+Implemented by: Parabola, SineWave, Spiral, QuadraticBezier2D, CubicBezier2D, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, CubicBezier3D, QuadraticBezier3D, Helix, Line2D, Arc, Line3D.
 
 Inherited by: IOpenShape2D, IOpenShape3D, IOpenCurve2D, IOpenCurve3D.
 
@@ -1681,7 +1830,7 @@ Functions: .
 
 Inherits: IGeometry, IGeometry2D, IOpenClosedShape, IOpenShape.
 
-Implemented by: Line2D, Arc, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Line2D, Arc.
 
 Inherited by: IOpenCurve2D.
 
@@ -1690,7 +1839,7 @@ Functions: .
 
 Inherits: IGeometry, IGeometry3D, IOpenClosedShape, IOpenShape.
 
-Implemented by: Line3D, Helix.
+Implemented by: Line3D.
 
 Inherited by: IOpenCurve3D.
 
@@ -1777,6 +1926,24 @@ Implemented by: .
 Inherited by: .
 
 Functions: .
+## IPolarCurve
+
+Inherits: IAngularCurve2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry2D, IOpenClosedShape, IProcedural.
+
+Implemented by: CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral.
+
+Inherited by: .
+
+Functions: GetRadius.
+
+
+
+
+
+
+
+
+
 ## IPolygon2D
 
 Inherits: IArray, IClosedPolyLine2D, IClosedShape, IClosedShape2D, ICurve, ICurve2D, IDistanceField2D, IGeometry, IGeometry, IGeometry, IGeometry2D, IGeometry2D, IGeometry2D, IOpenClosedShape, IOpenClosedShape, IOpenClosedShape, IPointGeometry2D, IPolyLine2D, IProcedural.
@@ -1872,9 +2039,9 @@ Functions: .
 
 Inherits: .
 
-Implemented by: Triangle2D, Quad2D, Line2D, Rect2D, Ellipse, RegularPolygon, Line3D, Triangle3D, Quad3D, Sphere, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, CubicBezier2D, QuadraticBezier2D, LinearFunction2D, QuadraticFunction2D, CubicFunction2D, Parabola, Circle, Lissajous, ButterflyCurve, Spiral, Sin, Cos, CubicBezier3D, QuadraticBezier3D, TorusKnot, Helix, TrefoilKnot, FigureEightKnot, PolyLine2D, PolyLine3D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Line3D, Triangle3D, Quad3D, Sphere, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, PolyLine2D, PolyLine3D.
 
-Inherited by: ICurve, ICurve1D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, IProceduralSurface, IExplicitSurface, IImplicitProcedural, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, ISolid.
+Inherited by: IAngularCurve2D, IPolarCurve, IAngularCurve3D, ICurve, ICurve1D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, IProceduralSurface, IExplicitSurface, IImplicitProcedural, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, ISolid.
 
 Functions: Eval.
 
@@ -2017,13 +2184,26 @@ Inherited by: IQuadGeometry2D, IQuadGeometry3D, IQuadMesh2D, IQuadMesh3D, IQuadA
 Functions: .
 ## IReal
 
-Inherits: IAdditive, IAdditive, IAdditive, IAlgebraic, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IDivisible, IEquatable, IEquatable, IInterpolatable, IInvertible, IModulo, IMultiplicative, IMultiplicative, IMultiplicativeWithInverse, INumberLike, INumerical, IOrderable, IScalarArithmetic, IScalarArithmetic, IValue.
+Inherits: IAdditive, IAdditive, IAdditive, IAlgebraic, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IDivisible, IEquatable, IEquatable, IInterpolatable, IModulo, IMultiplicative, IMultiplicative, INumberLike, INumerical, IOrderable, IScalarArithmetic, IScalarArithmetic, IValue.
 
 Implemented by: Unit, Number.
 
 Inherited by: .
 
 Functions: .
+## IRealFunction
+
+Inherits: .
+
+Implemented by: LinearEquation, Quadratic, Cubic, Parabola, SineWave.
+
+Inherited by: .
+
+Functions: Eval.
+
+
+
+
 ## IScalarArithmetic
 
 Inherits: IAny.
@@ -2213,14 +2393,14 @@ Functions: .
 
 Inherits: IAny, IAny, IEquatable.
 
-Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Plane, Bounds3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
+Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
 
-Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IInterval.
+Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IInterval, IBounds.
 
 Functions: .
 ## IVector
 
-Inherits: IAdditive, IAdditive, IAdditive, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IModulo, IMultiplicative, INumerical, IScalarArithmetic, IScalarArithmetic, IValue.
+Inherits: IAdditive, IAdditive, IAdditive, IAdditive, IAlgebraic, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IAny, IArithmetic, IArray, IDivisible, IEquatable, IInterpolatable, IInterpolatable, IModulo, IMultiplicative, IMultiplicative, INumerical, IScalarArithmetic, IScalarArithmetic, IScalarArithmetic, IValue.
 
 Implemented by: Complex, Vector2D, Vector3D, Vector4D.
 

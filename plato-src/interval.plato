@@ -1,25 +1,25 @@
 library IInterval
 {
     Size(x: IInterval<$T>): $T
-        => x.Max - x.Min;
+        => x.End - x.Start;
  
     Lerp(x: IInterval<$T>, amount: Number): $T
-        => x.Min.Lerp(x.Max, amount);
+        => x.Start.Lerp(x.End, amount);
     
     Reverse(x: IInterval<$T>): IInterval<$T>  
-        => (x.Max, x.Min);
+        => (x.End, x.Start);
         
     Center(x: IInterval<$T>): $T
         => x.Lerp(0.5);    
     
     Contains(x: IInterval<$T>, value: $T): Boolean 
-        => value.Between(x.Min, x.Max);
+        => value.Between(x.Start, x.End);
     
     Contains(x: IInterval<$T>, y: IInterval<$T>): Boolean 
-        => x.Contains(y.Min) && x.Contains(y.Max);
+        => x.Contains(y.Start) && x.Contains(y.End);
     
     Overlaps(x: IInterval<$T>, y: IInterval<$T>): Boolean 
-        => x.Contains(y.Min) || x.Contains(y.Max) || y.Contains(x.Min) || y.Contains(x.Max);
+        => x.Contains(y.Start) || x.Contains(y.End) || y.Contains(x.Start) || y.Contains(x.End);
     
     SplitAt(x: IInterval<$T>, t: Number): Tuple2<IInterval<$T>, IInterval<$T>> 
         => (x.Left(t), x.Right(t));
@@ -28,10 +28,10 @@ library IInterval
         => x.SplitAt(0.5);
 
     Left(x: IInterval<$T>, t: Number): IInterval<$T>
-        => (x.Min, x.Lerp(t));
+        => (x.Start, x.Lerp(t));
     
     Right(x: IInterval<$T>, t: Number): IInterval<$T>
-        => (x.Lerp(t), x.Max);
+        => (x.Lerp(t), x.End);
 
     MoveTo(x: IInterval<$T>, v: $T): IInterval<$T>
         => (v, v + x.Size);
@@ -46,10 +46,10 @@ library IInterval
         => (c - x.Size.Half, c + x.Size.Half);
     
     Clamp(x: IInterval<$T>, y: IInterval<$T>): IInterval<$T>
-        => (x.Clamp(y.Min), x.Clamp(y.Max));
+        => (x.Clamp(y.Start), x.Clamp(y.End));
     
     Clamp(x: IInterval<$T>, value: $T): $T
-        => value.Clamp(x.Min, x.Max);
+        => value.Clamp(x.Start, x.End);
         
     LinearSpace(count: Integer): IArray<Number>
         => count.Fractions;
@@ -74,4 +74,16 @@ library IInterval
 
     GeometricSpaceExclusive(interval: IInterval<$T>, count: Integer): IArray<$T>
         => count.GeometricSpaceExclusive.Map(x => interval.Lerp(x));
+
+    Intervals(count: Integer): IArray<NumberInterval>
+        => (count + 1).LinearSpace.WithNext((a, b) => new NumberInterval(a, b));
+
+    Subdivide(interval: IInterval<$T>, start: Number, end: Number): IInterval<$T>
+		=> (interval.Lerp(start), interval.Lerp(end));
+
+    Subdivide(interval: IInterval<$T>, subInterval: NumberInterval): IInterval<$T>
+		=> interval.Subdivide(subInterval.Start, subInterval.End);
+
+    Subdivide(interval: IInterval<$T>, count: Integer): IArray<IInterval<$T>>
+		=> count.Intervals.Map(i => interval.Subdivide(i));
 }

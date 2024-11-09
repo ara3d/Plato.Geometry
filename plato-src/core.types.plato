@@ -115,7 +115,7 @@ type ColorYCbCr
 type SphericalCoordinate
     implements ICoordinate
 {
-    Radius: Number;
+    RadialDistance: Number;
     Azimuth: Angle;
     Polar: Angle;
 }
@@ -149,9 +149,8 @@ type CylindricalCoordinate
 type HorizontalCoordinate
     implements ICoordinate
 {
-    Radius: Number;
+    Altitude: Angle;
     Azimuth: Angle;
-    Height: Number;
 }
 
 // https://en.wikipedia.org/wiki/Geographic_coordinate_system    
@@ -229,13 +228,13 @@ type DateTime
 type AnglePair
     implements IInterval<Angle>
 {
-    Min: Angle;
-    Max: Angle;
+    Start: Angle;
+    End: Angle;
 }
 
 type NumberInterval
     implements IInterval<Number>
 {
-    Min: Number;
-    Max: Number;
+    Start: Number;
+    End: Number;
 }

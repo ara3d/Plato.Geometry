@@ -88,7 +88,7 @@ namespace Plato.DoublePrecision
         public static PolyLine2D Star(Integer n, Number outerRadius, Number innerRadius)
             => (n * 2)
                 .MapRange(i => 
-                    i.FractionalTurn(n * 2).CircleFunction * 
+                    i.FractionalTurn(n * 2).UnitCircle * 
                     (i.IsEven() 
                         ? outerRadius 
                         : innerRadius))

@@ -103,11 +103,11 @@ namespace Plato.Geometry.Speckle
             return false;
         }
 
-        public static TriangleMesh ToPlato(this Mesh self)
+        public static TriangleMesh3D ToPlato(this Mesh self)
         {
             if (self.NeedsTriangulation())
                 self.TriangulateMesh();
-            return new TriangleMesh(self.vertices.ToPlato(), self.faces.ToPlatoIndices());
+            return new TriangleMesh3D(self.vertices.ToPlato(), self.faces.ToPlatoIndices());
         }
     }
 }

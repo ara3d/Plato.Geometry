@@ -1,13 +1,13 @@
 
 // Arrays provide a count and support the indexing operator [] 
-concept IArray<T>
+interface IArray<T>
 {
     Count(xs: Self): Integer;
     At(xs: Self, n: Integer): T;
 }
 
-// Extends the IArray concept with rows and columns. 
-concept IArray2D<T>
+// Extends the IArray interface with rows and columns. 
+interface IArray2D<T>
     inherits IArray<T>
 { 
     RowCount(xs: Self): Integer;
@@ -15,8 +15,8 @@ concept IArray2D<T>
     At(xs: Self, column: Integer, row: Integer): T;
 }
 
-// Extends the IArray concept with rows, columns, and layers. 
-concept IArray3D<T>
+// Extends the IArray interface with rows, columns, and layers. 
+interface IArray3D<T>
     inherits IArray<T>
 { 
     RowCount(xs: Self): Integer;
@@ -63,8 +63,11 @@ library ArrayLibrary
     Slice(xs: IArray<$T>, from: Integer, to: Integer): IArray<$T>
        => xs.Subarray(from, to - from);
 
-    Slices(xs: IArray<$T>, n: Integer): IArray<IArray<$T>>
-	    => (xs.Count / n).MapRange(i => xs.Subarray(i * n, n));
+    Slices(xs: IArray<$T>, size: Integer): IArray<IArray<$T>>
+	    => (xs.Count / size).MapRange(i => xs.NthSlice(i, size));
+
+    NthSlice(xs: IArray<$T>, n: Integer, size: Integer): IArray<$T>
+        => xs.Subarray(n * size, size);
 
     Subarray(xs: IArray<$T>, from: Integer, count: Integer): IArray<$T>
         => count.MapRange((i) => xs.At(i + from));
@@ -114,9 +117,6 @@ library ArrayLibrary
     Map(xs: IArray<$T1>, f: Function1<$T1, $T2>): IArray<$T2> 
         => xs.Count.MapRange((i) => f(xs.At(i)));
 
-    Map(xs: IArray2D<$T1>, f: Function1<$T1, $T2>): IArray2D<$T2> 
-        => new Array2D(xs.ColumnCount, xs.RowCount, (a, b) => f(xs.At(a, b)));
-
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, f: Function2<$T1, $T2, $T3>): IArray<$T3> 
         => xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i]));  
 
@@ -161,4 +161,12 @@ library ArrayLibrary
 
     PrependAndAppend(self: IArray<$T>, before: $T, after: $T): IArray<$T>
         => self.Prepend(before).Append(after);
+
+    //==
+    // 2D functions 
+
+    Map(xs: IArray2D<$T1>, f: Function1<$T1, $T2>): IArray2D<$T2> 
+        => xs.ColumnCount.MakeArray2D(xs.RowCount, (a, b) => f(xs.At(a, b)));
+
+
 } 

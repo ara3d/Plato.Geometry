@@ -1,5 +1,5 @@
 ﻿// Used for types that represent transformations in 3D space
-concept ITransform3D
+interface ITransform3D
 {
     // Transforms a point using the transformation
 	Transform(x: Self, v: Vector3D): Vector3D;
@@ -9,126 +9,126 @@ concept ITransform3D
 }
 
 // This type provides a 2D bounding-box
-concept IBounded2D
+interface IBounded2D
 {
     // Returns a 2D axis aligned bounding box.
     Bounds(x: Self): Bounds2D;
 }
 
 // This type provides a 3D bounding-box
-concept IBounded3D
+interface IBounded3D
 {
     // Returns a 3D axis aligned bounding box.
     Bounds(x: Self): Bounds3D;
 }
 
-concept IDeformable2D 
+interface IDeformable2D 
 {
     Deform(x: Self, f: Function1<Vector2D, Vector2D>): Self;
 }
 
-concept IOpenClosedShape
+interface IOpenClosedShape
 { 
     Closed(x: Self): Boolean;
 }
 
-concept IDeformable3D 
+interface IDeformable3D 
 {
     Deform(x: Self, f: Function1<Vector3D, Vector3D>): Self;
 }
 
 // The set of all geometric objects: figures, shapes, points, fields, lines, and meshes. 
-concept IGeometry 
+interface IGeometry 
 { }
 
 // The set of all 2D geometric objects
-concept IGeometry2D
+interface IGeometry2D
     inherits IGeometry
 { }
 
 // The set of all 3D geometric objects
-concept IGeometry3D
+interface IGeometry3D
     inherits IGeometry
 { }
 
-concept IShape2D 
+interface IShape2D 
     inherits IGeometry2D 
 { } 
 
-concept IShape3D
+interface IShape3D
     inherits IGeometry3D
 { }
 
 //=== 
 // Open and closed shapes
 
-concept IOpenShape inherits IOpenClosedShape { }
-concept IClosedShape inherits IOpenClosedShape { }
-concept IOpenShape2D inherits IGeometry2D, IOpenShape { }
-concept IClosedShape2D inherits IGeometry2D, IClosedShape { }
-concept IOpenShape3D inherits IGeometry3D, IOpenShape { }
-concept IClosedShape3D inherits IGeometry3D, IClosedShape { }
+interface IOpenShape inherits IOpenClosedShape { }
+interface IClosedShape inherits IOpenClosedShape { }
+interface IOpenShape2D inherits IGeometry2D, IOpenShape { }
+interface IClosedShape2D inherits IGeometry2D, IClosedShape { }
+interface IOpenShape3D inherits IGeometry3D, IOpenShape { }
+interface IClosedShape3D inherits IGeometry3D, IClosedShape { }
 
 // A parametric geometry in any number of dimensions
-concept IProcedural<TDomain, TRange>
+interface IProcedural<TDomain, TRange>
 {
-    Eval(x: Self, amount: TDomain): TRange;
+    Eval(x: Self, t: TDomain): TRange;
 }
 
 // Curves map a single number to a point in 1D, 2D, 3D, or higher space.
 // They are effectively functions. 
-concept ICurve<TRange> 
+interface ICurve<TRange> 
     inherits IProcedural<Number, TRange>, IOpenClosedShape
 { }
 
-concept IDistanceField2D
+interface IDistanceField2D
 { 
     Distance(x: Self, p: Vector2D): Number;
 }
 
-concept IDistanceField3D
+interface IDistanceField3D
 { 
     Distance(x: Self, p: Vector3D): Number;
 }
 
 // A 1 dimensional shape with a topological space of 1 dimensions
 // Basically a simple function 
-concept ICurve1D 
+interface ICurve1D 
     inherits ICurve<Number>
 { }
 
 // A 2 dimensional shape with a topological space of 1 dimensions
-concept ICurve2D
+interface ICurve2D
     inherits IGeometry2D, ICurve<Vector2D>, IDistanceField2D
 { }
 
 // A 2D curve which is known to be closed
-concept IClosedCurve2D
+interface IClosedCurve2D
 	inherits ICurve2D, IClosedShape2D
 { }
 
 // A 2D curve which is known to be open
-concept IOpenCurve2D
+interface IOpenCurve2D
 	inherits ICurve2D, IOpenShape2D
 { }
 
 // A 3 dimensional shape with a topological space of 1 dimensions
-concept ICurve3D
+interface ICurve3D
     inherits IGeometry3D, ICurve<Vector3D>, IDistanceField3D
 { }
 
 // A 3D curve which is known to be closed
-concept IClosedCurve3D
+interface IClosedCurve3D
 	inherits ICurve3D, IClosedShape3D
 { }
 
 // A 3D curve which is known to be open
-concept IOpenCurve3D
+interface IOpenCurve3D
 	inherits ICurve3D, IOpenShape3D
 { }
 
 // Surfaces are 3 dimensional shapes with a topological space of 2 dimensions
-concept ISurface
+interface ISurface
     inherits IGeometry3D, IDistanceField3D
 { }
 
@@ -137,7 +137,7 @@ concept ISurface
 // https://en.wikipedia.org/wiki/Surface_(mathematics)
 // They are effectively Bivariate functions. You can also think of them as curves that have 
 // two parameters. 
-concept IProceduralSurface
+interface IProceduralSurface
     inherits IProcedural<Vector2D, Vector3D>, ISurface 
 {
     ClosedX(x: Self): Boolean;
@@ -145,105 +145,105 @@ concept IProceduralSurface
 }
 
 // Explicit surfaces are defined as functions from UV space to a z value (height)
-concept IExplicitSurface 
+interface IExplicitSurface 
     inherits IProcedural<Vector2D, Number>, ISurface
 { }
 
 // An implicit procedural could represent a curve in 2D, a surface, solid, or volume in 3D. 
-concept IImplicitProcedural<TDomain>  
+interface IImplicitProcedural<TDomain>  
     inherits IProcedural<TDomain, Boolean>
 { }
 
 // An implicit surface, where we are either on the surface or not. 
-concept IImplicitSurface
+interface IImplicitSurface
     inherits ISurface, IImplicitProcedural<Vector3D>
 { }
 
 // An implicitly defined curve
-concept IImplicitCurve2D
+interface IImplicitCurve2D
     inherits IGeometry2D, IImplicitProcedural<Vector2D>
 { }
 
 // An implicit solid/volume, where we are either inside (true) or outside (false).
-concept IImplicitVolume
+interface IImplicitVolume
     inherits IGeometry3D, IImplicitProcedural<Vector3D>
 { }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
 // Also known as a PolygonalChain
-concept IPolyLine2D
+interface IPolyLine2D
     inherits IPointGeometry2D, IOpenClosedShape, ICurve2D
 { }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
 // Also known as a PolygonalChain
-concept IPolyLine3D
+interface IPolyLine3D
     inherits IPointGeometry3D, IOpenClosedShape, ICurve3D
 { }
 
-concept IClosedPolyLine2D inherits IPolyLine2D, IClosedShape2D { }
-concept IClosedPolyLine3D inherits IPolyLine3D, IClosedShape3D { }
-concept IPolygon2D inherits IClosedPolyLine2D, IArray<Vector2D> { }
-concept IPolygon3D inherits IClosedPolyLine3D, IArray<Vector3D> { }
+interface IClosedPolyLine2D inherits IPolyLine2D, IClosedShape2D { }
+interface IClosedPolyLine3D inherits IPolyLine3D, IClosedShape3D { }
+interface IPolygon2D inherits IClosedPolyLine2D, IArray<Vector2D> { }
+interface IPolygon3D inherits IClosedPolyLine3D, IArray<Vector3D> { }
 
-concept ISolid
+interface ISolid
     inherits IProceduralSurface
 { }
 
-concept IPrimitiveGeometry 
+interface IPrimitiveGeometry 
 {
 	PrimitiveSize(x: Self): Integer;
     NumPrimitives(x: Self): Integer;
 }
 
-concept IPointPrimitives inherits IPrimitiveGeometry { }
-concept ILinePrimitives inherits IPrimitiveGeometry { }
-concept ITrianglePrimitives inherits IPrimitiveGeometry { }
-concept IQuadPrimitives inherits IPrimitiveGeometry { }
+interface IPointPrimitives inherits IPrimitiveGeometry { }
+interface ILinePrimitives inherits IPrimitiveGeometry { }
+interface ITrianglePrimitives inherits IPrimitiveGeometry { }
+interface IQuadPrimitives inherits IPrimitiveGeometry { }
 
-concept IPointGeometry2D inherits IGeometry2D { Points(x: Self): IArray<Vector2D>; }
-concept IPointGeometry3D inherits IGeometry3D, IDeformable3D { Points(x: Self): IArray<Vector3D>; }
+interface IPointGeometry2D inherits IGeometry2D { Points(x: Self): IArray<Vector2D>; }
+interface IPointGeometry3D inherits IGeometry3D, IDeformable3D { Points(x: Self): IArray<Vector3D>; }
 
-concept IPrimitiveGeometry2D inherits IPointGeometry2D, IPrimitiveGeometry { }
-concept IPrimitiveGeometry3D inherits IPointGeometry3D, IPrimitiveGeometry { }
+interface IPrimitiveGeometry2D inherits IPointGeometry2D, IPrimitiveGeometry { }
+interface IPrimitiveGeometry3D inherits IPointGeometry3D, IPrimitiveGeometry { }
 
-concept ILineGeometry2D inherits IPrimitiveGeometry2D, ILinePrimitives { Lines(x: Self): IArray<Line2D>; }
-concept ILineGeometry3D inherits IPrimitiveGeometry3D, ILinePrimitives { Lines(x: Self): IArray<Line3D>; }
+interface ILineGeometry2D inherits IPrimitiveGeometry2D, ILinePrimitives { Lines(x: Self): IArray<Line2D>; }
+interface ILineGeometry3D inherits IPrimitiveGeometry3D, ILinePrimitives { Lines(x: Self): IArray<Line3D>; }
 
-concept ITriangleGeometry2D inherits IPrimitiveGeometry2D, ITrianglePrimitives { Triangles(x: Self): IArray<Triangle2D>; }
-concept ITriangleGeometry3D inherits IPrimitiveGeometry3D, ITrianglePrimitives { Triangles(x: Self): IArray<Triangle3D>; }
+interface ITriangleGeometry2D inherits IPrimitiveGeometry2D, ITrianglePrimitives { Triangles(x: Self): IArray<Triangle2D>; }
+interface ITriangleGeometry3D inherits IPrimitiveGeometry3D, ITrianglePrimitives { Triangles(x: Self): IArray<Triangle3D>; }
 
-concept IQuadGeometry2D inherits IPrimitiveGeometry2D, IQuadPrimitives { Quads(x: Self): IArray<Quad2D>; }
-concept IQuadGeometry3D inherits IPrimitiveGeometry3D, IQuadPrimitives { Quads(x: Self): IArray<Quad3D>; }
+interface IQuadGeometry2D inherits IPrimitiveGeometry2D, IQuadPrimitives { Quads(x: Self): IArray<Quad2D>; }
+interface IQuadGeometry3D inherits IPrimitiveGeometry3D, IQuadPrimitives { Quads(x: Self): IArray<Quad3D>; }
 
-concept IIndexedGeometry inherits IPrimitiveGeometry { Indices(x: Self): IArray<Integer>; }
-concept IIndexedGeometry2D inherits IIndexedGeometry, IPrimitiveGeometry2D { }
-concept IIndexedGeometry3D inherits IIndexedGeometry, IPrimitiveGeometry3D { }
+interface IIndexedGeometry inherits IPrimitiveGeometry { Indices(x: Self): IArray<Integer>; }
+interface IIndexedGeometry2D inherits IIndexedGeometry, IPrimitiveGeometry2D { }
+interface IIndexedGeometry3D inherits IIndexedGeometry, IPrimitiveGeometry3D { }
 
-concept ILineMesh2D inherits IIndexedGeometry2D, ILineGeometry2D { }
-concept ILineMesh3D inherits IIndexedGeometry3D, ILineGeometry3D { }
+interface ILineMesh2D inherits IIndexedGeometry2D, ILineGeometry2D { }
+interface ILineMesh3D inherits IIndexedGeometry3D, ILineGeometry3D { }
 
-concept ITriangleMesh2D inherits IIndexedGeometry2D, ITriangleGeometry2D { }
-concept ITriangleMesh3D inherits IIndexedGeometry3D, ITriangleGeometry3D { }
+interface ITriangleMesh2D inherits IIndexedGeometry2D, ITriangleGeometry2D { }
+interface ITriangleMesh3D inherits IIndexedGeometry3D, ITriangleGeometry3D { }
 
-concept IQuadMesh2D inherits IIndexedGeometry2D, IQuadGeometry2D { }
-concept IQuadMesh3D inherits IIndexedGeometry3D, IQuadGeometry3D { }
+interface IQuadMesh2D inherits IIndexedGeometry2D, IQuadGeometry2D { }
+interface IQuadMesh3D inherits IIndexedGeometry3D, IQuadGeometry3D { }
 
-concept IPointArray2D inherits IPointGeometry2D { }
-concept IPointArray3D inherits IPointGeometry3D { }
+interface IPointArray2D inherits IPointGeometry2D { }
+interface IPointArray3D inherits IPointGeometry3D { }
 
-concept ILineArray2D inherits ILineMesh2D { }
-concept ILineArray3D inherits ILineMesh3D { }
+interface ILineArray2D inherits ILineMesh2D { }
+interface ILineArray3D inherits ILineMesh3D { }
 
-concept ITriangleArray2D inherits ITriangleMesh2D { }
-concept ITriangleArray3D inherits ITriangleMesh3D { }
+interface ITriangleArray2D inherits ITriangleMesh2D { }
+interface ITriangleArray3D inherits ITriangleMesh3D { }
 
-concept IQuadArray2D inherits IQuadMesh2D { }
-concept IQuadArray3D inherits IQuadMesh3D { }
+interface IQuadArray2D inherits IQuadMesh2D { }
+interface IQuadArray3D inherits IQuadMesh3D { }
 
 // Also known as quad strips.
 // Represents a grid of quadrilaterals 
-concept IQuadGrid3D
+interface IQuadGrid3D
     inherits IQuadMesh3D
 { 
     PointGrid(x: Self): IArray2D<Vector3D>;

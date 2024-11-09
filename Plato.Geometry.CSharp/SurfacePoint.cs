@@ -25,7 +25,6 @@ namespace Plato.Geometry
         Vector3D OutTangent { get; }
     }
 
-
     public class SurfacePoint
         : ISurfacePoint
     {

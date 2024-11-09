@@ -7,6 +7,8 @@ library IGeometry
 	Direction(x: Line2D): Vector2D => (x.B - x.A);
 	Ray2D(x: Line2D): Ray2D => (x.A, x.Direction);
     Reverse(x: Line2D): Line2D => (x.B, x.A);
+    Start(x: Line2D): Vector2D => x.A;
+    End(x: Line2D): Vector2D => x.B;
 
 	//== 
 	// 3D Lines
@@ -17,6 +19,8 @@ library IGeometry
     Reverse(x: Line3D): Line3D => (x.B, x.A);
     Deform(x: Line3D, f: Function1<Vector3D, Vector3D>): Line3D => (f(x.A), f(x.B));
     Bounds3D(x: Line3D): Bounds3D => (x.A.Min(x.B), x.A.Max(x.B));
+    Start(x: Line3D): Vector3D => x.A;
+    End(x: Line3D): Vector3D => x.B;
 
 	//==
 	// 3D Rays
@@ -26,11 +30,6 @@ library IGeometry
     Line3D(r: Ray3D): Line3D => (r.Origin, r.Origin + r.Direction);
     Reverse(r: Ray3D): Ray3D => (r.Origin, -r.Direction);
 
-	//==
-	// Ellipse functions 
-
-	Eval(x: Ellipse, t: Number): Vector2D => t.CircleFunction * x.Size + x.Center;
-	
 	//==
 	// Triangle 2D functions 
 
@@ -165,7 +164,8 @@ library IGeometry
         (x.Max.X, x.Min.Y, x.Max.Z),
         (x.Min.X, x.Max.Y, x.Max.Z), 
         (x.Max.X, x.Max.Y, x.Max.Z)];
-        
+    
+
 	//==
 	// Closed functions 
 
@@ -175,11 +175,9 @@ library IGeometry
 	//== 
 	// Misc functions 
 
-    CirclePoints(n: Integer): IArray<Vector2D> => n.Fractions.Map((x) => x.Turns.CircleFunction);
+    CirclePoints(n: Integer): IArray<Vector2D> => n.Fractions.Map(x => x.Turns.UnitCircle);
 	Points(x: RegularPolygon): IArray<Vector2D> => x.NumPoints.CirclePoints;
-    
-    // TODO: should a regular polygon really be an interface
-    At(x: RegularPolygon, n: Integer): Vector2D => (1.0 / n).Turns.CircleFunction;
+    At(x: RegularPolygon, n: Integer): Vector2D => (n.Number / x.NumPoints).Turns.UnitCircle;
     Count(x: RegularPolygon): Integer => x.NumPoints;
 
     // TODO: 
@@ -202,7 +200,7 @@ library IGeometry
 
     NumFaces(g: IIndexedGeometry): Integer => g.NumPrimitives;
     
-    FaceIndices(g: IIndexedGeometry, f: Integer): IArray<Integer> => g.Indices.Subarray(f * g.PrimitiveSize, PrimitiveSize);
+    FaceIndices(g: IIndexedGeometry, f: Integer): IArray<Integer> => g.Indices.NthSlice(f, g.PrimitiveSize);
     FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2D> => g.FaceIndices(f).Map(i => g.Vertex(i));
     FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3D> => g.FaceIndices(f).Map(i => g.Vertex(i));
     AllFaceIndices(g: IIndexedGeometry): IArray<IArray<Integer>> => g.Indices.Slices(g.PrimitiveSize);

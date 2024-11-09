@@ -70,7 +70,7 @@ type Pose2D
 
 // Axis-Aligned bounding box 
 type Bounds2D
-    implements IInterval<Vector2D>
+    implements IBounds<Vector2D>
 {
     Min: Vector2D;
     Max: Vector2D;
@@ -100,8 +100,9 @@ type Quad2D
     D: Vector2D;
 }
 
+// A line segment in 2D.
 type Line2D
-    implements IPolyLine2D, IOpenShape2D, IArray<Vector2D>
+    implements IPolyLine2D, IOpenShape2D, IArray<Vector2D>, IInterval<Vector2D>
 {
     A: Vector2D;
     B: Vector2D;
@@ -117,13 +118,6 @@ type Lens
 
 type Rect2D
     implements IPolygon2D
-{
-    Center: Vector2D;
-    Size: Vector2D;
-}
-
-type Ellipse
-    implements ICurve2D, IClosedShape2D
 {
     Center: Vector2D;
     Size: Vector2D;
@@ -180,6 +174,7 @@ type Box2D
 // 3D Types
 //==
 
+// An infinite plane. 
 type Plane
     implements IValue
 {
@@ -189,14 +184,15 @@ type Plane
 
 // Axis-Aligned bounding box 
 type Bounds3D
-    implements IInterval<Vector3D>, IDeformable3D
+    implements IBounds<Vector3D>, IDeformable3D
 {
     Min: Vector3D;
     Max: Vector3D;
 }
 
-type Line3D
-    implements IPolyLine3D, IOpenShape3D, IDeformable3D, IArray<Vector3D>
+// A line segment in 3D.
+type Line3D 
+    implements IPolyLine3D, IOpenShape3D, IDeformable3D, IArray<Vector3D>, IInterval<Vector3D>
 {
     A: Vector3D;
     B: Vector3D;
@@ -320,154 +316,6 @@ type Ellipsoid
     Radii: Vector3D;
 }
 
-//==
-// 2D Curve Definitions
-//==
-
-// https://en.wikipedia.org/wiki/B%C3%A9zier_curve    
-type CubicBezier2D
-    implements IArray<Vector2D>, IOpenCurve2D
-{
-    A: Vector2D;
-    B: Vector2D;
-    C: Vector2D;
-    D: Vector2D;
-}   
-
-// https://en.wikipedia.org/wiki/B%C3%A9zier_curve
-type QuadraticBezier2D
-    implements IArray<Vector2D>, IOpenCurve2D
-{
-    A: Vector2D;
-    B: Vector2D;
-    C: Vector2D;
-}
-
-// https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
-type LinearFunction2D
-    implements IOpenCurve2D
-{
-    // Also called "M"
-    Slope: Number;
-
-    // Also called "B"
-    YIntercept: Number; 
-}
-
-type QuadraticFunction2D
-    implements IOpenCurve2D
-{
-    A: Number;
-    B: Number;
-    C: Number;
-}
-
-type CubicFunction2D
-    implements IOpenCurve2D
-{
-    A: Number;
-    B: Number;
-    C: Number;
-    D: Number;
-}
-
-type Parabola
-    implements IOpenCurve2D
-{
-}
-
-type Circle
-    implements IClosedCurve2D
-{ 
-    Center: Vector2D;
-    Radius: Number;
-}
-
-// https://en.wikipedia.org/wiki/Lissajous_curve
-type Lissajous
-    implements IClosedCurve2D
-{
-    Kx: Integer;
-	Ky: Integer;
-}
-
-// https://en.wikipedia.org/wiki/Butterfly_curve_(transcendental)
-type ButterflyCurve
-    implements IClosedCurve2D
-{ }
-    
-type Spiral
-	implements IOpenCurve2D
-{
-	Radius1: Number;
-    Radius2: Number;
-	NumTurns: Number;
-}
-
-type Sin
-    implements IOpenCurve2D
-{
-	Amplitude: Number;
-	Frequency: Number;
-	Phase: Number;
-}
-
-type Cos    
-    implements IOpenCurve2D
-{
-	Amplitude: Number;
-	Frequency: Number;
-	Phase: Number;
-}
-
-//==
-// 3D Curve Definitions
-//==
-
-// https://en.wikipedia.org/wiki/B%C3%A9zier_curve
-type CubicBezier3D
-    implements IArray<Vector3D>, IOpenCurve2D
-{
-    A: Vector3D;
-    B: Vector3D;
-    C: Vector3D;
-    D: Vector3D;
-}
-
-// https://en.wikipedia.org/wiki/B%C3%A9zier_curve
-type QuadraticBezier3D
-    implements IArray<Vector3D>, IOpenCurve2D
-{
-    A: Vector3D;
-    B: Vector3D;
-    C: Vector3D;
-}
-
-type TorusKnot
-    implements IClosedCurve3D
-{
-    P: Integer;
-	Q: Integer;
-	Radius: Number;
-}
-
-type Helix
-	implements IOpenCurve3D
-{
-	Radius: Number;
-	Height: Number;
-	NumTurns: Number;
-}
-
-type TrefoilKnot
-    implements IClosedCurve3D
-{
-}
-
-type FigureEightKnot
-	implements IClosedCurve3D
-{
-}
 
 //==
 // 3D Transforms

@@ -49,13 +49,13 @@
             => uv;
 
         public static Vector2D DiscFunction(this Vector2D uv)
-            => uv.X.Turns.CircleFunction * (1 - uv.Y);
+            => uv.X.Turns.UnitCircle * (1 - uv.Y);
 
         public static Vector3D CylinderFunction(this Vector2D uv)
-            => ((Vector3D)uv.X.Turns.CircleFunction).WithZ(uv.Y);
+            => ((Vector3D)uv.X.Turns.UnitCircle).WithZ(uv.Y);
 
         public static Vector3D ConicalSectionFunction(this Vector2D uv, Number r1, Number r2)
-            => (uv.X.CircleFunction * r1.Lerp(r2, uv.Y)).Vector3D.WithZ(uv.Y);
+            => (uv.X.Turns.UnitCircle * r1.Lerp(r2, uv.Y)).Vector3D.WithZ(uv.Y);
 
         public static Vector3D CapsuleFunction(this Vector2D uv)
         {

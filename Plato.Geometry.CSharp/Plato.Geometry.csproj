@@ -3,7 +3,40 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>A feature-rich, efficient, and intuitive C# library for a wide range of 2D and 3D numerical 
+      and geometry computation. Cross platform with no dependencies, and fully compatible with .NET Standard 2.0.
+    </Description>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/ara3d/Plato.Geometry</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ara3d/Plato.Geometry</RepositoryUrl>
+    <Version>1.0.0-alpha1</Version>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <AssemblyFileVersion>1.0.0.1</AssemblyFileVersion>
+    <Authors>Ara 3D Inc.</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright (c) Ara 3D Inc 2024, Licensed under MIT License</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>ara3d-128x128.png</PackageIcon>
+
+    <!-- https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/ -->
+    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
+    <DebugType>embedded</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Link="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\LICENSE" Link="LICENSE" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Experimental\AABox.cs" />

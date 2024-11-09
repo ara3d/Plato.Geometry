@@ -219,13 +219,13 @@ library Transforms
 		=> v.AxisAngle(theta);
 
     XRotation(theta: Angle): Quaternion
-        => XAxis.Rotation(theta);
+        => XAxis3D.Rotation(theta);
 
     YRotation(theta: Angle): Quaternion
-        => XAxis.Rotation(theta);
+        => YAxis3D.Rotation(theta);
 
     ZRotation(theta: Angle): Quaternion
-        => ZAxis.Rotation(theta);
+        => ZAxis3D.Rotation(theta);
 
     Add(q1: Quaternion, q2: Quaternion): Quaternion
         => q1.Vector4D + q2.Vector4D;

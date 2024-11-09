@@ -4,7 +4,7 @@
 other words it is a math and geometry library that is appropriate for usage in 
 3D Computer Aided Design (CAD), Computer Aided Engineering (CAE), and Digital Content Creation (DCC) software. 
 
-Plato.Geometry is delivered as a cross-platform C# library, but the roadmap includes C++ and JavaScript support. 
+Plato.Geometry is currently delivered as a cross-platform C# library, but the roadmap includes C++ and JavaScript support. 
 All algorithms and data structures are written in a high-level programming language called Plato
 which makes porting to different languages easier. 
 
@@ -14,6 +14,7 @@ This library is a refactoring and redesign of the following libraries:
 
 * [Ara3D.Geometry](https://github.com/ara3d/geometry)
 * [Ara3D.Mathematics](https://github.com/ara3d/mathematics)
+* [Vim.Math3D](https://github.com/vimaec/math3d)
 * [Ara3D.Geometry-Toolkit](https://github.com/ara3d/geometry-toolkit)
 
 The goal is to create a single library that is more efficient, maintainable, and portable 

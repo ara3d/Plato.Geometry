@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
         public static partial class Intrinsics
     {
@@ -15,29 +15,29 @@ namespace Plato.DoublePrecision
         public static float ChangePrecision(this double self) => (float)self;
         public static string ChangePrecision(this string self) => self;
 
-        public static Number MinNumber => double.MinValue;
-        public static Number MaxNumber => double.MinValue;
+        public static Number MinNumber => float.MinValue;
+        public static Number MaxNumber => float.MinValue;
 
-        public static Number Cos(Angle x) => (double)System.Math.Cos(x.Radians);
-        public static Number Sin(Angle x) => (double)System.Math.Sin(x.Radians);
-        public static Number Tan(Angle x) => (double)System.Math.Tan(x.Radians);
+        public static Number Cos(Angle x) => (float)System.Math.Cos(x.Radians);
+        public static Number Sin(Angle x) => (float)System.Math.Sin(x.Radians);
+        public static Number Tan(Angle x) => (float)System.Math.Tan(x.Radians);
 
-        public static Number Ln(Number x) => (double)System.Math.Log(x.Value);
-        public static Number Exp(Number x) => (double)System.Math.Exp(x.Value);
+        public static Number Ln(Number x) => (float)System.Math.Log(x.Value);
+        public static Number Exp(Number x) => (float)System.Math.Exp(x.Value);
 
-        public static Number Floor(Number x) => (double)System.Math.Floor(x.Value);
-        public static Number Ceiling(Number x) => (double)System.Math.Ceiling(x.Value);
-        public static Number Round(Number x) => (double)System.Math.Round(x.Value);
-        public static Number Truncate(Number x) => (double)System.Math.Truncate(x.Value);
+        public static Number Floor(Number x) => (float)System.Math.Floor(x.Value);
+        public static Number Ceiling(Number x) => (float)System.Math.Ceiling(x.Value);
+        public static Number Round(Number x) => (float)System.Math.Round(x.Value);
+        public static Number Truncate(Number x) => (float)System.Math.Truncate(x.Value);
 
-        public static Angle Acos(Number x) => new Angle((double)System.Math.Acos(x));
-        public static Angle Asin(Number x) => new Angle((double)System.Math.Asin(x));
-        public static Angle Atan(Number x) => new Angle((double)System.Math.Atan(x));
+        public static Angle Acos(Number x) => new Angle((float)System.Math.Acos(x));
+        public static Angle Asin(Number x) => new Angle((float)System.Math.Asin(x));
+        public static Angle Atan(Number x) => new Angle((float)System.Math.Atan(x));
 
-        public static Number Pow(Number x, Number y) => (double)System.Math.Pow(x, y);
-        public static Number Log(Number x, Number y) => (double)System.Math.Log(x, y);
-        public static Number NaturalLog(Number x) => (double)System.Math.Log(x);
-        public static Number NaturalPower(Number x) => (double)System.Math.Pow(x, System.Math.E);
+        public static Number Pow(Number x, Number y) => (float)System.Math.Pow(x, y);
+        public static Number Log(Number x, Number y) => (float)System.Math.Log(x, y);
+        public static Number NaturalLog(Number x) => (float)System.Math.Log(x);
+        public static Number NaturalPower(Number x) => (float)System.Math.Pow(x, System.Math.E);
 
         public static Number Add(Number x, Number y) => x.Value + y.Value;
         public static Number Subtract(Number x, Number y) => x.Value - y.Value;
@@ -855,14 +855,14 @@ namespace Plato.DoublePrecision
         public Unit(Number value) => (Value) = (value);
         public static Unit Default = new Unit();
         public static Unit New(Number value) => new Unit(value);
-        public Plato.SinglePrecision.Unit ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Unit(Unit self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Unit ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Unit(Unit self) => self.ChangePrecision();
         public static implicit operator Number(Unit self) => self.Value;
         public static implicit operator Unit(Number value) => new Unit(value);
         public static implicit operator Unit(Integer value) => new Unit(value);
         public static implicit operator Unit(int value) => new Integer(value);
-        public static implicit operator Unit(double value) => new Number(value);
-        public static implicit operator double(Unit value) => value.Value;
+        public static implicit operator Unit(float value) => new Number(value);
+        public static implicit operator float(Unit value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is Unit)) return false; var other = (Unit)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
         public override string ToString() => $"{{ \"Value\" = {Value} }}";
@@ -933,18 +933,18 @@ namespace Plato.DoublePrecision
         public Unit Min(Unit y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Unit Max(Unit y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Unit Multiply(Number s){
-            var _var302 = s;
-            return this.MapComponents((i) => i.Multiply(_var302));
+            var _var0 = s;
+            return this.MapComponents((i) => i.Multiply(_var0));
         }
         public static Unit operator *(Unit x, Number s) => x.Multiply(s);
         public Unit Divide(Number s){
-            var _var303 = s;
-            return this.MapComponents((i) => i.Divide(_var303));
+            var _var1 = s;
+            return this.MapComponents((i) => i.Divide(_var1));
         }
         public static Unit operator /(Unit x, Number s) => x.Divide(s);
         public Unit Modulo(Number s){
-            var _var304 = s;
-            return this.MapComponents((i) => i.Modulo(_var304));
+            var _var2 = s;
+            return this.MapComponents((i) => i.Modulo(_var2));
         }
         public static Unit operator %(Unit x, Number s) => x.Modulo(s);
         public Unit Add(Unit y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -954,8 +954,8 @@ namespace Plato.DoublePrecision
         public Unit Negative => this.MapComponents((a) => a.Negative);
         public static Unit operator -(Unit x) => x.Negative;
         public IArray<Unit> Repeat(Integer n){
-            var _var305 = this;
-            return n.MapRange((i) => _var305);
+            var _var3 = this;
+            return n.MapRange((i) => _var3);
         }
         public Boolean Equals(Unit b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Unit a, Unit b) => a.Equals(b);
@@ -1008,14 +1008,14 @@ namespace Plato.DoublePrecision
         public Probability(Number value) => (Value) = (value);
         public static Probability Default = new Probability();
         public static Probability New(Number value) => new Probability(value);
-        public Plato.SinglePrecision.Probability ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Probability(Probability self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Probability ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Probability(Probability self) => self.ChangePrecision();
         public static implicit operator Number(Probability self) => self.Value;
         public static implicit operator Probability(Number value) => new Probability(value);
         public static implicit operator Probability(Integer value) => new Probability(value);
         public static implicit operator Probability(int value) => new Integer(value);
-        public static implicit operator Probability(double value) => new Number(value);
-        public static implicit operator double(Probability value) => value.Value;
+        public static implicit operator Probability(float value) => new Number(value);
+        public static implicit operator float(Probability value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is Probability)) return false; var other = (Probability)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
         public override string ToString() => $"{{ \"Value\" = {Value} }}";
@@ -1074,18 +1074,18 @@ namespace Plato.DoublePrecision
         public Probability Min(Probability y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Probability Max(Probability y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Probability Multiply(Number s){
-            var _var306 = s;
-            return this.MapComponents((i) => i.Multiply(_var306));
+            var _var4 = s;
+            return this.MapComponents((i) => i.Multiply(_var4));
         }
         public static Probability operator *(Probability x, Number s) => x.Multiply(s);
         public Probability Divide(Number s){
-            var _var307 = s;
-            return this.MapComponents((i) => i.Divide(_var307));
+            var _var5 = s;
+            return this.MapComponents((i) => i.Divide(_var5));
         }
         public static Probability operator /(Probability x, Number s) => x.Divide(s);
         public Probability Modulo(Number s){
-            var _var308 = s;
-            return this.MapComponents((i) => i.Modulo(_var308));
+            var _var6 = s;
+            return this.MapComponents((i) => i.Modulo(_var6));
         }
         public static Probability operator %(Probability x, Number s) => x.Modulo(s);
         public Probability Add(Probability y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -1095,8 +1095,8 @@ namespace Plato.DoublePrecision
         public Probability Negative => this.MapComponents((a) => a.Negative);
         public static Probability operator -(Probability x) => x.Negative;
         public IArray<Probability> Repeat(Integer n){
-            var _var309 = this;
-            return n.MapRange((i) => _var309);
+            var _var7 = this;
+            return n.MapRange((i) => _var7);
         }
         public Boolean Equals(Probability b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Probability a, Probability b) => a.Equals(b);
@@ -1137,8 +1137,8 @@ namespace Plato.DoublePrecision
         public Complex(Number iReal, Number imaginary) => (IReal, Imaginary) = (iReal, imaginary);
         public static Complex Default = new Complex();
         public static Complex New(Number iReal, Number imaginary) => new Complex(iReal, imaginary);
-        public Plato.SinglePrecision.Complex ChangePrecision() => (IReal.ChangePrecision(), Imaginary.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Complex(Complex self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Complex ChangePrecision() => (IReal.ChangePrecision(), Imaginary.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Complex(Complex self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Complex self) => (self.IReal, self.Imaginary);
         public static implicit operator Complex((Number, Number) value) => new Complex(value.Item1, value.Item2);
         public void Deconstruct(out Number iReal, out Number imaginary) { iReal = IReal; imaginary = Imaginary; }
@@ -1221,18 +1221,18 @@ namespace Plato.DoublePrecision
         public Complex Min(Complex y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Complex Max(Complex y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Complex Multiply(Number s){
-            var _var310 = s;
-            return this.MapComponents((i) => i.Multiply(_var310));
+            var _var8 = s;
+            return this.MapComponents((i) => i.Multiply(_var8));
         }
         public static Complex operator *(Complex x, Number s) => x.Multiply(s);
         public Complex Divide(Number s){
-            var _var311 = s;
-            return this.MapComponents((i) => i.Divide(_var311));
+            var _var9 = s;
+            return this.MapComponents((i) => i.Divide(_var9));
         }
         public static Complex operator /(Complex x, Number s) => x.Divide(s);
         public Complex Modulo(Number s){
-            var _var312 = s;
-            return this.MapComponents((i) => i.Modulo(_var312));
+            var _var10 = s;
+            return this.MapComponents((i) => i.Modulo(_var10));
         }
         public static Complex operator %(Complex x, Number s) => x.Modulo(s);
         public Complex Add(Complex y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -1242,8 +1242,8 @@ namespace Plato.DoublePrecision
         public Complex Negative => this.MapComponents((a) => a.Negative);
         public static Complex operator -(Complex x) => x.Negative;
         public IArray<Complex> Repeat(Integer n){
-            var _var313 = this;
-            return n.MapRange((i) => _var313);
+            var _var11 = this;
+            return n.MapRange((i) => _var11);
         }
         public Boolean Equals(Complex b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Complex a, Complex b) => a.Equals(b);
@@ -1287,8 +1287,8 @@ namespace Plato.DoublePrecision
         public Integer2(Integer a, Integer b) => (A, B) = (a, b);
         public static Integer2 Default = new Integer2();
         public static Integer2 New(Integer a, Integer b) => new Integer2(a, b);
-        public Plato.SinglePrecision.Integer2 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer2(Integer2 self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Integer2 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Integer2(Integer2 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer)(Integer2 self) => (self.A, self.B);
         public static implicit operator Integer2((Integer, Integer) value) => new Integer2(value.Item1, value.Item2);
         public void Deconstruct(out Integer a, out Integer b) { a = A; b = B; }
@@ -1314,8 +1314,8 @@ namespace Plato.DoublePrecision
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Integer2> Repeat(Integer n){
-            var _var314 = this;
-            return n.MapRange((i) => _var314);
+            var _var12 = this;
+            return n.MapRange((i) => _var12);
         }
         public Boolean Equals(Integer2 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer2 a, Integer2 b) => a.Equals(b);
@@ -1338,8 +1338,8 @@ namespace Plato.DoublePrecision
         public Integer3(Integer a, Integer b, Integer c) => (A, B, C) = (a, b, c);
         public static Integer3 Default = new Integer3();
         public static Integer3 New(Integer a, Integer b, Integer c) => new Integer3(a, b, c);
-        public Plato.SinglePrecision.Integer3 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer3(Integer3 self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Integer3 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Integer3(Integer3 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Integer)(Integer3 self) => (self.A, self.B, self.C);
         public static implicit operator Integer3((Integer, Integer, Integer) value) => new Integer3(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Integer a, out Integer b, out Integer c) { a = A; b = B; c = C; }
@@ -1365,8 +1365,8 @@ namespace Plato.DoublePrecision
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Integer3> Repeat(Integer n){
-            var _var315 = this;
-            return n.MapRange((i) => _var315);
+            var _var13 = this;
+            return n.MapRange((i) => _var13);
         }
         public Boolean Equals(Integer3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer3 a, Integer3 b) => a.Equals(b);
@@ -1391,8 +1391,8 @@ namespace Plato.DoublePrecision
         public Integer4(Integer a, Integer b, Integer c, Integer d) => (A, B, C, D) = (a, b, c, d);
         public static Integer4 Default = new Integer4();
         public static Integer4 New(Integer a, Integer b, Integer c, Integer d) => new Integer4(a, b, c, d);
-        public Plato.SinglePrecision.Integer4 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer4(Integer4 self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Integer4 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Integer4(Integer4 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Integer, Integer)(Integer4 self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Integer4((Integer, Integer, Integer, Integer) value) => new Integer4(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Integer a, out Integer b, out Integer c, out Integer d) { a = A; b = B; c = C; d = D; }
@@ -1418,8 +1418,8 @@ namespace Plato.DoublePrecision
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Integer4> Repeat(Integer n){
-            var _var316 = this;
-            return n.MapRange((i) => _var316);
+            var _var14 = this;
+            return n.MapRange((i) => _var14);
         }
         public Boolean Equals(Integer4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer4 a, Integer4 b) => a.Equals(b);
@@ -1444,8 +1444,8 @@ namespace Plato.DoublePrecision
         public Color(Unit r, Unit g, Unit b, Unit a) => (R, G, B, A) = (r, g, b, a);
         public static Color Default = new Color();
         public static Color New(Unit r, Unit g, Unit b, Unit a) => new Color(r, g, b, a);
-        public Plato.SinglePrecision.Color ChangePrecision() => (R.ChangePrecision(), G.ChangePrecision(), B.ChangePrecision(), A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Color(Color self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Color ChangePrecision() => (R.ChangePrecision(), G.ChangePrecision(), B.ChangePrecision(), A.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Color(Color self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit, Unit)(Color self) => (self.R, self.G, self.B, self.A);
         public static implicit operator Color((Unit, Unit, Unit, Unit) value) => new Color(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Unit r, out Unit g, out Unit b, out Unit a) { r = R; g = G; b = B; a = A; }
@@ -1460,8 +1460,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Color)b);
         // Implemented concept functions and type functions
         public IArray<Color> Repeat(Integer n){
-            var _var317 = this;
-            return n.MapRange((i) => _var317);
+            var _var15 = this;
+            return n.MapRange((i) => _var15);
         }
         public Boolean Equals(Color b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Color a, Color b) => a.Equals(b);
@@ -1481,8 +1481,8 @@ namespace Plato.DoublePrecision
         public ColorLUV(Unit lightness, Unit u, Unit v) => (Lightness, U, V) = (lightness, u, v);
         public static ColorLUV Default = new ColorLUV();
         public static ColorLUV New(Unit lightness, Unit u, Unit v) => new ColorLUV(lightness, u, v);
-        public Plato.SinglePrecision.ColorLUV ChangePrecision() => (Lightness.ChangePrecision(), U.ChangePrecision(), V.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorLUV(ColorLUV self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ColorLUV ChangePrecision() => (Lightness.ChangePrecision(), U.ChangePrecision(), V.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ColorLUV(ColorLUV self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit)(ColorLUV self) => (self.Lightness, self.U, self.V);
         public static implicit operator ColorLUV((Unit, Unit, Unit) value) => new ColorLUV(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit lightness, out Unit u, out Unit v) { lightness = Lightness; u = U; v = V; }
@@ -1497,8 +1497,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLUV)b);
         // Implemented concept functions and type functions
         public IArray<ColorLUV> Repeat(Integer n){
-            var _var318 = this;
-            return n.MapRange((i) => _var318);
+            var _var16 = this;
+            return n.MapRange((i) => _var16);
         }
         public Boolean Equals(ColorLUV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLUV a, ColorLUV b) => a.Equals(b);
@@ -1518,8 +1518,8 @@ namespace Plato.DoublePrecision
         public ColorLAB(Unit lightness, Number a, Number b) => (Lightness, A, B) = (lightness, a, b);
         public static ColorLAB Default = new ColorLAB();
         public static ColorLAB New(Unit lightness, Number a, Number b) => new ColorLAB(lightness, a, b);
-        public Plato.SinglePrecision.ColorLAB ChangePrecision() => (Lightness.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorLAB(ColorLAB self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ColorLAB ChangePrecision() => (Lightness.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ColorLAB(ColorLAB self) => self.ChangePrecision();
         public static implicit operator (Unit, Number, Number)(ColorLAB self) => (self.Lightness, self.A, self.B);
         public static implicit operator ColorLAB((Unit, Number, Number) value) => new ColorLAB(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit lightness, out Number a, out Number b) { lightness = Lightness; a = A; b = B; }
@@ -1534,8 +1534,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLAB)b);
         // Implemented concept functions and type functions
         public IArray<ColorLAB> Repeat(Integer n){
-            var _var319 = this;
-            return n.MapRange((i) => _var319);
+            var _var17 = this;
+            return n.MapRange((i) => _var17);
         }
         public Boolean Equals(ColorLAB b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLAB a, ColorLAB b) => a.Equals(b);
@@ -1553,8 +1553,8 @@ namespace Plato.DoublePrecision
         public ColorLCh(Unit lightness, PolarCoordinate chromaHue) => (Lightness, ChromaHue) = (lightness, chromaHue);
         public static ColorLCh Default = new ColorLCh();
         public static ColorLCh New(Unit lightness, PolarCoordinate chromaHue) => new ColorLCh(lightness, chromaHue);
-        public Plato.SinglePrecision.ColorLCh ChangePrecision() => (Lightness.ChangePrecision(), ChromaHue.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorLCh(ColorLCh self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ColorLCh ChangePrecision() => (Lightness.ChangePrecision(), ChromaHue.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ColorLCh(ColorLCh self) => self.ChangePrecision();
         public static implicit operator (Unit, PolarCoordinate)(ColorLCh self) => (self.Lightness, self.ChromaHue);
         public static implicit operator ColorLCh((Unit, PolarCoordinate) value) => new ColorLCh(value.Item1, value.Item2);
         public void Deconstruct(out Unit lightness, out PolarCoordinate chromaHue) { lightness = Lightness; chromaHue = ChromaHue; }
@@ -1569,8 +1569,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLCh)b);
         // Implemented concept functions and type functions
         public IArray<ColorLCh> Repeat(Integer n){
-            var _var320 = this;
-            return n.MapRange((i) => _var320);
+            var _var18 = this;
+            return n.MapRange((i) => _var18);
         }
         public Boolean Equals(ColorLCh b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLCh a, ColorLCh b) => a.Equals(b);
@@ -1590,8 +1590,8 @@ namespace Plato.DoublePrecision
         public ColorHSV(Angle hue, Unit s, Unit v) => (Hue, S, V) = (hue, s, v);
         public static ColorHSV Default = new ColorHSV();
         public static ColorHSV New(Angle hue, Unit s, Unit v) => new ColorHSV(hue, s, v);
-        public Plato.SinglePrecision.ColorHSV ChangePrecision() => (Hue.ChangePrecision(), S.ChangePrecision(), V.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorHSV(ColorHSV self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ColorHSV ChangePrecision() => (Hue.ChangePrecision(), S.ChangePrecision(), V.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ColorHSV(ColorHSV self) => self.ChangePrecision();
         public static implicit operator (Angle, Unit, Unit)(ColorHSV self) => (self.Hue, self.S, self.V);
         public static implicit operator ColorHSV((Angle, Unit, Unit) value) => new ColorHSV(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle hue, out Unit s, out Unit v) { hue = Hue; s = S; v = V; }
@@ -1606,8 +1606,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorHSV)b);
         // Implemented concept functions and type functions
         public IArray<ColorHSV> Repeat(Integer n){
-            var _var321 = this;
-            return n.MapRange((i) => _var321);
+            var _var19 = this;
+            return n.MapRange((i) => _var19);
         }
         public Boolean Equals(ColorHSV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorHSV a, ColorHSV b) => a.Equals(b);
@@ -1627,8 +1627,8 @@ namespace Plato.DoublePrecision
         public ColorHSL(Angle hue, Unit saturation, Unit luminance) => (Hue, Saturation, Luminance) = (hue, saturation, luminance);
         public static ColorHSL Default = new ColorHSL();
         public static ColorHSL New(Angle hue, Unit saturation, Unit luminance) => new ColorHSL(hue, saturation, luminance);
-        public Plato.SinglePrecision.ColorHSL ChangePrecision() => (Hue.ChangePrecision(), Saturation.ChangePrecision(), Luminance.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorHSL(ColorHSL self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ColorHSL ChangePrecision() => (Hue.ChangePrecision(), Saturation.ChangePrecision(), Luminance.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ColorHSL(ColorHSL self) => self.ChangePrecision();
         public static implicit operator (Angle, Unit, Unit)(ColorHSL self) => (self.Hue, self.Saturation, self.Luminance);
         public static implicit operator ColorHSL((Angle, Unit, Unit) value) => new ColorHSL(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle hue, out Unit saturation, out Unit luminance) { hue = Hue; saturation = Saturation; luminance = Luminance; }
@@ -1643,8 +1643,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorHSL)b);
         // Implemented concept functions and type functions
         public IArray<ColorHSL> Repeat(Integer n){
-            var _var322 = this;
-            return n.MapRange((i) => _var322);
+            var _var20 = this;
+            return n.MapRange((i) => _var20);
         }
         public Boolean Equals(ColorHSL b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorHSL a, ColorHSL b) => a.Equals(b);
@@ -1664,8 +1664,8 @@ namespace Plato.DoublePrecision
         public ColorYCbCr(Unit y, Unit cb, Unit cr) => (Y, Cb, Cr) = (y, cb, cr);
         public static ColorYCbCr Default = new ColorYCbCr();
         public static ColorYCbCr New(Unit y, Unit cb, Unit cr) => new ColorYCbCr(y, cb, cr);
-        public Plato.SinglePrecision.ColorYCbCr ChangePrecision() => (Y.ChangePrecision(), Cb.ChangePrecision(), Cr.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorYCbCr(ColorYCbCr self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ColorYCbCr ChangePrecision() => (Y.ChangePrecision(), Cb.ChangePrecision(), Cr.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ColorYCbCr(ColorYCbCr self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit)(ColorYCbCr self) => (self.Y, self.Cb, self.Cr);
         public static implicit operator ColorYCbCr((Unit, Unit, Unit) value) => new ColorYCbCr(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit y, out Unit cb, out Unit cr) { y = Y; cb = Cb; cr = Cr; }
@@ -1680,8 +1680,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorYCbCr)b);
         // Implemented concept functions and type functions
         public IArray<ColorYCbCr> Repeat(Integer n){
-            var _var323 = this;
-            return n.MapRange((i) => _var323);
+            var _var21 = this;
+            return n.MapRange((i) => _var21);
         }
         public Boolean Equals(ColorYCbCr b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorYCbCr a, ColorYCbCr b) => a.Equals(b);
@@ -1701,8 +1701,8 @@ namespace Plato.DoublePrecision
         public SphericalCoordinate(Number radialDistance, Angle azimuth, Angle polar) => (RadialDistance, Azimuth, Polar) = (radialDistance, azimuth, polar);
         public static SphericalCoordinate Default = new SphericalCoordinate();
         public static SphericalCoordinate New(Number radialDistance, Angle azimuth, Angle polar) => new SphericalCoordinate(radialDistance, azimuth, polar);
-        public Plato.SinglePrecision.SphericalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Polar.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.SphericalCoordinate(SphericalCoordinate self) => self.ChangePrecision();
+        public Plato.DoublePrecision.SphericalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Polar.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.SphericalCoordinate(SphericalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle, Angle)(SphericalCoordinate self) => (self.RadialDistance, self.Azimuth, self.Polar);
         public static implicit operator SphericalCoordinate((Number, Angle, Angle) value) => new SphericalCoordinate(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radialDistance, out Angle azimuth, out Angle polar) { radialDistance = RadialDistance; azimuth = Azimuth; polar = Polar; }
@@ -1717,8 +1717,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((SphericalCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<SphericalCoordinate> Repeat(Integer n){
-            var _var324 = this;
-            return n.MapRange((i) => _var324);
+            var _var22 = this;
+            return n.MapRange((i) => _var22);
         }
         public Boolean Equals(SphericalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(SphericalCoordinate a, SphericalCoordinate b) => a.Equals(b);
@@ -1736,8 +1736,8 @@ namespace Plato.DoublePrecision
         public PolarCoordinate(Number radius, Angle angle) => (Radius, Angle) = (radius, angle);
         public static PolarCoordinate Default = new PolarCoordinate();
         public static PolarCoordinate New(Number radius, Angle angle) => new PolarCoordinate(radius, angle);
-        public Plato.SinglePrecision.PolarCoordinate ChangePrecision() => (Radius.ChangePrecision(), Angle.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.PolarCoordinate(PolarCoordinate self) => self.ChangePrecision();
+        public Plato.DoublePrecision.PolarCoordinate ChangePrecision() => (Radius.ChangePrecision(), Angle.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.PolarCoordinate(PolarCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle)(PolarCoordinate self) => (self.Radius, self.Angle);
         public static implicit operator PolarCoordinate((Number, Angle) value) => new PolarCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Number radius, out Angle angle) { radius = Radius; angle = Angle; }
@@ -1754,8 +1754,8 @@ namespace Plato.DoublePrecision
         public Vector2D Vector2D => Vector2D.New(this.Angle.Cos, this.Angle.Sin).Multiply(this.Radius);
         public static implicit operator Vector2D(PolarCoordinate coord) => coord.Vector2D;
         public IArray<PolarCoordinate> Repeat(Integer n){
-            var _var325 = this;
-            return n.MapRange((i) => _var325);
+            var _var23 = this;
+            return n.MapRange((i) => _var23);
         }
         public Boolean Equals(PolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(PolarCoordinate a, PolarCoordinate b) => a.Equals(b);
@@ -1773,8 +1773,8 @@ namespace Plato.DoublePrecision
         public LogPolarCoordinate(Number rho, Angle azimuth) => (Rho, Azimuth) = (rho, azimuth);
         public static LogPolarCoordinate Default = new LogPolarCoordinate();
         public static LogPolarCoordinate New(Number rho, Angle azimuth) => new LogPolarCoordinate(rho, azimuth);
-        public Plato.SinglePrecision.LogPolarCoordinate ChangePrecision() => (Rho.ChangePrecision(), Azimuth.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LogPolarCoordinate(LogPolarCoordinate self) => self.ChangePrecision();
+        public Plato.DoublePrecision.LogPolarCoordinate ChangePrecision() => (Rho.ChangePrecision(), Azimuth.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.LogPolarCoordinate(LogPolarCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle)(LogPolarCoordinate self) => (self.Rho, self.Azimuth);
         public static implicit operator LogPolarCoordinate((Number, Angle) value) => new LogPolarCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Number rho, out Angle azimuth) { rho = Rho; azimuth = Azimuth; }
@@ -1789,8 +1789,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((LogPolarCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<LogPolarCoordinate> Repeat(Integer n){
-            var _var326 = this;
-            return n.MapRange((i) => _var326);
+            var _var24 = this;
+            return n.MapRange((i) => _var24);
         }
         public Boolean Equals(LogPolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(LogPolarCoordinate a, LogPolarCoordinate b) => a.Equals(b);
@@ -1810,8 +1810,8 @@ namespace Plato.DoublePrecision
         public CylindricalCoordinate(Number radialDistance, Angle azimuth, Number height) => (RadialDistance, Azimuth, Height) = (radialDistance, azimuth, height);
         public static CylindricalCoordinate Default = new CylindricalCoordinate();
         public static CylindricalCoordinate New(Number radialDistance, Angle azimuth, Number height) => new CylindricalCoordinate(radialDistance, azimuth, height);
-        public Plato.SinglePrecision.CylindricalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Height.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.CylindricalCoordinate(CylindricalCoordinate self) => self.ChangePrecision();
+        public Plato.DoublePrecision.CylindricalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Height.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.CylindricalCoordinate(CylindricalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle, Number)(CylindricalCoordinate self) => (self.RadialDistance, self.Azimuth, self.Height);
         public static implicit operator CylindricalCoordinate((Number, Angle, Number) value) => new CylindricalCoordinate(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radialDistance, out Angle azimuth, out Number height) { radialDistance = RadialDistance; azimuth = Azimuth; height = Height; }
@@ -1826,8 +1826,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((CylindricalCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<CylindricalCoordinate> Repeat(Integer n){
-            var _var327 = this;
-            return n.MapRange((i) => _var327);
+            var _var25 = this;
+            return n.MapRange((i) => _var25);
         }
         public Boolean Equals(CylindricalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(CylindricalCoordinate a, CylindricalCoordinate b) => a.Equals(b);
@@ -1845,8 +1845,8 @@ namespace Plato.DoublePrecision
         public HorizontalCoordinate(Angle altitude, Angle azimuth) => (Altitude, Azimuth) = (altitude, azimuth);
         public static HorizontalCoordinate Default = new HorizontalCoordinate();
         public static HorizontalCoordinate New(Angle altitude, Angle azimuth) => new HorizontalCoordinate(altitude, azimuth);
-        public Plato.SinglePrecision.HorizontalCoordinate ChangePrecision() => (Altitude.ChangePrecision(), Azimuth.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.HorizontalCoordinate(HorizontalCoordinate self) => self.ChangePrecision();
+        public Plato.DoublePrecision.HorizontalCoordinate ChangePrecision() => (Altitude.ChangePrecision(), Azimuth.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.HorizontalCoordinate(HorizontalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(HorizontalCoordinate self) => (self.Altitude, self.Azimuth);
         public static implicit operator HorizontalCoordinate((Angle, Angle) value) => new HorizontalCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Angle altitude, out Angle azimuth) { altitude = Altitude; azimuth = Azimuth; }
@@ -1861,8 +1861,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((HorizontalCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<HorizontalCoordinate> Repeat(Integer n){
-            var _var328 = this;
-            return n.MapRange((i) => _var328);
+            var _var26 = this;
+            return n.MapRange((i) => _var26);
         }
         public Boolean Equals(HorizontalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(HorizontalCoordinate a, HorizontalCoordinate b) => a.Equals(b);
@@ -1880,8 +1880,8 @@ namespace Plato.DoublePrecision
         public GeoCoordinate(Angle latitude, Angle longitude) => (Latitude, Longitude) = (latitude, longitude);
         public static GeoCoordinate Default = new GeoCoordinate();
         public static GeoCoordinate New(Angle latitude, Angle longitude) => new GeoCoordinate(latitude, longitude);
-        public Plato.SinglePrecision.GeoCoordinate ChangePrecision() => (Latitude.ChangePrecision(), Longitude.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.GeoCoordinate(GeoCoordinate self) => self.ChangePrecision();
+        public Plato.DoublePrecision.GeoCoordinate ChangePrecision() => (Latitude.ChangePrecision(), Longitude.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.GeoCoordinate(GeoCoordinate self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(GeoCoordinate self) => (self.Latitude, self.Longitude);
         public static implicit operator GeoCoordinate((Angle, Angle) value) => new GeoCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Angle latitude, out Angle longitude) { latitude = Latitude; longitude = Longitude; }
@@ -1896,8 +1896,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((GeoCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<GeoCoordinate> Repeat(Integer n){
-            var _var329 = this;
-            return n.MapRange((i) => _var329);
+            var _var27 = this;
+            return n.MapRange((i) => _var27);
         }
         public Boolean Equals(GeoCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(GeoCoordinate a, GeoCoordinate b) => a.Equals(b);
@@ -1915,8 +1915,8 @@ namespace Plato.DoublePrecision
         public GeoCoordinateWithAltitude(GeoCoordinate iCoordinate, Number altitude) => (ICoordinate, Altitude) = (iCoordinate, altitude);
         public static GeoCoordinateWithAltitude Default = new GeoCoordinateWithAltitude();
         public static GeoCoordinateWithAltitude New(GeoCoordinate iCoordinate, Number altitude) => new GeoCoordinateWithAltitude(iCoordinate, altitude);
-        public Plato.SinglePrecision.GeoCoordinateWithAltitude ChangePrecision() => (ICoordinate.ChangePrecision(), Altitude.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.GeoCoordinateWithAltitude(GeoCoordinateWithAltitude self) => self.ChangePrecision();
+        public Plato.DoublePrecision.GeoCoordinateWithAltitude ChangePrecision() => (ICoordinate.ChangePrecision(), Altitude.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.GeoCoordinateWithAltitude(GeoCoordinateWithAltitude self) => self.ChangePrecision();
         public static implicit operator (GeoCoordinate, Number)(GeoCoordinateWithAltitude self) => (self.ICoordinate, self.Altitude);
         public static implicit operator GeoCoordinateWithAltitude((GeoCoordinate, Number) value) => new GeoCoordinateWithAltitude(value.Item1, value.Item2);
         public void Deconstruct(out GeoCoordinate iCoordinate, out Number altitude) { iCoordinate = ICoordinate; altitude = Altitude; }
@@ -1931,8 +1931,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((GeoCoordinateWithAltitude)b);
         // Implemented concept functions and type functions
         public IArray<GeoCoordinateWithAltitude> Repeat(Integer n){
-            var _var330 = this;
-            return n.MapRange((i) => _var330);
+            var _var28 = this;
+            return n.MapRange((i) => _var28);
         }
         public Boolean Equals(GeoCoordinateWithAltitude b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => a.Equals(b);
@@ -1950,8 +1950,8 @@ namespace Plato.DoublePrecision
         public Rational(Integer numerator, Integer denominator) => (Numerator, Denominator) = (numerator, denominator);
         public static Rational Default = new Rational();
         public static Rational New(Integer numerator, Integer denominator) => new Rational(numerator, denominator);
-        public Plato.SinglePrecision.Rational ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rational(Rational self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Rational ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Rational(Rational self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer)(Rational self) => (self.Numerator, self.Denominator);
         public static implicit operator Rational((Integer, Integer) value) => new Rational(value.Item1, value.Item2);
         public void Deconstruct(out Integer numerator, out Integer denominator) { numerator = Numerator; denominator = Denominator; }
@@ -1966,8 +1966,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Rational)b);
         // Implemented concept functions and type functions
         public IArray<Rational> Repeat(Integer n){
-            var _var331 = this;
-            return n.MapRange((i) => _var331);
+            var _var29 = this;
+            return n.MapRange((i) => _var29);
         }
         public Boolean Equals(Rational b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Rational a, Rational b) => a.Equals(b);
@@ -1985,8 +1985,8 @@ namespace Plato.DoublePrecision
         public Fraction(Number numerator, Number denominator) => (Numerator, Denominator) = (numerator, denominator);
         public static Fraction Default = new Fraction();
         public static Fraction New(Number numerator, Number denominator) => new Fraction(numerator, denominator);
-        public Plato.SinglePrecision.Fraction ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Fraction(Fraction self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Fraction ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Fraction(Fraction self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Fraction self) => (self.Numerator, self.Denominator);
         public static implicit operator Fraction((Number, Number) value) => new Fraction(value.Item1, value.Item2);
         public void Deconstruct(out Number numerator, out Number denominator) { numerator = Numerator; denominator = Denominator; }
@@ -2001,8 +2001,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Fraction)b);
         // Implemented concept functions and type functions
         public IArray<Fraction> Repeat(Integer n){
-            var _var332 = this;
-            return n.MapRange((i) => _var332);
+            var _var30 = this;
+            return n.MapRange((i) => _var30);
         }
         public Boolean Equals(Fraction b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Fraction a, Fraction b) => a.Equals(b);
@@ -2018,14 +2018,14 @@ namespace Plato.DoublePrecision
         public Angle(Number radians) => (Radians) = (radians);
         public static Angle Default = new Angle();
         public static Angle New(Number radians) => new Angle(radians);
-        public Plato.SinglePrecision.Angle ChangePrecision() => (Radians.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Angle(Angle self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Angle ChangePrecision() => (Radians.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Angle(Angle self) => self.ChangePrecision();
         public static implicit operator Number(Angle self) => self.Radians;
         public static implicit operator Angle(Number value) => new Angle(value);
         public static implicit operator Angle(Integer value) => new Angle(value);
         public static implicit operator Angle(int value) => new Integer(value);
-        public static implicit operator Angle(double value) => new Number(value);
-        public static implicit operator double(Angle value) => value.Radians;
+        public static implicit operator Angle(float value) => new Number(value);
+        public static implicit operator float(Angle value) => value.Radians;
         public override bool Equals(object obj) { if (!(obj is Angle)) return false; var other = (Angle)obj; return Radians.Equals(other.Radians); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radians);
         public override string ToString() => $"{{ \"Radians\" = {Radians} }}";
@@ -2129,18 +2129,18 @@ namespace Plato.DoublePrecision
         public Angle Min(Angle y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Angle Max(Angle y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Angle Multiply(Number s){
-            var _var333 = s;
-            return this.MapComponents((i) => i.Multiply(_var333));
+            var _var31 = s;
+            return this.MapComponents((i) => i.Multiply(_var31));
         }
         public static Angle operator *(Angle x, Number s) => x.Multiply(s);
         public Angle Divide(Number s){
-            var _var334 = s;
-            return this.MapComponents((i) => i.Divide(_var334));
+            var _var32 = s;
+            return this.MapComponents((i) => i.Divide(_var32));
         }
         public static Angle operator /(Angle x, Number s) => x.Divide(s);
         public Angle Modulo(Number s){
-            var _var335 = s;
-            return this.MapComponents((i) => i.Modulo(_var335));
+            var _var33 = s;
+            return this.MapComponents((i) => i.Modulo(_var33));
         }
         public static Angle operator %(Angle x, Number s) => x.Modulo(s);
         public Angle Add(Angle y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2150,8 +2150,8 @@ namespace Plato.DoublePrecision
         public Angle Negative => this.MapComponents((a) => a.Negative);
         public static Angle operator -(Angle x) => x.Negative;
         public IArray<Angle> Repeat(Integer n){
-            var _var336 = this;
-            return n.MapRange((i) => _var336);
+            var _var34 = this;
+            return n.MapRange((i) => _var34);
         }
         public Boolean Equals(Angle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Angle a, Angle b) => a.Equals(b);
@@ -2190,14 +2190,14 @@ namespace Plato.DoublePrecision
         public Length(Number meters) => (Meters) = (meters);
         public static Length Default = new Length();
         public static Length New(Number meters) => new Length(meters);
-        public Plato.SinglePrecision.Length ChangePrecision() => (Meters.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Length(Length self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Length ChangePrecision() => (Meters.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Length(Length self) => self.ChangePrecision();
         public static implicit operator Number(Length self) => self.Meters;
         public static implicit operator Length(Number value) => new Length(value);
         public static implicit operator Length(Integer value) => new Length(value);
         public static implicit operator Length(int value) => new Integer(value);
-        public static implicit operator Length(double value) => new Number(value);
-        public static implicit operator double(Length value) => value.Meters;
+        public static implicit operator Length(float value) => new Number(value);
+        public static implicit operator float(Length value) => value.Meters;
         public override bool Equals(object obj) { if (!(obj is Length)) return false; var other = (Length)obj; return Meters.Equals(other.Meters); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Meters);
         public override string ToString() => $"{{ \"Meters\" = {Meters} }}";
@@ -2256,18 +2256,18 @@ namespace Plato.DoublePrecision
         public Length Min(Length y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Length Max(Length y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Length Multiply(Number s){
-            var _var337 = s;
-            return this.MapComponents((i) => i.Multiply(_var337));
+            var _var35 = s;
+            return this.MapComponents((i) => i.Multiply(_var35));
         }
         public static Length operator *(Length x, Number s) => x.Multiply(s);
         public Length Divide(Number s){
-            var _var338 = s;
-            return this.MapComponents((i) => i.Divide(_var338));
+            var _var36 = s;
+            return this.MapComponents((i) => i.Divide(_var36));
         }
         public static Length operator /(Length x, Number s) => x.Divide(s);
         public Length Modulo(Number s){
-            var _var339 = s;
-            return this.MapComponents((i) => i.Modulo(_var339));
+            var _var37 = s;
+            return this.MapComponents((i) => i.Modulo(_var37));
         }
         public static Length operator %(Length x, Number s) => x.Modulo(s);
         public Length Add(Length y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2277,8 +2277,8 @@ namespace Plato.DoublePrecision
         public Length Negative => this.MapComponents((a) => a.Negative);
         public static Length operator -(Length x) => x.Negative;
         public IArray<Length> Repeat(Integer n){
-            var _var340 = this;
-            return n.MapRange((i) => _var340);
+            var _var38 = this;
+            return n.MapRange((i) => _var38);
         }
         public Boolean Equals(Length b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Length a, Length b) => a.Equals(b);
@@ -2317,14 +2317,14 @@ namespace Plato.DoublePrecision
         public Mass(Number kilograms) => (Kilograms) = (kilograms);
         public static Mass Default = new Mass();
         public static Mass New(Number kilograms) => new Mass(kilograms);
-        public Plato.SinglePrecision.Mass ChangePrecision() => (Kilograms.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Mass(Mass self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Mass ChangePrecision() => (Kilograms.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Mass(Mass self) => self.ChangePrecision();
         public static implicit operator Number(Mass self) => self.Kilograms;
         public static implicit operator Mass(Number value) => new Mass(value);
         public static implicit operator Mass(Integer value) => new Mass(value);
         public static implicit operator Mass(int value) => new Integer(value);
-        public static implicit operator Mass(double value) => new Number(value);
-        public static implicit operator double(Mass value) => value.Kilograms;
+        public static implicit operator Mass(float value) => new Number(value);
+        public static implicit operator float(Mass value) => value.Kilograms;
         public override bool Equals(object obj) { if (!(obj is Mass)) return false; var other = (Mass)obj; return Kilograms.Equals(other.Kilograms); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Kilograms);
         public override string ToString() => $"{{ \"Kilograms\" = {Kilograms} }}";
@@ -2383,18 +2383,18 @@ namespace Plato.DoublePrecision
         public Mass Min(Mass y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Mass Max(Mass y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Mass Multiply(Number s){
-            var _var341 = s;
-            return this.MapComponents((i) => i.Multiply(_var341));
+            var _var39 = s;
+            return this.MapComponents((i) => i.Multiply(_var39));
         }
         public static Mass operator *(Mass x, Number s) => x.Multiply(s);
         public Mass Divide(Number s){
-            var _var342 = s;
-            return this.MapComponents((i) => i.Divide(_var342));
+            var _var40 = s;
+            return this.MapComponents((i) => i.Divide(_var40));
         }
         public static Mass operator /(Mass x, Number s) => x.Divide(s);
         public Mass Modulo(Number s){
-            var _var343 = s;
-            return this.MapComponents((i) => i.Modulo(_var343));
+            var _var41 = s;
+            return this.MapComponents((i) => i.Modulo(_var41));
         }
         public static Mass operator %(Mass x, Number s) => x.Modulo(s);
         public Mass Add(Mass y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2404,8 +2404,8 @@ namespace Plato.DoublePrecision
         public Mass Negative => this.MapComponents((a) => a.Negative);
         public static Mass operator -(Mass x) => x.Negative;
         public IArray<Mass> Repeat(Integer n){
-            var _var344 = this;
-            return n.MapRange((i) => _var344);
+            var _var42 = this;
+            return n.MapRange((i) => _var42);
         }
         public Boolean Equals(Mass b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Mass a, Mass b) => a.Equals(b);
@@ -2444,14 +2444,14 @@ namespace Plato.DoublePrecision
         public Temperature(Number celsius) => (Celsius) = (celsius);
         public static Temperature Default = new Temperature();
         public static Temperature New(Number celsius) => new Temperature(celsius);
-        public Plato.SinglePrecision.Temperature ChangePrecision() => (Celsius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Temperature(Temperature self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Temperature ChangePrecision() => (Celsius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Temperature(Temperature self) => self.ChangePrecision();
         public static implicit operator Number(Temperature self) => self.Celsius;
         public static implicit operator Temperature(Number value) => new Temperature(value);
         public static implicit operator Temperature(Integer value) => new Temperature(value);
         public static implicit operator Temperature(int value) => new Integer(value);
-        public static implicit operator Temperature(double value) => new Number(value);
-        public static implicit operator double(Temperature value) => value.Celsius;
+        public static implicit operator Temperature(float value) => new Number(value);
+        public static implicit operator float(Temperature value) => value.Celsius;
         public override bool Equals(object obj) { if (!(obj is Temperature)) return false; var other = (Temperature)obj; return Celsius.Equals(other.Celsius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Celsius);
         public override string ToString() => $"{{ \"Celsius\" = {Celsius} }}";
@@ -2510,18 +2510,18 @@ namespace Plato.DoublePrecision
         public Temperature Min(Temperature y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Temperature Max(Temperature y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Temperature Multiply(Number s){
-            var _var345 = s;
-            return this.MapComponents((i) => i.Multiply(_var345));
+            var _var43 = s;
+            return this.MapComponents((i) => i.Multiply(_var43));
         }
         public static Temperature operator *(Temperature x, Number s) => x.Multiply(s);
         public Temperature Divide(Number s){
-            var _var346 = s;
-            return this.MapComponents((i) => i.Divide(_var346));
+            var _var44 = s;
+            return this.MapComponents((i) => i.Divide(_var44));
         }
         public static Temperature operator /(Temperature x, Number s) => x.Divide(s);
         public Temperature Modulo(Number s){
-            var _var347 = s;
-            return this.MapComponents((i) => i.Modulo(_var347));
+            var _var45 = s;
+            return this.MapComponents((i) => i.Modulo(_var45));
         }
         public static Temperature operator %(Temperature x, Number s) => x.Modulo(s);
         public Temperature Add(Temperature y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2531,8 +2531,8 @@ namespace Plato.DoublePrecision
         public Temperature Negative => this.MapComponents((a) => a.Negative);
         public static Temperature operator -(Temperature x) => x.Negative;
         public IArray<Temperature> Repeat(Integer n){
-            var _var348 = this;
-            return n.MapRange((i) => _var348);
+            var _var46 = this;
+            return n.MapRange((i) => _var46);
         }
         public Boolean Equals(Temperature b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Temperature a, Temperature b) => a.Equals(b);
@@ -2571,14 +2571,14 @@ namespace Plato.DoublePrecision
         public Time(Number seconds) => (Seconds) = (seconds);
         public static Time Default = new Time();
         public static Time New(Number seconds) => new Time(seconds);
-        public Plato.SinglePrecision.Time ChangePrecision() => (Seconds.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Time(Time self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Time ChangePrecision() => (Seconds.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Time(Time self) => self.ChangePrecision();
         public static implicit operator Number(Time self) => self.Seconds;
         public static implicit operator Time(Number value) => new Time(value);
         public static implicit operator Time(Integer value) => new Time(value);
         public static implicit operator Time(int value) => new Integer(value);
-        public static implicit operator Time(double value) => new Number(value);
-        public static implicit operator double(Time value) => value.Seconds;
+        public static implicit operator Time(float value) => new Number(value);
+        public static implicit operator float(Time value) => value.Seconds;
         public override bool Equals(object obj) { if (!(obj is Time)) return false; var other = (Time)obj; return Seconds.Equals(other.Seconds); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Seconds);
         public override string ToString() => $"{{ \"Seconds\" = {Seconds} }}";
@@ -2637,18 +2637,18 @@ namespace Plato.DoublePrecision
         public Time Min(Time y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Time Max(Time y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Time Multiply(Number s){
-            var _var349 = s;
-            return this.MapComponents((i) => i.Multiply(_var349));
+            var _var47 = s;
+            return this.MapComponents((i) => i.Multiply(_var47));
         }
         public static Time operator *(Time x, Number s) => x.Multiply(s);
         public Time Divide(Number s){
-            var _var350 = s;
-            return this.MapComponents((i) => i.Divide(_var350));
+            var _var48 = s;
+            return this.MapComponents((i) => i.Divide(_var48));
         }
         public static Time operator /(Time x, Number s) => x.Divide(s);
         public Time Modulo(Number s){
-            var _var351 = s;
-            return this.MapComponents((i) => i.Modulo(_var351));
+            var _var49 = s;
+            return this.MapComponents((i) => i.Modulo(_var49));
         }
         public static Time operator %(Time x, Number s) => x.Modulo(s);
         public Time Add(Time y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2658,8 +2658,8 @@ namespace Plato.DoublePrecision
         public Time Negative => this.MapComponents((a) => a.Negative);
         public static Time operator -(Time x) => x.Negative;
         public IArray<Time> Repeat(Integer n){
-            var _var352 = this;
-            return n.MapRange((i) => _var352);
+            var _var50 = this;
+            return n.MapRange((i) => _var50);
         }
         public Boolean Equals(Time b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Time a, Time b) => a.Equals(b);
@@ -2698,14 +2698,14 @@ namespace Plato.DoublePrecision
         public DateTime(Number value) => (Value) = (value);
         public static DateTime Default = new DateTime();
         public static DateTime New(Number value) => new DateTime(value);
-        public Plato.SinglePrecision.DateTime ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.DateTime(DateTime self) => self.ChangePrecision();
+        public Plato.DoublePrecision.DateTime ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.DateTime(DateTime self) => self.ChangePrecision();
         public static implicit operator Number(DateTime self) => self.Value;
         public static implicit operator DateTime(Number value) => new DateTime(value);
         public static implicit operator DateTime(Integer value) => new DateTime(value);
         public static implicit operator DateTime(int value) => new Integer(value);
-        public static implicit operator DateTime(double value) => new Number(value);
-        public static implicit operator double(DateTime value) => value.Value;
+        public static implicit operator DateTime(float value) => new Number(value);
+        public static implicit operator float(DateTime value) => value.Value;
         public override bool Equals(object obj) { if (!(obj is DateTime)) return false; var other = (DateTime)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
         public override string ToString() => $"{{ \"Value\" = {Value} }}";
@@ -2717,8 +2717,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((DateTime)b);
         // Implemented concept functions and type functions
         public IArray<DateTime> Repeat(Integer n){
-            var _var353 = this;
-            return n.MapRange((i) => _var353);
+            var _var51 = this;
+            return n.MapRange((i) => _var51);
         }
         public Boolean Equals(DateTime b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(DateTime a, DateTime b) => a.Equals(b);
@@ -2736,8 +2736,8 @@ namespace Plato.DoublePrecision
         public AnglePair(Angle start, Angle end) => (Start, End) = (start, end);
         public static AnglePair Default = new AnglePair();
         public static AnglePair New(Angle start, Angle end) => new AnglePair(start, end);
-        public Plato.SinglePrecision.AnglePair ChangePrecision() => (Start.ChangePrecision(), End.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.AnglePair(AnglePair self) => self.ChangePrecision();
+        public Plato.DoublePrecision.AnglePair ChangePrecision() => (Start.ChangePrecision(), End.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.AnglePair(AnglePair self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(AnglePair self) => (self.Start, self.End);
         public static implicit operator AnglePair((Angle, Angle) value) => new AnglePair(value.Item1, value.Item2);
         public void Deconstruct(out Angle start, out Angle end) { start = Start; end = End; }
@@ -2784,34 +2784,34 @@ namespace Plato.DoublePrecision
         public AnglePair Clamp(AnglePair y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Angle Clamp(Angle value) => value.Clamp(this.Start, this.End);
         public IArray<Angle> LinearSpace(Integer count){
-            var _var354 = this;
-            return count.LinearSpace.Map((x) => _var354.Lerp(x));
+            var _var52 = this;
+            return count.LinearSpace.Map((x) => _var52.Lerp(x));
         }
         public IArray<Angle> LinearSpaceExclusive(Integer count){
-            var _var355 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var355.Lerp(x));
+            var _var53 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var53.Lerp(x));
         }
         public IArray<Angle> GeometricSpace(Integer count){
-            var _var356 = this;
-            return count.GeometricSpace.Map((x) => _var356.Lerp(x));
+            var _var54 = this;
+            return count.GeometricSpace.Map((x) => _var54.Lerp(x));
         }
         public IArray<Angle> GeometricSpaceExclusive(Integer count){
-            var _var357 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var357.Lerp(x));
+            var _var55 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var55.Lerp(x));
         }
         public AnglePair Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public AnglePair Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<AnglePair> Subdivide(Integer count){
-            var _var358 = this;
-            return count.Intervals.Map((i) => _var358.Subdivide(i));
+            var _var56 = this;
+            return count.Intervals.Map((i) => _var56.Subdivide(i));
         }
         public Boolean Equals(AnglePair b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(AnglePair a, AnglePair b) => a.Equals(b);
         public Boolean NotEquals(AnglePair b) => this.Equals(b).Not;
         public static Boolean operator !=(AnglePair a, AnglePair b) => a.NotEquals(b);
         public IArray<AnglePair> Repeat(Integer n){
-            var _var359 = this;
-            return n.MapRange((i) => _var359);
+            var _var57 = this;
+            return n.MapRange((i) => _var57);
         }
         // Unimplemented concept functions
         public Integer Count => 2;
@@ -2828,8 +2828,8 @@ namespace Plato.DoublePrecision
         public NumberInterval(Number start, Number end) => (Start, End) = (start, end);
         public static NumberInterval Default = new NumberInterval();
         public static NumberInterval New(Number start, Number end) => new NumberInterval(start, end);
-        public Plato.SinglePrecision.NumberInterval ChangePrecision() => (Start.ChangePrecision(), End.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NumberInterval(NumberInterval self) => self.ChangePrecision();
+        public Plato.DoublePrecision.NumberInterval ChangePrecision() => (Start.ChangePrecision(), End.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.NumberInterval(NumberInterval self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(NumberInterval self) => (self.Start, self.End);
         public static implicit operator NumberInterval((Number, Number) value) => new NumberInterval(value.Item1, value.Item2);
         public void Deconstruct(out Number start, out Number end) { start = Start; end = End; }
@@ -2876,34 +2876,34 @@ namespace Plato.DoublePrecision
         public NumberInterval Clamp(NumberInterval y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Number Clamp(Number value) => value.Clamp(this.Start, this.End);
         public IArray<Number> LinearSpace(Integer count){
-            var _var360 = this;
-            return count.LinearSpace.Map((x) => _var360.Lerp(x));
+            var _var58 = this;
+            return count.LinearSpace.Map((x) => _var58.Lerp(x));
         }
         public IArray<Number> LinearSpaceExclusive(Integer count){
-            var _var361 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var361.Lerp(x));
+            var _var59 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var59.Lerp(x));
         }
         public IArray<Number> GeometricSpace(Integer count){
-            var _var362 = this;
-            return count.GeometricSpace.Map((x) => _var362.Lerp(x));
+            var _var60 = this;
+            return count.GeometricSpace.Map((x) => _var60.Lerp(x));
         }
         public IArray<Number> GeometricSpaceExclusive(Integer count){
-            var _var363 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var363.Lerp(x));
+            var _var61 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var61.Lerp(x));
         }
         public NumberInterval Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public NumberInterval Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<NumberInterval> Subdivide(Integer count){
-            var _var364 = this;
-            return count.Intervals.Map((i) => _var364.Subdivide(i));
+            var _var62 = this;
+            return count.Intervals.Map((i) => _var62.Subdivide(i));
         }
         public Boolean Equals(NumberInterval b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(NumberInterval a, NumberInterval b) => a.Equals(b);
         public Boolean NotEquals(NumberInterval b) => this.Equals(b).Not;
         public static Boolean operator !=(NumberInterval a, NumberInterval b) => a.NotEquals(b);
         public IArray<NumberInterval> Repeat(Integer n){
-            var _var365 = this;
-            return n.MapRange((i) => _var365);
+            var _var63 = this;
+            return n.MapRange((i) => _var63);
         }
         // Unimplemented concept functions
         public Integer Count => 2;
@@ -2920,8 +2920,8 @@ namespace Plato.DoublePrecision
         public LinearEquation(Number slope, Number yIntercept) => (Slope, YIntercept) = (slope, yIntercept);
         public static LinearEquation Default = new LinearEquation();
         public static LinearEquation New(Number slope, Number yIntercept) => new LinearEquation(slope, yIntercept);
-        public Plato.SinglePrecision.LinearEquation ChangePrecision() => (Slope.ChangePrecision(), YIntercept.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LinearEquation(LinearEquation self) => self.ChangePrecision();
+        public Plato.DoublePrecision.LinearEquation ChangePrecision() => (Slope.ChangePrecision(), YIntercept.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.LinearEquation(LinearEquation self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(LinearEquation self) => (self.Slope, self.YIntercept);
         public static implicit operator LinearEquation((Number, Number) value) => new LinearEquation(value.Item1, value.Item2);
         public void Deconstruct(out Number slope, out Number yIntercept) { slope = Slope; yIntercept = YIntercept; }
@@ -2949,8 +2949,8 @@ namespace Plato.DoublePrecision
         public Quadratic(Number a, Number b, Number c) => (A, B, C) = (a, b, c);
         public static Quadratic Default = new Quadratic();
         public static Quadratic New(Number a, Number b, Number c) => new Quadratic(a, b, c);
-        public Plato.SinglePrecision.Quadratic ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quadratic(Quadratic self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Quadratic ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Quadratic(Quadratic self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Quadratic self) => (self.A, self.B, self.C);
         public static implicit operator Quadratic((Number, Number, Number) value) => new Quadratic(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number a, out Number b, out Number c) { a = A; b = B; c = C; }
@@ -2980,8 +2980,8 @@ namespace Plato.DoublePrecision
         public Cubic(Number a, Number b, Number c, Number d) => (A, B, C, D) = (a, b, c, d);
         public static Cubic Default = new Cubic();
         public static Cubic New(Number a, Number b, Number c, Number d) => new Cubic(a, b, c, d);
-        public Plato.SinglePrecision.Cubic ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cubic(Cubic self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Cubic ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Cubic(Cubic self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Cubic self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Cubic((Number, Number, Number, Number) value) => new Cubic(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number a, out Number b, out Number c, out Number d) { a = A; b = B; c = C; d = D; }
@@ -3027,8 +3027,8 @@ namespace Plato.DoublePrecision
         public SineWave(Number amplitude, Number frequency, Number phase) => (Amplitude, Frequency, Phase) = (amplitude, frequency, phase);
         public static SineWave Default = new SineWave();
         public static SineWave New(Number amplitude, Number frequency, Number phase) => new SineWave(amplitude, frequency, phase);
-        public Plato.SinglePrecision.SineWave ChangePrecision() => (Amplitude.ChangePrecision(), Frequency.ChangePrecision(), Phase.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.SineWave(SineWave self) => self.ChangePrecision();
+        public Plato.DoublePrecision.SineWave ChangePrecision() => (Amplitude.ChangePrecision(), Frequency.ChangePrecision(), Phase.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.SineWave(SineWave self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(SineWave self) => (self.Amplitude, self.Frequency, self.Phase);
         public static implicit operator SineWave((Number, Number, Number) value) => new SineWave(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number amplitude, out Number frequency, out Number phase) { amplitude = Amplitude; frequency = Frequency; phase = Phase; }
@@ -3057,8 +3057,8 @@ namespace Plato.DoublePrecision
         public Spiral(Number radius1, Number radius2, Number numTurns) => (Radius1, Radius2, NumTurns) = (radius1, radius2, numTurns);
         public static Spiral Default = new Spiral();
         public static Spiral New(Number radius1, Number radius2, Number numTurns) => new Spiral(radius1, radius2, numTurns);
-        public Plato.SinglePrecision.Spiral ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), NumTurns.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Spiral(Spiral self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Spiral ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), NumTurns.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Spiral(Spiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Spiral self) => (self.Radius1, self.Radius2, self.NumTurns);
         public static implicit operator Spiral((Number, Number, Number) value) => new Spiral(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius1, out Number radius2, out Number numTurns) { radius1 = Radius1; radius2 = Radius2; numTurns = NumTurns; }
@@ -3074,8 +3074,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => t.Spiral(this.Radius1, this.Radius2, this.NumTurns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var366 = this;
-            return numPoints.LinearSpace.Map((x) => _var366.Eval(x));
+            var _var64 = this;
+            return numPoints.LinearSpace.Map((x) => _var64.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3093,8 +3093,8 @@ namespace Plato.DoublePrecision
         public QuadraticBezier2D(Vector2D a, Vector2D b, Vector2D c) => (A, B, C) = (a, b, c);
         public static QuadraticBezier2D Default = new QuadraticBezier2D();
         public static QuadraticBezier2D New(Vector2D a, Vector2D b, Vector2D c) => new QuadraticBezier2D(a, b, c);
-        public Plato.SinglePrecision.QuadraticBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.QuadraticBezier2D(QuadraticBezier2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.QuadraticBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.QuadraticBezier2D(QuadraticBezier2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D)(QuadraticBezier2D self) => (self.A, self.B, self.C);
         public static implicit operator QuadraticBezier2D((Vector2D, Vector2D, Vector2D) value) => new QuadraticBezier2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
@@ -3121,8 +3121,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.A.QuadraticBezier(this.B, this.C, t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var367 = this;
-            return numPoints.LinearSpace.Map((x) => _var367.Eval(x));
+            var _var65 = this;
+            return numPoints.LinearSpace.Map((x) => _var65.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3145,8 +3145,8 @@ namespace Plato.DoublePrecision
         public CubicBezier2D(Vector2D a, Vector2D b, Vector2D c, Vector2D d) => (A, B, C, D) = (a, b, c, d);
         public static CubicBezier2D Default = new CubicBezier2D();
         public static CubicBezier2D New(Vector2D a, Vector2D b, Vector2D c, Vector2D d) => new CubicBezier2D(a, b, c, d);
-        public Plato.SinglePrecision.CubicBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.CubicBezier2D(CubicBezier2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.CubicBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.CubicBezier2D(CubicBezier2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D, Vector2D)(CubicBezier2D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator CubicBezier2D((Vector2D, Vector2D, Vector2D, Vector2D) value) => new CubicBezier2D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
@@ -3173,8 +3173,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.A.QuadraticBezier(this.B, this.C, t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var368 = this;
-            return numPoints.LinearSpace.Map((x) => _var368.Eval(x));
+            var _var66 = this;
+            return numPoints.LinearSpace.Map((x) => _var66.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3193,8 +3193,8 @@ namespace Plato.DoublePrecision
         public Circle(Vector2D center, Number radius) => (Center, Radius) = (center, radius);
         public static Circle Default = new Circle();
         public static Circle New(Vector2D center, Number radius) => new Circle(center, radius);
-        public Plato.SinglePrecision.Circle ChangePrecision() => (Center.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Circle(Circle self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Circle ChangePrecision() => (Center.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Circle(Circle self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Number)(Circle self) => (self.Center, self.Radius);
         public static implicit operator Circle((Vector2D, Number) value) => new Circle(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D center, out Number radius) { center = Center; radius = Radius; }
@@ -3211,8 +3211,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var369 = this;
-            return numPoints.LinearSpace.Map((x) => _var369.Eval(x));
+            var _var67 = this;
+            return numPoints.LinearSpace.Map((x) => _var67.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3228,8 +3228,8 @@ namespace Plato.DoublePrecision
         public Ellipse(Vector2D center, Vector2D size) => (Center, Size) = (center, size);
         public static Ellipse Default = new Ellipse();
         public static Ellipse New(Vector2D center, Vector2D size) => new Ellipse(center, size);
-        public Plato.SinglePrecision.Ellipse ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ellipse(Ellipse self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Ellipse ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Ellipse(Ellipse self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Ellipse self) => (self.Center, self.Size);
         public static implicit operator Ellipse((Vector2D, Vector2D) value) => new Ellipse(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D center, out Vector2D size) { center = Center; size = Size; }
@@ -3246,8 +3246,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var370 = this;
-            return numPoints.LinearSpace.Map((x) => _var370.Eval(x));
+            var _var68 = this;
+            return numPoints.LinearSpace.Map((x) => _var68.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3263,8 +3263,8 @@ namespace Plato.DoublePrecision
         public Epicycloid(Number radius1, Number radius2) => (Radius1, Radius2) = (radius1, radius2);
         public static Epicycloid Default = new Epicycloid();
         public static Epicycloid New(Number radius1, Number radius2) => new Epicycloid(radius1, radius2);
-        public Plato.SinglePrecision.Epicycloid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Epicycloid(Epicycloid self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Epicycloid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Epicycloid(Epicycloid self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Epicycloid self) => (self.Radius1, self.Radius2);
         public static implicit operator Epicycloid((Number, Number) value) => new Epicycloid(value.Item1, value.Item2);
         public void Deconstruct(out Number radius1, out Number radius2) { radius1 = Radius1; radius2 = Radius2; }
@@ -3281,8 +3281,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var371 = this;
-            return numPoints.LinearSpace.Map((x) => _var371.Eval(x));
+            var _var69 = this;
+            return numPoints.LinearSpace.Map((x) => _var69.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3298,8 +3298,8 @@ namespace Plato.DoublePrecision
         public Hypocycloid(Number radius1, Number radius2) => (Radius1, Radius2) = (radius1, radius2);
         public static Hypocycloid Default = new Hypocycloid();
         public static Hypocycloid New(Number radius1, Number radius2) => new Hypocycloid(radius1, radius2);
-        public Plato.SinglePrecision.Hypocycloid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Hypocycloid(Hypocycloid self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Hypocycloid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Hypocycloid(Hypocycloid self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Hypocycloid self) => (self.Radius1, self.Radius2);
         public static implicit operator Hypocycloid((Number, Number) value) => new Hypocycloid(value.Item1, value.Item2);
         public void Deconstruct(out Number radius1, out Number radius2) { radius1 = Radius1; radius2 = Radius2; }
@@ -3316,8 +3316,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var372 = this;
-            return numPoints.LinearSpace.Map((x) => _var372.Eval(x));
+            var _var70 = this;
+            return numPoints.LinearSpace.Map((x) => _var70.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3335,8 +3335,8 @@ namespace Plato.DoublePrecision
         public Epitrochoid(Number radius1, Number radius2, Number dist) => (Radius1, Radius2, Dist) = (radius1, radius2, dist);
         public static Epitrochoid Default = new Epitrochoid();
         public static Epitrochoid New(Number radius1, Number radius2, Number dist) => new Epitrochoid(radius1, radius2, dist);
-        public Plato.SinglePrecision.Epitrochoid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), Dist.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Epitrochoid(Epitrochoid self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Epitrochoid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), Dist.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Epitrochoid(Epitrochoid self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Epitrochoid self) => (self.Radius1, self.Radius2, self.Dist);
         public static implicit operator Epitrochoid((Number, Number, Number) value) => new Epitrochoid(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius1, out Number radius2, out Number dist) { radius1 = Radius1; radius2 = Radius2; dist = Dist; }
@@ -3353,8 +3353,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var373 = this;
-            return numPoints.LinearSpace.Map((x) => _var373.Eval(x));
+            var _var71 = this;
+            return numPoints.LinearSpace.Map((x) => _var71.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3372,8 +3372,8 @@ namespace Plato.DoublePrecision
         public Hypotrochoid(Number radius1, Number radius2, Number dist) => (Radius1, Radius2, Dist) = (radius1, radius2, dist);
         public static Hypotrochoid Default = new Hypotrochoid();
         public static Hypotrochoid New(Number radius1, Number radius2, Number dist) => new Hypotrochoid(radius1, radius2, dist);
-        public Plato.SinglePrecision.Hypotrochoid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), Dist.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Hypotrochoid(Hypotrochoid self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Hypotrochoid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), Dist.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Hypotrochoid(Hypotrochoid self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Hypotrochoid self) => (self.Radius1, self.Radius2, self.Dist);
         public static implicit operator Hypotrochoid((Number, Number, Number) value) => new Hypotrochoid(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius1, out Number radius2, out Number dist) { radius1 = Radius1; radius2 = Radius2; dist = Dist; }
@@ -3390,8 +3390,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var374 = this;
-            return numPoints.LinearSpace.Map((x) => _var374.Eval(x));
+            var _var72 = this;
+            return numPoints.LinearSpace.Map((x) => _var72.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3415,8 +3415,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var375 = this;
-            return numPoints.LinearSpace.Map((x) => _var375.Eval(x));
+            var _var73 = this;
+            return numPoints.LinearSpace.Map((x) => _var73.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3434,8 +3434,8 @@ namespace Plato.DoublePrecision
         public Lissajous(Angle delta, Number a, Number b) => (Delta, A, B) = (delta, a, b);
         public static Lissajous Default = new Lissajous();
         public static Lissajous New(Angle delta, Number a, Number b) => new Lissajous(delta, a, b);
-        public Plato.SinglePrecision.Lissajous ChangePrecision() => (Delta.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Lissajous(Lissajous self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Lissajous ChangePrecision() => (Delta.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Lissajous(Lissajous self) => self.ChangePrecision();
         public static implicit operator (Angle, Number, Number)(Lissajous self) => (self.Delta, self.A, self.B);
         public static implicit operator Lissajous((Angle, Number, Number) value) => new Lissajous(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle delta, out Number a, out Number b) { delta = Delta; a = A; b = B; }
@@ -3452,8 +3452,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var376 = this;
-            return numPoints.LinearSpace.Map((x) => _var376.Eval(x));
+            var _var74 = this;
+            return numPoints.LinearSpace.Map((x) => _var74.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3479,8 +3479,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var377 = this;
-            return numPoints.LinearSpace.Map((x) => _var377.Eval(x));
+            var _var75 = this;
+            return numPoints.LinearSpace.Map((x) => _var75.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3496,8 +3496,8 @@ namespace Plato.DoublePrecision
         public Limacon(Number a, Number b) => (A, B) = (a, b);
         public static Limacon Default = new Limacon();
         public static Limacon New(Number a, Number b) => new Limacon(a, b);
-        public Plato.SinglePrecision.Limacon ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Limacon(Limacon self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Limacon ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Limacon(Limacon self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Limacon self) => (self.A, self.B);
         public static implicit operator Limacon((Number, Number) value) => new Limacon(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number b) { a = A; b = B; }
@@ -3516,8 +3516,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var378 = this;
-            return numPoints.LinearSpace.Map((x) => _var378.Eval(x));
+            var _var76 = this;
+            return numPoints.LinearSpace.Map((x) => _var76.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3543,8 +3543,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var379 = this;
-            return numPoints.LinearSpace.Map((x) => _var379.Eval(x));
+            var _var77 = this;
+            return numPoints.LinearSpace.Map((x) => _var77.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3558,8 +3558,8 @@ namespace Plato.DoublePrecision
         public Rose(Integer k) => (K) = (k);
         public static Rose Default = new Rose();
         public static Rose New(Integer k) => new Rose(k);
-        public Plato.SinglePrecision.Rose ChangePrecision() => (K.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rose(Rose self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Rose ChangePrecision() => (K.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Rose(Rose self) => self.ChangePrecision();
         public static implicit operator Integer(Rose self) => self.K;
         public static implicit operator Rose(Integer value) => new Rose(value);
         public override bool Equals(object obj) { if (!(obj is Rose)) return false; var other = (Rose)obj; return K.Equals(other.K); }
@@ -3577,8 +3577,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var380 = this;
-            return numPoints.LinearSpace.Map((x) => _var380.Eval(x));
+            var _var78 = this;
+            return numPoints.LinearSpace.Map((x) => _var78.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3594,8 +3594,8 @@ namespace Plato.DoublePrecision
         public ArchimedeanSpiral(Number a, Number b) => (A, B) = (a, b);
         public static ArchimedeanSpiral Default = new ArchimedeanSpiral();
         public static ArchimedeanSpiral New(Number a, Number b) => new ArchimedeanSpiral(a, b);
-        public Plato.SinglePrecision.ArchimedeanSpiral ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ArchimedeanSpiral(ArchimedeanSpiral self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ArchimedeanSpiral ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ArchimedeanSpiral(ArchimedeanSpiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(ArchimedeanSpiral self) => (self.A, self.B);
         public static implicit operator ArchimedeanSpiral((Number, Number) value) => new ArchimedeanSpiral(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number b) { a = A; b = B; }
@@ -3614,8 +3614,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var381 = this;
-            return numPoints.LinearSpace.Map((x) => _var381.Eval(x));
+            var _var79 = this;
+            return numPoints.LinearSpace.Map((x) => _var79.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3631,8 +3631,8 @@ namespace Plato.DoublePrecision
         public ConicSection(Number eccentricity, Number semiLatusRectum) => (Eccentricity, SemiLatusRectum) = (eccentricity, semiLatusRectum);
         public static ConicSection Default = new ConicSection();
         public static ConicSection New(Number eccentricity, Number semiLatusRectum) => new ConicSection(eccentricity, semiLatusRectum);
-        public Plato.SinglePrecision.ConicSection ChangePrecision() => (Eccentricity.ChangePrecision(), SemiLatusRectum.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ConicSection(ConicSection self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ConicSection ChangePrecision() => (Eccentricity.ChangePrecision(), SemiLatusRectum.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ConicSection(ConicSection self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(ConicSection self) => (self.Eccentricity, self.SemiLatusRectum);
         public static implicit operator ConicSection((Number, Number) value) => new ConicSection(value.Item1, value.Item2);
         public void Deconstruct(out Number eccentricity, out Number semiLatusRectum) { eccentricity = Eccentricity; semiLatusRectum = SemiLatusRectum; }
@@ -3651,8 +3651,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var382 = this;
-            return numPoints.LinearSpace.Map((x) => _var382.Eval(x));
+            var _var80 = this;
+            return numPoints.LinearSpace.Map((x) => _var80.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3666,14 +3666,14 @@ namespace Plato.DoublePrecision
         public LemniscateOfBernoulli(Number a) => (A) = (a);
         public static LemniscateOfBernoulli Default = new LemniscateOfBernoulli();
         public static LemniscateOfBernoulli New(Number a) => new LemniscateOfBernoulli(a);
-        public Plato.SinglePrecision.LemniscateOfBernoulli ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LemniscateOfBernoulli(LemniscateOfBernoulli self) => self.ChangePrecision();
+        public Plato.DoublePrecision.LemniscateOfBernoulli ChangePrecision() => (A.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.LemniscateOfBernoulli(LemniscateOfBernoulli self) => self.ChangePrecision();
         public static implicit operator Number(LemniscateOfBernoulli self) => self.A;
         public static implicit operator LemniscateOfBernoulli(Number value) => new LemniscateOfBernoulli(value);
         public static implicit operator LemniscateOfBernoulli(Integer value) => new LemniscateOfBernoulli(value);
         public static implicit operator LemniscateOfBernoulli(int value) => new Integer(value);
-        public static implicit operator LemniscateOfBernoulli(double value) => new Number(value);
-        public static implicit operator double(LemniscateOfBernoulli value) => value.A;
+        public static implicit operator LemniscateOfBernoulli(float value) => new Number(value);
+        public static implicit operator float(LemniscateOfBernoulli value) => value.A;
         public override bool Equals(object obj) { if (!(obj is LemniscateOfBernoulli)) return false; var other = (LemniscateOfBernoulli)obj; return A.Equals(other.A); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A);
         public override string ToString() => $"{{ \"A\" = {A} }}";
@@ -3689,8 +3689,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var383 = this;
-            return numPoints.LinearSpace.Map((x) => _var383.Eval(x));
+            var _var81 = this;
+            return numPoints.LinearSpace.Map((x) => _var81.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3704,14 +3704,14 @@ namespace Plato.DoublePrecision
         public TrisectrixOfMaclaurin(Number a) => (A) = (a);
         public static TrisectrixOfMaclaurin Default = new TrisectrixOfMaclaurin();
         public static TrisectrixOfMaclaurin New(Number a) => new TrisectrixOfMaclaurin(a);
-        public Plato.SinglePrecision.TrisectrixOfMaclaurin ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.TrisectrixOfMaclaurin(TrisectrixOfMaclaurin self) => self.ChangePrecision();
+        public Plato.DoublePrecision.TrisectrixOfMaclaurin ChangePrecision() => (A.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.TrisectrixOfMaclaurin(TrisectrixOfMaclaurin self) => self.ChangePrecision();
         public static implicit operator Number(TrisectrixOfMaclaurin self) => self.A;
         public static implicit operator TrisectrixOfMaclaurin(Number value) => new TrisectrixOfMaclaurin(value);
         public static implicit operator TrisectrixOfMaclaurin(Integer value) => new TrisectrixOfMaclaurin(value);
         public static implicit operator TrisectrixOfMaclaurin(int value) => new Integer(value);
-        public static implicit operator TrisectrixOfMaclaurin(double value) => new Number(value);
-        public static implicit operator double(TrisectrixOfMaclaurin value) => value.A;
+        public static implicit operator TrisectrixOfMaclaurin(float value) => new Number(value);
+        public static implicit operator float(TrisectrixOfMaclaurin value) => value.A;
         public override bool Equals(object obj) { if (!(obj is TrisectrixOfMaclaurin)) return false; var other = (TrisectrixOfMaclaurin)obj; return A.Equals(other.A); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A);
         public override string ToString() => $"{{ \"A\" = {A} }}";
@@ -3727,8 +3727,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var384 = this;
-            return numPoints.LinearSpace.Map((x) => _var384.Eval(x));
+            var _var82 = this;
+            return numPoints.LinearSpace.Map((x) => _var82.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3742,14 +3742,14 @@ namespace Plato.DoublePrecision
         public ConchoidOfDeSluze(Number a) => (A) = (a);
         public static ConchoidOfDeSluze Default = new ConchoidOfDeSluze();
         public static ConchoidOfDeSluze New(Number a) => new ConchoidOfDeSluze(a);
-        public Plato.SinglePrecision.ConchoidOfDeSluze ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ConchoidOfDeSluze(ConchoidOfDeSluze self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ConchoidOfDeSluze ChangePrecision() => (A.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ConchoidOfDeSluze(ConchoidOfDeSluze self) => self.ChangePrecision();
         public static implicit operator Number(ConchoidOfDeSluze self) => self.A;
         public static implicit operator ConchoidOfDeSluze(Number value) => new ConchoidOfDeSluze(value);
         public static implicit operator ConchoidOfDeSluze(Integer value) => new ConchoidOfDeSluze(value);
         public static implicit operator ConchoidOfDeSluze(int value) => new Integer(value);
-        public static implicit operator ConchoidOfDeSluze(double value) => new Number(value);
-        public static implicit operator double(ConchoidOfDeSluze value) => value.A;
+        public static implicit operator ConchoidOfDeSluze(float value) => new Number(value);
+        public static implicit operator float(ConchoidOfDeSluze value) => value.A;
         public override bool Equals(object obj) { if (!(obj is ConchoidOfDeSluze)) return false; var other = (ConchoidOfDeSluze)obj; return A.Equals(other.A); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A);
         public override string ToString() => $"{{ \"A\" = {A} }}";
@@ -3765,8 +3765,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var385 = this;
-            return numPoints.LinearSpace.Map((x) => _var385.Eval(x));
+            var _var83 = this;
+            return numPoints.LinearSpace.Map((x) => _var83.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3780,14 +3780,14 @@ namespace Plato.DoublePrecision
         public TschirnhausenCubic(Number a) => (A) = (a);
         public static TschirnhausenCubic Default = new TschirnhausenCubic();
         public static TschirnhausenCubic New(Number a) => new TschirnhausenCubic(a);
-        public Plato.SinglePrecision.TschirnhausenCubic ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.TschirnhausenCubic(TschirnhausenCubic self) => self.ChangePrecision();
+        public Plato.DoublePrecision.TschirnhausenCubic ChangePrecision() => (A.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.TschirnhausenCubic(TschirnhausenCubic self) => self.ChangePrecision();
         public static implicit operator Number(TschirnhausenCubic self) => self.A;
         public static implicit operator TschirnhausenCubic(Number value) => new TschirnhausenCubic(value);
         public static implicit operator TschirnhausenCubic(Integer value) => new TschirnhausenCubic(value);
         public static implicit operator TschirnhausenCubic(int value) => new Integer(value);
-        public static implicit operator TschirnhausenCubic(double value) => new Number(value);
-        public static implicit operator double(TschirnhausenCubic value) => value.A;
+        public static implicit operator TschirnhausenCubic(float value) => new Number(value);
+        public static implicit operator float(TschirnhausenCubic value) => value.A;
         public override bool Equals(object obj) { if (!(obj is TschirnhausenCubic)) return false; var other = (TschirnhausenCubic)obj; return A.Equals(other.A); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A);
         public override string ToString() => $"{{ \"A\" = {A} }}";
@@ -3803,8 +3803,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var386 = this;
-            return numPoints.LinearSpace.Map((x) => _var386.Eval(x));
+            var _var84 = this;
+            return numPoints.LinearSpace.Map((x) => _var84.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3820,8 +3820,8 @@ namespace Plato.DoublePrecision
         public SinusoidalSpiral(Number a, Number n) => (A, N) = (a, n);
         public static SinusoidalSpiral Default = new SinusoidalSpiral();
         public static SinusoidalSpiral New(Number a, Number n) => new SinusoidalSpiral(a, n);
-        public Plato.SinglePrecision.SinusoidalSpiral ChangePrecision() => (A.ChangePrecision(), N.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.SinusoidalSpiral(SinusoidalSpiral self) => self.ChangePrecision();
+        public Plato.DoublePrecision.SinusoidalSpiral ChangePrecision() => (A.ChangePrecision(), N.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.SinusoidalSpiral(SinusoidalSpiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(SinusoidalSpiral self) => (self.A, self.N);
         public static implicit operator SinusoidalSpiral((Number, Number) value) => new SinusoidalSpiral(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number n) { a = A; n = N; }
@@ -3840,8 +3840,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var387 = this;
-            return numPoints.LinearSpace.Map((x) => _var387.Eval(x));
+            var _var85 = this;
+            return numPoints.LinearSpace.Map((x) => _var85.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3855,14 +3855,14 @@ namespace Plato.DoublePrecision
         public FermatsSpiral(Number a) => (A) = (a);
         public static FermatsSpiral Default = new FermatsSpiral();
         public static FermatsSpiral New(Number a) => new FermatsSpiral(a);
-        public Plato.SinglePrecision.FermatsSpiral ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.FermatsSpiral(FermatsSpiral self) => self.ChangePrecision();
+        public Plato.DoublePrecision.FermatsSpiral ChangePrecision() => (A.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.FermatsSpiral(FermatsSpiral self) => self.ChangePrecision();
         public static implicit operator Number(FermatsSpiral self) => self.A;
         public static implicit operator FermatsSpiral(Number value) => new FermatsSpiral(value);
         public static implicit operator FermatsSpiral(Integer value) => new FermatsSpiral(value);
         public static implicit operator FermatsSpiral(int value) => new Integer(value);
-        public static implicit operator FermatsSpiral(double value) => new Number(value);
-        public static implicit operator double(FermatsSpiral value) => value.A;
+        public static implicit operator FermatsSpiral(float value) => new Number(value);
+        public static implicit operator float(FermatsSpiral value) => value.A;
         public override bool Equals(object obj) { if (!(obj is FermatsSpiral)) return false; var other = (FermatsSpiral)obj; return A.Equals(other.A); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(A);
         public override string ToString() => $"{{ \"A\" = {A} }}";
@@ -3878,8 +3878,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var388 = this;
-            return numPoints.LinearSpace.Map((x) => _var388.Eval(x));
+            var _var86 = this;
+            return numPoints.LinearSpace.Map((x) => _var86.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3895,8 +3895,8 @@ namespace Plato.DoublePrecision
         public LogarithmicSpiral(Number a, Number k) => (A, K) = (a, k);
         public static LogarithmicSpiral Default = new LogarithmicSpiral();
         public static LogarithmicSpiral New(Number a, Number k) => new LogarithmicSpiral(a, k);
-        public Plato.SinglePrecision.LogarithmicSpiral ChangePrecision() => (A.ChangePrecision(), K.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LogarithmicSpiral(LogarithmicSpiral self) => self.ChangePrecision();
+        public Plato.DoublePrecision.LogarithmicSpiral ChangePrecision() => (A.ChangePrecision(), K.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.LogarithmicSpiral(LogarithmicSpiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(LogarithmicSpiral self) => (self.A, self.K);
         public static implicit operator LogarithmicSpiral((Number, Number) value) => new LogarithmicSpiral(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number k) { a = A; k = K; }
@@ -3915,8 +3915,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var389 = this;
-            return numPoints.LinearSpace.Map((x) => _var389.Eval(x));
+            var _var87 = this;
+            return numPoints.LinearSpace.Map((x) => _var87.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3936,8 +3936,8 @@ namespace Plato.DoublePrecision
         public CubicBezier3D(Vector3D a, Vector3D b, Vector3D c, Vector3D d) => (A, B, C, D) = (a, b, c, d);
         public static CubicBezier3D Default = new CubicBezier3D();
         public static CubicBezier3D New(Vector3D a, Vector3D b, Vector3D c, Vector3D d) => new CubicBezier3D(a, b, c, d);
-        public Plato.SinglePrecision.CubicBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.CubicBezier3D(CubicBezier3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.CubicBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.CubicBezier3D(CubicBezier3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D, Vector3D)(CubicBezier3D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator CubicBezier3D((Vector3D, Vector3D, Vector3D, Vector3D) value) => new CubicBezier3D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
@@ -3980,8 +3980,8 @@ namespace Plato.DoublePrecision
         public QuadraticBezier3D(Vector3D a, Vector3D b, Vector3D c) => (A, B, C) = (a, b, c);
         public static QuadraticBezier3D Default = new QuadraticBezier3D();
         public static QuadraticBezier3D New(Vector3D a, Vector3D b, Vector3D c) => new QuadraticBezier3D(a, b, c);
-        public Plato.SinglePrecision.QuadraticBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.QuadraticBezier3D(QuadraticBezier3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.QuadraticBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.QuadraticBezier3D(QuadraticBezier3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(QuadraticBezier3D self) => (self.A, self.B, self.C);
         public static implicit operator QuadraticBezier3D((Vector3D, Vector3D, Vector3D) value) => new QuadraticBezier3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
@@ -4024,8 +4024,8 @@ namespace Plato.DoublePrecision
         public TorusKnot(Integer p, Integer q, Number radius) => (P, Q, Radius) = (p, q, radius);
         public static TorusKnot Default = new TorusKnot();
         public static TorusKnot New(Integer p, Integer q, Number radius) => new TorusKnot(p, q, radius);
-        public Plato.SinglePrecision.TorusKnot ChangePrecision() => (P.ChangePrecision(), Q.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.TorusKnot(TorusKnot self) => self.ChangePrecision();
+        public Plato.DoublePrecision.TorusKnot ChangePrecision() => (P.ChangePrecision(), Q.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.TorusKnot(TorusKnot self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Number)(TorusKnot self) => (self.P, self.Q, self.Radius);
         public static implicit operator TorusKnot((Integer, Integer, Number) value) => new TorusKnot(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Integer p, out Integer q, out Number radius) { p = P; q = Q; radius = Radius; }
@@ -4042,8 +4042,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var390 = this;
-            return numPoints.LinearSpace.Map((x) => _var390.Eval(x));
+            var _var88 = this;
+            return numPoints.LinearSpace.Map((x) => _var88.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4068,8 +4068,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var391 = this;
-            return numPoints.LinearSpace.Map((x) => _var391.Eval(x));
+            var _var89 = this;
+            return numPoints.LinearSpace.Map((x) => _var89.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4094,8 +4094,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var392 = this;
-            return numPoints.LinearSpace.Map((x) => _var392.Eval(x));
+            var _var90 = this;
+            return numPoints.LinearSpace.Map((x) => _var90.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4114,8 +4114,8 @@ namespace Plato.DoublePrecision
         public Helix(Number radius, Number height, Number numTurns) => (Radius, Height, NumTurns) = (radius, height, numTurns);
         public static Helix Default = new Helix();
         public static Helix New(Number radius, Number height, Number numTurns) => new Helix(radius, height, numTurns);
-        public Plato.SinglePrecision.Helix ChangePrecision() => (Radius.ChangePrecision(), Height.ChangePrecision(), NumTurns.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Helix(Helix self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Helix ChangePrecision() => (Radius.ChangePrecision(), Height.ChangePrecision(), NumTurns.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Helix(Helix self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Helix self) => (self.Radius, self.Height, self.NumTurns);
         public static implicit operator Helix((Number, Number, Number) value) => new Helix(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius, out Number height, out Number numTurns) { radius = Radius; height = Height; numTurns = NumTurns; }
@@ -4132,8 +4132,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var393 = this;
-            return numPoints.LinearSpace.Map((x) => _var393.Eval(x));
+            var _var91 = this;
+            return numPoints.LinearSpace.Map((x) => _var91.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4150,8 +4150,8 @@ namespace Plato.DoublePrecision
         public Vector2D(Number x, Number y) => (X, Y) = (x, y);
         public static Vector2D Default = new Vector2D();
         public static Vector2D New(Number x, Number y) => new Vector2D(x, y);
-        public Plato.SinglePrecision.Vector2D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Vector2D(Vector2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Vector2D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Vector2D(Vector2D self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Vector2D self) => (self.X, self.Y);
         public static implicit operator Vector2D((Number, Number) value) => new Vector2D(value.Item1, value.Item2);
         public void Deconstruct(out Number x, out Number y) { x = X; y = Y; }
@@ -4244,18 +4244,18 @@ namespace Plato.DoublePrecision
         public Vector2D Min(Vector2D y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Vector2D Max(Vector2D y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Vector2D Multiply(Number s){
-            var _var394 = s;
-            return this.MapComponents((i) => i.Multiply(_var394));
+            var _var92 = s;
+            return this.MapComponents((i) => i.Multiply(_var92));
         }
         public static Vector2D operator *(Vector2D x, Number s) => x.Multiply(s);
         public Vector2D Divide(Number s){
-            var _var395 = s;
-            return this.MapComponents((i) => i.Divide(_var395));
+            var _var93 = s;
+            return this.MapComponents((i) => i.Divide(_var93));
         }
         public static Vector2D operator /(Vector2D x, Number s) => x.Divide(s);
         public Vector2D Modulo(Number s){
-            var _var396 = s;
-            return this.MapComponents((i) => i.Modulo(_var396));
+            var _var94 = s;
+            return this.MapComponents((i) => i.Modulo(_var94));
         }
         public static Vector2D operator %(Vector2D x, Number s) => x.Modulo(s);
         public Vector2D Add(Vector2D y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -4265,8 +4265,8 @@ namespace Plato.DoublePrecision
         public Vector2D Negative => this.MapComponents((a) => a.Negative);
         public static Vector2D operator -(Vector2D x) => x.Negative;
         public IArray<Vector2D> Repeat(Integer n){
-            var _var397 = this;
-            return n.MapRange((i) => _var397);
+            var _var95 = this;
+            return n.MapRange((i) => _var95);
         }
         public Boolean Equals(Vector2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector2D a, Vector2D b) => a.Equals(b);
@@ -4312,8 +4312,8 @@ namespace Plato.DoublePrecision
         public Vector3D(Number x, Number y, Number z) => (X, Y, Z) = (x, y, z);
         public static Vector3D Default = new Vector3D();
         public static Vector3D New(Number x, Number y, Number z) => new Vector3D(x, y, z);
-        public Plato.SinglePrecision.Vector3D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Vector3D(Vector3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Vector3D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Vector3D(Vector3D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Vector3D self) => (self.X, self.Y, self.Z);
         public static implicit operator Vector3D((Number, Number, Number) value) => new Vector3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number x, out Number y, out Number z) { x = X; y = Y; z = Z; }
@@ -4436,8 +4436,8 @@ namespace Plato.DoublePrecision
         public Vector3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
         public static Vector3D operator /(Vector3D x, Number s) => x.Divide(s);
         public Vector3D Modulo(Number s){
-            var _var398 = s;
-            return this.MapComponents((i) => i.Modulo(_var398));
+            var _var96 = s;
+            return this.MapComponents((i) => i.Modulo(_var96));
         }
         public static Vector3D operator %(Vector3D x, Number s) => x.Modulo(s);
         public Vector3D Add(Vector3D v) => this.Translate(v);
@@ -4447,8 +4447,8 @@ namespace Plato.DoublePrecision
         public Vector3D Negative => this.MapComponents((a) => a.Negative);
         public static Vector3D operator -(Vector3D x) => x.Negative;
         public IArray<Vector3D> Repeat(Integer n){
-            var _var399 = this;
-            return n.MapRange((i) => _var399);
+            var _var97 = this;
+            return n.MapRange((i) => _var97);
         }
         public Boolean Equals(Vector3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector3D a, Vector3D b) => a.Equals(b);
@@ -4481,29 +4481,29 @@ namespace Plato.DoublePrecision
         public Vector3D QuadraticBezierDerivative(Vector3D b, Vector3D c, Number t) => b.Subtract(b).Multiply(((Number)2).Multiply(((Number)1).Subtract(t))).Add(c.Subtract(b).Multiply(((Number)2).Multiply(t)));
         public Vector3D QuadraticBezierSecondDerivative(Vector3D b, Vector3D c, Number t) => c.Subtract(b.Multiply(((Number)2)).Add(this));
         public Vector3D Transform(Matrix4x4 m){
-            var _var400 = m;
-            return this.Deform((v) => _var400.Multiply(v));
+            var _var98 = m;
+            return this.Deform((v) => _var98.Multiply(v));
         }
         public Vector3D Transform(ITransform3D t){
-            var _var401 = t;
-            return this.Deform((v) => _var401.Transform(v));
+            var _var99 = t;
+            return this.Deform((v) => _var99.Transform(v));
         }
         public Vector3D Transform(Rotation3D r){
-            var _var402 = r;
-            return this.Deform((v) => _var402.Transform(v));
+            var _var100 = r;
+            return this.Deform((v) => _var100.Transform(v));
         }
         public Vector3D Translate(Vector3D v){
-            var _var403 = v;
-            return this.Deform((p) => p.Add(_var403));
+            var _var101 = v;
+            return this.Deform((p) => p.Add(_var101));
         }
         public Vector3D Rotate(Rotation3D r) => this.Transform(r);
         public Vector3D Scale(Vector3D v){
-            var _var404 = v;
-            return this.Deform((p) => p.Multiply(_var404));
+            var _var102 = v;
+            return this.Deform((p) => p.Multiply(_var102));
         }
         public Vector3D Scale(Number s){
-            var _var405 = s;
-            return this.Deform((p) => p.Multiply(_var405));
+            var _var103 = s;
+            return this.Deform((p) => p.Multiply(_var103));
         }
         // Unimplemented concept functions
     }
@@ -4521,8 +4521,8 @@ namespace Plato.DoublePrecision
         public Vector4D(Number x, Number y, Number z, Number w) => (X, Y, Z, W) = (x, y, z, w);
         public static Vector4D Default = new Vector4D();
         public static Vector4D New(Number x, Number y, Number z, Number w) => new Vector4D(x, y, z, w);
-        public Plato.SinglePrecision.Vector4D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Vector4D(Vector4D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Vector4D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Vector4D(Vector4D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Vector4D self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Vector4D((Number, Number, Number, Number) value) => new Vector4D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -4612,18 +4612,18 @@ namespace Plato.DoublePrecision
         public Vector4D Min(Vector4D y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Vector4D Max(Vector4D y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public Vector4D Multiply(Number s){
-            var _var406 = s;
-            return this.MapComponents((i) => i.Multiply(_var406));
+            var _var104 = s;
+            return this.MapComponents((i) => i.Multiply(_var104));
         }
         public static Vector4D operator *(Vector4D x, Number s) => x.Multiply(s);
         public Vector4D Divide(Number s){
-            var _var407 = s;
-            return this.MapComponents((i) => i.Divide(_var407));
+            var _var105 = s;
+            return this.MapComponents((i) => i.Divide(_var105));
         }
         public static Vector4D operator /(Vector4D x, Number s) => x.Divide(s);
         public Vector4D Modulo(Number s){
-            var _var408 = s;
-            return this.MapComponents((i) => i.Modulo(_var408));
+            var _var106 = s;
+            return this.MapComponents((i) => i.Modulo(_var106));
         }
         public static Vector4D operator %(Vector4D x, Number s) => x.Modulo(s);
         public Vector4D Add(Vector4D y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -4633,8 +4633,8 @@ namespace Plato.DoublePrecision
         public Vector4D Negative => this.MapComponents((a) => a.Negative);
         public static Vector4D operator -(Vector4D x) => x.Negative;
         public IArray<Vector4D> Repeat(Integer n){
-            var _var409 = this;
-            return n.MapRange((i) => _var409);
+            var _var107 = this;
+            return n.MapRange((i) => _var107);
         }
         public Boolean Equals(Vector4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector4D a, Vector4D b) => a.Equals(b);
@@ -4680,8 +4680,8 @@ namespace Plato.DoublePrecision
         public Matrix3x3(Vector3D column1, Vector3D column2, Vector3D column3) => (Column1, Column2, Column3) = (column1, column2, column3);
         public static Matrix3x3 Default = new Matrix3x3();
         public static Matrix3x3 New(Vector3D column1, Vector3D column2, Vector3D column3) => new Matrix3x3(column1, column2, column3);
-        public Plato.SinglePrecision.Matrix3x3 ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Matrix3x3(Matrix3x3 self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Matrix3x3 ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Matrix3x3(Matrix3x3 self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Matrix3x3 self) => (self.Column1, self.Column2, self.Column3);
         public static implicit operator Matrix3x3((Vector3D, Vector3D, Vector3D) value) => new Matrix3x3(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D column1, out Vector3D column2, out Vector3D column3) { column1 = Column1; column2 = Column2; column3 = Column3; }
@@ -4708,8 +4708,8 @@ namespace Plato.DoublePrecision
         // Implemented concept functions and type functions
         public static Matrix3x3 Identity => ((Integer)1).Tuple3(((Integer)0), ((Integer)0)).Tuple3(((Integer)0).Tuple3(((Integer)1), ((Integer)0)), ((Integer)0).Tuple3(((Integer)0), ((Integer)1)));
         public IArray<Matrix3x3> Repeat(Integer n){
-            var _var410 = this;
-            return n.MapRange((i) => _var410);
+            var _var108 = this;
+            return n.MapRange((i) => _var108);
         }
         public Boolean Equals(Matrix3x3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Matrix3x3 a, Matrix3x3 b) => a.Equals(b);
@@ -4734,8 +4734,8 @@ namespace Plato.DoublePrecision
         public Matrix4x4(Vector4D column1, Vector4D column2, Vector4D column3, Vector4D column4) => (Column1, Column2, Column3, Column4) = (column1, column2, column3, column4);
         public static Matrix4x4 Default = new Matrix4x4();
         public static Matrix4x4 New(Vector4D column1, Vector4D column2, Vector4D column3, Vector4D column4) => new Matrix4x4(column1, column2, column3, column4);
-        public Plato.SinglePrecision.Matrix4x4 ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision(), Column4.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Matrix4x4(Matrix4x4 self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Matrix4x4 ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision(), Column4.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Matrix4x4(Matrix4x4 self) => self.ChangePrecision();
         public static implicit operator (Vector4D, Vector4D, Vector4D, Vector4D)(Matrix4x4 self) => (self.Column1, self.Column2, self.Column3, self.Column4);
         public static implicit operator Matrix4x4((Vector4D, Vector4D, Vector4D, Vector4D) value) => new Matrix4x4(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector4D column1, out Vector4D column2, out Vector4D column3, out Vector4D column4) { column1 = Column1; column2 = Column2; column3 = Column3; column4 = Column4; }
@@ -4807,8 +4807,8 @@ namespace Plato.DoublePrecision
             }
         }
          } public IArray<Matrix4x4> Repeat(Integer n){
-            var _var411 = this;
-            return n.MapRange((i) => _var411);
+            var _var109 = this;
+            return n.MapRange((i) => _var109);
         }
         public Boolean Equals(Matrix4x4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Matrix4x4 a, Matrix4x4 b) => a.Equals(b);
@@ -4831,8 +4831,8 @@ namespace Plato.DoublePrecision
         public Transform2D(Vector2D translation, Angle rotation, Vector2D scale) => (Translation, Rotation, Scale) = (translation, rotation, scale);
         public static Transform2D Default = new Transform2D();
         public static Transform2D New(Vector2D translation, Angle rotation, Vector2D scale) => new Transform2D(translation, rotation, scale);
-        public Plato.SinglePrecision.Transform2D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Transform2D(Transform2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Transform2D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Transform2D(Transform2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle, Vector2D)(Transform2D self) => (self.Translation, self.Rotation, self.Scale);
         public static implicit operator Transform2D((Vector2D, Angle, Vector2D) value) => new Transform2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D translation, out Angle rotation, out Vector2D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
@@ -4847,8 +4847,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Transform2D)b);
         // Implemented concept functions and type functions
         public IArray<Transform2D> Repeat(Integer n){
-            var _var412 = this;
-            return n.MapRange((i) => _var412);
+            var _var110 = this;
+            return n.MapRange((i) => _var110);
         }
         public Boolean Equals(Transform2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Transform2D a, Transform2D b) => a.Equals(b);
@@ -4866,8 +4866,8 @@ namespace Plato.DoublePrecision
         public Pose2D(Vector2D position, Angle rotation) => (Position, Rotation) = (position, rotation);
         public static Pose2D Default = new Pose2D();
         public static Pose2D New(Vector2D position, Angle rotation) => new Pose2D(position, rotation);
-        public Plato.SinglePrecision.Pose2D ChangePrecision() => (Position.ChangePrecision(), Rotation.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Pose2D(Pose2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Pose2D ChangePrecision() => (Position.ChangePrecision(), Rotation.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Pose2D(Pose2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle)(Pose2D self) => (self.Position, self.Rotation);
         public static implicit operator Pose2D((Vector2D, Angle) value) => new Pose2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D position, out Angle rotation) { position = Position; rotation = Rotation; }
@@ -4882,8 +4882,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Pose2D)b);
         // Implemented concept functions and type functions
         public IArray<Pose2D> Repeat(Integer n){
-            var _var413 = this;
-            return n.MapRange((i) => _var413);
+            var _var111 = this;
+            return n.MapRange((i) => _var111);
         }
         public Boolean Equals(Pose2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Pose2D a, Pose2D b) => a.Equals(b);
@@ -4901,8 +4901,8 @@ namespace Plato.DoublePrecision
         public Bounds2D(Vector2D min, Vector2D max) => (Min, Max) = (min, max);
         public static Bounds2D Default = new Bounds2D();
         public static Bounds2D New(Vector2D min, Vector2D max) => new Bounds2D(min, max);
-        public Plato.SinglePrecision.Bounds2D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Bounds2D(Bounds2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Bounds2D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Bounds2D(Bounds2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Bounds2D self) => (self.Min, self.Max);
         public static implicit operator Bounds2D((Vector2D, Vector2D) value) => new Bounds2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D min, out Vector2D max) { min = Min; max = Max; }
@@ -4939,8 +4939,8 @@ namespace Plato.DoublePrecision
         public Boolean NotEquals(Bounds2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Bounds2D a, Bounds2D b) => a.NotEquals(b);
         public IArray<Bounds2D> Repeat(Integer n){
-            var _var414 = this;
-            return n.MapRange((i) => _var414);
+            var _var112 = this;
+            return n.MapRange((i) => _var112);
         }
         // Unimplemented concept functions
     }
@@ -4954,8 +4954,8 @@ namespace Plato.DoublePrecision
         public Ray2D(Vector2D origin, Vector2D direction) => (Origin, Direction) = (origin, direction);
         public static Ray2D Default = new Ray2D();
         public static Ray2D New(Vector2D origin, Vector2D direction) => new Ray2D(origin, direction);
-        public Plato.SinglePrecision.Ray2D ChangePrecision() => (Origin.ChangePrecision(), Direction.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ray2D(Ray2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Ray2D ChangePrecision() => (Origin.ChangePrecision(), Direction.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Ray2D(Ray2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Ray2D self) => (self.Origin, self.Direction);
         public static implicit operator Ray2D((Vector2D, Vector2D) value) => new Ray2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D origin, out Vector2D direction) { origin = Origin; direction = Direction; }
@@ -4973,8 +4973,8 @@ namespace Plato.DoublePrecision
         public Ray3D Ray3D => this.To3D;
         public static implicit operator Ray3D(Ray2D x) => x.Ray3D;
         public IArray<Ray2D> Repeat(Integer n){
-            var _var415 = this;
-            return n.MapRange((i) => _var415);
+            var _var113 = this;
+            return n.MapRange((i) => _var113);
         }
         public Boolean Equals(Ray2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Ray2D a, Ray2D b) => a.Equals(b);
@@ -4994,8 +4994,8 @@ namespace Plato.DoublePrecision
         public Triangle2D(Vector2D a, Vector2D b, Vector2D c) => (A, B, C) = (a, b, c);
         public static Triangle2D Default = new Triangle2D();
         public static Triangle2D New(Vector2D a, Vector2D b, Vector2D c) => new Triangle2D(a, b, c);
-        public Plato.SinglePrecision.Triangle2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Triangle2D(Triangle2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Triangle2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Triangle2D(Triangle2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D)(Triangle2D self) => (self.A, self.B, self.C);
         public static implicit operator Triangle2D((Vector2D, Vector2D, Vector2D) value) => new Triangle2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
@@ -5034,8 +5034,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Triangle2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var416 = this;
-            return numPoints.LinearSpace.Map((x) => _var416.Eval(x));
+            var _var114 = this;
+            return numPoints.LinearSpace.Map((x) => _var114.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -5059,8 +5059,8 @@ namespace Plato.DoublePrecision
         public Quad2D(Vector2D a, Vector2D b, Vector2D c, Vector2D d) => (A, B, C, D) = (a, b, c, d);
         public static Quad2D Default = new Quad2D();
         public static Quad2D New(Vector2D a, Vector2D b, Vector2D c, Vector2D d) => new Quad2D(a, b, c, d);
-        public Plato.SinglePrecision.Quad2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quad2D(Quad2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Quad2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Quad2D(Quad2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D, Vector2D)(Quad2D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Quad2D((Vector2D, Vector2D, Vector2D, Vector2D) value) => new Quad2D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
@@ -5106,8 +5106,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Quad2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var417 = this;
-            return numPoints.LinearSpace.Map((x) => _var417.Eval(x));
+            var _var115 = this;
+            return numPoints.LinearSpace.Map((x) => _var115.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -5127,8 +5127,8 @@ namespace Plato.DoublePrecision
         public Line2D(Vector2D a, Vector2D b) => (A, B) = (a, b);
         public static Line2D Default = new Line2D();
         public static Line2D New(Vector2D a, Vector2D b) => new Line2D(a, b);
-        public Plato.SinglePrecision.Line2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Line2D(Line2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Line2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Line2D(Line2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Line2D self) => (self.A, self.B);
         public static implicit operator Line2D((Vector2D, Vector2D) value) => new Line2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D a, out Vector2D b) { a = A; b = B; }
@@ -5171,8 +5171,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Line2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var418 = this;
-            return numPoints.LinearSpace.Map((x) => _var418.Eval(x));
+            var _var116 = this;
+            return numPoints.LinearSpace.Map((x) => _var116.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         public Vector2D Size => this.End.Subtract(this.Start);
@@ -5192,34 +5192,34 @@ namespace Plato.DoublePrecision
         public Line2D Clamp(Line2D y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Vector2D Clamp(Vector2D value) => value.Clamp(this.Start, this.End);
         public IArray<Vector2D> LinearSpace(Integer count){
-            var _var419 = this;
-            return count.LinearSpace.Map((x) => _var419.Lerp(x));
+            var _var117 = this;
+            return count.LinearSpace.Map((x) => _var117.Lerp(x));
         }
         public IArray<Vector2D> LinearSpaceExclusive(Integer count){
-            var _var420 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var420.Lerp(x));
+            var _var118 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var118.Lerp(x));
         }
         public IArray<Vector2D> GeometricSpace(Integer count){
-            var _var421 = this;
-            return count.GeometricSpace.Map((x) => _var421.Lerp(x));
+            var _var119 = this;
+            return count.GeometricSpace.Map((x) => _var119.Lerp(x));
         }
         public IArray<Vector2D> GeometricSpaceExclusive(Integer count){
-            var _var422 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var422.Lerp(x));
+            var _var120 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var120.Lerp(x));
         }
         public Line2D Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public Line2D Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<Line2D> Subdivide(Integer count){
-            var _var423 = this;
-            return count.Intervals.Map((i) => _var423.Subdivide(i));
+            var _var121 = this;
+            return count.Intervals.Map((i) => _var121.Subdivide(i));
         }
         public Boolean Equals(Line2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Line2D a, Line2D b) => a.Equals(b);
         public Boolean NotEquals(Line2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Line2D a, Line2D b) => a.NotEquals(b);
         public IArray<Line2D> Repeat(Integer n){
-            var _var424 = this;
-            return n.MapRange((i) => _var424);
+            var _var122 = this;
+            return n.MapRange((i) => _var122);
         }
         // Unimplemented concept functions
         public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
@@ -5237,8 +5237,8 @@ namespace Plato.DoublePrecision
         public Lens(Circle a, Circle b) => (A, B) = (a, b);
         public static Lens Default = new Lens();
         public static Lens New(Circle a, Circle b) => new Lens(a, b);
-        public Plato.SinglePrecision.Lens ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Lens(Lens self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Lens ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Lens(Lens self) => self.ChangePrecision();
         public static implicit operator (Circle, Circle)(Lens self) => (self.A, self.B);
         public static implicit operator Lens((Circle, Circle) value) => new Lens(value.Item1, value.Item2);
         public void Deconstruct(out Circle a, out Circle b) { a = A; b = B; }
@@ -5264,8 +5264,8 @@ namespace Plato.DoublePrecision
         public Rect2D(Vector2D center, Vector2D size) => (Center, Size) = (center, size);
         public static Rect2D Default = new Rect2D();
         public static Rect2D New(Vector2D center, Vector2D size) => new Rect2D(center, size);
-        public Plato.SinglePrecision.Rect2D ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rect2D(Rect2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Rect2D ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Rect2D(Rect2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Rect2D self) => (self.Center, self.Size);
         public static implicit operator Rect2D((Vector2D, Vector2D) value) => new Rect2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D center, out Vector2D size) { center = Center; size = Size; }
@@ -5306,8 +5306,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Rect2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var425 = this;
-            return numPoints.LinearSpace.Map((x) => _var425.Eval(x));
+            var _var123 = this;
+            return numPoints.LinearSpace.Map((x) => _var123.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -5329,8 +5329,8 @@ namespace Plato.DoublePrecision
         public Ring(Vector2D center, Number innerRadius, Number outerRadius) => (Center, InnerRadius, OuterRadius) = (center, innerRadius, outerRadius);
         public static Ring Default = new Ring();
         public static Ring New(Vector2D center, Number innerRadius, Number outerRadius) => new Ring(center, innerRadius, outerRadius);
-        public Plato.SinglePrecision.Ring ChangePrecision() => (Center.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ring(Ring self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Ring ChangePrecision() => (Center.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Ring(Ring self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Number, Number)(Ring self) => (self.Center, self.InnerRadius, self.OuterRadius);
         public static implicit operator Ring((Vector2D, Number, Number) value) => new Ring(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D center, out Number innerRadius, out Number outerRadius) { center = Center; innerRadius = InnerRadius; outerRadius = OuterRadius; }
@@ -5356,8 +5356,8 @@ namespace Plato.DoublePrecision
         public Arc(AnglePair angles, Circle circle) => (Angles, Circle) = (angles, circle);
         public static Arc Default = new Arc();
         public static Arc New(AnglePair angles, Circle circle) => new Arc(angles, circle);
-        public Plato.SinglePrecision.Arc ChangePrecision() => (Angles.ChangePrecision(), Circle.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Arc(Arc self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Arc ChangePrecision() => (Angles.ChangePrecision(), Circle.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Arc(Arc self) => self.ChangePrecision();
         public static implicit operator (AnglePair, Circle)(Arc self) => (self.Angles, self.Circle);
         public static implicit operator Arc((AnglePair, Circle) value) => new Arc(value.Item1, value.Item2);
         public void Deconstruct(out AnglePair angles, out Circle circle) { angles = Angles; circle = Circle; }
@@ -5381,8 +5381,8 @@ namespace Plato.DoublePrecision
         public Sector(Arc arc) => (Arc) = (arc);
         public static Sector Default = new Sector();
         public static Sector New(Arc arc) => new Sector(arc);
-        public Plato.SinglePrecision.Sector ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Sector(Sector self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Sector ChangePrecision() => (Arc.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Sector(Sector self) => self.ChangePrecision();
         public static implicit operator Arc(Sector self) => self.Arc;
         public static implicit operator Sector(Arc value) => new Sector(value);
         public override bool Equals(object obj) { if (!(obj is Sector)) return false; var other = (Sector)obj; return Arc.Equals(other.Arc); }
@@ -5405,8 +5405,8 @@ namespace Plato.DoublePrecision
         public Chord(Arc arc) => (Arc) = (arc);
         public static Chord Default = new Chord();
         public static Chord New(Arc arc) => new Chord(arc);
-        public Plato.SinglePrecision.Chord ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Chord(Chord self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Chord ChangePrecision() => (Arc.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Chord(Chord self) => self.ChangePrecision();
         public static implicit operator Arc(Chord self) => self.Arc;
         public static implicit operator Chord(Arc value) => new Chord(value);
         public override bool Equals(object obj) { if (!(obj is Chord)) return false; var other = (Chord)obj; return Arc.Equals(other.Arc); }
@@ -5429,8 +5429,8 @@ namespace Plato.DoublePrecision
         public Segment(Arc arc) => (Arc) = (arc);
         public static Segment Default = new Segment();
         public static Segment New(Arc arc) => new Segment(arc);
-        public Plato.SinglePrecision.Segment ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Segment(Segment self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Segment ChangePrecision() => (Arc.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Segment(Segment self) => self.ChangePrecision();
         public static implicit operator Arc(Segment self) => self.Arc;
         public static implicit operator Segment(Arc value) => new Segment(value);
         public override bool Equals(object obj) { if (!(obj is Segment)) return false; var other = (Segment)obj; return Arc.Equals(other.Arc); }
@@ -5453,8 +5453,8 @@ namespace Plato.DoublePrecision
         public RegularPolygon(Integer numPoints) => (NumPoints) = (numPoints);
         public static RegularPolygon Default = new RegularPolygon();
         public static RegularPolygon New(Integer numPoints) => new RegularPolygon(numPoints);
-        public Plato.SinglePrecision.RegularPolygon ChangePrecision() => (NumPoints.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.RegularPolygon(RegularPolygon self) => self.ChangePrecision();
+        public Plato.DoublePrecision.RegularPolygon ChangePrecision() => (NumPoints.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.RegularPolygon(RegularPolygon self) => self.ChangePrecision();
         public static implicit operator Integer(RegularPolygon self) => self.NumPoints;
         public static implicit operator RegularPolygon(Integer value) => new RegularPolygon(value);
         public override bool Equals(object obj) { if (!(obj is RegularPolygon)) return false; var other = (RegularPolygon)obj; return NumPoints.Equals(other.NumPoints); }
@@ -5481,8 +5481,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(RegularPolygon):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var426 = this;
-            return numPoints.LinearSpace.Map((x) => _var426.Eval(x));
+            var _var124 = this;
+            return numPoints.LinearSpace.Map((x) => _var124.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -5501,8 +5501,8 @@ namespace Plato.DoublePrecision
         public Box2D(Vector2D center, Angle rotation, Vector2D extent) => (Center, Rotation, Extent) = (center, rotation, extent);
         public static Box2D Default = new Box2D();
         public static Box2D New(Vector2D center, Angle rotation, Vector2D extent) => new Box2D(center, rotation, extent);
-        public Plato.SinglePrecision.Box2D ChangePrecision() => (Center.ChangePrecision(), Rotation.ChangePrecision(), Extent.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Box2D(Box2D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Box2D ChangePrecision() => (Center.ChangePrecision(), Rotation.ChangePrecision(), Extent.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Box2D(Box2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle, Vector2D)(Box2D self) => (self.Center, self.Rotation, self.Extent);
         public static implicit operator Box2D((Vector2D, Angle, Vector2D) value) => new Box2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D center, out Angle rotation, out Vector2D extent) { center = Center; rotation = Rotation; extent = Extent; }
@@ -5527,8 +5527,8 @@ namespace Plato.DoublePrecision
         public Plane(Vector3D normal, Number d) => (Normal, D) = (normal, d);
         public static Plane Default = new Plane();
         public static Plane New(Vector3D normal, Number d) => new Plane(normal, d);
-        public Plato.SinglePrecision.Plane ChangePrecision() => (Normal.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Plane(Plane self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Plane ChangePrecision() => (Normal.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Plane(Plane self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Number)(Plane self) => (self.Normal, self.D);
         public static implicit operator Plane((Vector3D, Number) value) => new Plane(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D normal, out Number d) { normal = Normal; d = D; }
@@ -5543,8 +5543,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Plane)b);
         // Implemented concept functions and type functions
         public IArray<Plane> Repeat(Integer n){
-            var _var427 = this;
-            return n.MapRange((i) => _var427);
+            var _var125 = this;
+            return n.MapRange((i) => _var125);
         }
         public Boolean Equals(Plane b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Plane a, Plane b) => a.Equals(b);
@@ -5562,8 +5562,8 @@ namespace Plato.DoublePrecision
         public Bounds3D(Vector3D min, Vector3D max) => (Min, Max) = (min, max);
         public static Bounds3D Default = new Bounds3D();
         public static Bounds3D New(Vector3D min, Vector3D max) => new Bounds3D(min, max);
-        public Plato.SinglePrecision.Bounds3D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Bounds3D(Bounds3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Bounds3D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Bounds3D(Bounds3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D)(Bounds3D self) => (self.Min, self.Max);
         public static implicit operator Bounds3D((Vector3D, Vector3D) value) => new Bounds3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D min, out Vector3D max) { min = Min; max = Max; }
@@ -5599,33 +5599,33 @@ namespace Plato.DoublePrecision
         public Boolean NotEquals(Bounds3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Bounds3D a, Bounds3D b) => a.NotEquals(b);
         public IArray<Bounds3D> Repeat(Integer n){
-            var _var428 = this;
-            return n.MapRange((i) => _var428);
+            var _var126 = this;
+            return n.MapRange((i) => _var126);
         }
         public Bounds3D Transform(Matrix4x4 m){
-            var _var429 = m;
-            return this.Deform((v) => _var429.Multiply(v));
+            var _var127 = m;
+            return this.Deform((v) => _var127.Multiply(v));
         }
         public Bounds3D Transform(ITransform3D t){
-            var _var430 = t;
-            return this.Deform((v) => _var430.Transform(v));
+            var _var128 = t;
+            return this.Deform((v) => _var128.Transform(v));
         }
         public Bounds3D Transform(Rotation3D r){
-            var _var431 = r;
-            return this.Deform((v) => _var431.Transform(v));
+            var _var129 = r;
+            return this.Deform((v) => _var129.Transform(v));
         }
         public Bounds3D Translate(Vector3D v){
-            var _var432 = v;
-            return this.Deform((p) => p.Add(_var432));
+            var _var130 = v;
+            return this.Deform((p) => p.Add(_var130));
         }
         public Bounds3D Rotate(Rotation3D r) => this.Transform(r);
         public Bounds3D Scale(Vector3D v){
-            var _var433 = v;
-            return this.Deform((p) => p.Multiply(_var433));
+            var _var131 = v;
+            return this.Deform((p) => p.Multiply(_var131));
         }
         public Bounds3D Scale(Number s){
-            var _var434 = s;
-            return this.Deform((p) => p.Multiply(_var434));
+            var _var132 = s;
+            return this.Deform((p) => p.Multiply(_var132));
         }
         public Bounds3D Add(Vector3D v) => this.Translate(v);
         public static Bounds3D operator +(Bounds3D x, Vector3D v) => x.Add(v);
@@ -5652,8 +5652,8 @@ namespace Plato.DoublePrecision
         public Line3D(Vector3D a, Vector3D b) => (A, B) = (a, b);
         public static Line3D Default = new Line3D();
         public static Line3D New(Vector3D a, Vector3D b) => new Line3D(a, b);
-        public Plato.SinglePrecision.Line3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Line3D(Line3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Line3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Line3D(Line3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D)(Line3D self) => (self.A, self.B);
         public static implicit operator Line3D((Vector3D, Vector3D) value) => new Line3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D a, out Vector3D b) { a = A; b = B; }
@@ -5696,25 +5696,25 @@ namespace Plato.DoublePrecision
         public IArray<Vector3D> Points => Intrinsics.MakeArray<Vector3D>(this.A, this.B);
         public IArray<Line3D> Lines => this.Points.WithNext((a, b) => Line3D.New(a, b), this.Closed);
         public Line3D Transform(Matrix4x4 m){
-            var _var435 = m;
-            return this.Deform((v) => _var435.Multiply(v));
+            var _var133 = m;
+            return this.Deform((v) => _var133.Multiply(v));
         }
         public Line3D Transform(Rotation3D r){
-            var _var436 = r;
-            return this.Deform((v) => _var436.Transform(v));
+            var _var134 = r;
+            return this.Deform((v) => _var134.Transform(v));
         }
         public Line3D Translate(Vector3D v){
-            var _var437 = v;
-            return this.Deform((p) => p.Add(_var437));
+            var _var135 = v;
+            return this.Deform((p) => p.Add(_var135));
         }
         public Line3D Rotate(Rotation3D r) => this.Transform(r);
         public Line3D Scale(Vector3D v){
-            var _var438 = v;
-            return this.Deform((p) => p.Multiply(_var438));
+            var _var136 = v;
+            return this.Deform((p) => p.Multiply(_var136));
         }
         public Line3D Scale(Number s){
-            var _var439 = s;
-            return this.Deform((p) => p.Multiply(_var439));
+            var _var137 = s;
+            return this.Deform((p) => p.Multiply(_var137));
         }
         public Line3D Add(Vector3D v) => this.Translate(v);
         public static Line3D operator +(Line3D x, Vector3D v) => x.Add(v);
@@ -5731,8 +5731,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Line3D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var440 = this;
-            return numPoints.LinearSpace.Map((x) => _var440.Eval(x));
+            var _var138 = this;
+            return numPoints.LinearSpace.Map((x) => _var138.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         public Vector3D Size => this.End.Subtract(this.Start);
@@ -5752,34 +5752,34 @@ namespace Plato.DoublePrecision
         public Line3D Clamp(Line3D y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Vector3D Clamp(Vector3D value) => value.Clamp(this.Start, this.End);
         public IArray<Vector3D> LinearSpace(Integer count){
-            var _var441 = this;
-            return count.LinearSpace.Map((x) => _var441.Lerp(x));
+            var _var139 = this;
+            return count.LinearSpace.Map((x) => _var139.Lerp(x));
         }
         public IArray<Vector3D> LinearSpaceExclusive(Integer count){
-            var _var442 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var442.Lerp(x));
+            var _var140 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var140.Lerp(x));
         }
         public IArray<Vector3D> GeometricSpace(Integer count){
-            var _var443 = this;
-            return count.GeometricSpace.Map((x) => _var443.Lerp(x));
+            var _var141 = this;
+            return count.GeometricSpace.Map((x) => _var141.Lerp(x));
         }
         public IArray<Vector3D> GeometricSpaceExclusive(Integer count){
-            var _var444 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var444.Lerp(x));
+            var _var142 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var142.Lerp(x));
         }
         public Line3D Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public Line3D Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<Line3D> Subdivide(Integer count){
-            var _var445 = this;
-            return count.Intervals.Map((i) => _var445.Subdivide(i));
+            var _var143 = this;
+            return count.Intervals.Map((i) => _var143.Subdivide(i));
         }
         public Boolean Equals(Line3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Line3D a, Line3D b) => a.Equals(b);
         public Boolean NotEquals(Line3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Line3D a, Line3D b) => a.NotEquals(b);
         public IArray<Line3D> Repeat(Integer n){
-            var _var446 = this;
-            return n.MapRange((i) => _var446);
+            var _var144 = this;
+            return n.MapRange((i) => _var144);
         }
         // Unimplemented concept functions
         public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
@@ -5797,8 +5797,8 @@ namespace Plato.DoublePrecision
         public Ray3D(Vector3D origin, Vector3D direction) => (Origin, Direction) = (origin, direction);
         public static Ray3D Default = new Ray3D();
         public static Ray3D New(Vector3D origin, Vector3D direction) => new Ray3D(origin, direction);
-        public Plato.SinglePrecision.Ray3D ChangePrecision() => (Origin.ChangePrecision(), Direction.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ray3D(Ray3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Ray3D ChangePrecision() => (Origin.ChangePrecision(), Direction.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Ray3D(Ray3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D)(Ray3D self) => (self.Origin, self.Direction);
         public static implicit operator Ray3D((Vector3D, Vector3D) value) => new Ray3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D origin, out Vector3D direction) { origin = Origin; direction = Direction; }
@@ -5819,37 +5819,37 @@ namespace Plato.DoublePrecision
         public static implicit operator Line3D(Ray3D r) => r.Line3D;
         public Ray3D Reverse => this.Origin.Tuple2(this.Direction.Negative);
         public IArray<Ray3D> Repeat(Integer n){
-            var _var447 = this;
-            return n.MapRange((i) => _var447);
+            var _var145 = this;
+            return n.MapRange((i) => _var145);
         }
         public Boolean Equals(Ray3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Ray3D a, Ray3D b) => a.Equals(b);
         public Boolean NotEquals(Ray3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Ray3D a, Ray3D b) => a.NotEquals(b);
         public Ray3D Transform(Matrix4x4 m){
-            var _var448 = m;
-            return this.Deform((v) => _var448.Multiply(v));
+            var _var146 = m;
+            return this.Deform((v) => _var146.Multiply(v));
         }
         public Ray3D Transform(ITransform3D t){
-            var _var449 = t;
-            return this.Deform((v) => _var449.Transform(v));
+            var _var147 = t;
+            return this.Deform((v) => _var147.Transform(v));
         }
         public Ray3D Transform(Rotation3D r){
-            var _var450 = r;
-            return this.Deform((v) => _var450.Transform(v));
+            var _var148 = r;
+            return this.Deform((v) => _var148.Transform(v));
         }
         public Ray3D Translate(Vector3D v){
-            var _var451 = v;
-            return this.Deform((p) => p.Add(_var451));
+            var _var149 = v;
+            return this.Deform((p) => p.Add(_var149));
         }
         public Ray3D Rotate(Rotation3D r) => this.Transform(r);
         public Ray3D Scale(Vector3D v){
-            var _var452 = v;
-            return this.Deform((p) => p.Multiply(_var452));
+            var _var150 = v;
+            return this.Deform((p) => p.Multiply(_var150));
         }
         public Ray3D Scale(Number s){
-            var _var453 = s;
-            return this.Deform((p) => p.Multiply(_var453));
+            var _var151 = s;
+            return this.Deform((p) => p.Multiply(_var151));
         }
         public Ray3D Add(Vector3D v) => this.Translate(v);
         public static Ray3D operator +(Ray3D x, Vector3D v) => x.Add(v);
@@ -5877,8 +5877,8 @@ namespace Plato.DoublePrecision
         public Triangle3D(Vector3D a, Vector3D b, Vector3D c) => (A, B, C) = (a, b, c);
         public static Triangle3D Default = new Triangle3D();
         public static Triangle3D New(Vector3D a, Vector3D b, Vector3D c) => new Triangle3D(a, b, c);
-        public Plato.SinglePrecision.Triangle3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Triangle3D(Triangle3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Triangle3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Triangle3D(Triangle3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Triangle3D self) => (self.A, self.B, self.C);
         public static implicit operator Triangle3D((Vector3D, Vector3D, Vector3D) value) => new Triangle3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
@@ -5920,25 +5920,25 @@ namespace Plato.DoublePrecision
         public IArray<Vector3D> Points => Intrinsics.MakeArray<Vector3D>(this.A, this.B, this.C);
         public IArray<Line3D> Lines => Intrinsics.MakeArray<Line3D>(Line3D.New(this.A, this.B), Line3D.New(this.B, this.C), Line3D.New(this.C, this.A));
         public Triangle3D Transform(Matrix4x4 m){
-            var _var454 = m;
-            return this.Deform((v) => _var454.Multiply(v));
+            var _var152 = m;
+            return this.Deform((v) => _var152.Multiply(v));
         }
         public Triangle3D Transform(Rotation3D r){
-            var _var455 = r;
-            return this.Deform((v) => _var455.Transform(v));
+            var _var153 = r;
+            return this.Deform((v) => _var153.Transform(v));
         }
         public Triangle3D Translate(Vector3D v){
-            var _var456 = v;
-            return this.Deform((p) => p.Add(_var456));
+            var _var154 = v;
+            return this.Deform((p) => p.Add(_var154));
         }
         public Triangle3D Rotate(Rotation3D r) => this.Transform(r);
         public Triangle3D Scale(Vector3D v){
-            var _var457 = v;
-            return this.Deform((p) => p.Multiply(_var457));
+            var _var155 = v;
+            return this.Deform((p) => p.Multiply(_var155));
         }
         public Triangle3D Scale(Number s){
-            var _var458 = s;
-            return this.Deform((p) => p.Multiply(_var458));
+            var _var156 = s;
+            return this.Deform((p) => p.Multiply(_var156));
         }
         public Triangle3D Add(Vector3D v) => this.Translate(v);
         public static Triangle3D operator +(Triangle3D x, Vector3D v) => x.Add(v);
@@ -5955,8 +5955,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Triangle3D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var459 = this;
-            return numPoints.LinearSpace.Map((x) => _var459.Eval(x));
+            var _var157 = this;
+            return numPoints.LinearSpace.Map((x) => _var157.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -5980,8 +5980,8 @@ namespace Plato.DoublePrecision
         public Quad3D(Vector3D a, Vector3D b, Vector3D c, Vector3D d) => (A, B, C, D) = (a, b, c, d);
         public static Quad3D Default = new Quad3D();
         public static Quad3D New(Vector3D a, Vector3D b, Vector3D c, Vector3D d) => new Quad3D(a, b, c, d);
-        public Plato.SinglePrecision.Quad3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quad3D(Quad3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Quad3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Quad3D(Quad3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D, Vector3D)(Quad3D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Quad3D((Vector3D, Vector3D, Vector3D, Vector3D) value) => new Quad3D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
@@ -6024,25 +6024,25 @@ namespace Plato.DoublePrecision
         public IArray<Line3D> Lines => Intrinsics.MakeArray<Line3D>(Line3D.New(this.A, this.B), Line3D.New(this.B, this.C), Line3D.New(this.C, this.D), Line3D.New(this.D, this.A));
         public IArray<Triangle3D> Triangles => Intrinsics.MakeArray<Triangle3D>(Triangle3D.New(this.A, this.B, this.C), Triangle3D.New(this.C, this.D, this.A));
         public Quad3D Transform(Matrix4x4 m){
-            var _var460 = m;
-            return this.Deform((v) => _var460.Multiply(v));
+            var _var158 = m;
+            return this.Deform((v) => _var158.Multiply(v));
         }
         public Quad3D Transform(Rotation3D r){
-            var _var461 = r;
-            return this.Deform((v) => _var461.Transform(v));
+            var _var159 = r;
+            return this.Deform((v) => _var159.Transform(v));
         }
         public Quad3D Translate(Vector3D v){
-            var _var462 = v;
-            return this.Deform((p) => p.Add(_var462));
+            var _var160 = v;
+            return this.Deform((p) => p.Add(_var160));
         }
         public Quad3D Rotate(Rotation3D r) => this.Transform(r);
         public Quad3D Scale(Vector3D v){
-            var _var463 = v;
-            return this.Deform((p) => p.Multiply(_var463));
+            var _var161 = v;
+            return this.Deform((p) => p.Multiply(_var161));
         }
         public Quad3D Scale(Number s){
-            var _var464 = s;
-            return this.Deform((p) => p.Multiply(_var464));
+            var _var162 = s;
+            return this.Deform((p) => p.Multiply(_var162));
         }
         public Quad3D Add(Vector3D v) => this.Translate(v);
         public static Quad3D operator +(Quad3D x, Vector3D v) => x.Add(v);
@@ -6059,8 +6059,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Quad3D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var465 = this;
-            return numPoints.LinearSpace.Map((x) => _var465.Eval(x));
+            var _var163 = this;
+            return numPoints.LinearSpace.Map((x) => _var163.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -6078,14 +6078,14 @@ namespace Plato.DoublePrecision
         public Sphere(Number radius) => (Radius) = (radius);
         public static Sphere Default = new Sphere();
         public static Sphere New(Number radius) => new Sphere(radius);
-        public Plato.SinglePrecision.Sphere ChangePrecision() => (Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Sphere(Sphere self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Sphere ChangePrecision() => (Radius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Sphere(Sphere self) => self.ChangePrecision();
         public static implicit operator Number(Sphere self) => self.Radius;
         public static implicit operator Sphere(Number value) => new Sphere(value);
         public static implicit operator Sphere(Integer value) => new Sphere(value);
         public static implicit operator Sphere(int value) => new Integer(value);
-        public static implicit operator Sphere(double value) => new Number(value);
-        public static implicit operator double(Sphere value) => value.Radius;
+        public static implicit operator Sphere(float value) => new Number(value);
+        public static implicit operator float(Sphere value) => value.Radius;
         public override bool Equals(object obj) { if (!(obj is Sphere)) return false; var other = (Sphere)obj; return Radius.Equals(other.Radius); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius);
         public override string ToString() => $"{{ \"Radius\" = {Radius} }}";
@@ -6111,8 +6111,8 @@ namespace Plato.DoublePrecision
         public Cylinder(Number height, Number radius) => (Height, Radius) = (height, radius);
         public static Cylinder Default = new Cylinder();
         public static Cylinder New(Number height, Number radius) => new Cylinder(height, radius);
-        public Plato.SinglePrecision.Cylinder ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cylinder(Cylinder self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Cylinder ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Cylinder(Cylinder self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Cylinder self) => (self.Height, self.Radius);
         public static implicit operator Cylinder((Number, Number) value) => new Cylinder(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
@@ -6138,8 +6138,8 @@ namespace Plato.DoublePrecision
         public Capsule(Number height, Number radius) => (Height, Radius) = (height, radius);
         public static Capsule Default = new Capsule();
         public static Capsule New(Number height, Number radius) => new Capsule(height, radius);
-        public Plato.SinglePrecision.Capsule ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Capsule(Capsule self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Capsule ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Capsule(Capsule self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Capsule self) => (self.Height, self.Radius);
         public static implicit operator Capsule((Number, Number) value) => new Capsule(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
@@ -6168,8 +6168,8 @@ namespace Plato.DoublePrecision
         public Cone(Number height, Number radius) => (Height, Radius) = (height, radius);
         public static Cone Default = new Cone();
         public static Cone New(Number height, Number radius) => new Cone(height, radius);
-        public Plato.SinglePrecision.Cone ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cone(Cone self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Cone ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Cone(Cone self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Cone self) => (self.Height, self.Radius);
         public static implicit operator Cone((Number, Number) value) => new Cone(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
@@ -6200,8 +6200,8 @@ namespace Plato.DoublePrecision
         public ConeSegment(Number height, Number radius1, Number radius2) => (Height, Radius1, Radius2) = (height, radius1, radius2);
         public static ConeSegment Default = new ConeSegment();
         public static ConeSegment New(Number height, Number radius1, Number radius2) => new ConeSegment(height, radius1, radius2);
-        public Plato.SinglePrecision.ConeSegment ChangePrecision() => (Height.ChangePrecision(), Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ConeSegment(ConeSegment self) => self.ChangePrecision();
+        public Plato.DoublePrecision.ConeSegment ChangePrecision() => (Height.ChangePrecision(), Radius1.ChangePrecision(), Radius2.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.ConeSegment(ConeSegment self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(ConeSegment self) => (self.Height, self.Radius1, self.Radius2);
         public static implicit operator ConeSegment((Number, Number, Number) value) => new ConeSegment(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number radius1, out Number radius2) { height = Height; radius1 = Radius1; radius2 = Radius2; }
@@ -6228,8 +6228,8 @@ namespace Plato.DoublePrecision
         public Box3D(Vector3D extent) => (Extent) = (extent);
         public static Box3D Default = new Box3D();
         public static Box3D New(Vector3D extent) => new Box3D(extent);
-        public Plato.SinglePrecision.Box3D ChangePrecision() => (Extent.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Box3D(Box3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Box3D ChangePrecision() => (Extent.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Box3D(Box3D self) => self.ChangePrecision();
         public static implicit operator Vector3D(Box3D self) => self.Extent;
         public static implicit operator Box3D(Vector3D value) => new Box3D(value);
         public override bool Equals(object obj) { if (!(obj is Box3D)) return false; var other = (Box3D)obj; return Extent.Equals(other.Extent); }
@@ -6257,8 +6257,8 @@ namespace Plato.DoublePrecision
         public Pyramid(Number height, Number baseLength) => (Height, BaseLength) = (height, baseLength);
         public static Pyramid Default = new Pyramid();
         public static Pyramid New(Number height, Number baseLength) => new Pyramid(height, baseLength);
-        public Plato.SinglePrecision.Pyramid ChangePrecision() => (Height.ChangePrecision(), BaseLength.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Pyramid(Pyramid self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Pyramid ChangePrecision() => (Height.ChangePrecision(), BaseLength.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Pyramid(Pyramid self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Pyramid self) => (self.Height, self.BaseLength);
         public static implicit operator Pyramid((Number, Number) value) => new Pyramid(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number baseLength) { height = Height; baseLength = BaseLength; }
@@ -6287,8 +6287,8 @@ namespace Plato.DoublePrecision
         public Torus(Number majorRadius, Number minorRadius) => (MajorRadius, MinorRadius) = (majorRadius, minorRadius);
         public static Torus Default = new Torus();
         public static Torus New(Number majorRadius, Number minorRadius) => new Torus(majorRadius, minorRadius);
-        public Plato.SinglePrecision.Torus ChangePrecision() => (MajorRadius.ChangePrecision(), MinorRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Torus(Torus self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Torus ChangePrecision() => (MajorRadius.ChangePrecision(), MinorRadius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Torus(Torus self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Torus self) => (self.MajorRadius, self.MinorRadius);
         public static implicit operator Torus((Number, Number) value) => new Torus(value.Item1, value.Item2);
         public void Deconstruct(out Number majorRadius, out Number minorRadius) { majorRadius = MajorRadius; minorRadius = MinorRadius; }
@@ -6319,8 +6319,8 @@ namespace Plato.DoublePrecision
         public NPrism(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
         public static NPrism Default = new NPrism();
         public static NPrism New(Number height, Number radius, Integer numSides) => new NPrism(height, radius, numSides);
-        public Plato.SinglePrecision.NPrism ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NPrism(NPrism self) => self.ChangePrecision();
+        public Plato.DoublePrecision.NPrism ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.NPrism(NPrism self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Integer)(NPrism self) => (self.Height, self.Radius, self.NumSides);
         public static implicit operator NPrism((Number, Number, Integer) value) => new NPrism(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
@@ -6351,8 +6351,8 @@ namespace Plato.DoublePrecision
         public Tube(Number height, Number innerRadius, Number outerRadius) => (Height, InnerRadius, OuterRadius) = (height, innerRadius, outerRadius);
         public static Tube Default = new Tube();
         public static Tube New(Number height, Number innerRadius, Number outerRadius) => new Tube(height, innerRadius, outerRadius);
-        public Plato.SinglePrecision.Tube ChangePrecision() => (Height.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Tube(Tube self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Tube ChangePrecision() => (Height.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Tube(Tube self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Tube self) => (self.Height, self.InnerRadius, self.OuterRadius);
         public static implicit operator Tube((Number, Number, Number) value) => new Tube(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number innerRadius, out Number outerRadius) { height = Height; innerRadius = InnerRadius; outerRadius = OuterRadius; }
@@ -6383,8 +6383,8 @@ namespace Plato.DoublePrecision
         public NPyramid(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
         public static NPyramid Default = new NPyramid();
         public static NPyramid New(Number height, Number radius, Integer numSides) => new NPyramid(height, radius, numSides);
-        public Plato.SinglePrecision.NPyramid ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NPyramid(NPyramid self) => self.ChangePrecision();
+        public Plato.DoublePrecision.NPyramid ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.NPyramid(NPyramid self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Integer)(NPyramid self) => (self.Height, self.Radius, self.NumSides);
         public static implicit operator NPyramid((Number, Number, Integer) value) => new NPyramid(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
@@ -6411,8 +6411,8 @@ namespace Plato.DoublePrecision
         public Ellipsoid(Vector3D radii) => (Radii) = (radii);
         public static Ellipsoid Default = new Ellipsoid();
         public static Ellipsoid New(Vector3D radii) => new Ellipsoid(radii);
-        public Plato.SinglePrecision.Ellipsoid ChangePrecision() => (Radii.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ellipsoid(Ellipsoid self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Ellipsoid ChangePrecision() => (Radii.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Ellipsoid(Ellipsoid self) => self.ChangePrecision();
         public static implicit operator Vector3D(Ellipsoid self) => self.Radii;
         public static implicit operator Ellipsoid(Vector3D value) => new Ellipsoid(value);
         public override bool Equals(object obj) { if (!(obj is Ellipsoid)) return false; var other = (Ellipsoid)obj; return Radii.Equals(other.Radii); }
@@ -6448,8 +6448,8 @@ namespace Plato.DoublePrecision
         public Vector3D Transform(Vector3D v) => v;
         public Vector3D TransformNormal(Vector3D v) => v;
         public IArray<IdentityTransform3D> Repeat(Integer n){
-            var _var466 = this;
-            return n.MapRange((i) => _var466);
+            var _var164 = this;
+            return n.MapRange((i) => _var164);
         }
         public Boolean Equals(IdentityTransform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(IdentityTransform3D a, IdentityTransform3D b) => a.Equals(b);
@@ -6469,8 +6469,8 @@ namespace Plato.DoublePrecision
         public Transform3D(Vector3D translation, Quaternion rotation, Vector3D scale) => (Translation, Rotation, Scale) = (translation, rotation, scale);
         public static Transform3D Default = new Transform3D();
         public static Transform3D New(Vector3D translation, Quaternion rotation, Vector3D scale) => new Transform3D(translation, rotation, scale);
-        public Plato.SinglePrecision.Transform3D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Transform3D(Transform3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Transform3D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Transform3D(Transform3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Quaternion, Vector3D)(Transform3D self) => (self.Translation, self.Rotation, self.Scale);
         public static implicit operator Transform3D((Vector3D, Quaternion, Vector3D) value) => new Transform3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D translation, out Quaternion rotation, out Vector3D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
@@ -6487,8 +6487,8 @@ namespace Plato.DoublePrecision
         public Vector3D Transform(Vector3D v) => this.Rotation.Transform(v).Add(this.Translation).Multiply(this.Scale);
         public Vector3D TransformNormal(Vector3D v) => this.Rotation.TransformNormal(v);
         public IArray<Transform3D> Repeat(Integer n){
-            var _var467 = this;
-            return n.MapRange((i) => _var467);
+            var _var165 = this;
+            return n.MapRange((i) => _var165);
         }
         public Boolean Equals(Transform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Transform3D a, Transform3D b) => a.Equals(b);
@@ -6506,8 +6506,8 @@ namespace Plato.DoublePrecision
         public Pose3D(Vector3D position, Rotation3D rotation) => (Position, Rotation) = (position, rotation);
         public static Pose3D Default = new Pose3D();
         public static Pose3D New(Vector3D position, Rotation3D rotation) => new Pose3D(position, rotation);
-        public Plato.SinglePrecision.Pose3D ChangePrecision() => (Position.ChangePrecision(), Rotation.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Pose3D(Pose3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Pose3D ChangePrecision() => (Position.ChangePrecision(), Rotation.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Pose3D(Pose3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Rotation3D)(Pose3D self) => (self.Position, self.Rotation);
         public static implicit operator Pose3D((Vector3D, Rotation3D) value) => new Pose3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D position, out Rotation3D rotation) { position = Position; rotation = Rotation; }
@@ -6524,8 +6524,8 @@ namespace Plato.DoublePrecision
         public Vector3D Transform(Vector3D v) => this.Rotation.Transform(v).Add(this.Position);
         public Vector3D TransformNormal(Vector3D v) => this.Rotation.TransformNormal(v);
         public IArray<Pose3D> Repeat(Integer n){
-            var _var468 = this;
-            return n.MapRange((i) => _var468);
+            var _var166 = this;
+            return n.MapRange((i) => _var166);
         }
         public Boolean Equals(Pose3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Pose3D a, Pose3D b) => a.Equals(b);
@@ -6545,8 +6545,8 @@ namespace Plato.DoublePrecision
         public Frame3D(Vector3D forward, Vector3D up, Vector3D position) => (Forward, Up, Position) = (forward, up, position);
         public static Frame3D Default = new Frame3D();
         public static Frame3D New(Vector3D forward, Vector3D up, Vector3D position) => new Frame3D(forward, up, position);
-        public Plato.SinglePrecision.Frame3D ChangePrecision() => (Forward.ChangePrecision(), Up.ChangePrecision(), Position.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Frame3D(Frame3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Frame3D ChangePrecision() => (Forward.ChangePrecision(), Up.ChangePrecision(), Position.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Frame3D(Frame3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Frame3D self) => (self.Forward, self.Up, self.Position);
         public static implicit operator Frame3D((Vector3D, Vector3D, Vector3D) value) => new Frame3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D forward, out Vector3D up, out Vector3D position) { forward = Forward; up = Up; position = Position; }
@@ -6565,8 +6565,8 @@ namespace Plato.DoublePrecision
         public Vector3D Transform(Vector3D v) => this.Pose3D.Transform(v);
         public Vector3D TransformNormal(Vector3D v) => this.Pose3D.TransformNormal(v);
         public IArray<Frame3D> Repeat(Integer n){
-            var _var469 = this;
-            return n.MapRange((i) => _var469);
+            var _var167 = this;
+            return n.MapRange((i) => _var167);
         }
         public Boolean Equals(Frame3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Frame3D a, Frame3D b) => a.Equals(b);
@@ -6588,8 +6588,8 @@ namespace Plato.DoublePrecision
         public Quaternion(Number x, Number y, Number z, Number w) => (X, Y, Z, W) = (x, y, z, w);
         public static Quaternion Default = new Quaternion();
         public static Quaternion New(Number x, Number y, Number z, Number w) => new Quaternion(x, y, z, w);
-        public Plato.SinglePrecision.Quaternion ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quaternion(Quaternion self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Quaternion ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Quaternion(Quaternion self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Quaternion self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Quaternion((Number, Number, Number, Number) value) => new Quaternion(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -6690,8 +6690,8 @@ namespace Plato.DoublePrecision
         }
         public static Quaternion operator *(Quaternion q1, Quaternion q2) => q1.Multiply(q2);
         public IArray<Quaternion> Repeat(Integer n){
-            var _var470 = this;
-            return n.MapRange((i) => _var470);
+            var _var168 = this;
+            return n.MapRange((i) => _var168);
         }
         public Boolean Equals(Quaternion b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Quaternion a, Quaternion b) => a.Equals(b);
@@ -6712,8 +6712,8 @@ namespace Plato.DoublePrecision
         public AxisAngle(Vector3D axis, Angle angle) => (Axis, Angle) = (axis, angle);
         public static AxisAngle Default = new AxisAngle();
         public static AxisAngle New(Vector3D axis, Angle angle) => new AxisAngle(axis, angle);
-        public Plato.SinglePrecision.AxisAngle ChangePrecision() => (Axis.ChangePrecision(), Angle.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.AxisAngle(AxisAngle self) => self.ChangePrecision();
+        public Plato.DoublePrecision.AxisAngle ChangePrecision() => (Axis.ChangePrecision(), Angle.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.AxisAngle(AxisAngle self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Angle)(AxisAngle self) => (self.Axis, self.Angle);
         public static implicit operator AxisAngle((Vector3D, Angle) value) => new AxisAngle(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D axis, out Angle angle) { axis = Axis; angle = Angle; }
@@ -6737,8 +6737,8 @@ namespace Plato.DoublePrecision
         }
          } public static implicit operator Quaternion(AxisAngle aa) => aa.Quaternion;
         public IArray<AxisAngle> Repeat(Integer n){
-            var _var471 = this;
-            return n.MapRange((i) => _var471);
+            var _var169 = this;
+            return n.MapRange((i) => _var169);
         }
         public Boolean Equals(AxisAngle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(AxisAngle a, AxisAngle b) => a.Equals(b);
@@ -6758,8 +6758,8 @@ namespace Plato.DoublePrecision
         public EulerAngles(Angle yaw, Angle pitch, Angle roll) => (Yaw, Pitch, Roll) = (yaw, pitch, roll);
         public static EulerAngles Default = new EulerAngles();
         public static EulerAngles New(Angle yaw, Angle pitch, Angle roll) => new EulerAngles(yaw, pitch, roll);
-        public Plato.SinglePrecision.EulerAngles ChangePrecision() => (Yaw.ChangePrecision(), Pitch.ChangePrecision(), Roll.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.EulerAngles(EulerAngles self) => self.ChangePrecision();
+        public Plato.DoublePrecision.EulerAngles ChangePrecision() => (Yaw.ChangePrecision(), Pitch.ChangePrecision(), Roll.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.EulerAngles(EulerAngles self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle, Angle)(EulerAngles self) => (self.Yaw, self.Pitch, self.Roll);
         public static implicit operator EulerAngles((Angle, Angle, Angle) value) => new EulerAngles(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle yaw, out Angle pitch, out Angle roll) { yaw = Yaw; pitch = Pitch; roll = Roll; }
@@ -6786,8 +6786,8 @@ namespace Plato.DoublePrecision
         public Vector3D Transform(Vector3D v) => this.Quaternion.Transform(v);
         public Vector3D TransformNormal(Vector3D v) => this.Quaternion.TransformNormal(v);
         public IArray<EulerAngles> Repeat(Integer n){
-            var _var472 = this;
-            return n.MapRange((i) => _var472);
+            var _var170 = this;
+            return n.MapRange((i) => _var170);
         }
         public Boolean Equals(EulerAngles b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(EulerAngles a, EulerAngles b) => a.Equals(b);
@@ -6803,8 +6803,8 @@ namespace Plato.DoublePrecision
         public Rotation3D(Quaternion quaternion) => (Quaternion) = (quaternion);
         public static Rotation3D Default = new Rotation3D();
         public static Rotation3D New(Quaternion quaternion) => new Rotation3D(quaternion);
-        public Plato.SinglePrecision.Rotation3D ChangePrecision() => (Quaternion.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rotation3D(Rotation3D self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Rotation3D ChangePrecision() => (Quaternion.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Rotation3D(Rotation3D self) => self.ChangePrecision();
         public static implicit operator Quaternion(Rotation3D self) => self.Quaternion;
         public static implicit operator Rotation3D(Quaternion value) => new Rotation3D(value);
         public override bool Equals(object obj) { if (!(obj is Rotation3D)) return false; var other = (Rotation3D)obj; return Quaternion.Equals(other.Quaternion); }
@@ -6820,8 +6820,8 @@ namespace Plato.DoublePrecision
         public Vector3D Transform(Vector3D v) => this.Quaternion.Transform(v);
         public Vector3D TransformNormal(Vector3D v) => this.Quaternion.TransformNormal(v);
         public IArray<Rotation3D> Repeat(Integer n){
-            var _var473 = this;
-            return n.MapRange((i) => _var473);
+            var _var171 = this;
+            return n.MapRange((i) => _var171);
         }
         public Boolean Equals(Rotation3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Rotation3D a, Rotation3D b) => a.Equals(b);
@@ -6859,17 +6859,17 @@ namespace Plato.DoublePrecision
         public LineMesh3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Indices);
         public IArray<Line3D> Lines => this.AllFaceVertices.Map((xs) => Line3D.New(xs.At(((Integer)0)), xs.At(((Integer)1))));
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var474 = this;
-            return this.FaceIndices(f).Map((i) => _var474.Vertex(i));
+            var _var172 = this;
+            return this.FaceIndices(f).Map((i) => _var172.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var475 = this;
-            return xs.Map((i) => _var475.Vertex(i));
+            var _var173 = this;
+            return xs.Map((i) => _var173.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var476 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var476.Vertices(xs));
+            var _var174 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var174.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6877,29 +6877,29 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public LineMesh3D Transform(Matrix4x4 m){
-            var _var477 = m;
-            return this.Deform((v) => _var477.Multiply(v));
+            var _var175 = m;
+            return this.Deform((v) => _var175.Multiply(v));
         }
         public LineMesh3D Transform(ITransform3D t){
-            var _var478 = t;
-            return this.Deform((v) => _var478.Transform(v));
+            var _var176 = t;
+            return this.Deform((v) => _var176.Transform(v));
         }
         public LineMesh3D Transform(Rotation3D r){
-            var _var479 = r;
-            return this.Deform((v) => _var479.Transform(v));
+            var _var177 = r;
+            return this.Deform((v) => _var177.Transform(v));
         }
         public LineMesh3D Translate(Vector3D v){
-            var _var480 = v;
-            return this.Deform((p) => p.Add(_var480));
+            var _var178 = v;
+            return this.Deform((p) => p.Add(_var178));
         }
         public LineMesh3D Rotate(Rotation3D r) => this.Transform(r);
         public LineMesh3D Scale(Vector3D v){
-            var _var481 = v;
-            return this.Deform((p) => p.Multiply(_var481));
+            var _var179 = v;
+            return this.Deform((p) => p.Multiply(_var179));
         }
         public LineMesh3D Scale(Number s){
-            var _var482 = s;
-            return this.Deform((p) => p.Multiply(_var482));
+            var _var180 = s;
+            return this.Deform((p) => p.Multiply(_var180));
         }
         public LineMesh3D Add(Vector3D v) => this.Translate(v);
         public static LineMesh3D operator +(LineMesh3D x, Vector3D v) => x.Add(v);
@@ -6949,17 +6949,17 @@ namespace Plato.DoublePrecision
         public LineMesh3D LineMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(TriangleMesh3D g) => g.LineMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var483 = this;
-            return this.FaceIndices(f).Map((i) => _var483.Vertex(i));
+            var _var181 = this;
+            return this.FaceIndices(f).Map((i) => _var181.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var484 = this;
-            return xs.Map((i) => _var484.Vertex(i));
+            var _var182 = this;
+            return xs.Map((i) => _var182.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var485 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var485.Vertices(xs));
+            var _var183 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var183.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6967,29 +6967,29 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public TriangleMesh3D Transform(Matrix4x4 m){
-            var _var486 = m;
-            return this.Deform((v) => _var486.Multiply(v));
+            var _var184 = m;
+            return this.Deform((v) => _var184.Multiply(v));
         }
         public TriangleMesh3D Transform(ITransform3D t){
-            var _var487 = t;
-            return this.Deform((v) => _var487.Transform(v));
+            var _var185 = t;
+            return this.Deform((v) => _var185.Transform(v));
         }
         public TriangleMesh3D Transform(Rotation3D r){
-            var _var488 = r;
-            return this.Deform((v) => _var488.Transform(v));
+            var _var186 = r;
+            return this.Deform((v) => _var186.Transform(v));
         }
         public TriangleMesh3D Translate(Vector3D v){
-            var _var489 = v;
-            return this.Deform((p) => p.Add(_var489));
+            var _var187 = v;
+            return this.Deform((p) => p.Add(_var187));
         }
         public TriangleMesh3D Rotate(Rotation3D r) => this.Transform(r);
         public TriangleMesh3D Scale(Vector3D v){
-            var _var490 = v;
-            return this.Deform((p) => p.Multiply(_var490));
+            var _var188 = v;
+            return this.Deform((p) => p.Multiply(_var188));
         }
         public TriangleMesh3D Scale(Number s){
-            var _var491 = s;
-            return this.Deform((p) => p.Multiply(_var491));
+            var _var189 = s;
+            return this.Deform((p) => p.Multiply(_var189));
         }
         public TriangleMesh3D Add(Vector3D v) => this.Translate(v);
         public static TriangleMesh3D operator +(TriangleMesh3D x, Vector3D v) => x.Add(v);
@@ -7041,17 +7041,17 @@ namespace Plato.DoublePrecision
         public TriangleMesh3D TriangleMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator TriangleMesh3D(QuadMesh3D g) => g.TriangleMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var492 = this;
-            return this.FaceIndices(f).Map((i) => _var492.Vertex(i));
+            var _var190 = this;
+            return this.FaceIndices(f).Map((i) => _var190.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var493 = this;
-            return xs.Map((i) => _var493.Vertex(i));
+            var _var191 = this;
+            return xs.Map((i) => _var191.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var494 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var494.Vertices(xs));
+            var _var192 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var192.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7059,29 +7059,29 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public QuadMesh3D Transform(Matrix4x4 m){
-            var _var495 = m;
-            return this.Deform((v) => _var495.Multiply(v));
+            var _var193 = m;
+            return this.Deform((v) => _var193.Multiply(v));
         }
         public QuadMesh3D Transform(ITransform3D t){
-            var _var496 = t;
-            return this.Deform((v) => _var496.Transform(v));
+            var _var194 = t;
+            return this.Deform((v) => _var194.Transform(v));
         }
         public QuadMesh3D Transform(Rotation3D r){
-            var _var497 = r;
-            return this.Deform((v) => _var497.Transform(v));
+            var _var195 = r;
+            return this.Deform((v) => _var195.Transform(v));
         }
         public QuadMesh3D Translate(Vector3D v){
-            var _var498 = v;
-            return this.Deform((p) => p.Add(_var498));
+            var _var196 = v;
+            return this.Deform((p) => p.Add(_var196));
         }
         public QuadMesh3D Rotate(Rotation3D r) => this.Transform(r);
         public QuadMesh3D Scale(Vector3D v){
-            var _var499 = v;
-            return this.Deform((p) => p.Multiply(_var499));
+            var _var197 = v;
+            return this.Deform((p) => p.Multiply(_var197));
         }
         public QuadMesh3D Scale(Number s){
-            var _var500 = s;
-            return this.Deform((p) => p.Multiply(_var500));
+            var _var198 = s;
+            return this.Deform((p) => p.Multiply(_var198));
         }
         public QuadMesh3D Add(Vector3D v) => this.Translate(v);
         public static QuadMesh3D operator +(QuadMesh3D x, Vector3D v) => x.Add(v);
@@ -7127,8 +7127,8 @@ namespace Plato.DoublePrecision
         public static implicit operator PolyLine3D(PolyLine2D x) => x.PolyLine3D;
         public IArray<Line2D> Lines => this.Points.WithNext((a, b) => Line2D.New(a, b), this.Closed);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var501 = this;
-            return numPoints.LinearSpace.Map((x) => _var501.Eval(x));
+            var _var199 = this;
+            return numPoints.LinearSpace.Map((x) => _var199.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -7164,29 +7164,29 @@ namespace Plato.DoublePrecision
         public PolyLine3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Closed);
         public IArray<Line3D> Lines => this.Points.WithNext((a, b) => Line3D.New(a, b), this.Closed);
         public PolyLine3D Transform(Matrix4x4 m){
-            var _var502 = m;
-            return this.Deform((v) => _var502.Multiply(v));
+            var _var200 = m;
+            return this.Deform((v) => _var200.Multiply(v));
         }
         public PolyLine3D Transform(ITransform3D t){
-            var _var503 = t;
-            return this.Deform((v) => _var503.Transform(v));
+            var _var201 = t;
+            return this.Deform((v) => _var201.Transform(v));
         }
         public PolyLine3D Transform(Rotation3D r){
-            var _var504 = r;
-            return this.Deform((v) => _var504.Transform(v));
+            var _var202 = r;
+            return this.Deform((v) => _var202.Transform(v));
         }
         public PolyLine3D Translate(Vector3D v){
-            var _var505 = v;
-            return this.Deform((p) => p.Add(_var505));
+            var _var203 = v;
+            return this.Deform((p) => p.Add(_var203));
         }
         public PolyLine3D Rotate(Rotation3D r) => this.Transform(r);
         public PolyLine3D Scale(Vector3D v){
-            var _var506 = v;
-            return this.Deform((p) => p.Multiply(_var506));
+            var _var204 = v;
+            return this.Deform((p) => p.Multiply(_var204));
         }
         public PolyLine3D Scale(Number s){
-            var _var507 = s;
-            return this.Deform((p) => p.Multiply(_var507));
+            var _var205 = s;
+            return this.Deform((p) => p.Multiply(_var205));
         }
         public PolyLine3D Add(Vector3D v) => this.Translate(v);
         public static PolyLine3D operator +(PolyLine3D x, Vector3D v) => x.Add(v);
@@ -7201,8 +7201,8 @@ namespace Plato.DoublePrecision
         public PolyLine3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
         public static PolyLine3D operator /(PolyLine3D x, Number s) => x.Divide(s);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var508 = this;
-            return numPoints.LinearSpace.Map((x) => _var508.Eval(x));
+            var _var206 = this;
+            return numPoints.LinearSpace.Map((x) => _var206.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -7253,29 +7253,29 @@ namespace Plato.DoublePrecision
         public PointArray3D Deform(System.Func<Vector3D, Vector3D> f) => PointArray3D.New(this.Points.Map(f));
         public IArray<Integer> Indices => this.Points.Indices();
         public PointArray3D Transform(Matrix4x4 m){
-            var _var509 = m;
-            return this.Deform((v) => _var509.Multiply(v));
+            var _var207 = m;
+            return this.Deform((v) => _var207.Multiply(v));
         }
         public PointArray3D Transform(ITransform3D t){
-            var _var510 = t;
-            return this.Deform((v) => _var510.Transform(v));
+            var _var208 = t;
+            return this.Deform((v) => _var208.Transform(v));
         }
         public PointArray3D Transform(Rotation3D r){
-            var _var511 = r;
-            return this.Deform((v) => _var511.Transform(v));
+            var _var209 = r;
+            return this.Deform((v) => _var209.Transform(v));
         }
         public PointArray3D Translate(Vector3D v){
-            var _var512 = v;
-            return this.Deform((p) => p.Add(_var512));
+            var _var210 = v;
+            return this.Deform((p) => p.Add(_var210));
         }
         public PointArray3D Rotate(Rotation3D r) => this.Transform(r);
         public PointArray3D Scale(Vector3D v){
-            var _var513 = v;
-            return this.Deform((p) => p.Multiply(_var513));
+            var _var211 = v;
+            return this.Deform((p) => p.Multiply(_var211));
         }
         public PointArray3D Scale(Number s){
-            var _var514 = s;
-            return this.Deform((p) => p.Multiply(_var514));
+            var _var212 = s;
+            return this.Deform((p) => p.Multiply(_var212));
         }
         public PointArray3D Add(Vector3D v) => this.Translate(v);
         public static PointArray3D operator +(PointArray3D x, Vector3D v) => x.Add(v);
@@ -7312,17 +7312,17 @@ namespace Plato.DoublePrecision
         public IArray<Integer> Indices => this.Points.Indices();
         public IArray<Vector2D> Points => this.Lines.FlatMap((x) => x.Points);
         public IArray<Vector2D> FaceVertices(Integer f){
-            var _var515 = this;
-            return this.FaceIndices(f).Map((i) => _var515.Vertex(i));
+            var _var213 = this;
+            return this.FaceIndices(f).Map((i) => _var213.Vertex(i));
         }
         public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector2D> Vertices(IArray<Integer> xs){
-            var _var516 = this;
-            return xs.Map((i) => _var516.Vertex(i));
+            var _var214 = this;
+            return xs.Map((i) => _var214.Vertex(i));
         }
         public IArray<IArray<Vector2D>> AllFaceVertices { get {
-            var _var517 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var517.Vertices(xs));
+            var _var215 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var215.Vertices(xs));
         }
          } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7354,23 +7354,23 @@ namespace Plato.DoublePrecision
         IArray<Line3D> ILineGeometry3D.Lines => this.Lines;
         // Implemented concept functions and type functions
         public LineArray3D Deform(System.Func<Vector3D, Vector3D> f){
-            var _var518 = f;
-            return LineArray3D.New(this.Lines.Map((l) => l.Deform(_var518)));
+            var _var216 = f;
+            return LineArray3D.New(this.Lines.Map((l) => l.Deform(_var216)));
         }
         public IArray<Integer> Indices => this.Points.Indices();
         public IArray<Vector3D> Points => this.Lines.FlatMap((x) => x.Points);
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var519 = this;
-            return this.FaceIndices(f).Map((i) => _var519.Vertex(i));
+            var _var217 = this;
+            return this.FaceIndices(f).Map((i) => _var217.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var520 = this;
-            return xs.Map((i) => _var520.Vertex(i));
+            var _var218 = this;
+            return xs.Map((i) => _var218.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var521 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var521.Vertices(xs));
+            var _var219 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var219.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7378,29 +7378,29 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public LineArray3D Transform(Matrix4x4 m){
-            var _var522 = m;
-            return this.Deform((v) => _var522.Multiply(v));
+            var _var220 = m;
+            return this.Deform((v) => _var220.Multiply(v));
         }
         public LineArray3D Transform(ITransform3D t){
-            var _var523 = t;
-            return this.Deform((v) => _var523.Transform(v));
+            var _var221 = t;
+            return this.Deform((v) => _var221.Transform(v));
         }
         public LineArray3D Transform(Rotation3D r){
-            var _var524 = r;
-            return this.Deform((v) => _var524.Transform(v));
+            var _var222 = r;
+            return this.Deform((v) => _var222.Transform(v));
         }
         public LineArray3D Translate(Vector3D v){
-            var _var525 = v;
-            return this.Deform((p) => p.Add(_var525));
+            var _var223 = v;
+            return this.Deform((p) => p.Add(_var223));
         }
         public LineArray3D Rotate(Rotation3D r) => this.Transform(r);
         public LineArray3D Scale(Vector3D v){
-            var _var526 = v;
-            return this.Deform((p) => p.Multiply(_var526));
+            var _var224 = v;
+            return this.Deform((p) => p.Multiply(_var224));
         }
         public LineArray3D Scale(Number s){
-            var _var527 = s;
-            return this.Deform((p) => p.Multiply(_var527));
+            var _var225 = s;
+            return this.Deform((p) => p.Multiply(_var225));
         }
         public LineArray3D Add(Vector3D v) => this.Translate(v);
         public static LineArray3D operator +(LineArray3D x, Vector3D v) => x.Add(v);
@@ -7440,17 +7440,17 @@ namespace Plato.DoublePrecision
         public IArray<Line2D> Lines => this.Triangles.FlatMap((x) => x.Lines);
         public IArray<Triangle2D> Faces => this.Triangles;
         public IArray<Vector2D> FaceVertices(Integer f){
-            var _var528 = this;
-            return this.FaceIndices(f).Map((i) => _var528.Vertex(i));
+            var _var226 = this;
+            return this.FaceIndices(f).Map((i) => _var226.Vertex(i));
         }
         public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector2D> Vertices(IArray<Integer> xs){
-            var _var529 = this;
-            return xs.Map((i) => _var529.Vertex(i));
+            var _var227 = this;
+            return xs.Map((i) => _var227.Vertex(i));
         }
         public IArray<IArray<Vector2D>> AllFaceVertices { get {
-            var _var530 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var530.Vertices(xs));
+            var _var228 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var228.Vertices(xs));
         }
          } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7482,8 +7482,8 @@ namespace Plato.DoublePrecision
         IArray<Triangle3D> ITriangleGeometry3D.Triangles => this.Triangles;
         // Implemented concept functions and type functions
         public TriangleArray3D Deform(System.Func<Vector3D, Vector3D> f){
-            var _var531 = f;
-            return TriangleArray3D.New(this.Triangles.Map((t) => t.Deform(_var531)));
+            var _var229 = f;
+            return TriangleArray3D.New(this.Triangles.Map((t) => t.Deform(_var229)));
         }
         public IArray<Integer> Indices => this.Points.Indices();
         public IArray<Vector3D> Points => this.Triangles.FlatMap((x) => x.Points);
@@ -7492,17 +7492,17 @@ namespace Plato.DoublePrecision
         public LineMesh3D LineMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(TriangleArray3D g) => g.LineMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var532 = this;
-            return this.FaceIndices(f).Map((i) => _var532.Vertex(i));
+            var _var230 = this;
+            return this.FaceIndices(f).Map((i) => _var230.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var533 = this;
-            return xs.Map((i) => _var533.Vertex(i));
+            var _var231 = this;
+            return xs.Map((i) => _var231.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var534 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var534.Vertices(xs));
+            var _var232 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var232.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7510,29 +7510,29 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public TriangleArray3D Transform(Matrix4x4 m){
-            var _var535 = m;
-            return this.Deform((v) => _var535.Multiply(v));
+            var _var233 = m;
+            return this.Deform((v) => _var233.Multiply(v));
         }
         public TriangleArray3D Transform(ITransform3D t){
-            var _var536 = t;
-            return this.Deform((v) => _var536.Transform(v));
+            var _var234 = t;
+            return this.Deform((v) => _var234.Transform(v));
         }
         public TriangleArray3D Transform(Rotation3D r){
-            var _var537 = r;
-            return this.Deform((v) => _var537.Transform(v));
+            var _var235 = r;
+            return this.Deform((v) => _var235.Transform(v));
         }
         public TriangleArray3D Translate(Vector3D v){
-            var _var538 = v;
-            return this.Deform((p) => p.Add(_var538));
+            var _var236 = v;
+            return this.Deform((p) => p.Add(_var236));
         }
         public TriangleArray3D Rotate(Rotation3D r) => this.Transform(r);
         public TriangleArray3D Scale(Vector3D v){
-            var _var539 = v;
-            return this.Deform((p) => p.Multiply(_var539));
+            var _var237 = v;
+            return this.Deform((p) => p.Multiply(_var237));
         }
         public TriangleArray3D Scale(Number s){
-            var _var540 = s;
-            return this.Deform((p) => p.Multiply(_var540));
+            var _var238 = s;
+            return this.Deform((p) => p.Multiply(_var238));
         }
         public TriangleArray3D Add(Vector3D v) => this.Translate(v);
         public static TriangleArray3D operator +(TriangleArray3D x, Vector3D v) => x.Add(v);
@@ -7573,17 +7573,17 @@ namespace Plato.DoublePrecision
         public IArray<Triangle2D> Triangles => this.Quads.FlatMap((x) => x.Triangles);
         public IArray<Quad2D> Faces => this.Quads;
         public IArray<Vector2D> FaceVertices(Integer f){
-            var _var541 = this;
-            return this.FaceIndices(f).Map((i) => _var541.Vertex(i));
+            var _var239 = this;
+            return this.FaceIndices(f).Map((i) => _var239.Vertex(i));
         }
         public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector2D> Vertices(IArray<Integer> xs){
-            var _var542 = this;
-            return xs.Map((i) => _var542.Vertex(i));
+            var _var240 = this;
+            return xs.Map((i) => _var240.Vertex(i));
         }
         public IArray<IArray<Vector2D>> AllFaceVertices { get {
-            var _var543 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var543.Vertices(xs));
+            var _var241 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var241.Vertices(xs));
         }
          } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7615,8 +7615,8 @@ namespace Plato.DoublePrecision
         IArray<Quad3D> IQuadGeometry3D.Quads => this.Quads;
         // Implemented concept functions and type functions
         public QuadArray3D Deform(System.Func<Vector3D, Vector3D> f){
-            var _var544 = f;
-            return QuadArray3D.New(this.Quads.Map((q) => q.Deform(_var544)));
+            var _var242 = f;
+            return QuadArray3D.New(this.Quads.Map((q) => q.Deform(_var242)));
         }
         public IArray<Integer> Indices => this.Points.Indices();
         public IArray<Vector3D> Points => this.Quads.FlatMap((x) => x.Points);
@@ -7628,17 +7628,17 @@ namespace Plato.DoublePrecision
         public TriangleMesh3D TriangleMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator TriangleMesh3D(QuadArray3D g) => g.TriangleMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var545 = this;
-            return this.FaceIndices(f).Map((i) => _var545.Vertex(i));
+            var _var243 = this;
+            return this.FaceIndices(f).Map((i) => _var243.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var546 = this;
-            return xs.Map((i) => _var546.Vertex(i));
+            var _var244 = this;
+            return xs.Map((i) => _var244.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var547 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var547.Vertices(xs));
+            var _var245 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var245.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7646,29 +7646,29 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public QuadArray3D Transform(Matrix4x4 m){
-            var _var548 = m;
-            return this.Deform((v) => _var548.Multiply(v));
+            var _var246 = m;
+            return this.Deform((v) => _var246.Multiply(v));
         }
         public QuadArray3D Transform(ITransform3D t){
-            var _var549 = t;
-            return this.Deform((v) => _var549.Transform(v));
+            var _var247 = t;
+            return this.Deform((v) => _var247.Transform(v));
         }
         public QuadArray3D Transform(Rotation3D r){
-            var _var550 = r;
-            return this.Deform((v) => _var550.Transform(v));
+            var _var248 = r;
+            return this.Deform((v) => _var248.Transform(v));
         }
         public QuadArray3D Translate(Vector3D v){
-            var _var551 = v;
-            return this.Deform((p) => p.Add(_var551));
+            var _var249 = v;
+            return this.Deform((p) => p.Add(_var249));
         }
         public QuadArray3D Rotate(Rotation3D r) => this.Transform(r);
         public QuadArray3D Scale(Vector3D v){
-            var _var552 = v;
-            return this.Deform((p) => p.Multiply(_var552));
+            var _var250 = v;
+            return this.Deform((p) => p.Multiply(_var250));
         }
         public QuadArray3D Scale(Number s){
-            var _var553 = s;
-            return this.Deform((p) => p.Multiply(_var553));
+            var _var251 = s;
+            return this.Deform((p) => p.Multiply(_var251));
         }
         public QuadArray3D Add(Vector3D v) => this.Translate(v);
         public static QuadArray3D operator +(QuadArray3D x, Vector3D v) => x.Add(v);
@@ -7728,17 +7728,17 @@ namespace Plato.DoublePrecision
         public TriangleMesh3D TriangleMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator TriangleMesh3D(QuadGrid3D g) => g.TriangleMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var554 = this;
-            return this.FaceIndices(f).Map((i) => _var554.Vertex(i));
+            var _var252 = this;
+            return this.FaceIndices(f).Map((i) => _var252.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var555 = this;
-            return xs.Map((i) => _var555.Vertex(i));
+            var _var253 = this;
+            return xs.Map((i) => _var253.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var556 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var556.Vertices(xs));
+            var _var254 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var254.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -7746,29 +7746,29 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public QuadGrid3D Transform(Matrix4x4 m){
-            var _var557 = m;
-            return this.Deform((v) => _var557.Multiply(v));
+            var _var255 = m;
+            return this.Deform((v) => _var255.Multiply(v));
         }
         public QuadGrid3D Transform(ITransform3D t){
-            var _var558 = t;
-            return this.Deform((v) => _var558.Transform(v));
+            var _var256 = t;
+            return this.Deform((v) => _var256.Transform(v));
         }
         public QuadGrid3D Transform(Rotation3D r){
-            var _var559 = r;
-            return this.Deform((v) => _var559.Transform(v));
+            var _var257 = r;
+            return this.Deform((v) => _var257.Transform(v));
         }
         public QuadGrid3D Translate(Vector3D v){
-            var _var560 = v;
-            return this.Deform((p) => p.Add(_var560));
+            var _var258 = v;
+            return this.Deform((p) => p.Add(_var258));
         }
         public QuadGrid3D Rotate(Rotation3D r) => this.Transform(r);
         public QuadGrid3D Scale(Vector3D v){
-            var _var561 = v;
-            return this.Deform((p) => p.Multiply(_var561));
+            var _var259 = v;
+            return this.Deform((p) => p.Multiply(_var259));
         }
         public QuadGrid3D Scale(Number s){
-            var _var562 = s;
-            return this.Deform((p) => p.Multiply(_var562));
+            var _var260 = s;
+            return this.Deform((p) => p.Multiply(_var260));
         }
         public QuadGrid3D Add(Vector3D v) => this.Translate(v);
         public static QuadGrid3D operator +(QuadGrid3D x, Vector3D v) => x.Add(v);
@@ -7788,15 +7788,15 @@ namespace Plato.DoublePrecision
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
     public readonly partial struct Number: IReal<Number>
     {
-        [DataMember] public readonly double Value;
-        public Number WithValue(double value) => new Number(value);
-        public Number(double value) => (Value) = (value);
+        [DataMember] public readonly float Value;
+        public Number WithValue(float value) => new Number(value);
+        public Number(float value) => (Value) = (value);
         public static Number Default = new Number();
-        public static Number New(double value) => new Number(value);
-        public Plato.SinglePrecision.Number ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Number(Number self) => self.ChangePrecision();
-        public static implicit operator double(Number self) => self.Value;
-        public static implicit operator Number(double value) => new Number(value);
+        public static Number New(float value) => new Number(value);
+        public Plato.DoublePrecision.Number ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Number(Number self) => self.ChangePrecision();
+        public static implicit operator float(Number self) => self.Value;
+        public static implicit operator Number(float value) => new Number(value);
         public override bool Equals(object obj) { if (!(obj is Number)) return false; var other = (Number)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
         public override string ToString() => Intrinsics.ToString(this);
@@ -7914,8 +7914,8 @@ namespace Plato.DoublePrecision
         public Number Min(Number y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Number Max(Number y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public IArray<Number> Repeat(Integer n){
-            var _var563 = this;
-            return n.MapRange((i) => _var563);
+            var _var261 = this;
+            return n.MapRange((i) => _var261);
         }
         public Boolean NotEquals(Number b) => this.Equals(b).Not;
         public static Boolean operator !=(Number a, Number b) => a.NotEquals(b);
@@ -7964,8 +7964,8 @@ namespace Plato.DoublePrecision
         public Integer(int value) => (Value) = (value);
         public static Integer Default = new Integer();
         public static Integer New(int value) => new Integer(value);
-        public Plato.SinglePrecision.Integer ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer(Integer self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Integer ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Integer(Integer self) => self.ChangePrecision();
         public static implicit operator int(Integer self) => self.Value;
         public static implicit operator Integer(int value) => new Integer(value);
         public override bool Equals(object obj) { if (!(obj is Integer)) return false; var other = (Integer)obj; return Value.Equals(other.Value); }
@@ -7993,12 +7993,12 @@ namespace Plato.DoublePrecision
         public Integer FromOne => ((Integer)1).Subtract(this);
         public Number FloatDivision(Integer y) => this.ToNumber.Divide(y.ToNumber);
         public IArray<Number> Fractions { get {
-            var _var564 = this;
-            return this.Range.Map((i) => i.FloatDivision(_var564.Subtract(((Integer)1))));
+            var _var262 = this;
+            return this.Range.Map((i) => i.FloatDivision(_var262.Subtract(((Integer)1))));
         }
          } public IArray<Number> FractionsExclusive { get {
-            var _var565 = this;
-            return this.Range.Map((i) => i.FloatDivision(_var565));
+            var _var263 = this;
+            return this.Range.Map((i) => i.FloatDivision(_var263));
         }
          } public IArray<Vector2D> CirclePoints => this.Fractions.Map((x) => x.Turns.UnitCircle);
         public Integer4 QuadFaceIndices(Integer row, Integer nCols, Integer nRows){
@@ -8009,13 +8009,13 @@ namespace Plato.DoublePrecision
             return a.Tuple4(b, c, d);
         }
         public IArray2D<Integer4> AllQuadFaceIndices(Integer nRows, Boolean closedX, Boolean closedY){
-            var _var567 = nRows;
+            var _var265 = nRows;
             {
-                var _var566 = this;
+                var _var264 = this;
                 {
                     var nx = this.Subtract(closedX ? ((Integer)0) : ((Integer)1));
                     var ny = nRows.Subtract(closedY ? ((Integer)0) : ((Integer)1));
-                    return nx.Range.CartesianProduct(ny.Range, (col, row) => col.QuadFaceIndices(row, _var566, _var567));
+                    return nx.Range.CartesianProduct(ny.Range, (col, row) => col.QuadFaceIndices(row, _var264, _var265));
                 }
             }
         }
@@ -8045,8 +8045,8 @@ namespace Plato.DoublePrecision
         public IArray<TR> MapRange<TR>(System.Func<Integer, TR> f) => Intrinsics.MapRange(this, f);
         public IArray2D<TR> MakeArray2D<TR>(Integer rows, System.Func<Integer, Integer, TR> f) => Intrinsics.MakeArray2D(this, rows, f);
         public IArray<Integer> Repeat(Integer n){
-            var _var568 = this;
-            return n.MapRange((i) => _var568);
+            var _var266 = this;
+            return n.MapRange((i) => _var266);
         }
         public Boolean NotEquals(Integer b) => this.Equals(b).Not;
         public static Boolean operator !=(Integer a, Integer b) => a.NotEquals(b);
@@ -8077,8 +8077,8 @@ namespace Plato.DoublePrecision
         public String(string value) => (Value) = (value);
         public static String Default = new String();
         public static String New(string value) => new String(value);
-        public Plato.SinglePrecision.String ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.String(String self) => self.ChangePrecision();
+        public Plato.DoublePrecision.String ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.String(String self) => self.ChangePrecision();
         public static implicit operator string(String self) => self.Value;
         public static implicit operator String(string value) => new String(value);
         public override bool Equals(object obj) { if (!(obj is String)) return false; var other = (String)obj; return Value.Equals(other.Value); }
@@ -8107,8 +8107,8 @@ namespace Plato.DoublePrecision
         public Boolean Equals(String y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(String x, String y) => x.Equals(y);
         public IArray<String> Repeat(Integer n){
-            var _var569 = this;
-            return n.MapRange((i) => _var569);
+            var _var267 = this;
+            return n.MapRange((i) => _var267);
         }
         public Boolean NotEquals(String b) => this.Equals(b).Not;
         public static Boolean operator !=(String a, String b) => a.NotEquals(b);
@@ -8131,8 +8131,8 @@ namespace Plato.DoublePrecision
         public Boolean(bool value) => (Value) = (value);
         public static Boolean Default = new Boolean();
         public static Boolean New(bool value) => new Boolean(value);
-        public Plato.SinglePrecision.Boolean ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Boolean(Boolean self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Boolean ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Boolean(Boolean self) => self.ChangePrecision();
         public static implicit operator bool(Boolean self) => self.Value;
         public static implicit operator Boolean(bool value) => new Boolean(value);
         public override bool Equals(object obj) { if (!(obj is Boolean)) return false; var other = (Boolean)obj; return Value.Equals(other.Value); }
@@ -8160,8 +8160,8 @@ namespace Plato.DoublePrecision
         public Boolean Equals(Boolean y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(Boolean x, Boolean y) => x.Equals(y);
         public IArray<Boolean> Repeat(Integer n){
-            var _var570 = this;
-            return n.MapRange((i) => _var570);
+            var _var268 = this;
+            return n.MapRange((i) => _var268);
         }
         public Boolean NotEquals(Boolean b) => this.Equals(b).Not;
         public static Boolean operator !=(Boolean a, Boolean b) => a.NotEquals(b);
@@ -8184,8 +8184,8 @@ namespace Plato.DoublePrecision
         public Character(char value) => (Value) = (value);
         public static Character Default = new Character();
         public static Character New(char value) => new Character(value);
-        public Plato.SinglePrecision.Character ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Character(Character self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Character ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Character(Character self) => self.ChangePrecision();
         public static implicit operator char(Character self) => self.Value;
         public static implicit operator Character(char value) => new Character(value);
         public override bool Equals(object obj) { if (!(obj is Character)) return false; var other = (Character)obj; return Value.Equals(other.Value); }
@@ -8208,8 +8208,8 @@ namespace Plato.DoublePrecision
         public Boolean Equals(Character y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(Character x, Character y) => x.Equals(y);
         public IArray<Character> Repeat(Integer n){
-            var _var571 = this;
-            return n.MapRange((i) => _var571);
+            var _var269 = this;
+            return n.MapRange((i) => _var269);
         }
         public Boolean NotEquals(Character b) => this.Equals(b).Not;
         public static Boolean operator !=(Character a, Character b) => a.NotEquals(b);
@@ -8232,8 +8232,8 @@ namespace Plato.DoublePrecision
         public Type(System.Type value) => (Value) = (value);
         public static Type Default = new Type();
         public static Type New(System.Type value) => new Type(value);
-        public Plato.SinglePrecision.Type ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Type(Type self) => self.ChangePrecision();
+        public Plato.DoublePrecision.Type ChangePrecision() => (Value.ChangePrecision());
+        public static implicit operator Plato.DoublePrecision.Type(Type self) => self.ChangePrecision();
         public static implicit operator System.Type(Type self) => self.Value;
         public static implicit operator Type(System.Type value) => new Type(value);
         public override bool Equals(object obj) { if (!(obj is Type)) return false; var other = (Type)obj; return Value.Equals(other.Value); }
@@ -8707,18 +8707,18 @@ namespace Plato.DoublePrecision
         public static T Middle<T>(this IArray<T> xs, Integer n) => xs.At(xs.Count.Divide(((Integer)2)));
         public static IArray<T> Slice<T>(this IArray<T> xs, Integer from, Integer to) => xs.Subarray(from, to.Subtract(from));
         public static IArray<IArray<T>> Slices<T>(this IArray<T> xs, Integer size){
-            var _var573 = size;
+            var _var271 = size;
             {
-                var _var572 = xs;
-                return xs.Count.Divide(size).MapRange((i) => _var572.NthSlice(i, _var573));
+                var _var270 = xs;
+                return xs.Count.Divide(size).MapRange((i) => _var270.NthSlice(i, _var271));
             }
         }
         public static IArray<T> NthSlice<T>(this IArray<T> xs, Integer n, Integer size) => xs.Subarray(n.Multiply(size), size);
         public static IArray<T> Subarray<T>(this IArray<T> xs, Integer from, Integer count){
-            var _var575 = from;
+            var _var273 = from;
             {
-                var _var574 = xs;
-                return count.MapRange((i) => _var574.At(i.Add(_var575)));
+                var _var272 = xs;
+                return count.MapRange((i) => _var272.At(i.Add(_var273)));
             }
         }
         public static IArray<T> Skip<T>(this IArray<T> xs, Integer n) => xs.Subarray(n, xs.Count.Subtract(n));
@@ -8767,100 +8767,100 @@ namespace Plato.DoublePrecision
             return ((Boolean)false);
         }
         public static IArray<TR> Map<T0, TR>(this IArray<T0> xs, System.Func<T0, TR> f){
-            var _var577 = xs;
+            var _var275 = xs;
             {
-                var _var576 = f;
-                return xs.Count.MapRange((i) => _var576.Invoke(_var577.At(i)));
+                var _var274 = f;
+                return xs.Count.MapRange((i) => _var274.Invoke(_var275.At(i)));
             }
         }
         public static IArray<TR> Zip<T0, T1, TR>(this IArray<T0> xs, IArray<T1> ys, System.Func<T0, T1, TR> f){
-            var _var580 = ys;
+            var _var278 = ys;
             {
-                var _var579 = xs;
+                var _var277 = xs;
                 {
-                    var _var578 = f;
-                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var578.Invoke(_var579.At(i), _var580.At(i)));
+                    var _var276 = f;
+                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var276.Invoke(_var277.At(i), _var278.At(i)));
                 }
             }
         }
         public static IArray<TR> Zip<T0, T1, T2, TR>(this IArray<T0> xs, IArray<T1> ys, IArray<T2> zs, System.Func<T0, T1, T2, TR> f){
-            var _var584 = zs;
+            var _var282 = zs;
             {
-                var _var583 = ys;
+                var _var281 = ys;
                 {
-                    var _var582 = xs;
+                    var _var280 = xs;
                     {
-                        var _var581 = f;
-                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var581.Invoke(_var582.At(i), _var583.At(i), _var584.At(i)));
+                        var _var279 = f;
+                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var279.Invoke(_var280.At(i), _var281.At(i), _var282.At(i)));
                     }
                 }
             }
         }
         public static T ModuloAt<T>(this IArray<T> xs, Integer n) => xs.At(n.Modulo(xs.Count));
         public static IArray<T> Shift<T>(this IArray<T> xs, Integer n){
-            var _var585 = xs;
-            return xs.Count.MapRange((i) => _var585.ModuloAt(i));
+            var _var283 = xs;
+            return xs.Count.MapRange((i) => _var283.ModuloAt(i));
         }
         public static IArray<TR> WithNext<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f) => xs.Drop(((Integer)1)).Zip(xs.Skip(((Integer)1)), f);
         public static IArray<TR> WithNextAndBeginning<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f) => xs.Zip(xs.Shift(((Integer)1)), f);
         public static IArray<TR> WithNext<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f, Boolean connect) => connect ? xs.WithNextAndBeginning(f) : xs.WithNext(f);
         public static IArray<T> EveryNth<T>(this IArray<T> self, Integer n){
-            var _var587 = n;
+            var _var285 = n;
             {
-                var _var586 = self;
-                return self.Indices().Map((i) => _var586.ModuloAt(i.Multiply(_var587)));
+                var _var284 = self;
+                return self.Indices().Map((i) => _var284.ModuloAt(i.Multiply(_var285)));
             }
         }
         public static IArray2D<TR> CartesianProduct<T0, T1, TR>(this IArray<T0> columns, IArray<T1> rows, System.Func<T0, T1, TR> func){
-            var _var590 = rows;
+            var _var288 = rows;
             {
-                var _var589 = columns;
+                var _var287 = columns;
                 {
-                    var _var588 = func;
-                    return columns.Count.MakeArray2D(rows.Count, (i, j) => _var588.Invoke(_var589.At(i), _var590.At(j)));
+                    var _var286 = func;
+                    return columns.Count.MakeArray2D(rows.Count, (i, j) => _var286.Invoke(_var287.At(i), _var288.At(j)));
                 }
             }
         }
         public static IArray<T> Reverse<T>(this IArray<T> self){
-            var _var592 = self;
+            var _var290 = self;
             {
-                var _var591 = self;
-                return self.Indices().Map((i) => _var591.At(_var592.Count.Subtract(((Integer)1).Subtract(i))));
+                var _var289 = self;
+                return self.Indices().Map((i) => _var289.At(_var290.Count.Subtract(((Integer)1).Subtract(i))));
             }
         }
         public static IArray<T> Concat<T>(this IArray<T> xs, IArray<T> ys){
-            var _var596 = xs;
+            var _var294 = xs;
             {
-                var _var595 = ys;
+                var _var293 = ys;
                 {
-                    var _var594 = xs;
+                    var _var292 = xs;
                     {
-                        var _var593 = xs;
-                        return xs.Count.Add(ys.Count).MapRange((i) => i.LessThan(_var593.Count) ? _var594.At(i) : _var595.At(i.Subtract(_var596.Count)));
+                        var _var291 = xs;
+                        return xs.Count.Add(ys.Count).MapRange((i) => i.LessThan(_var291.Count) ? _var292.At(i) : _var293.At(i.Subtract(_var294.Count)));
                     }
                 }
             }
         }
         public static IArray<T> Prepend<T>(this IArray<T> self, T value){
-            var _var598 = self;
+            var _var296 = self;
             {
-                var _var597 = value;
-                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var597 : _var598.At(i.Subtract(((Integer)1))));
+                var _var295 = value;
+                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var295 : _var296.At(i.Subtract(((Integer)1))));
             }
         }
         public static IArray<T> Append<T>(this IArray<T> self, T value){
-            var _var600 = self;
+            var _var298 = self;
             {
-                var _var599 = value;
-                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var599 : _var600.At(i.Subtract(((Integer)1))));
+                var _var297 = value;
+                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var297 : _var298.At(i.Subtract(((Integer)1))));
             }
         }
         public static IArray<T> PrependAndAppend<T>(this IArray<T> self, T before, T after) => self.Prepend(before).Append(after);
         public static IArray2D<TR> Map<T0, TR>(this IArray2D<T0> xs, System.Func<T0, TR> f){
-            var _var602 = xs;
+            var _var300 = xs;
             {
-                var _var601 = f;
-                return xs.ColumnCount.MakeArray2D(xs.RowCount, (a, b) => _var601.Invoke(_var602.At(a, b)));
+                var _var299 = f;
+                return xs.ColumnCount.MakeArray2D(xs.RowCount, (a, b) => _var299.Invoke(_var300.At(a, b)));
             }
         }
         public static IArray<Vector2D> Points(this IArray<Line2D> xs) => xs.FlatMap((x) => x);
@@ -8883,8 +8883,8 @@ namespace Plato.DoublePrecision
         public static IArray<Line3D> ToLines(this IArray<Vector3D> xs, IArray<Vector3D> ys) => xs.Zip(ys, (a, b) => Line3D.New(a, b));
         public static IArray<T> FlatMap<T0, T>(this IArray<T0> xs, System.Func<T0, IArray<T>> f) => Intrinsics.FlatMap(xs, f);
         public static IArray<Vector3D> Transform(this IArray<Vector3D> xs, ITransform3D t){
-            var _var603 = t;
-            return xs.Map((x) => _var603.Transform(x));
+            var _var301 = t;
+            return xs.Map((x) => _var301.Transform(x));
         }
     }
 }

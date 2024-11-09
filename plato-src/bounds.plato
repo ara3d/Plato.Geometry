@@ -1,0 +1,35 @@
+﻿library IBounds
+{
+    Size(x: IBounds<$T>): $T
+        => x.Max - x.Min;
+ 
+    Lerp(x: IBounds<$T>, amount: Number): $T
+        => x.Min.Lerp(x.Max, amount);
+        
+    Center(x: IBounds<$T>): $T
+        => x.Lerp(0.5);    
+    
+    Contains(x: IBounds<$T>, value: $T): Boolean 
+        => value.Between(x.Min, x.Max);
+    
+    Contains(x: IBounds<$T>, y: IBounds<$T>): Boolean 
+        => x.Contains(y.Min) && x.Contains(y.Max);
+    
+    Overlaps(x: IBounds<$T>, y: IBounds<$T>): Boolean 
+        => x.Contains(y.Min) || x.Contains(y.Max) || y.Contains(x.Min) || y.Contains(x.Max);
+    
+    Recenter(x: IBounds<$T>, c: $T): IBounds<$T> 
+        => (c - x.Size.Half, c + x.Size.Half);
+    
+    Clamp(x: IBounds<$T>, y: IBounds<$T>): IBounds<$T>
+        => (x.Clamp(y.Min), x.Clamp(y.Max));
+    
+    Clamp(x: IBounds<$T>, value: $T): $T
+        => value.Clamp(x.Min, x.Max);        
+
+    Include(x: IBounds<$T>, value: $T): IBounds<$T>
+		=> (Min(x.Min, value), Max(x.Max, value));
+
+    Include(x: IBounds<$T>, y: IBounds<$T>): IBounds<$T>
+		=> x.Include(y.Min).Include(y.Max);    
+}
