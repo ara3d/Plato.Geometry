@@ -95,7 +95,7 @@ library IGeometry
 
     //==
     // Vector functions
-
+    
     Vector3D(v: Vector2D): Vector3D => (v.X, v.Y, 0);
     MidPoint(a: Vector2D, b: Vector2D): Vector2D => (a + b) / 2.0;
     Line(a: Vector2D, b: Vector2D): Line2D => (a, b);
@@ -164,7 +164,8 @@ library IGeometry
         (x.Max.X, x.Min.Y, x.Max.Z),
         (x.Min.X, x.Max.Y, x.Max.Z), 
         (x.Max.X, x.Max.Y, x.Max.Z)];
-    
+    Empty(_: Bounds3D): Bounds3D => (Vector3D.MaxValue, Vector3D.MinValue);
+    Bounds(xs: IArray<Vector3D>): Bounds3D => xs.Reduce(Bounds3D.Empty, (a, b) => a.Include(b));
 
 	//==
 	// Closed functions 
@@ -247,15 +248,26 @@ library IGeometry
 
     LineMesh3D(g: ITriangleMesh3D): LineMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[0]]));
     LineMesh3D(g: IQuadMesh3D): LineMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]));
-    TriangleMesh3D(g: IQuadMesh3D): TriangleMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));  
 
     LineArray2D(t: Triangle2D): LineArray2D => new LineArray2D(t.Lines);
     LineArray2D(q: Quad2D): LineArray2D => new LineArray2D(q.Lines);
     LineArray3D(t: Triangle3D): LineArray3D => new LineArray3D(t.Lines);
     LineArray3D(q: Quad3D): LineArray3D => new LineArray3D(q.Lines);
 
+    TriangleArray2D(t: Triangle2D): TriangleArray2D => new TriangleArray2D([t]);
+    TriangleArray3D(t: Triangle3D): TriangleArray3D => new TriangleArray3D([t]);
     TriangleArray2D(q: Quad2D): TriangleArray2D => new TriangleArray2D(q.Triangles);
     TriangleArray3D(q: Quad3D): TriangleArray3D => new TriangleArray3D(q.Triangles);
+    TriangleArray3D(q: IQuadArray3D): TriangleArray3D => new TriangleArray3D(q.Triangles);
+
+    QuadArray3D(q: Quad3D): QuadArray3D => new QuadArray3D([q]);
+    QuadMesh3D(self: IQuadArray3D): QuadMesh3D => (self.Points, self.Points.Indices()); 
+
+    TriangleMesh3D(g: Triangle3D): TriangleMesh3D => g.TriangleArray3D;
+    TriangleMesh3D(g: Quad3D): TriangleMesh3D => g.TriangleArray3D;
+    TriangleMesh3D(g: ITriangleArray3D): TriangleMesh3D => (g.Points, g.Points.Indices());
+    TriangleMesh3D(g: IQuadArray3D): TriangleMesh3D => g.TriangleArray3D;
+    TriangleMesh3D(g: IQuadMesh3D): TriangleMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));  
 
     //==
     // 2D to 3D
@@ -278,21 +290,24 @@ library IGeometry
     //==
     // Deformable functions
 
-    Transform(x: IDeformable3D, m: Matrix4x4): IDeformable3D => x.Deform(v => m * v);
-    Transform(x: IDeformable3D, t: ITransform3D): IDeformable3D => x.Deform(v => t.Transform(v));
-    Transform(x: IDeformable3D, r: Rotation3D): IDeformable3D => x.Deform(v => r.Transform(v));
+    Deform(x: IDeformable3D, t: ITransform3D): IDeformable3D => x.Deform(v => t.Transform(v));
 
     Translate(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Deform(p => p + v);
-    Rotate(x: IDeformable3D, r: Rotation3D): IDeformable3D => x.Transform(r);
+    Rotate(x: IDeformable3D, q: Quaternion): IDeformable3D => x.Deform(q);
     Scale(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Deform(p => p * v);
     Scale(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * s);
 
-    // TODO:
-    // Rotate around an axis.
-    // Rotate X, Y, Z
-    // Scale X, Y, Z
-    // Translate X, Y, Z 
-    // Anything we can do with poses? 
+    RotateX(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.XRotation);
+    RotateY(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.YRotation);
+    RotateZ(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.ZRotation);
+
+    TranslateX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (s,0,0));
+    TranslateY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,s,0));
+    TranslateZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,0,s));
+
+    ScaleX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (s,1,1));
+    ScaleY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,s,1));
+    ScaleZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,1,s));
 
     Add(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Translate(v);
     Subtract(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Translate(-v);
@@ -318,6 +333,9 @@ library IGeometry
     UnitY(_: Vector3D): Vector3D => (0, 1, 0);
     UnitZ(_: Vector3D): Vector3D => (0, 0, 1);
 
+    MinValue(_: Vector3D): Vector3D => (MinNumber, MinNumber, MinNumber);
+    MaxValue(_: Vector3D): Vector3D => (MaxNumber, MaxNumber, MaxNumber);
+
     UnitX(_: Vector4D): Vector4D => (1, 0, 0, 0);
     UnitY(_: Vector4D): Vector4D => (0, 1, 0, 0);
     UnitZ(_: Vector4D): Vector4D => (0, 0, 1, 0);
@@ -339,9 +357,7 @@ library IGeometry
     Deform(x: PointArray3D, f: Function1<Vector3D, Vector3D>): PointArray3D => new PointArray3D(x.Points.Map(f));
     Deform(x: QuadArray3D, f: Function1<Vector3D, Vector3D>): QuadArray3D => new QuadArray3D(x.Quads.Map(q => q.Deform(f)));
     Deform(x: QuadGrid3D, f: Function1<Vector3D, Vector3D>): QuadGrid3D => new QuadGrid3D(x.PointGrid.Map(f), x.ClosedX, x.ClosedY);
-
-    // TODO: deform the 8 bounds, and compute the new bounds.
-    // Deform(x: Bounds3D, f: Function1<Vector3D, Vector3D>): Bounds3D => (f(x.Min), f(x.Max));
+    Deform(x: Bounds3D, f: Function1<Vector3D, Vector3D>): Bounds3D => x.Corners.Map(f).Bounds();
 
     //==
     // QuadGrid3D

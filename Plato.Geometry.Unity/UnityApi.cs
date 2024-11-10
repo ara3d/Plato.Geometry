@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Plato.DoublePrecision;
 using Plato.Geometry.Scenes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Matrix4x4 = Plato.DoublePrecision.Matrix4x4;
+using Quaternion = UnityEngine.Quaternion;
 
 namespace Plato.Geometry.Unity
 {
@@ -46,13 +48,13 @@ namespace Plato.Geometry.Unity
 
             r.transform.SetParent(parent.transform, false);
 
-            if (!node.Transform.IsIdentity())
+            if (!(node.Transform is IdentityTransform3D))
             {
-                if (node.Transform is TRSTransform trs)
+                if (node.Transform is Transform3D trs)
                 {
-                    r.transform.localPosition = trs.Transform.Translation.ToUnity();
-                    r.transform.localRotation = trs.Transform.Rotation.Quaternion.ToUnity();
-                    r.transform.localScale = trs.Transform.Scale.ToUnity();
+                    r.transform.localPosition = trs.Translation.ToUnity();
+                    r.transform.localRotation = trs.Rotation.ToUnity();
+                    r.transform.localScale = trs.Scale.ToUnity();
                 }
                 else
                 {

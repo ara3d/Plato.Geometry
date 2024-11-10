@@ -27,18 +27,18 @@ namespace Plato.Geometry.Ifc
                 scene.Root.Children.Add(node);
             }
             scene.Root.Name = file.FilePath.GetFileName();
-            scene.Root.Transform = (TRSTransform)TRSTransform.YUpToZUp;
+            scene.Root.Transform = Extensions2.YUpToZUp;
             return scene;
         }
 
         // Copies the data from the C++ layer into arrays.
-        public static TriangleMesh ToTriangleMesh(this IfcMesh m)
+        public static TriangleMesh3D ToTriangleMesh(this IfcMesh m)
         {
             var vertexBuffer = m.Vertices.ToTemporaryBuffer<IfcVertex>(m.NumVertices);
             var vertices = vertexBuffer.Clone().ToIArray().Map(v => new Vector3D(v.PX, v.PY, v.PZ));
             var indexBuffer = m.Indices.ToTemporaryBuffer<Integer>(m.NumIndices);
             var indices = indexBuffer.Clone().ToIArray();
-            return new TriangleMesh(vertices, indices);
+            return new TriangleMesh3D(vertices, indices);
         }
 
         public static Material GetMaterial(this IfcMesh m)
@@ -51,6 +51,6 @@ namespace Plato.Geometry.Ifc
             => *(Matrix4x4*)m.Transform.ToPointer();
 
         public static ITransform3D GetTransform(this IfcMesh m)
-            => new MatrixTransform(m.GetMatrix().Transpose);
+            => m.GetMatrix().Transpose;
     }
 }

@@ -1,55 +1,5 @@
 
 
-// A 2-dimensional vector
-type Vector2D
-    implements IVector
-{
-    X: Number;
-    Y: Number;
-}
-
-// A 3-dimensional vector    
-type Vector3D
-    implements IVector, IDeformable3D
-{
-    X: Number;
-    Y: Number;
-    Z: Number;
-}
-
-// A 4-dimensional vector
-type Vector4D
-    implements IVector
-{
-    X: Number;
-    Y: Number;
-    Z: Number;
-    W: Number;
-}
-
-// Affine 2D transformation matrix 
-// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
-type Matrix3x3 
-    implements IValue, IArray<Vector3D>
-{
-    Column1: Vector3D;   
-    Column2: Vector3D;   
-    Column3: Vector3D;   
-}
-
-// Affine 3D transformation matrix 
-// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
-// https://mindcontrol.org/~hplus/graphics/matrix-layout.html
-// Column major layout in memory 
-// Translation component is in Column4.XYZ    
-type Matrix4x4
-    implements IValue, IArray<Vector4D>
-{
-    Column1: Vector4D;
-    Column2: Vector4D;
-    Column3: Vector4D;
-    Column4: Vector4D;
-}
 
 //# 2D Shapes
 
@@ -317,68 +267,6 @@ type Ellipsoid
 }
 
 
-//==
-// 3D Transforms
-//==
-
-type IdentityTransform3D
-	implements IValue, ITransform3D
-{
-}
-
-type Transform3D
-    implements IValue, ITransform3D
-{
-    Translation: Vector3D;
-    Rotation: Quaternion;
-    Scale: Vector3D;
-}
-
-// Also known as a Rigid Body Transform
-type Pose3D
-    implements IValue, ITransform3D
-{
-    Position: Vector3D;
-    Rotation: Rotation3D;
-}
-
-type Frame3D
-    implements IValue, ITransform3D
-{
-    Forward: Vector3D;
-    Up: Vector3D;
-    Position: Vector3D;
-}
-
-type Quaternion
-    implements IValue, IArray<Number>, ITransform3D 
-{
-    X: Number;
-    Y: Number;
-    Z: Number;
-    W: Number;
-}
-
-type AxisAngle
-    implements IValue, ITransform3D
-{
-    Axis: Vector3D;
-    Angle: Angle;
-}
-
-type EulerAngles
-    implements IValue, ITransform3D
-{
-    Yaw: Angle;
-    Pitch: Angle;
-    Roll: Angle;
-}
-
-type Rotation3D
-    implements IValue, ITransform3D
-{
-    Quaternion: Quaternion;
-}
 
 //==
 // Meshes and 3D primitive collections

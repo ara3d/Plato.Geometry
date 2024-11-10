@@ -21,8 +21,7 @@ namespace Plato.Geometry.Speckle
             var d = new Dictionary<string, SceneNode>();
             var r = self.ToPlato(d);
             var scl = 0.001;
-            r.Transform =
-                new TRSTransform(new Transform3D(Vector3D.Default, PQuaternion.Identity, (scl, scl, scl)));
+            r.Transform = new Transform3D(Vector3D.Default, PQuaternion.Identity, (scl, scl, scl));
             return new Scene(r);    
         }
 
@@ -38,11 +37,11 @@ namespace Plato.Geometry.Speckle
             var mat = self.Material?.ToMaterial();
             var mesh = self.Mesh?.ToPlato();
             if (self.Transform == null) 
-                r.Transform = NullTransform.Instance;
+                r.Transform = IdentityTransform3D.Default;
             else
             {
                 self.Transform.Decompose(out var scale, out var rot, out var pos);
-                r.Transform = new TRSTransform(new Transform3D(pos.ToPlato(), rot.ToPlato(), scale.ToPlato()));
+                r.Transform = new Transform3D(pos.ToPlato(), rot.ToPlato(), scale.ToPlato());
             }
             if (mesh != null) 
                 r.Objects.Add(new SceneMesh(mat, mesh.Value));

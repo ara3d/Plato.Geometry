@@ -8,18 +8,7 @@ namespace Plato.DoublePrecision
     /// </summary>
     public partial struct Matrix4x4 
     {
-        public Vector4D Row1 => (M11, M12, M13, M14);
-        public Vector4D Row2 => (M21, M22, M23, M24);
-        public Vector4D Row3 => (M31, M32, M33, M34);
-        public Vector4D Row4 => (M41, M42, M43, M44);
-
-        public Vector4D GetRow(int row)
-            => row == 0 ? Row1 
-                : row == 1 ? Row2 
-                : row == 2 ? Row3 
-                : row == 3 ? Row4 
-                : throw new IndexOutOfRangeException();
-    
+        
         /// <summary>
         /// Returns whether the matrix is the identity matrix.
         /// </summary>
@@ -29,52 +18,6 @@ namespace Plato.DoublePrecision
             M21 == 0f && M23 == 0f && M24 == 0f &&
             M31 == 0f && M32 == 0f && M34 == 0f &&
             M41 == 0f && M42 == 0f && M43 == 0f;
-
-        /// <summary>
-        /// Gets the translation component of this matrix.
-        /// </summary>
-        public Vector3D Translation
-            => (M14, M24, M34);
-
-        /// <summary>
-        /// Sets the translation component of this matrix, returning a new Matrix
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Matrix4x4 SetTranslation(Vector3D v)
-            => CreateFromRows(Row1, Row2, Row3, v);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 CreateFromRows(Vector4D row0, Vector4D row1, Vector4D row2)
-            => CreateFromRows(row0, row1, row2, (0, 0, 0, 1));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 CreateFromRows(Vector4D row0, Vector4D row1, Vector4D row2, Vector4D row3)
-            => ((row0.X, row1.X, row2.X, row3.X),
-                (row0.Y, row1.Y, row2.Y, row3.Y),
-                (row0.Z, row1.Z, row2.Z, row3.Z),
-                (row0.W, row1.W, row2.W, row3.W));
-
-        public Matrix4x4 WithTranslation(Vector3D v)
-            => (Column1.WithW(v.X), 
-                Column2.WithW(v.Y), 
-                Column3.WithW(v.Z), 
-                (0, 0, 0, 1));
-
-        /// <summary>
-        /// Creates a translation matrix.
-        /// </summary>
-        /// <param name="position">The amount to translate in each axis.</param>
-        /// <returns>The translation matrix.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 CreateTranslation(Vector3D position)
-            => Identity.WithTranslation(position);
-
-        /// <summary>
-        /// Creates a scaling matrix.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 CreateScale(Vector3D v)
-            => ((v.X, 0, 0, 0), (0, v.Y, 0, 0), (0, 0, v.Z, 0), (0, 0, 0, 1));
 
         /// <summary>
         /// Creates a matrix from a position and oriented to look towards a point .
@@ -98,38 +41,6 @@ namespace Plato.DoublePrecision
             var ty = -yaxis.Dot(pos);
             var tz = -zaxis.Dot(pos);
             return (xaxis.Vector4D, yaxis.Vector4D, zaxis.Vector4D, (tx, ty, tz, 1));
-        }
-
-        /// <summary>
-        /// Creates a rotation matrix from the given Quaternion rotation value.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 CreateFromQuaternion(Quaternion quaternion)
-            => CreateRotation(quaternion);
-
-        /// <summary>
-        /// Creates a rotation matrix from the given Quaternion rotation value.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 CreateRotation(Quaternion q)
-        {
-            q = q.Normalize;
-
-            var xx = q.X * q.X;
-            var yy = q.Y * q.Y;
-            var zz = q.Z * q.Z;
-
-            var xy = q.X * q.Y;
-            var wz = q.Z * q.W;
-            var xz = q.Z * q.X;
-            var wy = q.Y * q.W;
-            var yz = q.Y * q.Z;
-            var wx = q.X * q.W;
-
-            return ((1 - 2 * (yy + zz), 2 * (xy + wz), 2 * (xz - wy), 0),
-                (2 * (xy - wz), 1 - 2 * (zz + xx), 2 * (yz + wx), 0),
-                (2 * (xz + wy), 2 * (yz - wx), 1 - 2 * (yy + xx), 0),
-                (0, 0, 0, 1));
         }
 
         /// <summary>
@@ -402,94 +313,6 @@ namespace Plato.DoublePrecision
 
             return true;
         }
-
-        /// <summary>
-        /// Multiplies a matrix by another matrix.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b)
-        {
-            var M11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31 + a.M14 * b.M41;
-            var M12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32 + a.M14 * b.M42;
-            var M13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33 + a.M14 * b.M43;
-            var M14 = a.M11 * b.M14 + a.M12 * b.M24 + a.M13 * b.M34 + a.M14 * b.M44;
-
-            // Second row
-            var M21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31 + a.M24 * b.M41;
-            var M22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32 + a.M24 * b.M42;
-            var M23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33 + a.M24 * b.M43;
-            var M24 = a.M21 * b.M14 + a.M22 * b.M24 + a.M23 * b.M34 + a.M24 * b.M44;
-
-            // Third row
-            var M31 = a.M31 * b.M11 + a.M32 * b.M21 + a.M33 * b.M31 + a.M34 * b.M41;
-            var M32 = a.M31 * b.M12 + a.M32 * b.M22 + a.M33 * b.M32 + a.M34 * b.M42;
-            var M33 = a.M31 * b.M13 + a.M32 * b.M23 + a.M33 * b.M33 + a.M34 * b.M43;
-            var M34 = a.M31 * b.M14 + a.M32 * b.M24 + a.M33 * b.M34 + a.M34 * b.M44;
-
-            // Fourth row
-            var M41 = a.M41 * b.M11 + a.M42 * b.M21 + a.M43 * b.M31 + a.M44 * b.M41;
-            var M42 = a.M41 * b.M12 + a.M42 * b.M22 + a.M43 * b.M32 + a.M44 * b.M42;
-            var M43 = a.M41 * b.M13 + a.M42 * b.M23 + a.M43 * b.M33 + a.M44 * b.M43;
-            var M44 = a.M41 * b.M14 + a.M42 * b.M24 + a.M43 * b.M34 + a.M44 * b.M44;
-
-            return (
-                (M11, M21, M31, M41), 
-                (M12, M22, M32, M42),
-                (M13, M23, M33, M43),
-                (M14, M24, M34, M44));
-        }
-
-        /// <summary>
-        /// Multiplies a matrix by a scalar value.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 operator *(Matrix4x4 a, double scalar)
-            => (a.Column1 * scalar,
-                a.Column2 * scalar,
-                a.Column3 * scalar,
-                a.Column4 * scalar);
-
-        public Vector3D TransformVector(Vector3D v)
-            => (v.X * M11 + v.Y * M21 + v.Z * M31,
-                v.X * M12 + v.Y * M22 + v.Z * M32,
-                v.X * M13 + v.Y * M23 + v.Z * M33);
-
-        public Vector3D TransformPoint(Vector3D v)
-            => this * v;
-
-        public static Matrix4x4 CreateTRS(Vector3D translation, Quaternion rotation, Vector3D scale)
-            => CreateTranslation(translation) * CreateRotation(rotation) * CreateScale(scale);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Matrix4x4 CreateTranslationRotation(Vector3D translation, Quaternion rotation)
-            => CreateTranslation(translation) * CreateRotation(rotation);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Matrix4x4 ScaleTranslation(double amount)
-            => SetTranslation(Translation * amount);
-
-        public static implicit operator Matrix4x4(Quaternion q)
-            => CreateRotation(q);
-
-        public static implicit operator Matrix4x4(Vector3D v)
-            => CreateTranslation(v);
-
-        public static implicit operator Matrix4x4(Transform3D t)
-            => CreateTRS(t.Translation, t.Rotation, t.Scale);
-
-        public static implicit operator Matrix4x4(Pose3D p)
-            => CreateTranslation(p.Position) * p.Rotation;
-
-        public static implicit operator Matrix4x4(Rotation3D r)
-            => r.Quaternion;
-
-
-        public Matrix4x4 Transpose
-            => (
-                (M11, M12, M13, M14),
-                (M21, M22, M23, M24),
-                (M31, M32, M33, M34),
-                (M41, M42, M43, M44));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Decompose(Matrix4x4 matrix, out Vector3D scale, out Quaternion rotation, out Vector3D translation)

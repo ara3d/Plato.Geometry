@@ -55,11 +55,14 @@ namespace Plato.DoublePrecision
         public static ITransform3D FractionalRotation(Number amount, Vector3D axis)
             => axis.AxisAngle(-amount.Turns);
 
+        public static IArray<Vector3D> TransformBy(this IArray<Vector3D> self, ITransform3D t)
+            => self.Map(t.Transform);
+
         public static QuadGrid3D SurfaceOfRevolution(this IArray<Vector3D> points, Vector3D axis, Integer segments,
             Boolean closedU, Boolean closedV)
             => segments
                 .LinearSpace
-                .Map(x => points.Transform(FractionalRotation(x, axis)))
+                .Map(x => points.TransformBy(FractionalRotation(x, axis)))
                 .ToArray2D()
                 .ToQuadGrid(closedU, closedV);
 
@@ -153,38 +156,11 @@ namespace Plato.DoublePrecision
         //==
         // Transformation extension functions 
 
-        public static T Transform<T>(this T self, Matrix4x4 m) where T : IDeformable3D<T>
-            => self.Deform(m.TransformPoint);
-
-        public static T Translate<T>(this T self, Vector3D v) where T : IDeformable3D<T>
-            => self.Transform(Matrix4x4.CreateTranslation(v));
-
-        public static T Rotate<T>(this T self, Rotation3D r) where T : IDeformable3D<T>
-            => self.Transform(Matrix4x4.CreateRotation(r));
-
         public static Vector3D GetAxis(this int n)
             => n == 0 ? Vector3D.UnitX
                 : n == 1 ? Vector3D.UnitY
                 : n == 2 ? Vector3D.UnitZ
                 : throw new Exception("Invalid axis");
-
-        public static Vector3D Translate(this Vector3D self, Vector3D v)
-            => self + v;
-
-        public static T Rotate<T>(this T self, Ray3D ray, Angle angle) where T : IDeformable3D<T>
-            => self.Translate(-ray.Origin).Rotate(ray.Direction, angle).Translate(ray.Origin);
-
-        public static T Rotate<T>(this T self, Vector3D axis, Angle angle) where T : IDeformable3D<T>
-            => self.Rotate((axis, angle));
-
-        public static T Rotate<T>(this T self, AxisAngle axisAngle) where T : IDeformable3D<T>
-            => self.Transform(Matrix4x4.CreateRotation(axisAngle));
-
-        public static T Scale<T>(this T self, Number n) where T : IDeformable3D<T>
-            => self.Scale((n, n, n));
-
-        public static T Scale<T>(this T self, Vector3D v) where T : IDeformable3D<T>
-            => self.Transform(Matrix4x4.CreateScale(v));
 
         //==
         // Extra Array<Vector3D> functions
@@ -250,8 +226,10 @@ namespace Plato.DoublePrecision
                 .ToArray2D()
                 .ToQuadGrid(polyLine.Closed, closed);
 
+        /* TODO:
         public static QuadGrid3D Sweep(this PolyLine3D polyLine, Ray3D pointAndAxis, Integer segments, Angle amount)
-            => polyLine.Sweep((p, t) => p.Rotate(pointAndAxis, amount * t), segments, false);
+            => polyLine.Sweep((p, t) => new AxisAngle(pointAndAxis, amount * t), segments, false);
+        */
 
         //==
         // Fans and Pyramids
@@ -444,8 +422,39 @@ namespace Plato.DoublePrecision
             => ((Number)n).Degrees;
 
         //==
+        // Mesh helpers
 
         public static TriangleMesh3D Combine(this TriangleMesh3D mesh, TriangleMesh3D other)
             => mesh.Points.Concat(other.Points).ToTriangleMesh(mesh.Indices.Concat(other.Indices.Map(i => i + mesh.Points.Count)));
+
+        public static Vector3D Average(this IReadOnlyList<Vector3D> vectors)
+            => vectors.Aggregate(Vector3D.Default, (a, b) => a + b) / vectors.Count;
+
+        public static IArray<Vector3D> ComputeVertexNormals(this ITriangleMesh3D mesh)
+        {
+            var faceNormals = mesh.Triangles.Map(f => f.Normal);
+            var n = mesh.Points.Count;
+            var sharedNormals = Enumerable.Range(0, n).Select(_ => new List<Vector3D>()).ToList();
+            for (var i = 0; i < mesh.Indices.Count; i++)
+            {
+                var index = mesh.Indices[i];
+                var normal = faceNormals[i / 3];
+                sharedNormals[index].Add(normal);
+            }
+            var r = new Vector3D[mesh.Points.Count];
+            for (var i= 0; i < n; i++)
+            {
+                r[i] = sharedNormals[i].Average();
+            }
+            return r.ToIArray();
+        }
+
+        // TODO: why aren't my matrices express as rows ? The idea of storing them as columns seems silly
+        public static Matrix4x4 YUpToZUp = Matrix4x4.CreateFromRows(
+            (1, 0, 0, 0),
+            (0, 0, -1, 0),
+            (0, 1, 0, 0),
+            (0, 0, 0, 1));
+
     }
 }

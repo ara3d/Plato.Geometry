@@ -90,11 +90,11 @@ library ArrayLibrary
     Rest(xs: IArray<$T>): IArray<$T>
 		=> xs.Skip(1);
 
-    Reduce(xs: IArray<$T>, acc: $U, f: Function2<$T, $U, $U>): $U
+    Reduce(xs: IArray<$T>, acc: $U, f: Function2<$U, $T, $U>): $U
     {
         var r = acc;
         for (var i=0; i < xs.Count; i = i + 1)
-			r = f(xs.At(i), r);
+			r = f(r, xs.At(i));
         return r;
     }
 

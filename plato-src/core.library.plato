@@ -14,7 +14,7 @@ library INumerical
     TwoPi(): Number => Pi.Twice;    
     HalfPi(): Number => Pi.Half;
 
-    // TODO: define this as an intrinsic because it depends on the prevision. 
+    // TODO: define is as an intrinsic because it depends on the prevision. 
     Epsilon(): Number => 1E-15;    
     
     UnitCircle(): Circle => ((0, 0), 1);
@@ -123,32 +123,7 @@ library INumerical
     Thousand(x: IScalarArithmetic): IScalarArithmetic => x * 1000.0;
     Million(x: IScalarArithmetic): IScalarArithmetic => x.Thousand.Thousand;
     Billion(x: IScalarArithmetic): IScalarArithmetic => x.Thousand.Million;
-
-    //==
-    // Matrix operations
-
-    M11(m: Matrix4x4): Number => m.Column1.X;
-    M12(m: Matrix4x4): Number => m.Column2.X;
-    M13(m: Matrix4x4): Number => m.Column3.X;
-    M14(m: Matrix4x4): Number => m.Column4.X;
-    M21(m: Matrix4x4): Number => m.Column1.Y;
-    M22(m: Matrix4x4): Number => m.Column2.Y;
-    M23(m: Matrix4x4): Number => m.Column3.Y;
-    M24(m: Matrix4x4): Number => m.Column4.Y;
-    M31(m: Matrix4x4): Number => m.Column1.Z;
-    M32(m: Matrix4x4): Number => m.Column2.Z;
-    M33(m: Matrix4x4): Number => m.Column3.Z;
-    M34(m: Matrix4x4): Number => m.Column4.Z;
-    M41(m: Matrix4x4): Number => m.Column1.W;
-    M42(m: Matrix4x4): Number => m.Column2.W;
-    M43(m: Matrix4x4): Number => m.Column3.W;
-    M44(m: Matrix4x4): Number => m.Column4.W;
-
-    Multiply(m: Matrix4x4, v: Vector3D): Vector3D
-        =>  (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31 + m.M41,
-            v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32 + m.M42,
-            v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33 + m.M43);                  
-
+   
     //==
 	// Angle conversion functions 
 

@@ -1,13 +1,4 @@
-﻿// Used for types that represent transformations in 3D space
-interface ITransform3D
-{
-    // Transforms a point using the transformation
-	Transform(x: Self, v: Vector3D): Vector3D;
-
-    // Transforms a normal vector using the transformation (ignores scale and translation)
-	TransformNormal(x: Self, v: Vector3D): Vector3D;
-}
-
+﻿
 // This type provides a 2D bounding-box
 interface IBounded2D
 {

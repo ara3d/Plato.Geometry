@@ -88,7 +88,7 @@ namespace Plato.Geometry.WPF
             return r;
         }
 
-        public static MeshGeometry3D ToWpf(this ITriangleMesh3D mesh)
+        public static MeshGeometry3D ToWpf(this TriangleMesh3D mesh)
         {
             var r = new MeshGeometry3D();
 
@@ -103,7 +103,7 @@ namespace Plato.Geometry.WPF
                 r.TriangleIndices.Add(mesh.Indices[i]);
             }
 
-            r.Normals = new Vector3DCollection(mesh.ComputeVertexNormalsFaceted().Select(ToWpf));
+            r.Normals = new Vector3DCollection(mesh.ComputeVertexNormals().Select(ToWpf));
 
             return r;
         }

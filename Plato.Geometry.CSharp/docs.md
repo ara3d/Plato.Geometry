@@ -524,7 +524,7 @@ Implements: IAny, IArray, IEquatable, IValue.
 
 Fields: Column1:ConcreteType:Vector4D, Column2:ConcreteType:Vector4D, Column3:ConcreteType:Vector4D, Column4:ConcreteType:Vector4D.
 
-Implements: IAny, IArray, IEquatable, IValue.
+Implements: IAny, IArray, IEquatable, ITransform3D, IValue.
 
 ## Type NPrism
 
@@ -957,7 +957,7 @@ Concepts in Plato are interfaces. Functions defined on a concept are available o
 
 Inherits: IAny.
 
-Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D, Number, Integer.
+Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Number, Integer, Vector2D, Vector3D, Vector4D.
 
 Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, IAlgebraic, IInterpolatable, IArithmetic.
 
@@ -989,7 +989,7 @@ Functions: Add, Negative, Subtract.
 
 Inherits: IAdditive, IAny, IAny, IAny, IInterpolatable, IMultiplicative, IScalarArithmetic.
 
-Implemented by: Unit, Complex, Vector2D, Vector3D, Vector4D, Number.
+Implemented by: Unit, Complex, Number, Vector2D, Vector3D, Vector4D.
 
 Inherited by: IReal, IVector.
 
@@ -1032,7 +1032,7 @@ Functions: GetPoint.
 
 Inherits: .
 
-Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
+Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, Number, Integer, String, Boolean, Character, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D.
 
 Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IEquatable, IAdditive, IScalarArithmetic, IMultiplicative, IInvertible, IMultiplicativeWithInverse, IAlgebraic, IInterpolatable, IDivisible, IModulo, IArithmetic, IBoolean, IInterval, IBounds.
 
@@ -1074,7 +1074,7 @@ Functions: FieldNames, FieldValues, TypeName.
 
 Inherits: IAdditive, IAny, IAny, IAny, IAny, IDivisible, IModulo, IMultiplicative.
 
-Implemented by: Unit, Complex, Vector2D, Vector3D, Vector4D, Number, Integer.
+Implemented by: Unit, Complex, Number, Integer, Vector2D, Vector3D, Vector4D.
 
 Inherited by: IReal, IWholeNumber, IVector.
 
@@ -1083,7 +1083,7 @@ Functions: .
 
 Inherits: .
 
-Implemented by: Complex, Integer2, Integer3, Integer4, AnglePair, NumberInterval, QuadraticBezier2D, CubicBezier2D, CubicBezier3D, QuadraticBezier3D, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Line3D, Triangle3D, Quad3D, Quaternion, String, Array, Array2D, Array3D.
+Implemented by: Complex, Integer2, Integer3, Integer4, AnglePair, NumberInterval, QuadraticBezier2D, CubicBezier2D, CubicBezier3D, QuadraticBezier3D, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Line3D, Triangle3D, Quad3D, String, Array, Array2D, Array3D, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Quaternion.
 
 Inherited by: IArray2D, IArray3D, IVector, IInterval, IPolygon2D, IPolygon3D.
 
@@ -1372,7 +1372,7 @@ Functions: Deform.
 
 Inherits: .
 
-Implemented by: Vector3D, Bounds3D, Line3D, Ray3D, Triangle3D, Quad3D, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine3D, PointArray3D, LineArray3D, TriangleArray3D, QuadArray3D, QuadGrid3D.
+Implemented by: Bounds3D, Line3D, Ray3D, Triangle3D, Quad3D, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine3D, PointArray3D, LineArray3D, TriangleArray3D, QuadArray3D, QuadGrid3D, Vector3D.
 
 Inherited by: IPolyLine3D, IClosedPolyLine3D, IPolygon3D, IPointGeometry3D, IPrimitiveGeometry3D, ILineGeometry3D, ITriangleGeometry3D, IQuadGeometry3D, IIndexedGeometry3D, ILineMesh3D, ITriangleMesh3D, IQuadMesh3D, IPointArray3D, ILineArray3D, ITriangleArray3D, IQuadArray3D, IQuadGrid3D.
 
@@ -1421,7 +1421,7 @@ Functions: Distance.
 
 Inherits: IAny.
 
-Implemented by: Unit, Complex, Vector2D, Vector3D, Vector4D, Number, Integer.
+Implemented by: Unit, Complex, Number, Integer, Vector2D, Vector3D, Vector4D.
 
 Inherited by: IReal, IWholeNumber, IVector, IArithmetic.
 
@@ -1436,7 +1436,7 @@ Functions: Divide.
 
 Inherits: IAny.
 
-Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
+Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, Number, Integer, String, Boolean, Character, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D.
 
 Inherited by: IValue, INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IOrderable, IInterval, IBounds.
 
@@ -1557,7 +1557,7 @@ Functions: .
 
 Inherits: IAdditive, IAny, IAny, IScalarArithmetic.
 
-Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D, Number.
+Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Number, Vector2D, Vector3D, Vector4D.
 
 Inherited by: IReal, IMeasure, IVector, IAlgebraic.
 
@@ -1683,7 +1683,7 @@ Functions: .
 
 Inherits: IAny.
 
-Implemented by: Unit, Complex, Vector2D, Vector3D, Vector4D, Number, Integer.
+Implemented by: Unit, Complex, Number, Integer, Vector2D, Vector3D, Vector4D.
 
 Inherited by: IReal, IWholeNumber, IVector, IArithmetic.
 
@@ -1698,7 +1698,7 @@ Functions: Modulo.
 
 Inherits: IAny.
 
-Implemented by: Unit, Complex, Vector2D, Vector3D, Vector4D, Number, Integer.
+Implemented by: Unit, Complex, Number, Integer, Vector2D, Vector3D, Vector4D.
 
 Inherited by: IReal, IWholeNumber, IVector, IMultiplicativeWithInverse, IAlgebraic, IArithmetic.
 
@@ -1753,7 +1753,7 @@ Functions: FromNumber, ToNumber.
 
 Inherits: IAdditive, IAny, IAny, IAny, IAny, IEquatable, IScalarArithmetic, IValue.
 
-Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D, Number.
+Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Number, Vector2D, Vector3D, Vector4D.
 
 Inherited by: INumberLike, IReal, IMeasure, IVector.
 
@@ -2208,7 +2208,7 @@ Functions: Eval.
 
 Inherits: IAny.
 
-Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Vector2D, Vector3D, Vector4D, Number.
+Implemented by: Unit, Probability, Complex, Angle, Length, Mass, Temperature, Time, Number, Vector2D, Vector3D, Vector4D.
 
 Inherited by: INumerical, INumberLike, IReal, IMeasure, IVector, IAlgebraic, IInterpolatable.
 
@@ -2277,11 +2277,19 @@ Functions: .
 
 Inherits: .
 
-Implemented by: IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D.
+Implemented by: Matrix4x4, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D.
 
 Inherited by: .
 
-Functions: Transform, TransformNormal.
+Functions: Matrix, Transform, TransformNormal.
+
+
+
+
+
+
+
+
 
 
 
@@ -2393,7 +2401,7 @@ Functions: .
 
 Inherits: IAny, IAny, IEquatable.
 
-Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D, Number, Integer, String, Boolean, Character.
+Implemented by: Unit, Probability, Complex, Integer2, Integer3, Integer4, Color, ColorLUV, ColorLAB, ColorLCh, ColorHSV, ColorHSL, ColorYCbCr, SphericalCoordinate, PolarCoordinate, LogPolarCoordinate, CylindricalCoordinate, HorizontalCoordinate, GeoCoordinate, GeoCoordinateWithAltitude, Rational, Fraction, Angle, Length, Mass, Temperature, Time, DateTime, AnglePair, NumberInterval, Transform2D, Pose2D, Bounds2D, Ray2D, Line2D, Plane, Bounds3D, Line3D, Ray3D, Number, Integer, String, Boolean, Character, Vector2D, Vector3D, Vector4D, Matrix3x3, Matrix4x4, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D.
 
 Inherited by: INumerical, INumberLike, IReal, IWholeNumber, IMeasure, IVector, ICoordinate, IInterval, IBounds.
 
