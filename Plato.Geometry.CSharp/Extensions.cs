@@ -72,7 +72,7 @@ namespace Plato.DoublePrecision
         public static QuadGrid3D ToQuadGrid(Func<Vector2D, Vector3D> f, Integer nGridSize, Boolean closedX,
             Boolean closedY)
             => nGridSize
-                .CartesianProduct(nGridSize, (a, b) =>
+                .MakeArray2D(nGridSize, (a, b) =>
                     new Vector2D(a.Value / (double)nGridSize, b.Value / (double)nGridSize))
                 .Map(uv => f((uv.X, uv.Y)))
                 .ToQuadGrid(closedX, closedY);
@@ -141,11 +141,17 @@ namespace Plato.DoublePrecision
         public static TriangleMesh3D ToTriangleMesh(this IArray<Vector3D> points)
             => points.ToTriangleMesh(points.Indices());
 
+        public static IArray<Integer> FlipWindingOrderTriangleIndices(this IArray<Integer> indices)
+            => indices.Indices().Slices(3).FlatMap(slice => slice.Reverse());
+
         public static TriangleMesh3D DoubleSided(this TriangleMesh3D mesh)
-            => mesh.Points.ToTriangleMesh(mesh.Indices.Concat(mesh.Indices.Reverse()));
+            => mesh.Points.ToTriangleMesh(mesh.Indices.Concat(mesh.Indices.FlipWindingOrderTriangleIndices()));
+
+        public static TriangleMesh3D Faceted(this TriangleMesh3D self)
+            => self.Triangles.ToMesh();
 
         public static TriangleMesh3D FlipWindingOrder(this TriangleMesh3D mesh)
-            => mesh.Points.ToTriangleMesh(mesh.Indices.Reverse());
+            => mesh.Points.ToTriangleMesh(mesh.Indices.FlipWindingOrderTriangleIndices());
 
         public static QuadMesh3D ToQuadMesh(this IArray<Vector3D> points, IArray<Integer> indices)
             => new QuadMesh3D(points, indices);

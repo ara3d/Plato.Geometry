@@ -16,7 +16,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright (c) Ara 3D Inc 2024, Licensed under MIT License</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageIcon>ara3d-128x128.png</PackageIcon>
 
     <!-- https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/ -->
     <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->

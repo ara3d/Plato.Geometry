@@ -72,6 +72,12 @@ type IdentityTransform3D
 {
 }
 
+type Translation3D
+    implements ITransform3D
+{
+    Translation: Vector3D;
+}
+
 type Transform3D
     implements IValue, ITransform3D
 {
@@ -135,6 +141,18 @@ library Transforms
     Matrix(v: Vector3D): Matrix4x4
 		=> Matrix4x4.CreateTranslation(v);
 
+    //==
+    // Translation3D functions
+
+    Matrix(t: Translation3D): Matrix4x4
+        => t.Translation.Matrix;
+
+    Transform(t: Translation3D, v: Vector3D): Vector3D
+        => v + t.Translation;
+    
+    TransformNormal(t: Translation3D, v: Vector3D): Vector3D
+        => v;
+            
     //==
     // General ITransform3D helpers
 

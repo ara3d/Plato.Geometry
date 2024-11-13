@@ -33,6 +33,7 @@ namespace Plato.DoublePrecision
         public static Angle Acos(Number x) => new Angle((double)System.Math.Acos(x));
         public static Angle Asin(Number x) => new Angle((double)System.Math.Asin(x));
         public static Angle Atan(Number x) => new Angle((double)System.Math.Atan(x));
+        public static Angle Atan2(Number y, Number x) => new Angle((double)System.Math.Atan2(y, x));
 
         public static Number Pow(Number x, Number y) => (double)System.Math.Pow(x, y);
         public static Number Log(Number x, Number y) => (double)System.Math.Log(x, y);
@@ -166,8 +167,14 @@ namespace Plato.DoublePrecision
     {
         private readonly System.Func<Integer, T> _func;
         public Integer Count { get; }
-        public T At(Integer n) => _func(n);
-        public T this[Integer n] => _func(n);
+        public T At(Integer n) => _func(VerifyIndex(n));
+        public T this[Integer n] => _func(VerifyIndex(n));
+#if DEBUG
+        public int VerifyIndex(int x) => x < 0 || x >= Count ? throw new System.ArgumentOutOfRangeException($"Index was {x} limit is {Count}") : x;
+#else
+        public int VerifyIndex(int x) => x;
+#endif
+
         public Array(Integer count, System.Func<Integer, T> func)
         {
             Count = count;
@@ -186,17 +193,24 @@ namespace Plato.DoublePrecision
     public readonly struct Array2D<T> : IArray2D<T>
     {
         private readonly System.Func<Integer, Integer, T> _func;
-        public Integer Count => ColumnCount * RowCount;
-        public Integer ColumnCount { get; }
-        public Integer RowCount { get; }
-        public T At(Integer n) => At(n % ColumnCount, n / ColumnCount);
-        public T this[Integer n] => At(n % ColumnCount, n / ColumnCount);
-        public T At(Integer col, Integer row) => _func(col, row);
-        public T this[Integer col, Integer row] => _func(col, row);
+        public Integer Count => NumColumns * NumRows;
+        public Integer NumColumns { get; }
+        public Integer NumRows { get; }
+#if DEBUG
+        public int VerifyColumn(int x) => x < 0 || x >= NumColumns ? throw new System.ArgumentOutOfRangeException($"Column was {x} limit is {NumColumns}") : x;
+        public int VerifyRow(int x) => x < 0 || x >= NumRows ? throw new System.ArgumentOutOfRangeException($"Row was {x} limit is {NumRows}") : x;
+#else
+        public int VerifyColumn(int x) => x;
+        public int VerifyRow(int x) => x;
+#endif
+        public T At(Integer n) => At(n % NumColumns, n / NumColumns);
+        public T this[Integer n] => At(n % NumColumns, n / NumColumns);
+        public T At(Integer col, Integer row) => _func(VerifyColumn(col), VerifyRow(row));
+        public T this[Integer col, Integer row] => _func(VerifyColumn(col), VerifyRow(row));
         public Array2D(Integer numCols, Integer numRows, System.Func<Integer, Integer, T> func)
         {
-            ColumnCount = numCols;
-            RowCount = numRows;
+            NumColumns = numCols;
+            NumRows = numRows;
             _func = func;
         }
         public System.Collections.Generic.IEnumerator<T> GetEnumerator()
@@ -311,16 +325,16 @@ namespace Plato.DoublePrecision
 
     public interface IArray2D<T>: IArray<T>
     {
-        Integer RowCount { get; }
-        Integer ColumnCount { get; }
+        Integer NumRows { get; }
+        Integer NumColumns { get; }
         T At(Integer column, Integer row);
         T this[Integer column, Integer row] { get; }
     }
     public interface IArray3D<T>: IArray<T>
     {
-        Integer RowCount { get; }
-        Integer ColumnCount { get; }
-        Integer LayerCount { get; }
+        Integer NumRows { get; }
+        Integer NumColumns { get; }
+        Integer NumLayers { get; }
         T At(Integer column, Integer row, Integer layer);
         T this[Integer column, Integer row, Integer layer] { get; }
     }
@@ -924,28 +938,63 @@ namespace Plato.DoublePrecision
         public Unit ZipComponents(Unit y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Unit Zero => this.MapComponents((i) => ((Number)0));
         public Unit One => this.MapComponents((i) => ((Number)1));
-        public Unit MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Unit MinValue => this.MapComponents((x) => x.MinValue);
         public Unit MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Unit Clamp(Unit a, Unit b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Unit ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Unit Clamp01 => this.ClampZeroOne;
         public Unit Min(Unit y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Unit Max(Unit y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Unit Floor => this.MapComponents((c) => c.Floor);
+        public Unit Fract => this.MapComponents((c) => c.Fract);
         public Unit Multiply(Number s){
-            var _var364 = s;
-            return this.MapComponents((i) => i.Multiply(_var364));
+            var _var366 = s;
+            return this.MapComponents((i) => i.Multiply(_var366));
         }
         public static Unit operator *(Unit x, Number s) => x.Multiply(s);
         public Unit Divide(Number s){
-            var _var365 = s;
-            return this.MapComponents((i) => i.Divide(_var365));
+            var _var367 = s;
+            return this.MapComponents((i) => i.Divide(_var367));
         }
         public static Unit operator /(Unit x, Number s) => x.Divide(s);
         public Unit Modulo(Number s){
-            var _var366 = s;
-            return this.MapComponents((i) => i.Modulo(_var366));
+            var _var368 = s;
+            return this.MapComponents((i) => i.Modulo(_var368));
         }
         public static Unit operator %(Unit x, Number s) => x.Modulo(s);
         public Unit Add(Unit y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -955,8 +1004,8 @@ namespace Plato.DoublePrecision
         public Unit Negative => this.MapComponents((a) => a.Negative);
         public static Unit operator -(Unit x) => x.Negative;
         public IArray<Unit> Repeat(Integer n){
-            var _var367 = this;
-            return n.MapRange((i) => _var367);
+            var _var369 = this;
+            return n.MapRange((i) => _var369);
         }
         public Boolean Equals(Unit b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Unit a, Unit b) => a.Equals(b);
@@ -1063,7 +1112,39 @@ namespace Plato.DoublePrecision
         public Probability ZipComponents(Probability y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Probability Zero => this.MapComponents((i) => ((Number)0));
         public Probability One => this.MapComponents((i) => ((Number)1));
-        public Probability MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Probability MinValue => this.MapComponents((x) => x.MinValue);
         public Probability MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -1071,22 +1152,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Probability Clamp(Probability a, Probability b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Probability ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Probability Clamp01 => this.ClampZeroOne;
         public Probability Abs => this.MapComponents((i) => i.Abs);
         public Probability Min(Probability y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Probability Max(Probability y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Probability Floor => this.MapComponents((c) => c.Floor);
+        public Probability Fract => this.MapComponents((c) => c.Fract);
         public Probability Multiply(Number s){
-            var _var368 = s;
-            return this.MapComponents((i) => i.Multiply(_var368));
+            var _var370 = s;
+            return this.MapComponents((i) => i.Multiply(_var370));
         }
         public static Probability operator *(Probability x, Number s) => x.Multiply(s);
         public Probability Divide(Number s){
-            var _var369 = s;
-            return this.MapComponents((i) => i.Divide(_var369));
+            var _var371 = s;
+            return this.MapComponents((i) => i.Divide(_var371));
         }
         public static Probability operator /(Probability x, Number s) => x.Divide(s);
         public Probability Modulo(Number s){
-            var _var370 = s;
-            return this.MapComponents((i) => i.Modulo(_var370));
+            var _var372 = s;
+            return this.MapComponents((i) => i.Modulo(_var372));
         }
         public static Probability operator %(Probability x, Number s) => x.Modulo(s);
         public Probability Add(Probability y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -1096,8 +1180,8 @@ namespace Plato.DoublePrecision
         public Probability Negative => this.MapComponents((a) => a.Negative);
         public static Probability operator -(Probability x) => x.Negative;
         public IArray<Probability> Repeat(Integer n){
-            var _var371 = this;
-            return n.MapRange((i) => _var371);
+            var _var373 = this;
+            return n.MapRange((i) => _var373);
         }
         public Boolean Equals(Probability b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Probability a, Probability b) => a.Equals(b);
@@ -1210,7 +1294,39 @@ namespace Plato.DoublePrecision
         public Complex ZipComponents(Complex y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Complex Zero => this.MapComponents((i) => ((Number)0));
         public Complex One => this.MapComponents((i) => ((Number)1));
-        public Complex MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Complex MinValue => this.MapComponents((x) => x.MinValue);
         public Complex MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -1218,22 +1334,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Complex Clamp(Complex a, Complex b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Complex ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Complex Clamp01 => this.ClampZeroOne;
         public Complex Abs => this.MapComponents((i) => i.Abs);
         public Complex Min(Complex y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Complex Max(Complex y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Complex Floor => this.MapComponents((c) => c.Floor);
+        public Complex Fract => this.MapComponents((c) => c.Fract);
         public Complex Multiply(Number s){
-            var _var372 = s;
-            return this.MapComponents((i) => i.Multiply(_var372));
+            var _var374 = s;
+            return this.MapComponents((i) => i.Multiply(_var374));
         }
         public static Complex operator *(Complex x, Number s) => x.Multiply(s);
         public Complex Divide(Number s){
-            var _var373 = s;
-            return this.MapComponents((i) => i.Divide(_var373));
+            var _var375 = s;
+            return this.MapComponents((i) => i.Divide(_var375));
         }
         public static Complex operator /(Complex x, Number s) => x.Divide(s);
         public Complex Modulo(Number s){
-            var _var374 = s;
-            return this.MapComponents((i) => i.Modulo(_var374));
+            var _var376 = s;
+            return this.MapComponents((i) => i.Modulo(_var376));
         }
         public static Complex operator %(Complex x, Number s) => x.Modulo(s);
         public Complex Add(Complex y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -1243,8 +1362,8 @@ namespace Plato.DoublePrecision
         public Complex Negative => this.MapComponents((a) => a.Negative);
         public static Complex operator -(Complex x) => x.Negative;
         public IArray<Complex> Repeat(Integer n){
-            var _var375 = this;
-            return n.MapRange((i) => _var375);
+            var _var377 = this;
+            return n.MapRange((i) => _var377);
         }
         public Boolean Equals(Complex b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Complex a, Complex b) => a.Equals(b);
@@ -1315,8 +1434,8 @@ namespace Plato.DoublePrecision
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Integer2> Repeat(Integer n){
-            var _var376 = this;
-            return n.MapRange((i) => _var376);
+            var _var378 = this;
+            return n.MapRange((i) => _var378);
         }
         public Boolean Equals(Integer2 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer2 a, Integer2 b) => a.Equals(b);
@@ -1366,8 +1485,8 @@ namespace Plato.DoublePrecision
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Integer3> Repeat(Integer n){
-            var _var377 = this;
-            return n.MapRange((i) => _var377);
+            var _var379 = this;
+            return n.MapRange((i) => _var379);
         }
         public Boolean Equals(Integer3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer3 a, Integer3 b) => a.Equals(b);
@@ -1419,8 +1538,8 @@ namespace Plato.DoublePrecision
         int System.Collections.Generic.IReadOnlyCollection<Integer>.Count => this.Count;
         // Implemented concept functions and type functions
         public IArray<Integer4> Repeat(Integer n){
-            var _var378 = this;
-            return n.MapRange((i) => _var378);
+            var _var380 = this;
+            return n.MapRange((i) => _var380);
         }
         public Boolean Equals(Integer4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Integer4 a, Integer4 b) => a.Equals(b);
@@ -1461,8 +1580,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Color)b);
         // Implemented concept functions and type functions
         public IArray<Color> Repeat(Integer n){
-            var _var379 = this;
-            return n.MapRange((i) => _var379);
+            var _var381 = this;
+            return n.MapRange((i) => _var381);
         }
         public Boolean Equals(Color b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Color a, Color b) => a.Equals(b);
@@ -1498,8 +1617,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLUV)b);
         // Implemented concept functions and type functions
         public IArray<ColorLUV> Repeat(Integer n){
-            var _var380 = this;
-            return n.MapRange((i) => _var380);
+            var _var382 = this;
+            return n.MapRange((i) => _var382);
         }
         public Boolean Equals(ColorLUV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLUV a, ColorLUV b) => a.Equals(b);
@@ -1535,8 +1654,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLAB)b);
         // Implemented concept functions and type functions
         public IArray<ColorLAB> Repeat(Integer n){
-            var _var381 = this;
-            return n.MapRange((i) => _var381);
+            var _var383 = this;
+            return n.MapRange((i) => _var383);
         }
         public Boolean Equals(ColorLAB b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLAB a, ColorLAB b) => a.Equals(b);
@@ -1570,8 +1689,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorLCh)b);
         // Implemented concept functions and type functions
         public IArray<ColorLCh> Repeat(Integer n){
-            var _var382 = this;
-            return n.MapRange((i) => _var382);
+            var _var384 = this;
+            return n.MapRange((i) => _var384);
         }
         public Boolean Equals(ColorLCh b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorLCh a, ColorLCh b) => a.Equals(b);
@@ -1607,8 +1726,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorHSV)b);
         // Implemented concept functions and type functions
         public IArray<ColorHSV> Repeat(Integer n){
-            var _var383 = this;
-            return n.MapRange((i) => _var383);
+            var _var385 = this;
+            return n.MapRange((i) => _var385);
         }
         public Boolean Equals(ColorHSV b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorHSV a, ColorHSV b) => a.Equals(b);
@@ -1644,8 +1763,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorHSL)b);
         // Implemented concept functions and type functions
         public IArray<ColorHSL> Repeat(Integer n){
-            var _var384 = this;
-            return n.MapRange((i) => _var384);
+            var _var386 = this;
+            return n.MapRange((i) => _var386);
         }
         public Boolean Equals(ColorHSL b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorHSL a, ColorHSL b) => a.Equals(b);
@@ -1681,8 +1800,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((ColorYCbCr)b);
         // Implemented concept functions and type functions
         public IArray<ColorYCbCr> Repeat(Integer n){
-            var _var385 = this;
-            return n.MapRange((i) => _var385);
+            var _var387 = this;
+            return n.MapRange((i) => _var387);
         }
         public Boolean Equals(ColorYCbCr b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(ColorYCbCr a, ColorYCbCr b) => a.Equals(b);
@@ -1718,8 +1837,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((SphericalCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<SphericalCoordinate> Repeat(Integer n){
-            var _var386 = this;
-            return n.MapRange((i) => _var386);
+            var _var388 = this;
+            return n.MapRange((i) => _var388);
         }
         public Boolean Equals(SphericalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(SphericalCoordinate a, SphericalCoordinate b) => a.Equals(b);
@@ -1755,8 +1874,8 @@ namespace Plato.DoublePrecision
         public Vector2D Vector2D => Vector2D.New(this.Angle.Cos, this.Angle.Sin).Multiply(this.Radius);
         public static implicit operator Vector2D(PolarCoordinate coord) => coord.Vector2D;
         public IArray<PolarCoordinate> Repeat(Integer n){
-            var _var387 = this;
-            return n.MapRange((i) => _var387);
+            var _var389 = this;
+            return n.MapRange((i) => _var389);
         }
         public Boolean Equals(PolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(PolarCoordinate a, PolarCoordinate b) => a.Equals(b);
@@ -1790,8 +1909,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((LogPolarCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<LogPolarCoordinate> Repeat(Integer n){
-            var _var388 = this;
-            return n.MapRange((i) => _var388);
+            var _var390 = this;
+            return n.MapRange((i) => _var390);
         }
         public Boolean Equals(LogPolarCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(LogPolarCoordinate a, LogPolarCoordinate b) => a.Equals(b);
@@ -1827,8 +1946,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((CylindricalCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<CylindricalCoordinate> Repeat(Integer n){
-            var _var389 = this;
-            return n.MapRange((i) => _var389);
+            var _var391 = this;
+            return n.MapRange((i) => _var391);
         }
         public Boolean Equals(CylindricalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(CylindricalCoordinate a, CylindricalCoordinate b) => a.Equals(b);
@@ -1862,8 +1981,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((HorizontalCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<HorizontalCoordinate> Repeat(Integer n){
-            var _var390 = this;
-            return n.MapRange((i) => _var390);
+            var _var392 = this;
+            return n.MapRange((i) => _var392);
         }
         public Boolean Equals(HorizontalCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(HorizontalCoordinate a, HorizontalCoordinate b) => a.Equals(b);
@@ -1897,8 +2016,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((GeoCoordinate)b);
         // Implemented concept functions and type functions
         public IArray<GeoCoordinate> Repeat(Integer n){
-            var _var391 = this;
-            return n.MapRange((i) => _var391);
+            var _var393 = this;
+            return n.MapRange((i) => _var393);
         }
         public Boolean Equals(GeoCoordinate b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(GeoCoordinate a, GeoCoordinate b) => a.Equals(b);
@@ -1932,8 +2051,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((GeoCoordinateWithAltitude)b);
         // Implemented concept functions and type functions
         public IArray<GeoCoordinateWithAltitude> Repeat(Integer n){
-            var _var392 = this;
-            return n.MapRange((i) => _var392);
+            var _var394 = this;
+            return n.MapRange((i) => _var394);
         }
         public Boolean Equals(GeoCoordinateWithAltitude b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(GeoCoordinateWithAltitude a, GeoCoordinateWithAltitude b) => a.Equals(b);
@@ -1967,8 +2086,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Rational)b);
         // Implemented concept functions and type functions
         public IArray<Rational> Repeat(Integer n){
-            var _var393 = this;
-            return n.MapRange((i) => _var393);
+            var _var395 = this;
+            return n.MapRange((i) => _var395);
         }
         public Boolean Equals(Rational b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Rational a, Rational b) => a.Equals(b);
@@ -2002,8 +2121,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Fraction)b);
         // Implemented concept functions and type functions
         public IArray<Fraction> Repeat(Integer n){
-            var _var394 = this;
-            return n.MapRange((i) => _var394);
+            var _var396 = this;
+            return n.MapRange((i) => _var396);
         }
         public Boolean Equals(Fraction b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Fraction a, Fraction b) => a.Equals(b);
@@ -2118,7 +2237,39 @@ namespace Plato.DoublePrecision
         public Angle ZipComponents(Angle y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Angle Zero => this.MapComponents((i) => ((Number)0));
         public Angle One => this.MapComponents((i) => ((Number)1));
-        public Angle MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Angle MinValue => this.MapComponents((x) => x.MinValue);
         public Angle MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -2126,22 +2277,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Angle Clamp(Angle a, Angle b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Angle ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Angle Clamp01 => this.ClampZeroOne;
         public Angle Abs => this.MapComponents((i) => i.Abs);
         public Angle Min(Angle y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Angle Max(Angle y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Angle Floor => this.MapComponents((c) => c.Floor);
+        public Angle Fract => this.MapComponents((c) => c.Fract);
         public Angle Multiply(Number s){
-            var _var395 = s;
-            return this.MapComponents((i) => i.Multiply(_var395));
+            var _var397 = s;
+            return this.MapComponents((i) => i.Multiply(_var397));
         }
         public static Angle operator *(Angle x, Number s) => x.Multiply(s);
         public Angle Divide(Number s){
-            var _var396 = s;
-            return this.MapComponents((i) => i.Divide(_var396));
+            var _var398 = s;
+            return this.MapComponents((i) => i.Divide(_var398));
         }
         public static Angle operator /(Angle x, Number s) => x.Divide(s);
         public Angle Modulo(Number s){
-            var _var397 = s;
-            return this.MapComponents((i) => i.Modulo(_var397));
+            var _var399 = s;
+            return this.MapComponents((i) => i.Modulo(_var399));
         }
         public static Angle operator %(Angle x, Number s) => x.Modulo(s);
         public Angle Add(Angle y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2151,8 +2305,8 @@ namespace Plato.DoublePrecision
         public Angle Negative => this.MapComponents((a) => a.Negative);
         public static Angle operator -(Angle x) => x.Negative;
         public IArray<Angle> Repeat(Integer n){
-            var _var398 = this;
-            return n.MapRange((i) => _var398);
+            var _var400 = this;
+            return n.MapRange((i) => _var400);
         }
         public Boolean Equals(Angle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Angle a, Angle b) => a.Equals(b);
@@ -2245,7 +2399,39 @@ namespace Plato.DoublePrecision
         public Length ZipComponents(Length y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Length Zero => this.MapComponents((i) => ((Number)0));
         public Length One => this.MapComponents((i) => ((Number)1));
-        public Length MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Length MinValue => this.MapComponents((x) => x.MinValue);
         public Length MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -2253,22 +2439,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Length Clamp(Length a, Length b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Length ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Length Clamp01 => this.ClampZeroOne;
         public Length Abs => this.MapComponents((i) => i.Abs);
         public Length Min(Length y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Length Max(Length y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Length Floor => this.MapComponents((c) => c.Floor);
+        public Length Fract => this.MapComponents((c) => c.Fract);
         public Length Multiply(Number s){
-            var _var399 = s;
-            return this.MapComponents((i) => i.Multiply(_var399));
+            var _var401 = s;
+            return this.MapComponents((i) => i.Multiply(_var401));
         }
         public static Length operator *(Length x, Number s) => x.Multiply(s);
         public Length Divide(Number s){
-            var _var400 = s;
-            return this.MapComponents((i) => i.Divide(_var400));
+            var _var402 = s;
+            return this.MapComponents((i) => i.Divide(_var402));
         }
         public static Length operator /(Length x, Number s) => x.Divide(s);
         public Length Modulo(Number s){
-            var _var401 = s;
-            return this.MapComponents((i) => i.Modulo(_var401));
+            var _var403 = s;
+            return this.MapComponents((i) => i.Modulo(_var403));
         }
         public static Length operator %(Length x, Number s) => x.Modulo(s);
         public Length Add(Length y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2278,8 +2467,8 @@ namespace Plato.DoublePrecision
         public Length Negative => this.MapComponents((a) => a.Negative);
         public static Length operator -(Length x) => x.Negative;
         public IArray<Length> Repeat(Integer n){
-            var _var402 = this;
-            return n.MapRange((i) => _var402);
+            var _var404 = this;
+            return n.MapRange((i) => _var404);
         }
         public Boolean Equals(Length b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Length a, Length b) => a.Equals(b);
@@ -2372,7 +2561,39 @@ namespace Plato.DoublePrecision
         public Mass ZipComponents(Mass y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Mass Zero => this.MapComponents((i) => ((Number)0));
         public Mass One => this.MapComponents((i) => ((Number)1));
-        public Mass MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Mass MinValue => this.MapComponents((x) => x.MinValue);
         public Mass MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -2380,22 +2601,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Mass Clamp(Mass a, Mass b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Mass ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Mass Clamp01 => this.ClampZeroOne;
         public Mass Abs => this.MapComponents((i) => i.Abs);
         public Mass Min(Mass y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Mass Max(Mass y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Mass Floor => this.MapComponents((c) => c.Floor);
+        public Mass Fract => this.MapComponents((c) => c.Fract);
         public Mass Multiply(Number s){
-            var _var403 = s;
-            return this.MapComponents((i) => i.Multiply(_var403));
+            var _var405 = s;
+            return this.MapComponents((i) => i.Multiply(_var405));
         }
         public static Mass operator *(Mass x, Number s) => x.Multiply(s);
         public Mass Divide(Number s){
-            var _var404 = s;
-            return this.MapComponents((i) => i.Divide(_var404));
+            var _var406 = s;
+            return this.MapComponents((i) => i.Divide(_var406));
         }
         public static Mass operator /(Mass x, Number s) => x.Divide(s);
         public Mass Modulo(Number s){
-            var _var405 = s;
-            return this.MapComponents((i) => i.Modulo(_var405));
+            var _var407 = s;
+            return this.MapComponents((i) => i.Modulo(_var407));
         }
         public static Mass operator %(Mass x, Number s) => x.Modulo(s);
         public Mass Add(Mass y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2405,8 +2629,8 @@ namespace Plato.DoublePrecision
         public Mass Negative => this.MapComponents((a) => a.Negative);
         public static Mass operator -(Mass x) => x.Negative;
         public IArray<Mass> Repeat(Integer n){
-            var _var406 = this;
-            return n.MapRange((i) => _var406);
+            var _var408 = this;
+            return n.MapRange((i) => _var408);
         }
         public Boolean Equals(Mass b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Mass a, Mass b) => a.Equals(b);
@@ -2499,7 +2723,39 @@ namespace Plato.DoublePrecision
         public Temperature ZipComponents(Temperature y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Temperature Zero => this.MapComponents((i) => ((Number)0));
         public Temperature One => this.MapComponents((i) => ((Number)1));
-        public Temperature MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Temperature MinValue => this.MapComponents((x) => x.MinValue);
         public Temperature MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -2507,22 +2763,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Temperature Clamp(Temperature a, Temperature b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Temperature ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Temperature Clamp01 => this.ClampZeroOne;
         public Temperature Abs => this.MapComponents((i) => i.Abs);
         public Temperature Min(Temperature y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Temperature Max(Temperature y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Temperature Floor => this.MapComponents((c) => c.Floor);
+        public Temperature Fract => this.MapComponents((c) => c.Fract);
         public Temperature Multiply(Number s){
-            var _var407 = s;
-            return this.MapComponents((i) => i.Multiply(_var407));
+            var _var409 = s;
+            return this.MapComponents((i) => i.Multiply(_var409));
         }
         public static Temperature operator *(Temperature x, Number s) => x.Multiply(s);
         public Temperature Divide(Number s){
-            var _var408 = s;
-            return this.MapComponents((i) => i.Divide(_var408));
+            var _var410 = s;
+            return this.MapComponents((i) => i.Divide(_var410));
         }
         public static Temperature operator /(Temperature x, Number s) => x.Divide(s);
         public Temperature Modulo(Number s){
-            var _var409 = s;
-            return this.MapComponents((i) => i.Modulo(_var409));
+            var _var411 = s;
+            return this.MapComponents((i) => i.Modulo(_var411));
         }
         public static Temperature operator %(Temperature x, Number s) => x.Modulo(s);
         public Temperature Add(Temperature y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2532,8 +2791,8 @@ namespace Plato.DoublePrecision
         public Temperature Negative => this.MapComponents((a) => a.Negative);
         public static Temperature operator -(Temperature x) => x.Negative;
         public IArray<Temperature> Repeat(Integer n){
-            var _var410 = this;
-            return n.MapRange((i) => _var410);
+            var _var412 = this;
+            return n.MapRange((i) => _var412);
         }
         public Boolean Equals(Temperature b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Temperature a, Temperature b) => a.Equals(b);
@@ -2626,7 +2885,39 @@ namespace Plato.DoublePrecision
         public Time ZipComponents(Time y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Time Zero => this.MapComponents((i) => ((Number)0));
         public Time One => this.MapComponents((i) => ((Number)1));
-        public Time MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Time MinValue => this.MapComponents((x) => x.MinValue);
         public Time MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -2634,22 +2925,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Time Clamp(Time a, Time b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Time ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Time Clamp01 => this.ClampZeroOne;
         public Time Abs => this.MapComponents((i) => i.Abs);
         public Time Min(Time y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Time Max(Time y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Time Floor => this.MapComponents((c) => c.Floor);
+        public Time Fract => this.MapComponents((c) => c.Fract);
         public Time Multiply(Number s){
-            var _var411 = s;
-            return this.MapComponents((i) => i.Multiply(_var411));
+            var _var413 = s;
+            return this.MapComponents((i) => i.Multiply(_var413));
         }
         public static Time operator *(Time x, Number s) => x.Multiply(s);
         public Time Divide(Number s){
-            var _var412 = s;
-            return this.MapComponents((i) => i.Divide(_var412));
+            var _var414 = s;
+            return this.MapComponents((i) => i.Divide(_var414));
         }
         public static Time operator /(Time x, Number s) => x.Divide(s);
         public Time Modulo(Number s){
-            var _var413 = s;
-            return this.MapComponents((i) => i.Modulo(_var413));
+            var _var415 = s;
+            return this.MapComponents((i) => i.Modulo(_var415));
         }
         public static Time operator %(Time x, Number s) => x.Modulo(s);
         public Time Add(Time y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -2659,8 +2953,8 @@ namespace Plato.DoublePrecision
         public Time Negative => this.MapComponents((a) => a.Negative);
         public static Time operator -(Time x) => x.Negative;
         public IArray<Time> Repeat(Integer n){
-            var _var414 = this;
-            return n.MapRange((i) => _var414);
+            var _var416 = this;
+            return n.MapRange((i) => _var416);
         }
         public Boolean Equals(Time b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Time a, Time b) => a.Equals(b);
@@ -2718,8 +3012,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((DateTime)b);
         // Implemented concept functions and type functions
         public IArray<DateTime> Repeat(Integer n){
-            var _var415 = this;
-            return n.MapRange((i) => _var415);
+            var _var417 = this;
+            return n.MapRange((i) => _var417);
         }
         public Boolean Equals(DateTime b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(DateTime a, DateTime b) => a.Equals(b);
@@ -2785,34 +3079,34 @@ namespace Plato.DoublePrecision
         public AnglePair Clamp(AnglePair y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Angle Clamp(Angle value) => value.Clamp(this.Start, this.End);
         public IArray<Angle> LinearSpace(Integer count){
-            var _var416 = this;
-            return count.LinearSpace.Map((x) => _var416.Lerp(x));
+            var _var418 = this;
+            return count.LinearSpace.Map((x) => _var418.Lerp(x));
         }
         public IArray<Angle> LinearSpaceExclusive(Integer count){
-            var _var417 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var417.Lerp(x));
+            var _var419 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var419.Lerp(x));
         }
         public IArray<Angle> GeometricSpace(Integer count){
-            var _var418 = this;
-            return count.GeometricSpace.Map((x) => _var418.Lerp(x));
+            var _var420 = this;
+            return count.GeometricSpace.Map((x) => _var420.Lerp(x));
         }
         public IArray<Angle> GeometricSpaceExclusive(Integer count){
-            var _var419 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var419.Lerp(x));
+            var _var421 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var421.Lerp(x));
         }
         public AnglePair Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public AnglePair Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<AnglePair> Subdivide(Integer count){
-            var _var420 = this;
-            return count.Intervals.Map((i) => _var420.Subdivide(i));
+            var _var422 = this;
+            return count.Intervals.Map((i) => _var422.Subdivide(i));
         }
         public Boolean Equals(AnglePair b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(AnglePair a, AnglePair b) => a.Equals(b);
         public Boolean NotEquals(AnglePair b) => this.Equals(b).Not;
         public static Boolean operator !=(AnglePair a, AnglePair b) => a.NotEquals(b);
         public IArray<AnglePair> Repeat(Integer n){
-            var _var421 = this;
-            return n.MapRange((i) => _var421);
+            var _var423 = this;
+            return n.MapRange((i) => _var423);
         }
         // Unimplemented concept functions
         public Integer Count => 2;
@@ -2877,34 +3171,34 @@ namespace Plato.DoublePrecision
         public NumberInterval Clamp(NumberInterval y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Number Clamp(Number value) => value.Clamp(this.Start, this.End);
         public IArray<Number> LinearSpace(Integer count){
-            var _var422 = this;
-            return count.LinearSpace.Map((x) => _var422.Lerp(x));
+            var _var424 = this;
+            return count.LinearSpace.Map((x) => _var424.Lerp(x));
         }
         public IArray<Number> LinearSpaceExclusive(Integer count){
-            var _var423 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var423.Lerp(x));
+            var _var425 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var425.Lerp(x));
         }
         public IArray<Number> GeometricSpace(Integer count){
-            var _var424 = this;
-            return count.GeometricSpace.Map((x) => _var424.Lerp(x));
+            var _var426 = this;
+            return count.GeometricSpace.Map((x) => _var426.Lerp(x));
         }
         public IArray<Number> GeometricSpaceExclusive(Integer count){
-            var _var425 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var425.Lerp(x));
+            var _var427 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var427.Lerp(x));
         }
         public NumberInterval Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public NumberInterval Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<NumberInterval> Subdivide(Integer count){
-            var _var426 = this;
-            return count.Intervals.Map((i) => _var426.Subdivide(i));
+            var _var428 = this;
+            return count.Intervals.Map((i) => _var428.Subdivide(i));
         }
         public Boolean Equals(NumberInterval b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(NumberInterval a, NumberInterval b) => a.Equals(b);
         public Boolean NotEquals(NumberInterval b) => this.Equals(b).Not;
         public static Boolean operator !=(NumberInterval a, NumberInterval b) => a.NotEquals(b);
         public IArray<NumberInterval> Repeat(Integer n){
-            var _var427 = this;
-            return n.MapRange((i) => _var427);
+            var _var429 = this;
+            return n.MapRange((i) => _var429);
         }
         // Unimplemented concept functions
         public Integer Count => 2;
@@ -3075,8 +3369,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => t.Spiral(this.Radius1, this.Radius2, this.NumTurns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var428 = this;
-            return numPoints.LinearSpace.Map((x) => _var428.Eval(x));
+            var _var430 = this;
+            return numPoints.LinearSpace.Map((x) => _var430.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3122,8 +3416,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.A.QuadraticBezier(this.B, this.C, t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var429 = this;
-            return numPoints.LinearSpace.Map((x) => _var429.Eval(x));
+            var _var431 = this;
+            return numPoints.LinearSpace.Map((x) => _var431.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3174,8 +3468,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.A.QuadraticBezier(this.B, this.C, t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var430 = this;
-            return numPoints.LinearSpace.Map((x) => _var430.Eval(x));
+            var _var432 = this;
+            return numPoints.LinearSpace.Map((x) => _var432.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3212,8 +3506,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var431 = this;
-            return numPoints.LinearSpace.Map((x) => _var431.Eval(x));
+            var _var433 = this;
+            return numPoints.LinearSpace.Map((x) => _var433.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3247,8 +3541,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var432 = this;
-            return numPoints.LinearSpace.Map((x) => _var432.Eval(x));
+            var _var434 = this;
+            return numPoints.LinearSpace.Map((x) => _var434.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3282,8 +3576,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var433 = this;
-            return numPoints.LinearSpace.Map((x) => _var433.Eval(x));
+            var _var435 = this;
+            return numPoints.LinearSpace.Map((x) => _var435.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3317,8 +3611,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var434 = this;
-            return numPoints.LinearSpace.Map((x) => _var434.Eval(x));
+            var _var436 = this;
+            return numPoints.LinearSpace.Map((x) => _var436.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3354,8 +3648,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var435 = this;
-            return numPoints.LinearSpace.Map((x) => _var435.Eval(x));
+            var _var437 = this;
+            return numPoints.LinearSpace.Map((x) => _var437.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3391,8 +3685,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var436 = this;
-            return numPoints.LinearSpace.Map((x) => _var436.Eval(x));
+            var _var438 = this;
+            return numPoints.LinearSpace.Map((x) => _var438.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3416,8 +3710,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var437 = this;
-            return numPoints.LinearSpace.Map((x) => _var437.Eval(x));
+            var _var439 = this;
+            return numPoints.LinearSpace.Map((x) => _var439.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3453,8 +3747,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var438 = this;
-            return numPoints.LinearSpace.Map((x) => _var438.Eval(x));
+            var _var440 = this;
+            return numPoints.LinearSpace.Map((x) => _var440.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3480,8 +3774,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var439 = this;
-            return numPoints.LinearSpace.Map((x) => _var439.Eval(x));
+            var _var441 = this;
+            return numPoints.LinearSpace.Map((x) => _var441.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3517,8 +3811,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var440 = this;
-            return numPoints.LinearSpace.Map((x) => _var440.Eval(x));
+            var _var442 = this;
+            return numPoints.LinearSpace.Map((x) => _var442.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3544,8 +3838,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var441 = this;
-            return numPoints.LinearSpace.Map((x) => _var441.Eval(x));
+            var _var443 = this;
+            return numPoints.LinearSpace.Map((x) => _var443.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3578,8 +3872,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var442 = this;
-            return numPoints.LinearSpace.Map((x) => _var442.Eval(x));
+            var _var444 = this;
+            return numPoints.LinearSpace.Map((x) => _var444.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3615,8 +3909,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var443 = this;
-            return numPoints.LinearSpace.Map((x) => _var443.Eval(x));
+            var _var445 = this;
+            return numPoints.LinearSpace.Map((x) => _var445.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3652,8 +3946,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var444 = this;
-            return numPoints.LinearSpace.Map((x) => _var444.Eval(x));
+            var _var446 = this;
+            return numPoints.LinearSpace.Map((x) => _var446.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3690,8 +3984,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var445 = this;
-            return numPoints.LinearSpace.Map((x) => _var445.Eval(x));
+            var _var447 = this;
+            return numPoints.LinearSpace.Map((x) => _var447.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3728,8 +4022,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var446 = this;
-            return numPoints.LinearSpace.Map((x) => _var446.Eval(x));
+            var _var448 = this;
+            return numPoints.LinearSpace.Map((x) => _var448.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3766,8 +4060,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var447 = this;
-            return numPoints.LinearSpace.Map((x) => _var447.Eval(x));
+            var _var449 = this;
+            return numPoints.LinearSpace.Map((x) => _var449.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3804,8 +4098,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var448 = this;
-            return numPoints.LinearSpace.Map((x) => _var448.Eval(x));
+            var _var450 = this;
+            return numPoints.LinearSpace.Map((x) => _var450.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3841,8 +4135,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var449 = this;
-            return numPoints.LinearSpace.Map((x) => _var449.Eval(x));
+            var _var451 = this;
+            return numPoints.LinearSpace.Map((x) => _var451.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3879,8 +4173,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var450 = this;
-            return numPoints.LinearSpace.Map((x) => _var450.Eval(x));
+            var _var452 = this;
+            return numPoints.LinearSpace.Map((x) => _var452.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -3916,8 +4210,8 @@ namespace Plato.DoublePrecision
         public Vector2D Eval(Number t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var451 = this;
-            return numPoints.LinearSpace.Map((x) => _var451.Eval(x));
+            var _var453 = this;
+            return numPoints.LinearSpace.Map((x) => _var453.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4043,8 +4337,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var452 = this;
-            return numPoints.LinearSpace.Map((x) => _var452.Eval(x));
+            var _var454 = this;
+            return numPoints.LinearSpace.Map((x) => _var454.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4069,8 +4363,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var453 = this;
-            return numPoints.LinearSpace.Map((x) => _var453.Eval(x));
+            var _var455 = this;
+            return numPoints.LinearSpace.Map((x) => _var455.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4095,8 +4389,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var454 = this;
-            return numPoints.LinearSpace.Map((x) => _var454.Eval(x));
+            var _var456 = this;
+            return numPoints.LinearSpace.Map((x) => _var456.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4133,8 +4427,8 @@ namespace Plato.DoublePrecision
         public Vector3D Eval(Angle t) => this.GetPoint(t);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var455 = this;
-            return numPoints.LinearSpace.Map((x) => _var455.Eval(x));
+            var _var457 = this;
+            return numPoints.LinearSpace.Map((x) => _var457.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4169,8 +4463,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Transform2D)b);
         // Implemented concept functions and type functions
         public IArray<Transform2D> Repeat(Integer n){
-            var _var456 = this;
-            return n.MapRange((i) => _var456);
+            var _var458 = this;
+            return n.MapRange((i) => _var458);
         }
         public Boolean Equals(Transform2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Transform2D a, Transform2D b) => a.Equals(b);
@@ -4204,8 +4498,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Pose2D)b);
         // Implemented concept functions and type functions
         public IArray<Pose2D> Repeat(Integer n){
-            var _var457 = this;
-            return n.MapRange((i) => _var457);
+            var _var459 = this;
+            return n.MapRange((i) => _var459);
         }
         public Boolean Equals(Pose2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Pose2D a, Pose2D b) => a.Equals(b);
@@ -4261,8 +4555,8 @@ namespace Plato.DoublePrecision
         public Boolean NotEquals(Bounds2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Bounds2D a, Bounds2D b) => a.NotEquals(b);
         public IArray<Bounds2D> Repeat(Integer n){
-            var _var458 = this;
-            return n.MapRange((i) => _var458);
+            var _var460 = this;
+            return n.MapRange((i) => _var460);
         }
         // Unimplemented concept functions
     }
@@ -4295,8 +4589,8 @@ namespace Plato.DoublePrecision
         public Ray3D Ray3D => this.To3D;
         public static implicit operator Ray3D(Ray2D x) => x.Ray3D;
         public IArray<Ray2D> Repeat(Integer n){
-            var _var459 = this;
-            return n.MapRange((i) => _var459);
+            var _var461 = this;
+            return n.MapRange((i) => _var461);
         }
         public Boolean Equals(Ray2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Ray2D a, Ray2D b) => a.Equals(b);
@@ -4358,8 +4652,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Triangle2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var460 = this;
-            return numPoints.LinearSpace.Map((x) => _var460.Eval(x));
+            var _var462 = this;
+            return numPoints.LinearSpace.Map((x) => _var462.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4430,8 +4724,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Quad2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var461 = this;
-            return numPoints.LinearSpace.Map((x) => _var461.Eval(x));
+            var _var463 = this;
+            return numPoints.LinearSpace.Map((x) => _var463.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4495,8 +4789,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Line2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var462 = this;
-            return numPoints.LinearSpace.Map((x) => _var462.Eval(x));
+            var _var464 = this;
+            return numPoints.LinearSpace.Map((x) => _var464.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         public Vector2D Size => this.End.Subtract(this.Start);
@@ -4516,34 +4810,34 @@ namespace Plato.DoublePrecision
         public Line2D Clamp(Line2D y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Vector2D Clamp(Vector2D value) => value.Clamp(this.Start, this.End);
         public IArray<Vector2D> LinearSpace(Integer count){
-            var _var463 = this;
-            return count.LinearSpace.Map((x) => _var463.Lerp(x));
+            var _var465 = this;
+            return count.LinearSpace.Map((x) => _var465.Lerp(x));
         }
         public IArray<Vector2D> LinearSpaceExclusive(Integer count){
-            var _var464 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var464.Lerp(x));
+            var _var466 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var466.Lerp(x));
         }
         public IArray<Vector2D> GeometricSpace(Integer count){
-            var _var465 = this;
-            return count.GeometricSpace.Map((x) => _var465.Lerp(x));
+            var _var467 = this;
+            return count.GeometricSpace.Map((x) => _var467.Lerp(x));
         }
         public IArray<Vector2D> GeometricSpaceExclusive(Integer count){
-            var _var466 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var466.Lerp(x));
+            var _var468 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var468.Lerp(x));
         }
         public Line2D Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public Line2D Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<Line2D> Subdivide(Integer count){
-            var _var467 = this;
-            return count.Intervals.Map((i) => _var467.Subdivide(i));
+            var _var469 = this;
+            return count.Intervals.Map((i) => _var469.Subdivide(i));
         }
         public Boolean Equals(Line2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Line2D a, Line2D b) => a.Equals(b);
         public Boolean NotEquals(Line2D b) => this.Equals(b).Not;
         public static Boolean operator !=(Line2D a, Line2D b) => a.NotEquals(b);
         public IArray<Line2D> Repeat(Integer n){
-            var _var468 = this;
-            return n.MapRange((i) => _var468);
+            var _var470 = this;
+            return n.MapRange((i) => _var470);
         }
         // Unimplemented concept functions
         public Number Distance(Vector2D p) => Intrinsics.Distance(this, p);
@@ -4630,8 +4924,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(Rect2D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var469 = this;
-            return numPoints.LinearSpace.Map((x) => _var469.Eval(x));
+            var _var471 = this;
+            return numPoints.LinearSpace.Map((x) => _var471.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4805,8 +5099,8 @@ namespace Plato.DoublePrecision
         // Ambiguous: could not choose a best function implementation for Closed(RegularPolygon):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var470 = this;
-            return numPoints.LinearSpace.Map((x) => _var470.Eval(x));
+            var _var472 = this;
+            return numPoints.LinearSpace.Map((x) => _var472.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -4867,8 +5161,8 @@ namespace Plato.DoublePrecision
         Boolean IEquatable.Equals(IEquatable b) => this.Equals((Plane)b);
         // Implemented concept functions and type functions
         public IArray<Plane> Repeat(Integer n){
-            var _var471 = this;
-            return n.MapRange((i) => _var471);
+            var _var473 = this;
+            return n.MapRange((i) => _var473);
         }
         public Boolean Equals(Plane b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Plane a, Plane b) => a.Equals(b);
@@ -4925,65 +5219,53 @@ namespace Plato.DoublePrecision
         public Boolean NotEquals(Bounds3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Bounds3D a, Bounds3D b) => a.NotEquals(b);
         public IArray<Bounds3D> Repeat(Integer n){
-            var _var472 = this;
-            return n.MapRange((i) => _var472);
+            var _var474 = this;
+            return n.MapRange((i) => _var474);
         }
         public Bounds3D Deform(ITransform3D t){
-            var _var473 = t;
-            return this.Deform((v) => _var473.Transform(v));
+            var _var475 = t;
+            return this.Deform((v) => _var475.Transform(v));
         }
         public Bounds3D Translate(Vector3D v){
-            var _var474 = v;
-            return this.Deform((p) => p.Add(_var474));
+            var _var476 = v;
+            return this.Deform((p) => p.Add(_var476));
         }
         public Bounds3D Rotate(Quaternion q) => this.Deform(q);
         public Bounds3D Scale(Vector3D v){
-            var _var475 = v;
-            return this.Deform((p) => p.Multiply(_var475));
+            var _var477 = v;
+            return this.Deform((p) => p.Multiply(_var477));
         }
         public Bounds3D Scale(Number s){
-            var _var476 = s;
-            return this.Deform((p) => p.Multiply(_var476));
+            var _var478 = s;
+            return this.Deform((p) => p.Multiply(_var478));
         }
         public Bounds3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public Bounds3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public Bounds3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public Bounds3D TranslateX(Number s){
-            var _var477 = s;
-            return this.Deform((p) => p.Add(_var477.Tuple3(((Integer)0), ((Integer)0))));
+            var _var479 = s;
+            return this.Deform((p) => p.Add(_var479.Tuple3(((Integer)0), ((Integer)0))));
         }
         public Bounds3D TranslateY(Number s){
-            var _var478 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var478, ((Integer)0))));
+            var _var480 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var480, ((Integer)0))));
         }
         public Bounds3D TranslateZ(Number s){
-            var _var479 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var479)));
+            var _var481 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var481)));
         }
         public Bounds3D ScaleX(Number s){
-            var _var480 = s;
-            return this.Deform((p) => p.Multiply(_var480.Tuple3(((Integer)1), ((Integer)1))));
+            var _var482 = s;
+            return this.Deform((p) => p.Multiply(_var482.Tuple3(((Integer)1), ((Integer)1))));
         }
         public Bounds3D ScaleY(Number s){
-            var _var481 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var481, ((Integer)1))));
+            var _var483 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var483, ((Integer)1))));
         }
         public Bounds3D ScaleZ(Number s){
-            var _var482 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var482)));
+            var _var484 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var484)));
         }
-        public Bounds3D Add(Vector3D v) => this.Translate(v);
-        public static Bounds3D operator +(Bounds3D x, Vector3D v) => x.Add(v);
-        public Bounds3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static Bounds3D operator -(Bounds3D x, Vector3D v) => x.Subtract(v);
-        public Bounds3D Multiply(Vector3D v) => this.Scale(v);
-        public static Bounds3D operator *(Bounds3D x, Vector3D v) => x.Multiply(v);
-        public Bounds3D Multiply(Number s) => this.Scale(s);
-        public static Bounds3D operator *(Bounds3D x, Number s) => x.Multiply(s);
-        public Bounds3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static Bounds3D operator /(Bounds3D x, Vector3D v) => x.Divide(v);
-        public Bounds3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static Bounds3D operator /(Bounds3D x, Number s) => x.Divide(s);
         // Unimplemented concept functions
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
@@ -5040,66 +5322,54 @@ namespace Plato.DoublePrecision
         public IArray<Vector3D> Points => Intrinsics.MakeArray<Vector3D>(this.A, this.B);
         public IArray<Line3D> Lines => this.Points.WithNext((a, b) => Line3D.New(a, b), this.Closed);
         public Line3D Deform(ITransform3D t){
-            var _var483 = t;
-            return this.Deform((v) => _var483.Transform(v));
+            var _var485 = t;
+            return this.Deform((v) => _var485.Transform(v));
         }
         public Line3D Translate(Vector3D v){
-            var _var484 = v;
-            return this.Deform((p) => p.Add(_var484));
+            var _var486 = v;
+            return this.Deform((p) => p.Add(_var486));
         }
         public Line3D Rotate(Quaternion q) => this.Deform(q);
         public Line3D Scale(Vector3D v){
-            var _var485 = v;
-            return this.Deform((p) => p.Multiply(_var485));
+            var _var487 = v;
+            return this.Deform((p) => p.Multiply(_var487));
         }
         public Line3D Scale(Number s){
-            var _var486 = s;
-            return this.Deform((p) => p.Multiply(_var486));
+            var _var488 = s;
+            return this.Deform((p) => p.Multiply(_var488));
         }
         public Line3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public Line3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public Line3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public Line3D TranslateX(Number s){
-            var _var487 = s;
-            return this.Deform((p) => p.Add(_var487.Tuple3(((Integer)0), ((Integer)0))));
+            var _var489 = s;
+            return this.Deform((p) => p.Add(_var489.Tuple3(((Integer)0), ((Integer)0))));
         }
         public Line3D TranslateY(Number s){
-            var _var488 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var488, ((Integer)0))));
+            var _var490 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var490, ((Integer)0))));
         }
         public Line3D TranslateZ(Number s){
-            var _var489 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var489)));
+            var _var491 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var491)));
         }
         public Line3D ScaleX(Number s){
-            var _var490 = s;
-            return this.Deform((p) => p.Multiply(_var490.Tuple3(((Integer)1), ((Integer)1))));
+            var _var492 = s;
+            return this.Deform((p) => p.Multiply(_var492.Tuple3(((Integer)1), ((Integer)1))));
         }
         public Line3D ScaleY(Number s){
-            var _var491 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var491, ((Integer)1))));
+            var _var493 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var493, ((Integer)1))));
         }
         public Line3D ScaleZ(Number s){
-            var _var492 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var492)));
+            var _var494 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var494)));
         }
-        public Line3D Add(Vector3D v) => this.Translate(v);
-        public static Line3D operator +(Line3D x, Vector3D v) => x.Add(v);
-        public Line3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static Line3D operator -(Line3D x, Vector3D v) => x.Subtract(v);
-        public Line3D Multiply(Vector3D v) => this.Scale(v);
-        public static Line3D operator *(Line3D x, Vector3D v) => x.Multiply(v);
-        public Line3D Multiply(Number s) => this.Scale(s);
-        public static Line3D operator *(Line3D x, Number s) => x.Multiply(s);
-        public Line3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static Line3D operator /(Line3D x, Vector3D v) => x.Divide(v);
-        public Line3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static Line3D operator /(Line3D x, Number s) => x.Divide(s);
         // Ambiguous: could not choose a best function implementation for Closed(Line3D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var493 = this;
-            return numPoints.LinearSpace.Map((x) => _var493.Eval(x));
+            var _var495 = this;
+            return numPoints.LinearSpace.Map((x) => _var495.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         public Vector3D Size => this.End.Subtract(this.Start);
@@ -5119,34 +5389,34 @@ namespace Plato.DoublePrecision
         public Line3D Clamp(Line3D y) => this.Clamp(y.Start).Tuple2(this.Clamp(y.End));
         public Vector3D Clamp(Vector3D value) => value.Clamp(this.Start, this.End);
         public IArray<Vector3D> LinearSpace(Integer count){
-            var _var494 = this;
-            return count.LinearSpace.Map((x) => _var494.Lerp(x));
+            var _var496 = this;
+            return count.LinearSpace.Map((x) => _var496.Lerp(x));
         }
         public IArray<Vector3D> LinearSpaceExclusive(Integer count){
-            var _var495 = this;
-            return count.LinearSpaceExclusive.Map((x) => _var495.Lerp(x));
+            var _var497 = this;
+            return count.LinearSpaceExclusive.Map((x) => _var497.Lerp(x));
         }
         public IArray<Vector3D> GeometricSpace(Integer count){
-            var _var496 = this;
-            return count.GeometricSpace.Map((x) => _var496.Lerp(x));
+            var _var498 = this;
+            return count.GeometricSpace.Map((x) => _var498.Lerp(x));
         }
         public IArray<Vector3D> GeometricSpaceExclusive(Integer count){
-            var _var497 = this;
-            return count.GeometricSpaceExclusive.Map((x) => _var497.Lerp(x));
+            var _var499 = this;
+            return count.GeometricSpaceExclusive.Map((x) => _var499.Lerp(x));
         }
         public Line3D Subdivide(Number start, Number end) => this.Lerp(start).Tuple2(this.Lerp(end));
         public Line3D Subdivide(NumberInterval subInterval) => this.Subdivide(subInterval.Start, subInterval.End);
         public IArray<Line3D> Subdivide(Integer count){
-            var _var498 = this;
-            return count.Intervals.Map((i) => _var498.Subdivide(i));
+            var _var500 = this;
+            return count.Intervals.Map((i) => _var500.Subdivide(i));
         }
         public Boolean Equals(Line3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Line3D a, Line3D b) => a.Equals(b);
         public Boolean NotEquals(Line3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Line3D a, Line3D b) => a.NotEquals(b);
         public IArray<Line3D> Repeat(Integer n){
-            var _var499 = this;
-            return n.MapRange((i) => _var499);
+            var _var501 = this;
+            return n.MapRange((i) => _var501);
         }
         // Unimplemented concept functions
         public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
@@ -5186,69 +5456,57 @@ namespace Plato.DoublePrecision
         public static implicit operator Line3D(Ray3D r) => r.Line3D;
         public Ray3D Reverse => this.Origin.Tuple2(this.Direction.Negative);
         public IArray<Ray3D> Repeat(Integer n){
-            var _var500 = this;
-            return n.MapRange((i) => _var500);
+            var _var502 = this;
+            return n.MapRange((i) => _var502);
         }
         public Boolean Equals(Ray3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Ray3D a, Ray3D b) => a.Equals(b);
         public Boolean NotEquals(Ray3D b) => this.Equals(b).Not;
         public static Boolean operator !=(Ray3D a, Ray3D b) => a.NotEquals(b);
         public Ray3D Deform(ITransform3D t){
-            var _var501 = t;
-            return this.Deform((v) => _var501.Transform(v));
+            var _var503 = t;
+            return this.Deform((v) => _var503.Transform(v));
         }
         public Ray3D Translate(Vector3D v){
-            var _var502 = v;
-            return this.Deform((p) => p.Add(_var502));
+            var _var504 = v;
+            return this.Deform((p) => p.Add(_var504));
         }
         public Ray3D Rotate(Quaternion q) => this.Deform(q);
         public Ray3D Scale(Vector3D v){
-            var _var503 = v;
-            return this.Deform((p) => p.Multiply(_var503));
+            var _var505 = v;
+            return this.Deform((p) => p.Multiply(_var505));
         }
         public Ray3D Scale(Number s){
-            var _var504 = s;
-            return this.Deform((p) => p.Multiply(_var504));
+            var _var506 = s;
+            return this.Deform((p) => p.Multiply(_var506));
         }
         public Ray3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public Ray3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public Ray3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public Ray3D TranslateX(Number s){
-            var _var505 = s;
-            return this.Deform((p) => p.Add(_var505.Tuple3(((Integer)0), ((Integer)0))));
+            var _var507 = s;
+            return this.Deform((p) => p.Add(_var507.Tuple3(((Integer)0), ((Integer)0))));
         }
         public Ray3D TranslateY(Number s){
-            var _var506 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var506, ((Integer)0))));
+            var _var508 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var508, ((Integer)0))));
         }
         public Ray3D TranslateZ(Number s){
-            var _var507 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var507)));
+            var _var509 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var509)));
         }
         public Ray3D ScaleX(Number s){
-            var _var508 = s;
-            return this.Deform((p) => p.Multiply(_var508.Tuple3(((Integer)1), ((Integer)1))));
+            var _var510 = s;
+            return this.Deform((p) => p.Multiply(_var510.Tuple3(((Integer)1), ((Integer)1))));
         }
         public Ray3D ScaleY(Number s){
-            var _var509 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var509, ((Integer)1))));
+            var _var511 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var511, ((Integer)1))));
         }
         public Ray3D ScaleZ(Number s){
-            var _var510 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var510)));
+            var _var512 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var512)));
         }
-        public Ray3D Add(Vector3D v) => this.Translate(v);
-        public static Ray3D operator +(Ray3D x, Vector3D v) => x.Add(v);
-        public Ray3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static Ray3D operator -(Ray3D x, Vector3D v) => x.Subtract(v);
-        public Ray3D Multiply(Vector3D v) => this.Scale(v);
-        public static Ray3D operator *(Ray3D x, Vector3D v) => x.Multiply(v);
-        public Ray3D Multiply(Number s) => this.Scale(s);
-        public static Ray3D operator *(Ray3D x, Number s) => x.Multiply(s);
-        public Ray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static Ray3D operator /(Ray3D x, Vector3D v) => x.Divide(v);
-        public Ray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static Ray3D operator /(Ray3D x, Number s) => x.Divide(s);
         // Unimplemented concept functions
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
@@ -5310,66 +5568,54 @@ namespace Plato.DoublePrecision
         public IArray<Vector3D> Points => Intrinsics.MakeArray<Vector3D>(this.A, this.B, this.C);
         public IArray<Line3D> Lines => Intrinsics.MakeArray<Line3D>(Line3D.New(this.A, this.B), Line3D.New(this.B, this.C), Line3D.New(this.C, this.A));
         public Triangle3D Deform(ITransform3D t){
-            var _var511 = t;
-            return this.Deform((v) => _var511.Transform(v));
+            var _var513 = t;
+            return this.Deform((v) => _var513.Transform(v));
         }
         public Triangle3D Translate(Vector3D v){
-            var _var512 = v;
-            return this.Deform((p) => p.Add(_var512));
+            var _var514 = v;
+            return this.Deform((p) => p.Add(_var514));
         }
         public Triangle3D Rotate(Quaternion q) => this.Deform(q);
         public Triangle3D Scale(Vector3D v){
-            var _var513 = v;
-            return this.Deform((p) => p.Multiply(_var513));
+            var _var515 = v;
+            return this.Deform((p) => p.Multiply(_var515));
         }
         public Triangle3D Scale(Number s){
-            var _var514 = s;
-            return this.Deform((p) => p.Multiply(_var514));
+            var _var516 = s;
+            return this.Deform((p) => p.Multiply(_var516));
         }
         public Triangle3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public Triangle3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public Triangle3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public Triangle3D TranslateX(Number s){
-            var _var515 = s;
-            return this.Deform((p) => p.Add(_var515.Tuple3(((Integer)0), ((Integer)0))));
+            var _var517 = s;
+            return this.Deform((p) => p.Add(_var517.Tuple3(((Integer)0), ((Integer)0))));
         }
         public Triangle3D TranslateY(Number s){
-            var _var516 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var516, ((Integer)0))));
+            var _var518 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var518, ((Integer)0))));
         }
         public Triangle3D TranslateZ(Number s){
-            var _var517 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var517)));
+            var _var519 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var519)));
         }
         public Triangle3D ScaleX(Number s){
-            var _var518 = s;
-            return this.Deform((p) => p.Multiply(_var518.Tuple3(((Integer)1), ((Integer)1))));
+            var _var520 = s;
+            return this.Deform((p) => p.Multiply(_var520.Tuple3(((Integer)1), ((Integer)1))));
         }
         public Triangle3D ScaleY(Number s){
-            var _var519 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var519, ((Integer)1))));
+            var _var521 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var521, ((Integer)1))));
         }
         public Triangle3D ScaleZ(Number s){
-            var _var520 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var520)));
+            var _var522 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var522)));
         }
-        public Triangle3D Add(Vector3D v) => this.Translate(v);
-        public static Triangle3D operator +(Triangle3D x, Vector3D v) => x.Add(v);
-        public Triangle3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static Triangle3D operator -(Triangle3D x, Vector3D v) => x.Subtract(v);
-        public Triangle3D Multiply(Vector3D v) => this.Scale(v);
-        public static Triangle3D operator *(Triangle3D x, Vector3D v) => x.Multiply(v);
-        public Triangle3D Multiply(Number s) => this.Scale(s);
-        public static Triangle3D operator *(Triangle3D x, Number s) => x.Multiply(s);
-        public Triangle3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static Triangle3D operator /(Triangle3D x, Vector3D v) => x.Divide(v);
-        public Triangle3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static Triangle3D operator /(Triangle3D x, Number s) => x.Divide(s);
         // Ambiguous: could not choose a best function implementation for Closed(Triangle3D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var521 = this;
-            return numPoints.LinearSpace.Map((x) => _var521.Eval(x));
+            var _var523 = this;
+            return numPoints.LinearSpace.Map((x) => _var523.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -5441,66 +5687,54 @@ namespace Plato.DoublePrecision
         public IArray<Line3D> Lines => Intrinsics.MakeArray<Line3D>(Line3D.New(this.A, this.B), Line3D.New(this.B, this.C), Line3D.New(this.C, this.D), Line3D.New(this.D, this.A));
         public IArray<Triangle3D> Triangles => Intrinsics.MakeArray<Triangle3D>(Triangle3D.New(this.A, this.B, this.C), Triangle3D.New(this.C, this.D, this.A));
         public Quad3D Deform(ITransform3D t){
-            var _var522 = t;
-            return this.Deform((v) => _var522.Transform(v));
+            var _var524 = t;
+            return this.Deform((v) => _var524.Transform(v));
         }
         public Quad3D Translate(Vector3D v){
-            var _var523 = v;
-            return this.Deform((p) => p.Add(_var523));
+            var _var525 = v;
+            return this.Deform((p) => p.Add(_var525));
         }
         public Quad3D Rotate(Quaternion q) => this.Deform(q);
         public Quad3D Scale(Vector3D v){
-            var _var524 = v;
-            return this.Deform((p) => p.Multiply(_var524));
+            var _var526 = v;
+            return this.Deform((p) => p.Multiply(_var526));
         }
         public Quad3D Scale(Number s){
-            var _var525 = s;
-            return this.Deform((p) => p.Multiply(_var525));
+            var _var527 = s;
+            return this.Deform((p) => p.Multiply(_var527));
         }
         public Quad3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public Quad3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public Quad3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public Quad3D TranslateX(Number s){
-            var _var526 = s;
-            return this.Deform((p) => p.Add(_var526.Tuple3(((Integer)0), ((Integer)0))));
+            var _var528 = s;
+            return this.Deform((p) => p.Add(_var528.Tuple3(((Integer)0), ((Integer)0))));
         }
         public Quad3D TranslateY(Number s){
-            var _var527 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var527, ((Integer)0))));
+            var _var529 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var529, ((Integer)0))));
         }
         public Quad3D TranslateZ(Number s){
-            var _var528 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var528)));
+            var _var530 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var530)));
         }
         public Quad3D ScaleX(Number s){
-            var _var529 = s;
-            return this.Deform((p) => p.Multiply(_var529.Tuple3(((Integer)1), ((Integer)1))));
+            var _var531 = s;
+            return this.Deform((p) => p.Multiply(_var531.Tuple3(((Integer)1), ((Integer)1))));
         }
         public Quad3D ScaleY(Number s){
-            var _var530 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var530, ((Integer)1))));
+            var _var532 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var532, ((Integer)1))));
         }
         public Quad3D ScaleZ(Number s){
-            var _var531 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var531)));
+            var _var533 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var533)));
         }
-        public Quad3D Add(Vector3D v) => this.Translate(v);
-        public static Quad3D operator +(Quad3D x, Vector3D v) => x.Add(v);
-        public Quad3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static Quad3D operator -(Quad3D x, Vector3D v) => x.Subtract(v);
-        public Quad3D Multiply(Vector3D v) => this.Scale(v);
-        public static Quad3D operator *(Quad3D x, Vector3D v) => x.Multiply(v);
-        public Quad3D Multiply(Number s) => this.Scale(s);
-        public static Quad3D operator *(Quad3D x, Number s) => x.Multiply(s);
-        public Quad3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static Quad3D operator /(Quad3D x, Vector3D v) => x.Divide(v);
-        public Quad3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static Quad3D operator /(Quad3D x, Number s) => x.Divide(s);
         // Ambiguous: could not choose a best function implementation for Closed(Quad3D):Boolean:Boolean.
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var532 = this;
-            return numPoints.LinearSpace.Map((x) => _var532.Eval(x));
+            var _var534 = this;
+            return numPoints.LinearSpace.Map((x) => _var534.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -5509,366 +5743,6 @@ namespace Plato.DoublePrecision
         public Vector3D this[Integer n] => n == 0 ? A : n == 1 ? B : n == 2 ? C : n == 3 ? D : throw new System.IndexOutOfRangeException();
         public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
         public Vector3D Eval(Number t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Sphere: ISolid
-    {
-        [DataMember] public readonly Number Radius;
-        public Sphere WithRadius(Number radius) => new Sphere(radius);
-        public Sphere(Number radius) => (Radius) = (radius);
-        public static Sphere Default = new Sphere();
-        public static Sphere New(Number radius) => new Sphere(radius);
-        public Plato.SinglePrecision.Sphere ChangePrecision() => (Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Sphere(Sphere self) => self.ChangePrecision();
-        public static implicit operator Number(Sphere self) => self.Radius;
-        public static implicit operator Sphere(Number value) => new Sphere(value);
-        public static implicit operator Sphere(Integer value) => new Sphere(value);
-        public static implicit operator Sphere(int value) => new Integer(value);
-        public static implicit operator Sphere(double value) => new Number(value);
-        public static implicit operator double(Sphere value) => value.Radius;
-        public override bool Equals(object obj) { if (!(obj is Sphere)) return false; var other = (Sphere)obj; return Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius);
-        public override string ToString() => $"{{ \"Radius\" = {Radius} }}";
-        public static implicit operator Dynamic(Sphere self) => new Dynamic(self);
-        public static implicit operator Sphere(Dynamic value) => value.As<Sphere>();
-        public String TypeName => "Sphere";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Cylinder: ISurface
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number Radius;
-        public Cylinder WithHeight(Number height) => new Cylinder(height, Radius);
-        public Cylinder WithRadius(Number radius) => new Cylinder(Height, radius);
-        public Cylinder(Number height, Number radius) => (Height, Radius) = (height, radius);
-        public static Cylinder Default = new Cylinder();
-        public static Cylinder New(Number height, Number radius) => new Cylinder(height, radius);
-        public Plato.SinglePrecision.Cylinder ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cylinder(Cylinder self) => self.ChangePrecision();
-        public static implicit operator (Number, Number)(Cylinder self) => (self.Height, self.Radius);
-        public static implicit operator Cylinder((Number, Number) value) => new Cylinder(value.Item1, value.Item2);
-        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Cylinder)) return false; var other = (Cylinder)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
-        public static implicit operator Dynamic(Cylinder self) => new Dynamic(self);
-        public static implicit operator Cylinder(Dynamic value) => value.As<Cylinder>();
-        public String TypeName => "Cylinder";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
-        // Implemented concept functions and type functions
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Capsule: ISolid
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number Radius;
-        public Capsule WithHeight(Number height) => new Capsule(height, Radius);
-        public Capsule WithRadius(Number radius) => new Capsule(Height, radius);
-        public Capsule(Number height, Number radius) => (Height, Radius) = (height, radius);
-        public static Capsule Default = new Capsule();
-        public static Capsule New(Number height, Number radius) => new Capsule(height, radius);
-        public Plato.SinglePrecision.Capsule ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Capsule(Capsule self) => self.ChangePrecision();
-        public static implicit operator (Number, Number)(Capsule self) => (self.Height, self.Radius);
-        public static implicit operator Capsule((Number, Number) value) => new Capsule(value.Item1, value.Item2);
-        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Capsule)) return false; var other = (Capsule)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
-        public static implicit operator Dynamic(Capsule self) => new Dynamic(self);
-        public static implicit operator Capsule(Dynamic value) => value.As<Capsule>();
-        public String TypeName => "Capsule";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Cone: ISolid
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number Radius;
-        public Cone WithHeight(Number height) => new Cone(height, Radius);
-        public Cone WithRadius(Number radius) => new Cone(Height, radius);
-        public Cone(Number height, Number radius) => (Height, Radius) = (height, radius);
-        public static Cone Default = new Cone();
-        public static Cone New(Number height, Number radius) => new Cone(height, radius);
-        public Plato.SinglePrecision.Cone ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cone(Cone self) => self.ChangePrecision();
-        public static implicit operator (Number, Number)(Cone self) => (self.Height, self.Radius);
-        public static implicit operator Cone((Number, Number) value) => new Cone(value.Item1, value.Item2);
-        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
-        public override bool Equals(object obj) { if (!(obj is Cone)) return false; var other = (Cone)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
-        public static implicit operator Dynamic(Cone self) => new Dynamic(self);
-        public static implicit operator Cone(Dynamic value) => value.As<Cone>();
-        public String TypeName => "Cone";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct ConeSegment: ISolid
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number Radius1;
-        [DataMember] public readonly Number Radius2;
-        public ConeSegment WithHeight(Number height) => new ConeSegment(height, Radius1, Radius2);
-        public ConeSegment WithRadius1(Number radius1) => new ConeSegment(Height, radius1, Radius2);
-        public ConeSegment WithRadius2(Number radius2) => new ConeSegment(Height, Radius1, radius2);
-        public ConeSegment(Number height, Number radius1, Number radius2) => (Height, Radius1, Radius2) = (height, radius1, radius2);
-        public static ConeSegment Default = new ConeSegment();
-        public static ConeSegment New(Number height, Number radius1, Number radius2) => new ConeSegment(height, radius1, radius2);
-        public Plato.SinglePrecision.ConeSegment ChangePrecision() => (Height.ChangePrecision(), Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ConeSegment(ConeSegment self) => self.ChangePrecision();
-        public static implicit operator (Number, Number, Number)(ConeSegment self) => (self.Height, self.Radius1, self.Radius2);
-        public static implicit operator ConeSegment((Number, Number, Number) value) => new ConeSegment(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Number height, out Number radius1, out Number radius2) { height = Height; radius1 = Radius1; radius2 = Radius2; }
-        public override bool Equals(object obj) { if (!(obj is ConeSegment)) return false; var other = (ConeSegment)obj; return Height.Equals(other.Height) && Radius1.Equals(other.Radius1) && Radius2.Equals(other.Radius2); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius1, Radius2);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius1\" = {Radius1}, \"Radius2\" = {Radius2} }}";
-        public static implicit operator Dynamic(ConeSegment self) => new Dynamic(self);
-        public static implicit operator ConeSegment(Dynamic value) => value.As<ConeSegment>();
-        public String TypeName => "ConeSegment";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius1", (String)"Radius2");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius1), new Dynamic(Radius2));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Box3D: ISolid
-    {
-        [DataMember] public readonly Vector3D Extent;
-        public Box3D WithExtent(Vector3D extent) => new Box3D(extent);
-        public Box3D(Vector3D extent) => (Extent) = (extent);
-        public static Box3D Default = new Box3D();
-        public static Box3D New(Vector3D extent) => new Box3D(extent);
-        public Plato.SinglePrecision.Box3D ChangePrecision() => (Extent.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Box3D(Box3D self) => self.ChangePrecision();
-        public static implicit operator Vector3D(Box3D self) => self.Extent;
-        public static implicit operator Box3D(Vector3D value) => new Box3D(value);
-        public override bool Equals(object obj) { if (!(obj is Box3D)) return false; var other = (Box3D)obj; return Extent.Equals(other.Extent); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Extent);
-        public override string ToString() => $"{{ \"Extent\" = {Extent} }}";
-        public static implicit operator Dynamic(Box3D self) => new Dynamic(self);
-        public static implicit operator Box3D(Dynamic value) => value.As<Box3D>();
-        public String TypeName => "Box3D";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Extent");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Extent));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Pyramid: ISolid
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number BaseLength;
-        public Pyramid WithHeight(Number height) => new Pyramid(height, BaseLength);
-        public Pyramid WithBaseLength(Number baseLength) => new Pyramid(Height, baseLength);
-        public Pyramid(Number height, Number baseLength) => (Height, BaseLength) = (height, baseLength);
-        public static Pyramid Default = new Pyramid();
-        public static Pyramid New(Number height, Number baseLength) => new Pyramid(height, baseLength);
-        public Plato.SinglePrecision.Pyramid ChangePrecision() => (Height.ChangePrecision(), BaseLength.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Pyramid(Pyramid self) => self.ChangePrecision();
-        public static implicit operator (Number, Number)(Pyramid self) => (self.Height, self.BaseLength);
-        public static implicit operator Pyramid((Number, Number) value) => new Pyramid(value.Item1, value.Item2);
-        public void Deconstruct(out Number height, out Number baseLength) { height = Height; baseLength = BaseLength; }
-        public override bool Equals(object obj) { if (!(obj is Pyramid)) return false; var other = (Pyramid)obj; return Height.Equals(other.Height) && BaseLength.Equals(other.BaseLength); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, BaseLength);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"BaseLength\" = {BaseLength} }}";
-        public static implicit operator Dynamic(Pyramid self) => new Dynamic(self);
-        public static implicit operator Pyramid(Dynamic value) => value.As<Pyramid>();
-        public String TypeName => "Pyramid";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"BaseLength");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(BaseLength));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Torus: ISolid
-    {
-        [DataMember] public readonly Number MajorRadius;
-        [DataMember] public readonly Number MinorRadius;
-        public Torus WithMajorRadius(Number majorRadius) => new Torus(majorRadius, MinorRadius);
-        public Torus WithMinorRadius(Number minorRadius) => new Torus(MajorRadius, minorRadius);
-        public Torus(Number majorRadius, Number minorRadius) => (MajorRadius, MinorRadius) = (majorRadius, minorRadius);
-        public static Torus Default = new Torus();
-        public static Torus New(Number majorRadius, Number minorRadius) => new Torus(majorRadius, minorRadius);
-        public Plato.SinglePrecision.Torus ChangePrecision() => (MajorRadius.ChangePrecision(), MinorRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Torus(Torus self) => self.ChangePrecision();
-        public static implicit operator (Number, Number)(Torus self) => (self.MajorRadius, self.MinorRadius);
-        public static implicit operator Torus((Number, Number) value) => new Torus(value.Item1, value.Item2);
-        public void Deconstruct(out Number majorRadius, out Number minorRadius) { majorRadius = MajorRadius; minorRadius = MinorRadius; }
-        public override bool Equals(object obj) { if (!(obj is Torus)) return false; var other = (Torus)obj; return MajorRadius.Equals(other.MajorRadius) && MinorRadius.Equals(other.MinorRadius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(MajorRadius, MinorRadius);
-        public override string ToString() => $"{{ \"MajorRadius\" = {MajorRadius}, \"MinorRadius\" = {MinorRadius} }}";
-        public static implicit operator Dynamic(Torus self) => new Dynamic(self);
-        public static implicit operator Torus(Dynamic value) => value.As<Torus>();
-        public String TypeName => "Torus";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"MajorRadius", (String)"MinorRadius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(MajorRadius), new Dynamic(MinorRadius));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct NPrism: ISolid
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number Radius;
-        [DataMember] public readonly Integer NumSides;
-        public NPrism WithHeight(Number height) => new NPrism(height, Radius, NumSides);
-        public NPrism WithRadius(Number radius) => new NPrism(Height, radius, NumSides);
-        public NPrism WithNumSides(Integer numSides) => new NPrism(Height, Radius, numSides);
-        public NPrism(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
-        public static NPrism Default = new NPrism();
-        public static NPrism New(Number height, Number radius, Integer numSides) => new NPrism(height, radius, numSides);
-        public Plato.SinglePrecision.NPrism ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NPrism(NPrism self) => self.ChangePrecision();
-        public static implicit operator (Number, Number, Integer)(NPrism self) => (self.Height, self.Radius, self.NumSides);
-        public static implicit operator NPrism((Number, Number, Integer) value) => new NPrism(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
-        public override bool Equals(object obj) { if (!(obj is NPrism)) return false; var other = (NPrism)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius) && NumSides.Equals(other.NumSides); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius, NumSides);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius}, \"NumSides\" = {NumSides} }}";
-        public static implicit operator Dynamic(NPrism self) => new Dynamic(self);
-        public static implicit operator NPrism(Dynamic value) => value.As<NPrism>();
-        public String TypeName => "NPrism";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Tube: ISolid
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number InnerRadius;
-        [DataMember] public readonly Number OuterRadius;
-        public Tube WithHeight(Number height) => new Tube(height, InnerRadius, OuterRadius);
-        public Tube WithInnerRadius(Number innerRadius) => new Tube(Height, innerRadius, OuterRadius);
-        public Tube WithOuterRadius(Number outerRadius) => new Tube(Height, InnerRadius, outerRadius);
-        public Tube(Number height, Number innerRadius, Number outerRadius) => (Height, InnerRadius, OuterRadius) = (height, innerRadius, outerRadius);
-        public static Tube Default = new Tube();
-        public static Tube New(Number height, Number innerRadius, Number outerRadius) => new Tube(height, innerRadius, outerRadius);
-        public Plato.SinglePrecision.Tube ChangePrecision() => (Height.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Tube(Tube self) => self.ChangePrecision();
-        public static implicit operator (Number, Number, Number)(Tube self) => (self.Height, self.InnerRadius, self.OuterRadius);
-        public static implicit operator Tube((Number, Number, Number) value) => new Tube(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Number height, out Number innerRadius, out Number outerRadius) { height = Height; innerRadius = InnerRadius; outerRadius = OuterRadius; }
-        public override bool Equals(object obj) { if (!(obj is Tube)) return false; var other = (Tube)obj; return Height.Equals(other.Height) && InnerRadius.Equals(other.InnerRadius) && OuterRadius.Equals(other.OuterRadius); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, InnerRadius, OuterRadius);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"InnerRadius\" = {InnerRadius}, \"OuterRadius\" = {OuterRadius} }}";
-        public static implicit operator Dynamic(Tube self) => new Dynamic(self);
-        public static implicit operator Tube(Dynamic value) => value.As<Tube>();
-        public String TypeName => "Tube";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"InnerRadius", (String)"OuterRadius");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(InnerRadius), new Dynamic(OuterRadius));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct NPyramid: ISolid
-    {
-        [DataMember] public readonly Number Height;
-        [DataMember] public readonly Number Radius;
-        [DataMember] public readonly Integer NumSides;
-        public NPyramid WithHeight(Number height) => new NPyramid(height, Radius, NumSides);
-        public NPyramid WithRadius(Number radius) => new NPyramid(Height, radius, NumSides);
-        public NPyramid WithNumSides(Integer numSides) => new NPyramid(Height, Radius, numSides);
-        public NPyramid(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
-        public static NPyramid Default = new NPyramid();
-        public static NPyramid New(Number height, Number radius, Integer numSides) => new NPyramid(height, radius, numSides);
-        public Plato.SinglePrecision.NPyramid ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NPyramid(NPyramid self) => self.ChangePrecision();
-        public static implicit operator (Number, Number, Integer)(NPyramid self) => (self.Height, self.Radius, self.NumSides);
-        public static implicit operator NPyramid((Number, Number, Integer) value) => new NPyramid(value.Item1, value.Item2, value.Item3);
-        public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
-        public override bool Equals(object obj) { if (!(obj is NPyramid)) return false; var other = (NPyramid)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius) && NumSides.Equals(other.NumSides); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius, NumSides);
-        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius}, \"NumSides\" = {NumSides} }}";
-        public static implicit operator Dynamic(NPyramid self) => new Dynamic(self);
-        public static implicit operator NPyramid(Dynamic value) => value.As<NPyramid>();
-        public String TypeName => "NPyramid";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
-    }
-    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
-    public readonly partial struct Ellipsoid: ISolid
-    {
-        [DataMember] public readonly Vector3D Radii;
-        public Ellipsoid WithRadii(Vector3D radii) => new Ellipsoid(radii);
-        public Ellipsoid(Vector3D radii) => (Radii) = (radii);
-        public static Ellipsoid Default = new Ellipsoid();
-        public static Ellipsoid New(Vector3D radii) => new Ellipsoid(radii);
-        public Plato.SinglePrecision.Ellipsoid ChangePrecision() => (Radii.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ellipsoid(Ellipsoid self) => self.ChangePrecision();
-        public static implicit operator Vector3D(Ellipsoid self) => self.Radii;
-        public static implicit operator Ellipsoid(Vector3D value) => new Ellipsoid(value);
-        public override bool Equals(object obj) { if (!(obj is Ellipsoid)) return false; var other = (Ellipsoid)obj; return Radii.Equals(other.Radii); }
-        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radii);
-        public override string ToString() => $"{{ \"Radii\" = {Radii} }}";
-        public static implicit operator Dynamic(Ellipsoid self) => new Dynamic(self);
-        public static implicit operator Ellipsoid(Dynamic value) => value.As<Ellipsoid>();
-        public String TypeName => "Ellipsoid";
-        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radii");
-        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radii));
-        // Implemented concept functions and type functions
-        public Boolean ClosedX => ((Boolean)true);
-        public Boolean ClosedY => ((Boolean)true);
-        // Unimplemented concept functions
-        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
     public readonly partial struct LineMesh3D: ILineMesh3D<LineMesh3D>
@@ -5900,17 +5774,17 @@ namespace Plato.DoublePrecision
         public LineMesh3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Indices);
         public IArray<Line3D> Lines => this.AllFaceVertices.Map((xs) => Line3D.New(xs.At(((Integer)0)), xs.At(((Integer)1))));
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var533 = this;
-            return this.FaceIndices(f).Map((i) => _var533.Vertex(i));
+            var _var535 = this;
+            return this.FaceIndices(f).Map((i) => _var535.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var534 = this;
-            return xs.Map((i) => _var534.Vertex(i));
+            var _var536 = this;
+            return xs.Map((i) => _var536.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var535 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var535.Vertices(xs));
+            var _var537 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var537.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -5918,61 +5792,49 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public LineMesh3D Deform(ITransform3D t){
-            var _var536 = t;
-            return this.Deform((v) => _var536.Transform(v));
+            var _var538 = t;
+            return this.Deform((v) => _var538.Transform(v));
         }
         public LineMesh3D Translate(Vector3D v){
-            var _var537 = v;
-            return this.Deform((p) => p.Add(_var537));
+            var _var539 = v;
+            return this.Deform((p) => p.Add(_var539));
         }
         public LineMesh3D Rotate(Quaternion q) => this.Deform(q);
         public LineMesh3D Scale(Vector3D v){
-            var _var538 = v;
-            return this.Deform((p) => p.Multiply(_var538));
+            var _var540 = v;
+            return this.Deform((p) => p.Multiply(_var540));
         }
         public LineMesh3D Scale(Number s){
-            var _var539 = s;
-            return this.Deform((p) => p.Multiply(_var539));
+            var _var541 = s;
+            return this.Deform((p) => p.Multiply(_var541));
         }
         public LineMesh3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public LineMesh3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public LineMesh3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public LineMesh3D TranslateX(Number s){
-            var _var540 = s;
-            return this.Deform((p) => p.Add(_var540.Tuple3(((Integer)0), ((Integer)0))));
+            var _var542 = s;
+            return this.Deform((p) => p.Add(_var542.Tuple3(((Integer)0), ((Integer)0))));
         }
         public LineMesh3D TranslateY(Number s){
-            var _var541 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var541, ((Integer)0))));
+            var _var543 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var543, ((Integer)0))));
         }
         public LineMesh3D TranslateZ(Number s){
-            var _var542 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var542)));
+            var _var544 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var544)));
         }
         public LineMesh3D ScaleX(Number s){
-            var _var543 = s;
-            return this.Deform((p) => p.Multiply(_var543.Tuple3(((Integer)1), ((Integer)1))));
+            var _var545 = s;
+            return this.Deform((p) => p.Multiply(_var545.Tuple3(((Integer)1), ((Integer)1))));
         }
         public LineMesh3D ScaleY(Number s){
-            var _var544 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var544, ((Integer)1))));
+            var _var546 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var546, ((Integer)1))));
         }
         public LineMesh3D ScaleZ(Number s){
-            var _var545 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var545)));
+            var _var547 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var547)));
         }
-        public LineMesh3D Add(Vector3D v) => this.Translate(v);
-        public static LineMesh3D operator +(LineMesh3D x, Vector3D v) => x.Add(v);
-        public LineMesh3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static LineMesh3D operator -(LineMesh3D x, Vector3D v) => x.Subtract(v);
-        public LineMesh3D Multiply(Vector3D v) => this.Scale(v);
-        public static LineMesh3D operator *(LineMesh3D x, Vector3D v) => x.Multiply(v);
-        public LineMesh3D Multiply(Number s) => this.Scale(s);
-        public static LineMesh3D operator *(LineMesh3D x, Number s) => x.Multiply(s);
-        public LineMesh3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static LineMesh3D operator /(LineMesh3D x, Vector3D v) => x.Divide(v);
-        public LineMesh3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static LineMesh3D operator /(LineMesh3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)2);
         // Unimplemented concept functions
     }
@@ -6009,17 +5871,17 @@ namespace Plato.DoublePrecision
         public LineMesh3D LineMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(TriangleMesh3D g) => g.LineMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var546 = this;
-            return this.FaceIndices(f).Map((i) => _var546.Vertex(i));
+            var _var548 = this;
+            return this.FaceIndices(f).Map((i) => _var548.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var547 = this;
-            return xs.Map((i) => _var547.Vertex(i));
+            var _var549 = this;
+            return xs.Map((i) => _var549.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var548 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var548.Vertices(xs));
+            var _var550 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var550.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6027,61 +5889,49 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public TriangleMesh3D Deform(ITransform3D t){
-            var _var549 = t;
-            return this.Deform((v) => _var549.Transform(v));
+            var _var551 = t;
+            return this.Deform((v) => _var551.Transform(v));
         }
         public TriangleMesh3D Translate(Vector3D v){
-            var _var550 = v;
-            return this.Deform((p) => p.Add(_var550));
+            var _var552 = v;
+            return this.Deform((p) => p.Add(_var552));
         }
         public TriangleMesh3D Rotate(Quaternion q) => this.Deform(q);
         public TriangleMesh3D Scale(Vector3D v){
-            var _var551 = v;
-            return this.Deform((p) => p.Multiply(_var551));
+            var _var553 = v;
+            return this.Deform((p) => p.Multiply(_var553));
         }
         public TriangleMesh3D Scale(Number s){
-            var _var552 = s;
-            return this.Deform((p) => p.Multiply(_var552));
+            var _var554 = s;
+            return this.Deform((p) => p.Multiply(_var554));
         }
         public TriangleMesh3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public TriangleMesh3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public TriangleMesh3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public TriangleMesh3D TranslateX(Number s){
-            var _var553 = s;
-            return this.Deform((p) => p.Add(_var553.Tuple3(((Integer)0), ((Integer)0))));
+            var _var555 = s;
+            return this.Deform((p) => p.Add(_var555.Tuple3(((Integer)0), ((Integer)0))));
         }
         public TriangleMesh3D TranslateY(Number s){
-            var _var554 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var554, ((Integer)0))));
+            var _var556 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var556, ((Integer)0))));
         }
         public TriangleMesh3D TranslateZ(Number s){
-            var _var555 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var555)));
+            var _var557 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var557)));
         }
         public TriangleMesh3D ScaleX(Number s){
-            var _var556 = s;
-            return this.Deform((p) => p.Multiply(_var556.Tuple3(((Integer)1), ((Integer)1))));
+            var _var558 = s;
+            return this.Deform((p) => p.Multiply(_var558.Tuple3(((Integer)1), ((Integer)1))));
         }
         public TriangleMesh3D ScaleY(Number s){
-            var _var557 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var557, ((Integer)1))));
+            var _var559 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var559, ((Integer)1))));
         }
         public TriangleMesh3D ScaleZ(Number s){
-            var _var558 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var558)));
+            var _var560 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var560)));
         }
-        public TriangleMesh3D Add(Vector3D v) => this.Translate(v);
-        public static TriangleMesh3D operator +(TriangleMesh3D x, Vector3D v) => x.Add(v);
-        public TriangleMesh3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static TriangleMesh3D operator -(TriangleMesh3D x, Vector3D v) => x.Subtract(v);
-        public TriangleMesh3D Multiply(Vector3D v) => this.Scale(v);
-        public static TriangleMesh3D operator *(TriangleMesh3D x, Vector3D v) => x.Multiply(v);
-        public TriangleMesh3D Multiply(Number s) => this.Scale(s);
-        public static TriangleMesh3D operator *(TriangleMesh3D x, Number s) => x.Multiply(s);
-        public TriangleMesh3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static TriangleMesh3D operator /(TriangleMesh3D x, Vector3D v) => x.Divide(v);
-        public TriangleMesh3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static TriangleMesh3D operator /(TriangleMesh3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)3);
         // Unimplemented concept functions
     }
@@ -6120,17 +5970,17 @@ namespace Plato.DoublePrecision
         public TriangleMesh3D TriangleMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator TriangleMesh3D(QuadMesh3D g) => g.TriangleMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var559 = this;
-            return this.FaceIndices(f).Map((i) => _var559.Vertex(i));
+            var _var561 = this;
+            return this.FaceIndices(f).Map((i) => _var561.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var560 = this;
-            return xs.Map((i) => _var560.Vertex(i));
+            var _var562 = this;
+            return xs.Map((i) => _var562.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var561 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var561.Vertices(xs));
+            var _var563 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var563.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6138,61 +5988,49 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public QuadMesh3D Deform(ITransform3D t){
-            var _var562 = t;
-            return this.Deform((v) => _var562.Transform(v));
+            var _var564 = t;
+            return this.Deform((v) => _var564.Transform(v));
         }
         public QuadMesh3D Translate(Vector3D v){
-            var _var563 = v;
-            return this.Deform((p) => p.Add(_var563));
+            var _var565 = v;
+            return this.Deform((p) => p.Add(_var565));
         }
         public QuadMesh3D Rotate(Quaternion q) => this.Deform(q);
         public QuadMesh3D Scale(Vector3D v){
-            var _var564 = v;
-            return this.Deform((p) => p.Multiply(_var564));
+            var _var566 = v;
+            return this.Deform((p) => p.Multiply(_var566));
         }
         public QuadMesh3D Scale(Number s){
-            var _var565 = s;
-            return this.Deform((p) => p.Multiply(_var565));
+            var _var567 = s;
+            return this.Deform((p) => p.Multiply(_var567));
         }
         public QuadMesh3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public QuadMesh3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public QuadMesh3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public QuadMesh3D TranslateX(Number s){
-            var _var566 = s;
-            return this.Deform((p) => p.Add(_var566.Tuple3(((Integer)0), ((Integer)0))));
+            var _var568 = s;
+            return this.Deform((p) => p.Add(_var568.Tuple3(((Integer)0), ((Integer)0))));
         }
         public QuadMesh3D TranslateY(Number s){
-            var _var567 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var567, ((Integer)0))));
+            var _var569 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var569, ((Integer)0))));
         }
         public QuadMesh3D TranslateZ(Number s){
-            var _var568 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var568)));
+            var _var570 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var570)));
         }
         public QuadMesh3D ScaleX(Number s){
-            var _var569 = s;
-            return this.Deform((p) => p.Multiply(_var569.Tuple3(((Integer)1), ((Integer)1))));
+            var _var571 = s;
+            return this.Deform((p) => p.Multiply(_var571.Tuple3(((Integer)1), ((Integer)1))));
         }
         public QuadMesh3D ScaleY(Number s){
-            var _var570 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var570, ((Integer)1))));
+            var _var572 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var572, ((Integer)1))));
         }
         public QuadMesh3D ScaleZ(Number s){
-            var _var571 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var571)));
+            var _var573 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var573)));
         }
-        public QuadMesh3D Add(Vector3D v) => this.Translate(v);
-        public static QuadMesh3D operator +(QuadMesh3D x, Vector3D v) => x.Add(v);
-        public QuadMesh3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static QuadMesh3D operator -(QuadMesh3D x, Vector3D v) => x.Subtract(v);
-        public QuadMesh3D Multiply(Vector3D v) => this.Scale(v);
-        public static QuadMesh3D operator *(QuadMesh3D x, Vector3D v) => x.Multiply(v);
-        public QuadMesh3D Multiply(Number s) => this.Scale(s);
-        public static QuadMesh3D operator *(QuadMesh3D x, Number s) => x.Multiply(s);
-        public QuadMesh3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static QuadMesh3D operator /(QuadMesh3D x, Vector3D v) => x.Divide(v);
-        public QuadMesh3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static QuadMesh3D operator /(QuadMesh3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
     }
@@ -6225,8 +6063,8 @@ namespace Plato.DoublePrecision
         public static implicit operator PolyLine3D(PolyLine2D x) => x.PolyLine3D;
         public IArray<Line2D> Lines => this.Points.WithNext((a, b) => Line2D.New(a, b), this.Closed);
         public IArray<Vector2D> Sample(Integer numPoints){
-            var _var572 = this;
-            return numPoints.LinearSpace.Map((x) => _var572.Eval(x));
+            var _var574 = this;
+            return numPoints.LinearSpace.Map((x) => _var574.Eval(x));
         }
         public PolyLine2D ToPolyLine2D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -6262,64 +6100,52 @@ namespace Plato.DoublePrecision
         public PolyLine3D Deform(System.Func<Vector3D, Vector3D> f) => this.Points.Map(f).Tuple2(this.Closed);
         public IArray<Line3D> Lines => this.Points.WithNext((a, b) => Line3D.New(a, b), this.Closed);
         public PolyLine3D Deform(ITransform3D t){
-            var _var573 = t;
-            return this.Deform((v) => _var573.Transform(v));
+            var _var575 = t;
+            return this.Deform((v) => _var575.Transform(v));
         }
         public PolyLine3D Translate(Vector3D v){
-            var _var574 = v;
-            return this.Deform((p) => p.Add(_var574));
+            var _var576 = v;
+            return this.Deform((p) => p.Add(_var576));
         }
         public PolyLine3D Rotate(Quaternion q) => this.Deform(q);
         public PolyLine3D Scale(Vector3D v){
-            var _var575 = v;
-            return this.Deform((p) => p.Multiply(_var575));
+            var _var577 = v;
+            return this.Deform((p) => p.Multiply(_var577));
         }
         public PolyLine3D Scale(Number s){
-            var _var576 = s;
-            return this.Deform((p) => p.Multiply(_var576));
+            var _var578 = s;
+            return this.Deform((p) => p.Multiply(_var578));
         }
         public PolyLine3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public PolyLine3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public PolyLine3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public PolyLine3D TranslateX(Number s){
-            var _var577 = s;
-            return this.Deform((p) => p.Add(_var577.Tuple3(((Integer)0), ((Integer)0))));
+            var _var579 = s;
+            return this.Deform((p) => p.Add(_var579.Tuple3(((Integer)0), ((Integer)0))));
         }
         public PolyLine3D TranslateY(Number s){
-            var _var578 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var578, ((Integer)0))));
+            var _var580 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var580, ((Integer)0))));
         }
         public PolyLine3D TranslateZ(Number s){
-            var _var579 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var579)));
+            var _var581 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var581)));
         }
         public PolyLine3D ScaleX(Number s){
-            var _var580 = s;
-            return this.Deform((p) => p.Multiply(_var580.Tuple3(((Integer)1), ((Integer)1))));
+            var _var582 = s;
+            return this.Deform((p) => p.Multiply(_var582.Tuple3(((Integer)1), ((Integer)1))));
         }
         public PolyLine3D ScaleY(Number s){
-            var _var581 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var581, ((Integer)1))));
+            var _var583 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var583, ((Integer)1))));
         }
         public PolyLine3D ScaleZ(Number s){
-            var _var582 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var582)));
+            var _var584 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var584)));
         }
-        public PolyLine3D Add(Vector3D v) => this.Translate(v);
-        public static PolyLine3D operator +(PolyLine3D x, Vector3D v) => x.Add(v);
-        public PolyLine3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static PolyLine3D operator -(PolyLine3D x, Vector3D v) => x.Subtract(v);
-        public PolyLine3D Multiply(Vector3D v) => this.Scale(v);
-        public static PolyLine3D operator *(PolyLine3D x, Vector3D v) => x.Multiply(v);
-        public PolyLine3D Multiply(Number s) => this.Scale(s);
-        public static PolyLine3D operator *(PolyLine3D x, Number s) => x.Multiply(s);
-        public PolyLine3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static PolyLine3D operator /(PolyLine3D x, Vector3D v) => x.Divide(v);
-        public PolyLine3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static PolyLine3D operator /(PolyLine3D x, Number s) => x.Divide(s);
         public IArray<Vector3D> Sample(Integer numPoints){
-            var _var583 = this;
-            return numPoints.LinearSpace.Map((x) => _var583.Eval(x));
+            var _var585 = this;
+            return numPoints.LinearSpace.Map((x) => _var585.Eval(x));
         }
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
@@ -6370,61 +6196,49 @@ namespace Plato.DoublePrecision
         public PointArray3D Deform(System.Func<Vector3D, Vector3D> f) => PointArray3D.New(this.Points.Map(f));
         public IArray<Integer> Indices => this.Points.Indices();
         public PointArray3D Deform(ITransform3D t){
-            var _var584 = t;
-            return this.Deform((v) => _var584.Transform(v));
+            var _var586 = t;
+            return this.Deform((v) => _var586.Transform(v));
         }
         public PointArray3D Translate(Vector3D v){
-            var _var585 = v;
-            return this.Deform((p) => p.Add(_var585));
+            var _var587 = v;
+            return this.Deform((p) => p.Add(_var587));
         }
         public PointArray3D Rotate(Quaternion q) => this.Deform(q);
         public PointArray3D Scale(Vector3D v){
-            var _var586 = v;
-            return this.Deform((p) => p.Multiply(_var586));
+            var _var588 = v;
+            return this.Deform((p) => p.Multiply(_var588));
         }
         public PointArray3D Scale(Number s){
-            var _var587 = s;
-            return this.Deform((p) => p.Multiply(_var587));
+            var _var589 = s;
+            return this.Deform((p) => p.Multiply(_var589));
         }
         public PointArray3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public PointArray3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public PointArray3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public PointArray3D TranslateX(Number s){
-            var _var588 = s;
-            return this.Deform((p) => p.Add(_var588.Tuple3(((Integer)0), ((Integer)0))));
+            var _var590 = s;
+            return this.Deform((p) => p.Add(_var590.Tuple3(((Integer)0), ((Integer)0))));
         }
         public PointArray3D TranslateY(Number s){
-            var _var589 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var589, ((Integer)0))));
+            var _var591 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var591, ((Integer)0))));
         }
         public PointArray3D TranslateZ(Number s){
-            var _var590 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var590)));
+            var _var592 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var592)));
         }
         public PointArray3D ScaleX(Number s){
-            var _var591 = s;
-            return this.Deform((p) => p.Multiply(_var591.Tuple3(((Integer)1), ((Integer)1))));
+            var _var593 = s;
+            return this.Deform((p) => p.Multiply(_var593.Tuple3(((Integer)1), ((Integer)1))));
         }
         public PointArray3D ScaleY(Number s){
-            var _var592 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var592, ((Integer)1))));
+            var _var594 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var594, ((Integer)1))));
         }
         public PointArray3D ScaleZ(Number s){
-            var _var593 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var593)));
+            var _var595 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var595)));
         }
-        public PointArray3D Add(Vector3D v) => this.Translate(v);
-        public static PointArray3D operator +(PointArray3D x, Vector3D v) => x.Add(v);
-        public PointArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static PointArray3D operator -(PointArray3D x, Vector3D v) => x.Subtract(v);
-        public PointArray3D Multiply(Vector3D v) => this.Scale(v);
-        public static PointArray3D operator *(PointArray3D x, Vector3D v) => x.Multiply(v);
-        public PointArray3D Multiply(Number s) => this.Scale(s);
-        public static PointArray3D operator *(PointArray3D x, Number s) => x.Multiply(s);
-        public PointArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static PointArray3D operator /(PointArray3D x, Vector3D v) => x.Divide(v);
-        public PointArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static PointArray3D operator /(PointArray3D x, Number s) => x.Divide(s);
         // Unimplemented concept functions
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
@@ -6448,17 +6262,17 @@ namespace Plato.DoublePrecision
         public IArray<Integer> Indices => this.Points.Indices();
         public IArray<Vector2D> Points => this.Lines.FlatMap((x) => x.Points);
         public IArray<Vector2D> FaceVertices(Integer f){
-            var _var594 = this;
-            return this.FaceIndices(f).Map((i) => _var594.Vertex(i));
+            var _var596 = this;
+            return this.FaceIndices(f).Map((i) => _var596.Vertex(i));
         }
         public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector2D> Vertices(IArray<Integer> xs){
-            var _var595 = this;
-            return xs.Map((i) => _var595.Vertex(i));
+            var _var597 = this;
+            return xs.Map((i) => _var597.Vertex(i));
         }
         public IArray<IArray<Vector2D>> AllFaceVertices { get {
-            var _var596 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var596.Vertices(xs));
+            var _var598 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var598.Vertices(xs));
         }
          } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6490,23 +6304,23 @@ namespace Plato.DoublePrecision
         IArray<Line3D> ILineGeometry3D.Lines => this.Lines;
         // Implemented concept functions and type functions
         public LineArray3D Deform(System.Func<Vector3D, Vector3D> f){
-            var _var597 = f;
-            return LineArray3D.New(this.Lines.Map((l) => l.Deform(_var597)));
+            var _var599 = f;
+            return LineArray3D.New(this.Lines.Map((l) => l.Deform(_var599)));
         }
         public IArray<Integer> Indices => this.Points.Indices();
         public IArray<Vector3D> Points => this.Lines.FlatMap((x) => x.Points);
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var598 = this;
-            return this.FaceIndices(f).Map((i) => _var598.Vertex(i));
+            var _var600 = this;
+            return this.FaceIndices(f).Map((i) => _var600.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var599 = this;
-            return xs.Map((i) => _var599.Vertex(i));
+            var _var601 = this;
+            return xs.Map((i) => _var601.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var600 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var600.Vertices(xs));
+            var _var602 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var602.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6514,61 +6328,49 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public LineArray3D Deform(ITransform3D t){
-            var _var601 = t;
-            return this.Deform((v) => _var601.Transform(v));
+            var _var603 = t;
+            return this.Deform((v) => _var603.Transform(v));
         }
         public LineArray3D Translate(Vector3D v){
-            var _var602 = v;
-            return this.Deform((p) => p.Add(_var602));
+            var _var604 = v;
+            return this.Deform((p) => p.Add(_var604));
         }
         public LineArray3D Rotate(Quaternion q) => this.Deform(q);
         public LineArray3D Scale(Vector3D v){
-            var _var603 = v;
-            return this.Deform((p) => p.Multiply(_var603));
+            var _var605 = v;
+            return this.Deform((p) => p.Multiply(_var605));
         }
         public LineArray3D Scale(Number s){
-            var _var604 = s;
-            return this.Deform((p) => p.Multiply(_var604));
+            var _var606 = s;
+            return this.Deform((p) => p.Multiply(_var606));
         }
         public LineArray3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public LineArray3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public LineArray3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public LineArray3D TranslateX(Number s){
-            var _var605 = s;
-            return this.Deform((p) => p.Add(_var605.Tuple3(((Integer)0), ((Integer)0))));
+            var _var607 = s;
+            return this.Deform((p) => p.Add(_var607.Tuple3(((Integer)0), ((Integer)0))));
         }
         public LineArray3D TranslateY(Number s){
-            var _var606 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var606, ((Integer)0))));
+            var _var608 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var608, ((Integer)0))));
         }
         public LineArray3D TranslateZ(Number s){
-            var _var607 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var607)));
+            var _var609 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var609)));
         }
         public LineArray3D ScaleX(Number s){
-            var _var608 = s;
-            return this.Deform((p) => p.Multiply(_var608.Tuple3(((Integer)1), ((Integer)1))));
+            var _var610 = s;
+            return this.Deform((p) => p.Multiply(_var610.Tuple3(((Integer)1), ((Integer)1))));
         }
         public LineArray3D ScaleY(Number s){
-            var _var609 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var609, ((Integer)1))));
+            var _var611 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var611, ((Integer)1))));
         }
         public LineArray3D ScaleZ(Number s){
-            var _var610 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var610)));
+            var _var612 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var612)));
         }
-        public LineArray3D Add(Vector3D v) => this.Translate(v);
-        public static LineArray3D operator +(LineArray3D x, Vector3D v) => x.Add(v);
-        public LineArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static LineArray3D operator -(LineArray3D x, Vector3D v) => x.Subtract(v);
-        public LineArray3D Multiply(Vector3D v) => this.Scale(v);
-        public static LineArray3D operator *(LineArray3D x, Vector3D v) => x.Multiply(v);
-        public LineArray3D Multiply(Number s) => this.Scale(s);
-        public static LineArray3D operator *(LineArray3D x, Number s) => x.Multiply(s);
-        public LineArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static LineArray3D operator /(LineArray3D x, Vector3D v) => x.Divide(v);
-        public LineArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static LineArray3D operator /(LineArray3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)2);
         // Unimplemented concept functions
     }
@@ -6595,17 +6397,17 @@ namespace Plato.DoublePrecision
         public IArray<Line2D> Lines => this.Triangles.FlatMap((x) => x.Lines);
         public IArray<Triangle2D> Faces => this.Triangles;
         public IArray<Vector2D> FaceVertices(Integer f){
-            var _var611 = this;
-            return this.FaceIndices(f).Map((i) => _var611.Vertex(i));
+            var _var613 = this;
+            return this.FaceIndices(f).Map((i) => _var613.Vertex(i));
         }
         public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector2D> Vertices(IArray<Integer> xs){
-            var _var612 = this;
-            return xs.Map((i) => _var612.Vertex(i));
+            var _var614 = this;
+            return xs.Map((i) => _var614.Vertex(i));
         }
         public IArray<IArray<Vector2D>> AllFaceVertices { get {
-            var _var613 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var613.Vertices(xs));
+            var _var615 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var615.Vertices(xs));
         }
          } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6637,8 +6439,8 @@ namespace Plato.DoublePrecision
         IArray<Triangle3D> ITriangleGeometry3D.Triangles => this.Triangles;
         // Implemented concept functions and type functions
         public TriangleArray3D Deform(System.Func<Vector3D, Vector3D> f){
-            var _var614 = f;
-            return TriangleArray3D.New(this.Triangles.Map((t) => t.Deform(_var614)));
+            var _var616 = f;
+            return TriangleArray3D.New(this.Triangles.Map((t) => t.Deform(_var616)));
         }
         public IArray<Integer> Indices => this.Points.Indices();
         public TriangleMesh3D TriangleMesh3D => this.Points.Tuple2(this.Points.Indices());
@@ -6649,17 +6451,17 @@ namespace Plato.DoublePrecision
         public LineMesh3D LineMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(TriangleArray3D g) => g.LineMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var615 = this;
-            return this.FaceIndices(f).Map((i) => _var615.Vertex(i));
+            var _var617 = this;
+            return this.FaceIndices(f).Map((i) => _var617.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var616 = this;
-            return xs.Map((i) => _var616.Vertex(i));
+            var _var618 = this;
+            return xs.Map((i) => _var618.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var617 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var617.Vertices(xs));
+            var _var619 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var619.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6667,61 +6469,49 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public TriangleArray3D Deform(ITransform3D t){
-            var _var618 = t;
-            return this.Deform((v) => _var618.Transform(v));
+            var _var620 = t;
+            return this.Deform((v) => _var620.Transform(v));
         }
         public TriangleArray3D Translate(Vector3D v){
-            var _var619 = v;
-            return this.Deform((p) => p.Add(_var619));
+            var _var621 = v;
+            return this.Deform((p) => p.Add(_var621));
         }
         public TriangleArray3D Rotate(Quaternion q) => this.Deform(q);
         public TriangleArray3D Scale(Vector3D v){
-            var _var620 = v;
-            return this.Deform((p) => p.Multiply(_var620));
+            var _var622 = v;
+            return this.Deform((p) => p.Multiply(_var622));
         }
         public TriangleArray3D Scale(Number s){
-            var _var621 = s;
-            return this.Deform((p) => p.Multiply(_var621));
+            var _var623 = s;
+            return this.Deform((p) => p.Multiply(_var623));
         }
         public TriangleArray3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public TriangleArray3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public TriangleArray3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public TriangleArray3D TranslateX(Number s){
-            var _var622 = s;
-            return this.Deform((p) => p.Add(_var622.Tuple3(((Integer)0), ((Integer)0))));
+            var _var624 = s;
+            return this.Deform((p) => p.Add(_var624.Tuple3(((Integer)0), ((Integer)0))));
         }
         public TriangleArray3D TranslateY(Number s){
-            var _var623 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var623, ((Integer)0))));
+            var _var625 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var625, ((Integer)0))));
         }
         public TriangleArray3D TranslateZ(Number s){
-            var _var624 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var624)));
+            var _var626 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var626)));
         }
         public TriangleArray3D ScaleX(Number s){
-            var _var625 = s;
-            return this.Deform((p) => p.Multiply(_var625.Tuple3(((Integer)1), ((Integer)1))));
+            var _var627 = s;
+            return this.Deform((p) => p.Multiply(_var627.Tuple3(((Integer)1), ((Integer)1))));
         }
         public TriangleArray3D ScaleY(Number s){
-            var _var626 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var626, ((Integer)1))));
+            var _var628 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var628, ((Integer)1))));
         }
         public TriangleArray3D ScaleZ(Number s){
-            var _var627 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var627)));
+            var _var629 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var629)));
         }
-        public TriangleArray3D Add(Vector3D v) => this.Translate(v);
-        public static TriangleArray3D operator +(TriangleArray3D x, Vector3D v) => x.Add(v);
-        public TriangleArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static TriangleArray3D operator -(TriangleArray3D x, Vector3D v) => x.Subtract(v);
-        public TriangleArray3D Multiply(Vector3D v) => this.Scale(v);
-        public static TriangleArray3D operator *(TriangleArray3D x, Vector3D v) => x.Multiply(v);
-        public TriangleArray3D Multiply(Number s) => this.Scale(s);
-        public static TriangleArray3D operator *(TriangleArray3D x, Number s) => x.Multiply(s);
-        public TriangleArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static TriangleArray3D operator /(TriangleArray3D x, Vector3D v) => x.Divide(v);
-        public TriangleArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static TriangleArray3D operator /(TriangleArray3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)3);
         // Unimplemented concept functions
     }
@@ -6749,17 +6539,17 @@ namespace Plato.DoublePrecision
         public IArray<Triangle2D> Triangles => this.Quads.FlatMap((x) => x.Triangles);
         public IArray<Quad2D> Faces => this.Quads;
         public IArray<Vector2D> FaceVertices(Integer f){
-            var _var628 = this;
-            return this.FaceIndices(f).Map((i) => _var628.Vertex(i));
+            var _var630 = this;
+            return this.FaceIndices(f).Map((i) => _var630.Vertex(i));
         }
         public Vector2D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector2D> Vertices(IArray<Integer> xs){
-            var _var629 = this;
-            return xs.Map((i) => _var629.Vertex(i));
+            var _var631 = this;
+            return xs.Map((i) => _var631.Vertex(i));
         }
         public IArray<IArray<Vector2D>> AllFaceVertices { get {
-            var _var630 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var630.Vertices(xs));
+            var _var632 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var632.Vertices(xs));
         }
          } public IArray<Vector2D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6791,8 +6581,8 @@ namespace Plato.DoublePrecision
         IArray<Quad3D> IQuadGeometry3D.Quads => this.Quads;
         // Implemented concept functions and type functions
         public QuadArray3D Deform(System.Func<Vector3D, Vector3D> f){
-            var _var631 = f;
-            return QuadArray3D.New(this.Quads.Map((q) => q.Deform(_var631)));
+            var _var633 = f;
+            return QuadArray3D.New(this.Quads.Map((q) => q.Deform(_var633)));
         }
         public IArray<Integer> Indices => this.Points.Indices();
         public TriangleArray3D TriangleArray3D => TriangleArray3D.New(this.Triangles);
@@ -6808,17 +6598,17 @@ namespace Plato.DoublePrecision
         public LineMesh3D LineMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator LineMesh3D(QuadArray3D g) => g.LineMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var632 = this;
-            return this.FaceIndices(f).Map((i) => _var632.Vertex(i));
+            var _var634 = this;
+            return this.FaceIndices(f).Map((i) => _var634.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var633 = this;
-            return xs.Map((i) => _var633.Vertex(i));
+            var _var635 = this;
+            return xs.Map((i) => _var635.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var634 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var634.Vertices(xs));
+            var _var636 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var636.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6826,61 +6616,49 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public QuadArray3D Deform(ITransform3D t){
-            var _var635 = t;
-            return this.Deform((v) => _var635.Transform(v));
+            var _var637 = t;
+            return this.Deform((v) => _var637.Transform(v));
         }
         public QuadArray3D Translate(Vector3D v){
-            var _var636 = v;
-            return this.Deform((p) => p.Add(_var636));
+            var _var638 = v;
+            return this.Deform((p) => p.Add(_var638));
         }
         public QuadArray3D Rotate(Quaternion q) => this.Deform(q);
         public QuadArray3D Scale(Vector3D v){
-            var _var637 = v;
-            return this.Deform((p) => p.Multiply(_var637));
+            var _var639 = v;
+            return this.Deform((p) => p.Multiply(_var639));
         }
         public QuadArray3D Scale(Number s){
-            var _var638 = s;
-            return this.Deform((p) => p.Multiply(_var638));
+            var _var640 = s;
+            return this.Deform((p) => p.Multiply(_var640));
         }
         public QuadArray3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public QuadArray3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public QuadArray3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public QuadArray3D TranslateX(Number s){
-            var _var639 = s;
-            return this.Deform((p) => p.Add(_var639.Tuple3(((Integer)0), ((Integer)0))));
+            var _var641 = s;
+            return this.Deform((p) => p.Add(_var641.Tuple3(((Integer)0), ((Integer)0))));
         }
         public QuadArray3D TranslateY(Number s){
-            var _var640 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var640, ((Integer)0))));
+            var _var642 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var642, ((Integer)0))));
         }
         public QuadArray3D TranslateZ(Number s){
-            var _var641 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var641)));
+            var _var643 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var643)));
         }
         public QuadArray3D ScaleX(Number s){
-            var _var642 = s;
-            return this.Deform((p) => p.Multiply(_var642.Tuple3(((Integer)1), ((Integer)1))));
+            var _var644 = s;
+            return this.Deform((p) => p.Multiply(_var644.Tuple3(((Integer)1), ((Integer)1))));
         }
         public QuadArray3D ScaleY(Number s){
-            var _var643 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var643, ((Integer)1))));
+            var _var645 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var645, ((Integer)1))));
         }
         public QuadArray3D ScaleZ(Number s){
-            var _var644 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var644)));
+            var _var646 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var646)));
         }
-        public QuadArray3D Add(Vector3D v) => this.Translate(v);
-        public static QuadArray3D operator +(QuadArray3D x, Vector3D v) => x.Add(v);
-        public QuadArray3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static QuadArray3D operator -(QuadArray3D x, Vector3D v) => x.Subtract(v);
-        public QuadArray3D Multiply(Vector3D v) => this.Scale(v);
-        public static QuadArray3D operator *(QuadArray3D x, Vector3D v) => x.Multiply(v);
-        public QuadArray3D Multiply(Number s) => this.Scale(s);
-        public static QuadArray3D operator *(QuadArray3D x, Number s) => x.Multiply(s);
-        public QuadArray3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static QuadArray3D operator /(QuadArray3D x, Vector3D v) => x.Divide(v);
-        public QuadArray3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static QuadArray3D operator /(QuadArray3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
     }
@@ -6918,8 +6696,10 @@ namespace Plato.DoublePrecision
         IArray<Quad3D> IQuadGeometry3D.Quads => this.Quads;
         // Implemented concept functions and type functions
         public QuadGrid3D Deform(System.Func<Vector3D, Vector3D> f) => QuadGrid3D.New(this.PointGrid.Map(f), this.ClosedX, this.ClosedY);
+        public Integer NumColumns => this.PointGrid.NumColumns;
+        public Integer NumRows => this.PointGrid.NumRows;
         public IArray<Vector3D> Points => this.PointGrid;
-        public IArray<Integer> Indices => this.PointGrid.Indices();
+        public IArray<Integer> Indices => this.PointGrid.AllQuadFaceIndices(this.ClosedX, this.ClosedY).FlatMap((x) => x);
         public IArray<Quad3D> Faces => this.Quads;
         public IArray<Quad3D> Quads => this.AllFaceVertices.Map((xs) => Quad3D.New(xs.At(((Integer)0)), xs.At(((Integer)1)), xs.At(((Integer)2)), xs.At(((Integer)3))));
         public LineMesh3D LineMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
@@ -6927,17 +6707,17 @@ namespace Plato.DoublePrecision
         public TriangleMesh3D TriangleMesh3D => this.Points.Tuple2(this.AllFaceIndices.FlatMap((a) => Intrinsics.MakeArray(a.At(((Integer)0)), a.At(((Integer)1)), a.At(((Integer)2)), a.At(((Integer)2)), a.At(((Integer)3)), a.At(((Integer)0)))));
         public static implicit operator TriangleMesh3D(QuadGrid3D g) => g.TriangleMesh3D;
         public IArray<Vector3D> FaceVertices(Integer f){
-            var _var645 = this;
-            return this.FaceIndices(f).Map((i) => _var645.Vertex(i));
+            var _var647 = this;
+            return this.FaceIndices(f).Map((i) => _var647.Vertex(i));
         }
         public Vector3D Vertex(Integer n) => this.Points.At(this.Indices.At(n));
         public IArray<Vector3D> Vertices(IArray<Integer> xs){
-            var _var646 = this;
-            return xs.Map((i) => _var646.Vertex(i));
+            var _var648 = this;
+            return xs.Map((i) => _var648.Vertex(i));
         }
         public IArray<IArray<Vector3D>> AllFaceVertices { get {
-            var _var647 = this;
-            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var647.Vertices(xs));
+            var _var649 = this;
+            return this.Indices.Slices(this.PrimitiveSize).Map((xs) => _var649.Vertices(xs));
         }
          } public IArray<Vector3D> AllVertices => this.Vertices(this.Indices);
         public Integer NumFaces => this.NumPrimitives;
@@ -6945,61 +6725,49 @@ namespace Plato.DoublePrecision
         public IArray<IArray<Integer>> AllFaceIndices => this.Indices.Slices(this.PrimitiveSize);
         public Integer NumPrimitives => this.Indices.Count.Divide(this.PrimitiveSize);
         public QuadGrid3D Deform(ITransform3D t){
-            var _var648 = t;
-            return this.Deform((v) => _var648.Transform(v));
+            var _var650 = t;
+            return this.Deform((v) => _var650.Transform(v));
         }
         public QuadGrid3D Translate(Vector3D v){
-            var _var649 = v;
-            return this.Deform((p) => p.Add(_var649));
+            var _var651 = v;
+            return this.Deform((p) => p.Add(_var651));
         }
         public QuadGrid3D Rotate(Quaternion q) => this.Deform(q);
         public QuadGrid3D Scale(Vector3D v){
-            var _var650 = v;
-            return this.Deform((p) => p.Multiply(_var650));
+            var _var652 = v;
+            return this.Deform((p) => p.Multiply(_var652));
         }
         public QuadGrid3D Scale(Number s){
-            var _var651 = s;
-            return this.Deform((p) => p.Multiply(_var651));
+            var _var653 = s;
+            return this.Deform((p) => p.Multiply(_var653));
         }
         public QuadGrid3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public QuadGrid3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public QuadGrid3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public QuadGrid3D TranslateX(Number s){
-            var _var652 = s;
-            return this.Deform((p) => p.Add(_var652.Tuple3(((Integer)0), ((Integer)0))));
+            var _var654 = s;
+            return this.Deform((p) => p.Add(_var654.Tuple3(((Integer)0), ((Integer)0))));
         }
         public QuadGrid3D TranslateY(Number s){
-            var _var653 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var653, ((Integer)0))));
+            var _var655 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var655, ((Integer)0))));
         }
         public QuadGrid3D TranslateZ(Number s){
-            var _var654 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var654)));
+            var _var656 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var656)));
         }
         public QuadGrid3D ScaleX(Number s){
-            var _var655 = s;
-            return this.Deform((p) => p.Multiply(_var655.Tuple3(((Integer)1), ((Integer)1))));
+            var _var657 = s;
+            return this.Deform((p) => p.Multiply(_var657.Tuple3(((Integer)1), ((Integer)1))));
         }
         public QuadGrid3D ScaleY(Number s){
-            var _var656 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var656, ((Integer)1))));
+            var _var658 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var658, ((Integer)1))));
         }
         public QuadGrid3D ScaleZ(Number s){
-            var _var657 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var657)));
+            var _var659 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var659)));
         }
-        public QuadGrid3D Add(Vector3D v) => this.Translate(v);
-        public static QuadGrid3D operator +(QuadGrid3D x, Vector3D v) => x.Add(v);
-        public QuadGrid3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static QuadGrid3D operator -(QuadGrid3D x, Vector3D v) => x.Subtract(v);
-        public QuadGrid3D Multiply(Vector3D v) => this.Scale(v);
-        public static QuadGrid3D operator *(QuadGrid3D x, Vector3D v) => x.Multiply(v);
-        public QuadGrid3D Multiply(Number s) => this.Scale(s);
-        public static QuadGrid3D operator *(QuadGrid3D x, Number s) => x.Multiply(s);
-        public QuadGrid3D Divide(Vector3D v) => this.Scale(((Number)1).Divide(v));
-        public static QuadGrid3D operator /(QuadGrid3D x, Vector3D v) => x.Divide(v);
-        public QuadGrid3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
-        public static QuadGrid3D operator /(QuadGrid3D x, Number s) => x.Divide(s);
         public Integer PrimitiveSize => ((Integer)4);
         // Unimplemented concept functions
     }
@@ -7058,6 +6826,7 @@ namespace Plato.DoublePrecision
         public Boolean AlmostEqual(Number y) => this.Subtract(y).Abs.LessThanOrEquals(this.MultiplyEpsilon(y));
         public Boolean AlmostZero => this.Abs.LessThan(Constants.Epsilon);
         public Boolean AlmostZeroOrOne => this.AlmostEqual(((Integer)0)).Or(this.AlmostEqual(((Integer)1)));
+        public Number Fract => this.Subtract(this.Floor);
         public Angle Turns => this.Multiply(Constants.TwoPi).Radians;
         public Angle Degrees => this.Divide(((Number)360)).Turns;
         public Angle Gradians => this.Divide(((Number)400)).Turns;
@@ -7077,6 +6846,7 @@ namespace Plato.DoublePrecision
         public Angle Acos => Intrinsics.Acos(this);
         public Angle Asin => Intrinsics.Asin(this);
         public Angle Atan => Intrinsics.Atan(this);
+        public Angle Atan2(Number x) => Intrinsics.Atan2(this, x);
         public Number Pow(Number y) => Intrinsics.Pow(this, y);
         public Number Log(Number y) => Intrinsics.Log(this, y);
         public Number Ln => Intrinsics.Ln(this);
@@ -7122,18 +6892,51 @@ namespace Plato.DoublePrecision
         public Number ZipComponents(Number y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Number Zero => this.MapComponents((i) => ((Number)0));
         public Number One => this.MapComponents((i) => ((Number)1));
-        public Number MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinValue => this.MapComponents((x) => x.MinValue);
         public Number MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Number Clamp(Number a, Number b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Number ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Number Clamp01 => this.ClampZeroOne;
         public Number Min(Number y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Number Max(Number y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public IArray<Number> Repeat(Integer n){
-            var _var658 = this;
-            return n.MapRange((i) => _var658);
+            var _var660 = this;
+            return n.MapRange((i) => _var660);
         }
         public Boolean NotEquals(Number b) => this.Equals(b).Not;
         public static Boolean operator !=(Number a, Number b) => a.NotEquals(b);
@@ -7204,36 +7007,35 @@ namespace Plato.DoublePrecision
         IModulo IModulo.Modulo(IModulo b) => this.Modulo((Integer)b);
         // Implemented concept functions and type functions
         public IArray<Integer> Range => this.MapRange((i) => i);
-        public IArray2D<TR> CartesianProduct<TR>(Integer b, System.Func<Integer, Integer, TR> f) => this.Range.CartesianProduct(b.Range, f);
         public Number ToNumber => this.Number;
         public Integer PlusOne => this.Add(((Integer)1));
         public Integer MinusOne => this.Subtract(((Integer)1));
         public Integer FromOne => ((Integer)1).Subtract(this);
         public Number FloatDivision(Integer y) => this.ToNumber.Divide(y.ToNumber);
         public IArray<Number> Fractions { get {
-            var _var659 = this;
-            return this.Range.Map((i) => i.FloatDivision(_var659.Subtract(((Integer)1))));
+            var _var661 = this;
+            return this.Range.Map((i) => i.FloatDivision(_var661.Subtract(((Integer)1))));
         }
          } public IArray<Number> FractionsExclusive { get {
-            var _var660 = this;
-            return this.Range.Map((i) => i.FloatDivision(_var660));
+            var _var662 = this;
+            return this.Range.Map((i) => i.FloatDivision(_var662));
         }
          } public IArray<Vector2D> CirclePoints => this.Fractions.Map((x) => x.Turns.UnitCircle);
         public Integer4 QuadFaceIndices(Integer row, Integer nCols, Integer nRows){
             var a = row.Multiply(nCols).Add(this);
             var b = row.Multiply(nCols).Add(this.Add(((Integer)1)).Modulo(nCols));
-            var c = row.Add(((Integer)1)).Modulo(nRows.Multiply(nCols)).Add(this.Add(((Integer)1)).Modulo(nCols));
-            var d = row.Add(((Integer)1)).Modulo(nRows.Multiply(nCols)).Add(this);
+            var c = row.Add(((Integer)1)).Modulo(nRows).Multiply(nCols).Add(this.Add(((Integer)1)).Modulo(nCols));
+            var d = row.Add(((Integer)1)).Modulo(nRows).Multiply(nCols).Add(this);
             return a.Tuple4(b, c, d);
         }
         public IArray2D<Integer4> AllQuadFaceIndices(Integer nRows, Boolean closedX, Boolean closedY){
-            var _var662 = nRows;
+            var _var664 = nRows;
             {
-                var _var661 = this;
+                var _var663 = this;
                 {
                     var nx = this.Subtract(closedX ? ((Integer)0) : ((Integer)1));
                     var ny = nRows.Subtract(closedY ? ((Integer)0) : ((Integer)1));
-                    return nx.Range.CartesianProduct(ny.Range, (col, row) => col.QuadFaceIndices(row, _var661, _var662));
+                    return nx.MakeArray2D(ny, (col, row) => col.QuadFaceIndices(row, _var663, _var664));
                 }
             }
         }
@@ -7263,8 +7065,8 @@ namespace Plato.DoublePrecision
         public IArray<TR> MapRange<TR>(System.Func<Integer, TR> f) => Intrinsics.MapRange(this, f);
         public IArray2D<TR> MakeArray2D<TR>(Integer rows, System.Func<Integer, Integer, TR> f) => Intrinsics.MakeArray2D(this, rows, f);
         public IArray<Integer> Repeat(Integer n){
-            var _var663 = this;
-            return n.MapRange((i) => _var663);
+            var _var665 = this;
+            return n.MapRange((i) => _var665);
         }
         public Boolean NotEquals(Integer b) => this.Equals(b).Not;
         public static Boolean operator !=(Integer a, Integer b) => a.NotEquals(b);
@@ -7325,8 +7127,8 @@ namespace Plato.DoublePrecision
         public Boolean Equals(String y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(String x, String y) => x.Equals(y);
         public IArray<String> Repeat(Integer n){
-            var _var664 = this;
-            return n.MapRange((i) => _var664);
+            var _var666 = this;
+            return n.MapRange((i) => _var666);
         }
         public Boolean NotEquals(String b) => this.Equals(b).Not;
         public static Boolean operator !=(String a, String b) => a.NotEquals(b);
@@ -7378,8 +7180,8 @@ namespace Plato.DoublePrecision
         public Boolean Equals(Boolean y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(Boolean x, Boolean y) => x.Equals(y);
         public IArray<Boolean> Repeat(Integer n){
-            var _var665 = this;
-            return n.MapRange((i) => _var665);
+            var _var667 = this;
+            return n.MapRange((i) => _var667);
         }
         public Boolean NotEquals(Boolean b) => this.Equals(b).Not;
         public static Boolean operator !=(Boolean a, Boolean b) => a.NotEquals(b);
@@ -7426,8 +7228,8 @@ namespace Plato.DoublePrecision
         public Boolean Equals(Character y) => Intrinsics.Equals(this, y);
         public static Boolean operator ==(Character x, Character y) => x.Equals(y);
         public IArray<Character> Repeat(Integer n){
-            var _var666 = this;
-            return n.MapRange((i) => _var666);
+            var _var668 = this;
+            return n.MapRange((i) => _var668);
         }
         public Boolean NotEquals(Character b) => this.Equals(b).Not;
         public static Boolean operator !=(Character a, Character b) => a.NotEquals(b);
@@ -7884,6 +7686,366 @@ namespace Plato.DoublePrecision
         // Unimplemented concept functions
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Sphere: ISolid
+    {
+        [DataMember] public readonly Number Radius;
+        public Sphere WithRadius(Number radius) => new Sphere(radius);
+        public Sphere(Number radius) => (Radius) = (radius);
+        public static Sphere Default = new Sphere();
+        public static Sphere New(Number radius) => new Sphere(radius);
+        public Plato.SinglePrecision.Sphere ChangePrecision() => (Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Sphere(Sphere self) => self.ChangePrecision();
+        public static implicit operator Number(Sphere self) => self.Radius;
+        public static implicit operator Sphere(Number value) => new Sphere(value);
+        public static implicit operator Sphere(Integer value) => new Sphere(value);
+        public static implicit operator Sphere(int value) => new Integer(value);
+        public static implicit operator Sphere(double value) => new Number(value);
+        public static implicit operator double(Sphere value) => value.Radius;
+        public override bool Equals(object obj) { if (!(obj is Sphere)) return false; var other = (Sphere)obj; return Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radius);
+        public override string ToString() => $"{{ \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(Sphere self) => new Dynamic(self);
+        public static implicit operator Sphere(Dynamic value) => value.As<Sphere>();
+        public String TypeName => "Sphere";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Cylinder: ISurface
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        public Cylinder WithHeight(Number height) => new Cylinder(height, Radius);
+        public Cylinder WithRadius(Number radius) => new Cylinder(Height, radius);
+        public Cylinder(Number height, Number radius) => (Height, Radius) = (height, radius);
+        public static Cylinder Default = new Cylinder();
+        public static Cylinder New(Number height, Number radius) => new Cylinder(height, radius);
+        public Plato.SinglePrecision.Cylinder ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Cylinder(Cylinder self) => self.ChangePrecision();
+        public static implicit operator (Number, Number)(Cylinder self) => (self.Height, self.Radius);
+        public static implicit operator Cylinder((Number, Number) value) => new Cylinder(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is Cylinder)) return false; var other = (Cylinder)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(Cylinder self) => new Dynamic(self);
+        public static implicit operator Cylinder(Dynamic value) => value.As<Cylinder>();
+        public String TypeName => "Cylinder";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
+        // Implemented concept functions and type functions
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Capsule: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        public Capsule WithHeight(Number height) => new Capsule(height, Radius);
+        public Capsule WithRadius(Number radius) => new Capsule(Height, radius);
+        public Capsule(Number height, Number radius) => (Height, Radius) = (height, radius);
+        public static Capsule Default = new Capsule();
+        public static Capsule New(Number height, Number radius) => new Capsule(height, radius);
+        public Plato.SinglePrecision.Capsule ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Capsule(Capsule self) => self.ChangePrecision();
+        public static implicit operator (Number, Number)(Capsule self) => (self.Height, self.Radius);
+        public static implicit operator Capsule((Number, Number) value) => new Capsule(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is Capsule)) return false; var other = (Capsule)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(Capsule self) => new Dynamic(self);
+        public static implicit operator Capsule(Dynamic value) => value.As<Capsule>();
+        public String TypeName => "Capsule";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Cone: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        public Cone WithHeight(Number height) => new Cone(height, Radius);
+        public Cone WithRadius(Number radius) => new Cone(Height, radius);
+        public Cone(Number height, Number radius) => (Height, Radius) = (height, radius);
+        public static Cone Default = new Cone();
+        public static Cone New(Number height, Number radius) => new Cone(height, radius);
+        public Plato.SinglePrecision.Cone ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Cone(Cone self) => self.ChangePrecision();
+        public static implicit operator (Number, Number)(Cone self) => (self.Height, self.Radius);
+        public static implicit operator Cone((Number, Number) value) => new Cone(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
+        public override bool Equals(object obj) { if (!(obj is Cone)) return false; var other = (Cone)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius} }}";
+        public static implicit operator Dynamic(Cone self) => new Dynamic(self);
+        public static implicit operator Cone(Dynamic value) => value.As<Cone>();
+        public String TypeName => "Cone";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct ConeSegment: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius1;
+        [DataMember] public readonly Number Radius2;
+        public ConeSegment WithHeight(Number height) => new ConeSegment(height, Radius1, Radius2);
+        public ConeSegment WithRadius1(Number radius1) => new ConeSegment(Height, radius1, Radius2);
+        public ConeSegment WithRadius2(Number radius2) => new ConeSegment(Height, Radius1, radius2);
+        public ConeSegment(Number height, Number radius1, Number radius2) => (Height, Radius1, Radius2) = (height, radius1, radius2);
+        public static ConeSegment Default = new ConeSegment();
+        public static ConeSegment New(Number height, Number radius1, Number radius2) => new ConeSegment(height, radius1, radius2);
+        public Plato.SinglePrecision.ConeSegment ChangePrecision() => (Height.ChangePrecision(), Radius1.ChangePrecision(), Radius2.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.ConeSegment(ConeSegment self) => self.ChangePrecision();
+        public static implicit operator (Number, Number, Number)(ConeSegment self) => (self.Height, self.Radius1, self.Radius2);
+        public static implicit operator ConeSegment((Number, Number, Number) value) => new ConeSegment(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number radius1, out Number radius2) { height = Height; radius1 = Radius1; radius2 = Radius2; }
+        public override bool Equals(object obj) { if (!(obj is ConeSegment)) return false; var other = (ConeSegment)obj; return Height.Equals(other.Height) && Radius1.Equals(other.Radius1) && Radius2.Equals(other.Radius2); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius1, Radius2);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius1\" = {Radius1}, \"Radius2\" = {Radius2} }}";
+        public static implicit operator Dynamic(ConeSegment self) => new Dynamic(self);
+        public static implicit operator ConeSegment(Dynamic value) => value.As<ConeSegment>();
+        public String TypeName => "ConeSegment";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius1", (String)"Radius2");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius1), new Dynamic(Radius2));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Box: ISolid
+    {
+        [DataMember] public readonly Vector3D Extent;
+        public Box WithExtent(Vector3D extent) => new Box(extent);
+        public Box(Vector3D extent) => (Extent) = (extent);
+        public static Box Default = new Box();
+        public static Box New(Vector3D extent) => new Box(extent);
+        public Plato.SinglePrecision.Box ChangePrecision() => (Extent.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Box(Box self) => self.ChangePrecision();
+        public static implicit operator Vector3D(Box self) => self.Extent;
+        public static implicit operator Box(Vector3D value) => new Box(value);
+        public override bool Equals(object obj) { if (!(obj is Box)) return false; var other = (Box)obj; return Extent.Equals(other.Extent); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Extent);
+        public override string ToString() => $"{{ \"Extent\" = {Extent} }}";
+        public static implicit operator Dynamic(Box self) => new Dynamic(self);
+        public static implicit operator Box(Dynamic value) => value.As<Box>();
+        public String TypeName => "Box";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Extent");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Extent));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Pyramid: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number BaseLength;
+        public Pyramid WithHeight(Number height) => new Pyramid(height, BaseLength);
+        public Pyramid WithBaseLength(Number baseLength) => new Pyramid(Height, baseLength);
+        public Pyramid(Number height, Number baseLength) => (Height, BaseLength) = (height, baseLength);
+        public static Pyramid Default = new Pyramid();
+        public static Pyramid New(Number height, Number baseLength) => new Pyramid(height, baseLength);
+        public Plato.SinglePrecision.Pyramid ChangePrecision() => (Height.ChangePrecision(), BaseLength.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Pyramid(Pyramid self) => self.ChangePrecision();
+        public static implicit operator (Number, Number)(Pyramid self) => (self.Height, self.BaseLength);
+        public static implicit operator Pyramid((Number, Number) value) => new Pyramid(value.Item1, value.Item2);
+        public void Deconstruct(out Number height, out Number baseLength) { height = Height; baseLength = BaseLength; }
+        public override bool Equals(object obj) { if (!(obj is Pyramid)) return false; var other = (Pyramid)obj; return Height.Equals(other.Height) && BaseLength.Equals(other.BaseLength); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, BaseLength);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"BaseLength\" = {BaseLength} }}";
+        public static implicit operator Dynamic(Pyramid self) => new Dynamic(self);
+        public static implicit operator Pyramid(Dynamic value) => value.As<Pyramid>();
+        public String TypeName => "Pyramid";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"BaseLength");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(BaseLength));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Torus: ISolid
+    {
+        [DataMember] public readonly Number MajorRadius;
+        [DataMember] public readonly Number MinorRadius;
+        public Torus WithMajorRadius(Number majorRadius) => new Torus(majorRadius, MinorRadius);
+        public Torus WithMinorRadius(Number minorRadius) => new Torus(MajorRadius, minorRadius);
+        public Torus(Number majorRadius, Number minorRadius) => (MajorRadius, MinorRadius) = (majorRadius, minorRadius);
+        public static Torus Default = new Torus();
+        public static Torus New(Number majorRadius, Number minorRadius) => new Torus(majorRadius, minorRadius);
+        public Plato.SinglePrecision.Torus ChangePrecision() => (MajorRadius.ChangePrecision(), MinorRadius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Torus(Torus self) => self.ChangePrecision();
+        public static implicit operator (Number, Number)(Torus self) => (self.MajorRadius, self.MinorRadius);
+        public static implicit operator Torus((Number, Number) value) => new Torus(value.Item1, value.Item2);
+        public void Deconstruct(out Number majorRadius, out Number minorRadius) { majorRadius = MajorRadius; minorRadius = MinorRadius; }
+        public override bool Equals(object obj) { if (!(obj is Torus)) return false; var other = (Torus)obj; return MajorRadius.Equals(other.MajorRadius) && MinorRadius.Equals(other.MinorRadius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(MajorRadius, MinorRadius);
+        public override string ToString() => $"{{ \"MajorRadius\" = {MajorRadius}, \"MinorRadius\" = {MinorRadius} }}";
+        public static implicit operator Dynamic(Torus self) => new Dynamic(self);
+        public static implicit operator Torus(Dynamic value) => value.As<Torus>();
+        public String TypeName => "Torus";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"MajorRadius", (String)"MinorRadius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(MajorRadius), new Dynamic(MinorRadius));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct NPrism: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Integer NumSides;
+        public NPrism WithHeight(Number height) => new NPrism(height, Radius, NumSides);
+        public NPrism WithRadius(Number radius) => new NPrism(Height, radius, NumSides);
+        public NPrism WithNumSides(Integer numSides) => new NPrism(Height, Radius, numSides);
+        public NPrism(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
+        public static NPrism Default = new NPrism();
+        public static NPrism New(Number height, Number radius, Integer numSides) => new NPrism(height, radius, numSides);
+        public Plato.SinglePrecision.NPrism ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.NPrism(NPrism self) => self.ChangePrecision();
+        public static implicit operator (Number, Number, Integer)(NPrism self) => (self.Height, self.Radius, self.NumSides);
+        public static implicit operator NPrism((Number, Number, Integer) value) => new NPrism(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
+        public override bool Equals(object obj) { if (!(obj is NPrism)) return false; var other = (NPrism)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius) && NumSides.Equals(other.NumSides); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius, NumSides);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius}, \"NumSides\" = {NumSides} }}";
+        public static implicit operator Dynamic(NPrism self) => new Dynamic(self);
+        public static implicit operator NPrism(Dynamic value) => value.As<NPrism>();
+        public String TypeName => "NPrism";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Tube: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number InnerRadius;
+        [DataMember] public readonly Number OuterRadius;
+        public Tube WithHeight(Number height) => new Tube(height, InnerRadius, OuterRadius);
+        public Tube WithInnerRadius(Number innerRadius) => new Tube(Height, innerRadius, OuterRadius);
+        public Tube WithOuterRadius(Number outerRadius) => new Tube(Height, InnerRadius, outerRadius);
+        public Tube(Number height, Number innerRadius, Number outerRadius) => (Height, InnerRadius, OuterRadius) = (height, innerRadius, outerRadius);
+        public static Tube Default = new Tube();
+        public static Tube New(Number height, Number innerRadius, Number outerRadius) => new Tube(height, innerRadius, outerRadius);
+        public Plato.SinglePrecision.Tube ChangePrecision() => (Height.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Tube(Tube self) => self.ChangePrecision();
+        public static implicit operator (Number, Number, Number)(Tube self) => (self.Height, self.InnerRadius, self.OuterRadius);
+        public static implicit operator Tube((Number, Number, Number) value) => new Tube(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number innerRadius, out Number outerRadius) { height = Height; innerRadius = InnerRadius; outerRadius = OuterRadius; }
+        public override bool Equals(object obj) { if (!(obj is Tube)) return false; var other = (Tube)obj; return Height.Equals(other.Height) && InnerRadius.Equals(other.InnerRadius) && OuterRadius.Equals(other.OuterRadius); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, InnerRadius, OuterRadius);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"InnerRadius\" = {InnerRadius}, \"OuterRadius\" = {OuterRadius} }}";
+        public static implicit operator Dynamic(Tube self) => new Dynamic(self);
+        public static implicit operator Tube(Dynamic value) => value.As<Tube>();
+        public String TypeName => "Tube";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"InnerRadius", (String)"OuterRadius");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(InnerRadius), new Dynamic(OuterRadius));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct NPyramid: ISolid
+    {
+        [DataMember] public readonly Number Height;
+        [DataMember] public readonly Number Radius;
+        [DataMember] public readonly Integer NumSides;
+        public NPyramid WithHeight(Number height) => new NPyramid(height, Radius, NumSides);
+        public NPyramid WithRadius(Number radius) => new NPyramid(Height, radius, NumSides);
+        public NPyramid WithNumSides(Integer numSides) => new NPyramid(Height, Radius, numSides);
+        public NPyramid(Number height, Number radius, Integer numSides) => (Height, Radius, NumSides) = (height, radius, numSides);
+        public static NPyramid Default = new NPyramid();
+        public static NPyramid New(Number height, Number radius, Integer numSides) => new NPyramid(height, radius, numSides);
+        public Plato.SinglePrecision.NPyramid ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.NPyramid(NPyramid self) => self.ChangePrecision();
+        public static implicit operator (Number, Number, Integer)(NPyramid self) => (self.Height, self.Radius, self.NumSides);
+        public static implicit operator NPyramid((Number, Number, Integer) value) => new NPyramid(value.Item1, value.Item2, value.Item3);
+        public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
+        public override bool Equals(object obj) { if (!(obj is NPyramid)) return false; var other = (NPyramid)obj; return Height.Equals(other.Height) && Radius.Equals(other.Radius) && NumSides.Equals(other.NumSides); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Height, Radius, NumSides);
+        public override string ToString() => $"{{ \"Height\" = {Height}, \"Radius\" = {Radius}, \"NumSides\" = {NumSides} }}";
+        public static implicit operator Dynamic(NPyramid self) => new Dynamic(self);
+        public static implicit operator NPyramid(Dynamic value) => value.As<NPyramid>();
+        public String TypeName => "NPyramid";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Height", (String)"Radius", (String)"NumSides");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Height), new Dynamic(Radius), new Dynamic(NumSides));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Ellipsoid: ISolid
+    {
+        [DataMember] public readonly Vector3D Radii;
+        public Ellipsoid WithRadii(Vector3D radii) => new Ellipsoid(radii);
+        public Ellipsoid(Vector3D radii) => (Radii) = (radii);
+        public static Ellipsoid Default = new Ellipsoid();
+        public static Ellipsoid New(Vector3D radii) => new Ellipsoid(radii);
+        public Plato.SinglePrecision.Ellipsoid ChangePrecision() => (Radii.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Ellipsoid(Ellipsoid self) => self.ChangePrecision();
+        public static implicit operator Vector3D(Ellipsoid self) => self.Radii;
+        public static implicit operator Ellipsoid(Vector3D value) => new Ellipsoid(value);
+        public override bool Equals(object obj) { if (!(obj is Ellipsoid)) return false; var other = (Ellipsoid)obj; return Radii.Equals(other.Radii); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Radii);
+        public override string ToString() => $"{{ \"Radii\" = {Radii} }}";
+        public static implicit operator Dynamic(Ellipsoid self) => new Dynamic(self);
+        public static implicit operator Ellipsoid(Dynamic value) => value.As<Ellipsoid>();
+        public String TypeName => "Ellipsoid";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Radii");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radii));
+        // Implemented concept functions and type functions
+        public Boolean ClosedX => ((Boolean)true);
+        public Boolean ClosedY => ((Boolean)true);
+        // Unimplemented concept functions
+        public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
+        public Vector3D Eval(Vector2D t) => Intrinsics.Eval(this, t);
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
     public readonly partial struct Vector2D: IVector<Vector2D>
     {
         [DataMember] public readonly Number X;
@@ -7975,7 +8137,39 @@ namespace Plato.DoublePrecision
         public Vector2D ZipComponents(Vector2D y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Vector2D Zero => this.MapComponents((i) => ((Number)0));
         public Vector2D One => this.MapComponents((i) => ((Number)1));
-        public Vector2D MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Vector2D MinValue => this.MapComponents((x) => x.MinValue);
         public Vector2D MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -7983,22 +8177,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector2D Clamp(Vector2D a, Vector2D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector2D ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Vector2D Clamp01 => this.ClampZeroOne;
         public Vector2D Abs => this.MapComponents((i) => i.Abs);
         public Vector2D Min(Vector2D y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Vector2D Max(Vector2D y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Vector2D Floor => this.MapComponents((c) => c.Floor);
+        public Vector2D Fract => this.MapComponents((c) => c.Fract);
         public Vector2D Multiply(Number s){
-            var _var667 = s;
-            return this.MapComponents((i) => i.Multiply(_var667));
+            var _var669 = s;
+            return this.MapComponents((i) => i.Multiply(_var669));
         }
         public static Vector2D operator *(Vector2D x, Number s) => x.Multiply(s);
         public Vector2D Divide(Number s){
-            var _var668 = s;
-            return this.MapComponents((i) => i.Divide(_var668));
+            var _var670 = s;
+            return this.MapComponents((i) => i.Divide(_var670));
         }
         public static Vector2D operator /(Vector2D x, Number s) => x.Divide(s);
         public Vector2D Modulo(Number s){
-            var _var669 = s;
-            return this.MapComponents((i) => i.Modulo(_var669));
+            var _var671 = s;
+            return this.MapComponents((i) => i.Modulo(_var671));
         }
         public static Vector2D operator %(Vector2D x, Number s) => x.Modulo(s);
         public Vector2D Add(Vector2D y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -8008,8 +8205,8 @@ namespace Plato.DoublePrecision
         public Vector2D Negative => this.MapComponents((a) => a.Negative);
         public static Vector2D operator -(Vector2D x) => x.Negative;
         public IArray<Vector2D> Repeat(Integer n){
-            var _var670 = this;
-            return n.MapRange((i) => _var670);
+            var _var672 = this;
+            return n.MapRange((i) => _var672);
         }
         public Boolean Equals(Vector2D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector2D a, Vector2D b) => a.Equals(b);
@@ -8135,10 +8332,8 @@ namespace Plato.DoublePrecision
             var rotationMatrix = Matrix4x4.New(right.X.Tuple4(correctedUp.X, forward.X, ((Integer)0)), right.Y.Tuple4(correctedUp.Y, forward.Y, ((Integer)0)), right.Z.Tuple4(correctedUp.Z, forward.Z, ((Integer)0)), ((Integer)0).Tuple4(((Integer)0), ((Integer)0), ((Integer)1)));
             return rotationMatrix.QuaternionFromRotationMatrix.Normalize;
         }
-        // Ambiguous: could not choose a best function implementation for Multiply(Vector3D, Vector3D):Vector3D:Vector3D.
         public Vector3D Multiply(Vector3D y) => this.ZipComponents(y, (a, b) => a.Multiply(b));
         public static Vector3D operator *(Vector3D x, Vector3D y) => x.Multiply(y);
-        // Ambiguous: could not choose a best function implementation for Divide(Vector3D, Vector3D):Vector3D:Vector3D.
         public Vector3D Divide(Vector3D y) => this.ZipComponents(y, (a, b) => a.Divide(b));
         public static Vector3D operator /(Vector3D x, Vector3D y) => x.Divide(y);
         public Vector3D Modulo(Vector3D y) => this.ZipComponents(y, (a, b) => a.Modulo(b));
@@ -8166,33 +8361,74 @@ namespace Plato.DoublePrecision
         public Vector3D ZipComponents(Vector3D y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Vector3D Zero => this.MapComponents((i) => ((Number)0));
         public Vector3D One => this.MapComponents((i) => ((Number)1));
-        public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
         public Boolean Between(Vector3D a, Vector3D b) => this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All((x0) => x0);
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector3D Clamp(Vector3D a, Vector3D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector3D ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Vector3D Clamp01 => this.ClampZeroOne;
         public Vector3D Abs => this.MapComponents((i) => i.Abs);
         public Vector3D Min(Vector3D y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Vector3D Max(Vector3D y) => this.ZipComponents(y, (a, b) => a.Max(b));
-        public Vector3D Multiply(Number s) => this.Scale(s);
+        public Vector3D Floor => this.MapComponents((c) => c.Floor);
+        public Vector3D Fract => this.MapComponents((c) => c.Fract);
+        public Vector3D Multiply(Number s){
+            var _var673 = s;
+            return this.MapComponents((i) => i.Multiply(_var673));
+        }
         public static Vector3D operator *(Vector3D x, Number s) => x.Multiply(s);
-        public Vector3D Divide(Number s) => this.Scale(((Number)1).Divide(s));
+        public Vector3D Divide(Number s){
+            var _var674 = s;
+            return this.MapComponents((i) => i.Divide(_var674));
+        }
         public static Vector3D operator /(Vector3D x, Number s) => x.Divide(s);
         public Vector3D Modulo(Number s){
-            var _var671 = s;
-            return this.MapComponents((i) => i.Modulo(_var671));
+            var _var675 = s;
+            return this.MapComponents((i) => i.Modulo(_var675));
         }
         public static Vector3D operator %(Vector3D x, Number s) => x.Modulo(s);
-        public Vector3D Add(Vector3D v) => this.Translate(v);
-        public static Vector3D operator +(Vector3D x, Vector3D v) => x.Add(v);
-        public Vector3D Subtract(Vector3D v) => this.Translate(v.Negative);
-        public static Vector3D operator -(Vector3D x, Vector3D v) => x.Subtract(v);
+        public Vector3D Add(Vector3D y) => this.ZipComponents(y, (a, b) => a.Add(b));
+        public static Vector3D operator +(Vector3D x, Vector3D y) => x.Add(y);
+        public Vector3D Subtract(Vector3D y) => this.ZipComponents(y, (a, b) => a.Subtract(b));
+        public static Vector3D operator -(Vector3D x, Vector3D y) => x.Subtract(y);
         public Vector3D Negative => this.MapComponents((a) => a.Negative);
         public static Vector3D operator -(Vector3D x) => x.Negative;
         public IArray<Vector3D> Repeat(Integer n){
-            var _var672 = this;
-            return n.MapRange((i) => _var672);
+            var _var676 = this;
+            return n.MapRange((i) => _var676);
         }
         public Boolean Equals(Vector3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector3D a, Vector3D b) => a.Equals(b);
@@ -8225,48 +8461,48 @@ namespace Plato.DoublePrecision
         public Vector3D QuadraticBezierDerivative(Vector3D b, Vector3D c, Number t) => b.Subtract(b).Multiply(((Number)2).Multiply(((Number)1).Subtract(t))).Add(c.Subtract(b).Multiply(((Number)2).Multiply(t)));
         public Vector3D QuadraticBezierSecondDerivative(Vector3D b, Vector3D c, Number t) => c.Subtract(b.Multiply(((Number)2)).Add(this));
         public Vector3D Deform(ITransform3D t){
-            var _var673 = t;
-            return this.Deform((v) => _var673.Transform(v));
+            var _var677 = t;
+            return this.Deform((v) => _var677.Transform(v));
         }
         public Vector3D Translate(Vector3D v){
-            var _var674 = v;
-            return this.Deform((p) => p.Add(_var674));
+            var _var678 = v;
+            return this.Deform((p) => p.Add(_var678));
         }
         public Vector3D Rotate(Quaternion q) => this.Deform(q);
         public Vector3D Scale(Vector3D v){
-            var _var675 = v;
-            return this.Deform((p) => p.Multiply(_var675));
+            var _var679 = v;
+            return this.Deform((p) => p.Multiply(_var679));
         }
         public Vector3D Scale(Number s){
-            var _var676 = s;
-            return this.Deform((p) => p.Multiply(_var676));
+            var _var680 = s;
+            return this.Deform((p) => p.Multiply(_var680));
         }
         public Vector3D RotateX(Angle a) => this.Rotate(a.XRotation);
         public Vector3D RotateY(Angle a) => this.Rotate(a.YRotation);
         public Vector3D RotateZ(Angle a) => this.Rotate(a.ZRotation);
         public Vector3D TranslateX(Number s){
-            var _var677 = s;
-            return this.Deform((p) => p.Add(_var677.Tuple3(((Integer)0), ((Integer)0))));
+            var _var681 = s;
+            return this.Deform((p) => p.Add(_var681.Tuple3(((Integer)0), ((Integer)0))));
         }
         public Vector3D TranslateY(Number s){
-            var _var678 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var678, ((Integer)0))));
+            var _var682 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(_var682, ((Integer)0))));
         }
         public Vector3D TranslateZ(Number s){
-            var _var679 = s;
-            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var679)));
+            var _var683 = s;
+            return this.Deform((p) => p.Add(((Integer)0).Tuple3(((Integer)0), _var683)));
         }
         public Vector3D ScaleX(Number s){
-            var _var680 = s;
-            return this.Deform((p) => p.Multiply(_var680.Tuple3(((Integer)1), ((Integer)1))));
+            var _var684 = s;
+            return this.Deform((p) => p.Multiply(_var684.Tuple3(((Integer)1), ((Integer)1))));
         }
         public Vector3D ScaleY(Number s){
-            var _var681 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var681, ((Integer)1))));
+            var _var685 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(_var685, ((Integer)1))));
         }
         public Vector3D ScaleZ(Number s){
-            var _var682 = s;
-            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var682)));
+            var _var686 = s;
+            return this.Deform((p) => p.Multiply(((Integer)1).Tuple3(((Integer)1), _var686)));
         }
         // Unimplemented concept functions
     }
@@ -8363,7 +8599,39 @@ namespace Plato.DoublePrecision
         public Vector4D ZipComponents(Vector4D y, System.Func<Number, Number, Number> f) => this.FromComponents(this.Components.Zip(y.Components, f));
         public Vector4D Zero => this.MapComponents((i) => ((Number)0));
         public Vector4D One => this.MapComponents((i) => ((Number)1));
-        public Vector4D MinValue => this.MapComponents((x) => x.MinValue);
+        public Number MaxComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Max(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Number MinComponent { get {
+            var n = this.NumComponents;
+            if (n.Equals(((Integer)0)))
+            return ((Integer)0);
+            var r = this.Component(((Integer)0));
+            {
+                var i = ((Integer)1);
+                while (i.LessThan(n))
+                {
+                    r = r.Min(this.Component(i));
+                    i = i.Add(((Integer)1));
+                }
+
+            }
+            return r;
+        }
+         } public Vector4D MinValue => this.MapComponents((x) => x.MinValue);
         public Vector4D MaxValue => this.MapComponents((x) => x.MaxValue);
         public Boolean AllComponents(System.Func<Number, Boolean> predicate) => this.Components.All(predicate);
         public Boolean AnyComponent(System.Func<Number, Boolean> predicate) => this.Components.Any(predicate);
@@ -8371,22 +8639,25 @@ namespace Plato.DoublePrecision
         public Boolean BetweenZeroOne => this.Between(this.Zero, this.One);
         public Vector4D Clamp(Vector4D a, Vector4D b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Vector4D ClampZeroOne => this.Clamp(this.Zero, this.One);
+        public Vector4D Clamp01 => this.ClampZeroOne;
         public Vector4D Abs => this.MapComponents((i) => i.Abs);
         public Vector4D Min(Vector4D y) => this.ZipComponents(y, (a, b) => a.Min(b));
         public Vector4D Max(Vector4D y) => this.ZipComponents(y, (a, b) => a.Max(b));
+        public Vector4D Floor => this.MapComponents((c) => c.Floor);
+        public Vector4D Fract => this.MapComponents((c) => c.Fract);
         public Vector4D Multiply(Number s){
-            var _var683 = s;
-            return this.MapComponents((i) => i.Multiply(_var683));
+            var _var687 = s;
+            return this.MapComponents((i) => i.Multiply(_var687));
         }
         public static Vector4D operator *(Vector4D x, Number s) => x.Multiply(s);
         public Vector4D Divide(Number s){
-            var _var684 = s;
-            return this.MapComponents((i) => i.Divide(_var684));
+            var _var688 = s;
+            return this.MapComponents((i) => i.Divide(_var688));
         }
         public static Vector4D operator /(Vector4D x, Number s) => x.Divide(s);
         public Vector4D Modulo(Number s){
-            var _var685 = s;
-            return this.MapComponents((i) => i.Modulo(_var685));
+            var _var689 = s;
+            return this.MapComponents((i) => i.Modulo(_var689));
         }
         public static Vector4D operator %(Vector4D x, Number s) => x.Modulo(s);
         public Vector4D Add(Vector4D y) => this.ZipComponents(y, (a, b) => a.Add(b));
@@ -8396,8 +8667,8 @@ namespace Plato.DoublePrecision
         public Vector4D Negative => this.MapComponents((a) => a.Negative);
         public static Vector4D operator -(Vector4D x) => x.Negative;
         public IArray<Vector4D> Repeat(Integer n){
-            var _var686 = this;
-            return n.MapRange((i) => _var686);
+            var _var690 = this;
+            return n.MapRange((i) => _var690);
         }
         public Boolean Equals(Vector4D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Vector4D a, Vector4D b) => a.Equals(b);
@@ -8485,8 +8756,8 @@ namespace Plato.DoublePrecision
         public Number M33 => Column3.Z;
         public Number Determinant => M11.Multiply(M22.Multiply(M33).Subtract(M23.Multiply(M32))).Subtract(M12.Multiply(M21.Multiply(M33).Subtract(M23.Multiply(M31))).Add(M13.Multiply(M21.Multiply(M32).Subtract(M22.Multiply(M31)))));
         public IArray<Matrix3x3> Repeat(Integer n){
-            var _var687 = this;
-            return n.MapRange((i) => _var687);
+            var _var691 = this;
+            return n.MapRange((i) => _var691);
         }
         public Boolean Equals(Matrix3x3 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Matrix3x3 a, Matrix3x3 b) => a.Equals(b);
@@ -8605,8 +8876,8 @@ namespace Plato.DoublePrecision
             }
         }
          } public IArray<Matrix4x4> Repeat(Integer n){
-            var _var688 = this;
-            return n.MapRange((i) => _var688);
+            var _var692 = this;
+            return n.MapRange((i) => _var692);
         }
         public Boolean Equals(Matrix4x4 b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Matrix4x4 a, Matrix4x4 b) => a.Equals(b);
@@ -8636,8 +8907,8 @@ namespace Plato.DoublePrecision
         public Vector3D TransformNormal(Vector3D v) => v;
         public Matrix4x4 Matrix => Matrix4x4.Identity;
         public IArray<IdentityTransform3D> Repeat(Integer n){
-            var _var689 = this;
-            return n.MapRange((i) => _var689);
+            var _var693 = this;
+            return n.MapRange((i) => _var693);
         }
         public Boolean Equals(IdentityTransform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(IdentityTransform3D a, IdentityTransform3D b) => a.Equals(b);
@@ -8645,6 +8916,34 @@ namespace Plato.DoublePrecision
         public static Boolean operator !=(IdentityTransform3D a, IdentityTransform3D b) => a.NotEquals(b);
         public Matrix4x4 Matrix4x4 => this.Matrix;
         public static implicit operator Matrix4x4(IdentityTransform3D t) => t.Matrix4x4;
+        // Unimplemented concept functions
+    }
+    [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
+    public readonly partial struct Translation3D: ITransform3D
+    {
+        [DataMember] public readonly Vector3D Translation;
+        public Translation3D WithTranslation(Vector3D translation) => new Translation3D(translation);
+        public Translation3D(Vector3D translation) => (Translation) = (translation);
+        public static Translation3D Default = new Translation3D();
+        public static Translation3D New(Vector3D translation) => new Translation3D(translation);
+        public Plato.SinglePrecision.Translation3D ChangePrecision() => (Translation.ChangePrecision());
+        public static implicit operator Plato.SinglePrecision.Translation3D(Translation3D self) => self.ChangePrecision();
+        public static implicit operator Vector3D(Translation3D self) => self.Translation;
+        public static implicit operator Translation3D(Vector3D value) => new Translation3D(value);
+        public override bool Equals(object obj) { if (!(obj is Translation3D)) return false; var other = (Translation3D)obj; return Translation.Equals(other.Translation); }
+        public override int GetHashCode() => Intrinsics.CombineHashCodes(Translation);
+        public override string ToString() => $"{{ \"Translation\" = {Translation} }}";
+        public static implicit operator Dynamic(Translation3D self) => new Dynamic(self);
+        public static implicit operator Translation3D(Dynamic value) => value.As<Translation3D>();
+        public String TypeName => "Translation3D";
+        public IArray<String> FieldNames => Intrinsics.MakeArray<String>((String)"Translation");
+        public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Translation));
+        // Implemented concept functions and type functions
+        public Matrix4x4 Matrix => this.Translation.Matrix;
+        public Vector3D Transform(Vector3D v) => v.Add(this.Translation);
+        public Vector3D TransformNormal(Vector3D v) => v;
+        public Matrix4x4 Matrix4x4 => this.Matrix;
+        public static implicit operator Matrix4x4(Translation3D t) => t.Matrix4x4;
         // Unimplemented concept functions
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
@@ -8678,8 +8977,8 @@ namespace Plato.DoublePrecision
         public Vector3D TransformNormal(Vector3D v) => this.Rotation.TransformNormal(v);
         public Matrix4x4 Matrix => this.Scale.Matrix.Multiply(this.Rotation.Matrix.Multiply(this.Translation.Matrix));
         public IArray<Transform3D> Repeat(Integer n){
-            var _var690 = this;
-            return n.MapRange((i) => _var690);
+            var _var694 = this;
+            return n.MapRange((i) => _var694);
         }
         public Boolean Equals(Transform3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Transform3D a, Transform3D b) => a.Equals(b);
@@ -8718,8 +9017,8 @@ namespace Plato.DoublePrecision
         public Vector3D TransformNormal(Vector3D v) => this.Rotation.TransformNormal(v);
         public Matrix4x4 Matrix => this.Rotation.Matrix.Multiply(this.Position.Matrix);
         public IArray<Pose3D> Repeat(Integer n){
-            var _var691 = this;
-            return n.MapRange((i) => _var691);
+            var _var695 = this;
+            return n.MapRange((i) => _var695);
         }
         public Boolean Equals(Pose3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Pose3D a, Pose3D b) => a.Equals(b);
@@ -8762,8 +9061,8 @@ namespace Plato.DoublePrecision
         public Vector3D TransformNormal(Vector3D v) => this.Pose3D.TransformNormal(v);
         public Matrix4x4 Matrix => this.Pose3D.Matrix;
         public IArray<Frame3D> Repeat(Integer n){
-            var _var692 = this;
-            return n.MapRange((i) => _var692);
+            var _var696 = this;
+            return n.MapRange((i) => _var696);
         }
         public Boolean Equals(Frame3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Frame3D a, Frame3D b) => a.Equals(b);
@@ -8902,8 +9201,8 @@ namespace Plato.DoublePrecision
             return ((Number)1).Subtract(((Number)2).Multiply(yy.Add(zz))).Tuple4(((Number)2).Multiply(xy.Add(wz)), ((Number)2).Multiply(xz.Subtract(wy)), ((Number)0)).Tuple4(((Number)2).Multiply(xy.Subtract(wz)).Tuple4(((Number)1).Subtract(((Number)2).Multiply(zz.Add(xx))), ((Number)2).Multiply(yz.Add(wx)), ((Number)0)), ((Number)2).Multiply(xz.Add(wy)).Tuple4(((Number)2).Multiply(yz.Subtract(wx)), ((Number)1).Subtract(((Number)2).Multiply(yy.Add(xx))), ((Number)0)), ((Number)0).Tuple4(((Number)0), ((Number)0), ((Number)1)));
         }
          } public IArray<Quaternion> Repeat(Integer n){
-            var _var693 = this;
-            return n.MapRange((i) => _var693);
+            var _var697 = this;
+            return n.MapRange((i) => _var697);
         }
         public Boolean Equals(Quaternion b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Quaternion a, Quaternion b) => a.Equals(b);
@@ -8952,8 +9251,8 @@ namespace Plato.DoublePrecision
          } public static implicit operator Quaternion(AxisAngle aa) => aa.Quaternion;
         public Matrix4x4 Matrix => this.Quaternion.Matrix;
         public IArray<AxisAngle> Repeat(Integer n){
-            var _var694 = this;
-            return n.MapRange((i) => _var694);
+            var _var698 = this;
+            return n.MapRange((i) => _var698);
         }
         public Boolean Equals(AxisAngle b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(AxisAngle a, AxisAngle b) => a.Equals(b);
@@ -9004,8 +9303,8 @@ namespace Plato.DoublePrecision
         public Vector3D TransformNormal(Vector3D v) => this.Quaternion.TransformNormal(v);
         public Matrix4x4 Matrix => this.Quaternion.Matrix;
         public IArray<EulerAngles> Repeat(Integer n){
-            var _var695 = this;
-            return n.MapRange((i) => _var695);
+            var _var699 = this;
+            return n.MapRange((i) => _var699);
         }
         public Boolean Equals(EulerAngles b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(EulerAngles a, EulerAngles b) => a.Equals(b);
@@ -9041,8 +9340,8 @@ namespace Plato.DoublePrecision
         public Vector3D TransformNormal(Vector3D v) => this.Quaternion.TransformNormal(v);
         public Matrix4x4 Matrix => this.Quaternion.Matrix;
         public IArray<Rotation3D> Repeat(Integer n){
-            var _var696 = this;
-            return n.MapRange((i) => _var696);
+            var _var700 = this;
+            return n.MapRange((i) => _var700);
         }
         public Boolean Equals(Rotation3D b) => this.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All((x) => x);
         public static Boolean operator ==(Rotation3D a, Rotation3D b) => a.Equals(b);
@@ -9084,28 +9383,28 @@ namespace Plato.DoublePrecision
     public static class Extensions
     {
         public static IArray<Integer> Indices<T>(this IArray<T> xs) => xs.Count.Range;
-        public static Integer Count<T>(this IArray2D<T> xs) => xs.RowCount.Multiply(xs.ColumnCount);
-        public static Integer Count<T>(this IArray3D<T> xs) => xs.RowCount.Multiply(xs.ColumnCount.Multiply(xs.LayerCount));
-        public static T At<T>(this IArray2D<T> xs, Integer i) => xs.At(i.Modulo(xs.ColumnCount), i.Divide(xs.ColumnCount));
-        public static T At<T>(this IArray3D<T> xs, Integer i) => xs.At(i.Modulo(xs.ColumnCount), i.Divide(xs.ColumnCount), i.Divide(xs.LayerCount));
+        public static Integer Count<T>(this IArray2D<T> xs) => xs.NumRows.Multiply(xs.NumColumns);
+        public static Integer Count<T>(this IArray3D<T> xs) => xs.NumRows.Multiply(xs.NumColumns.Multiply(xs.NumLayers));
+        public static T At<T>(this IArray2D<T> xs, Integer i) => xs.At(i.Modulo(xs.NumColumns), i.Divide(xs.NumColumns));
+        public static T At<T>(this IArray3D<T> xs, Integer i) => xs.At(i.Modulo(xs.NumColumns), i.Divide(xs.NumColumns), i.Divide(xs.NumLayers));
         public static Boolean IsEmpty<T>(this IArray<T> xs) => xs.Count.Equals(((Integer)0));
         public static T First<T>(this IArray<T> xs) => xs.At(((Integer)0));
         public static T Last<T>(this IArray<T> xs) => xs.At(xs.Count.Subtract(((Integer)1)));
         public static T Middle<T>(this IArray<T> xs, Integer n) => xs.At(xs.Count.Divide(((Integer)2)));
         public static IArray<T> Slice<T>(this IArray<T> xs, Integer from, Integer to) => xs.Subarray(from, to.Subtract(from));
         public static IArray<IArray<T>> Slices<T>(this IArray<T> xs, Integer size){
-            var _var698 = size;
+            var _var702 = size;
             {
-                var _var697 = xs;
-                return xs.Count.Divide(size).MapRange((i) => _var697.NthSlice(i, _var698));
+                var _var701 = xs;
+                return xs.Count.Divide(size).MapRange((i) => _var701.NthSlice(i, _var702));
             }
         }
         public static IArray<T> NthSlice<T>(this IArray<T> xs, Integer n, Integer size) => xs.Subarray(n.Multiply(size), size);
         public static IArray<T> Subarray<T>(this IArray<T> xs, Integer from, Integer count){
-            var _var700 = from;
+            var _var704 = from;
             {
-                var _var699 = xs;
-                return count.MapRange((i) => _var699.At(i.Add(_var700)));
+                var _var703 = xs;
+                return count.MapRange((i) => _var703.At(i.Add(_var704)));
             }
         }
         public static IArray<T> Skip<T>(this IArray<T> xs, Integer n) => xs.Subarray(n, xs.Count.Subtract(n));
@@ -9154,103 +9453,104 @@ namespace Plato.DoublePrecision
             return ((Boolean)false);
         }
         public static IArray<TR> Map<T0, TR>(this IArray<T0> xs, System.Func<T0, TR> f){
-            var _var702 = xs;
+            var _var706 = xs;
             {
-                var _var701 = f;
-                return xs.Count.MapRange((i) => _var701.Invoke(_var702.At(i)));
+                var _var705 = f;
+                return xs.Count.MapRange((i) => _var705.Invoke(_var706.At(i)));
             }
         }
         public static IArray<TR> Zip<T0, T1, TR>(this IArray<T0> xs, IArray<T1> ys, System.Func<T0, T1, TR> f){
-            var _var705 = ys;
+            var _var709 = ys;
             {
-                var _var704 = xs;
+                var _var708 = xs;
                 {
-                    var _var703 = f;
-                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var703.Invoke(_var704.At(i), _var705.At(i)));
+                    var _var707 = f;
+                    return xs.Count.Lesser(ys.Count).MapRange((i) => _var707.Invoke(_var708.At(i), _var709.At(i)));
                 }
             }
         }
         public static IArray<TR> Zip<T0, T1, T2, TR>(this IArray<T0> xs, IArray<T1> ys, IArray<T2> zs, System.Func<T0, T1, T2, TR> f){
-            var _var709 = zs;
+            var _var713 = zs;
             {
-                var _var708 = ys;
+                var _var712 = ys;
                 {
-                    var _var707 = xs;
+                    var _var711 = xs;
                     {
-                        var _var706 = f;
-                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var706.Invoke(_var707.At(i), _var708.At(i), _var709.At(i)));
+                        var _var710 = f;
+                        return xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => _var710.Invoke(_var711.At(i), _var712.At(i), _var713.At(i)));
                     }
                 }
             }
         }
         public static T ModuloAt<T>(this IArray<T> xs, Integer n) => xs.At(n.Modulo(xs.Count));
         public static IArray<T> Shift<T>(this IArray<T> xs, Integer n){
-            var _var710 = xs;
-            return xs.Count.MapRange((i) => _var710.ModuloAt(i));
+            var _var714 = xs;
+            return xs.Count.MapRange((i) => _var714.ModuloAt(i));
         }
         public static IArray<TR> WithNext<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f) => xs.Drop(((Integer)1)).Zip(xs.Skip(((Integer)1)), f);
         public static IArray<TR> WithNextAndBeginning<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f) => xs.Zip(xs.Shift(((Integer)1)), f);
         public static IArray<TR> WithNext<T1, TR>(this IArray<T1> xs, System.Func<T1, T1, TR> f, Boolean connect) => connect ? xs.WithNextAndBeginning(f) : xs.WithNext(f);
         public static IArray<T> EveryNth<T>(this IArray<T> self, Integer n){
-            var _var712 = n;
+            var _var716 = n;
             {
-                var _var711 = self;
-                return self.Indices().Map((i) => _var711.ModuloAt(i.Multiply(_var712)));
+                var _var715 = self;
+                return self.Indices().Map((i) => _var715.ModuloAt(i.Multiply(_var716)));
             }
         }
         public static IArray2D<TR> CartesianProduct<T0, T1, TR>(this IArray<T0> columns, IArray<T1> rows, System.Func<T0, T1, TR> func){
-            var _var715 = rows;
+            var _var719 = rows;
             {
-                var _var714 = columns;
+                var _var718 = columns;
                 {
-                    var _var713 = func;
-                    return columns.Count.MakeArray2D(rows.Count, (i, j) => _var713.Invoke(_var714.At(i), _var715.At(j)));
+                    var _var717 = func;
+                    return columns.Count.MakeArray2D(rows.Count, (i, j) => _var717.Invoke(_var718.At(i), _var719.At(j)));
                 }
             }
         }
         public static IArray<T> Reverse<T>(this IArray<T> self){
-            var _var717 = self;
+            var _var721 = self;
             {
-                var _var716 = self;
-                return self.Indices().Map((i) => _var716.At(_var717.Count.Subtract(((Integer)1).Subtract(i))));
+                var _var720 = self;
+                return self.Indices().Map((i) => _var720.At(_var721.Count.Subtract(((Integer)1)).Subtract(i)));
             }
         }
         public static IArray<T> Concat<T>(this IArray<T> xs, IArray<T> ys){
-            var _var721 = xs;
+            var _var725 = xs;
             {
-                var _var720 = ys;
+                var _var724 = ys;
                 {
-                    var _var719 = xs;
+                    var _var723 = xs;
                     {
-                        var _var718 = xs;
-                        return xs.Count.Add(ys.Count).MapRange((i) => i.LessThan(_var718.Count) ? _var719.At(i) : _var720.At(i.Subtract(_var721.Count)));
+                        var _var722 = xs;
+                        return xs.Count.Add(ys.Count).MapRange((i) => i.LessThan(_var722.Count) ? _var723.At(i) : _var724.At(i.Subtract(_var725.Count)));
                     }
                 }
             }
         }
         public static IArray<T> Prepend<T>(this IArray<T> self, T value){
-            var _var723 = self;
+            var _var727 = self;
             {
-                var _var722 = value;
-                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var722 : _var723.At(i.Subtract(((Integer)1))));
+                var _var726 = value;
+                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var726 : _var727.At(i.Subtract(((Integer)1))));
             }
         }
         public static IArray<T> Append<T>(this IArray<T> self, T value){
-            var _var725 = self;
+            var _var729 = self;
             {
-                var _var724 = value;
-                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var724 : _var725.At(i.Subtract(((Integer)1))));
+                var _var728 = value;
+                return self.Count.Add(((Integer)1)).MapRange((i) => i.Equals(((Integer)0)) ? _var728 : _var729.At(i.Subtract(((Integer)1))));
             }
         }
         public static IArray<T> PrependAndAppend<T>(this IArray<T> self, T before, T after) => self.Prepend(before).Append(after);
         public static IArray2D<TR> Map<T0, TR>(this IArray2D<T0> xs, System.Func<T0, TR> f){
-            var _var727 = xs;
+            var _var731 = xs;
             {
-                var _var726 = f;
-                return xs.ColumnCount.MakeArray2D(xs.RowCount, (a, b) => _var726.Invoke(_var727.At(a, b)));
+                var _var730 = f;
+                return xs.NumColumns.MakeArray2D(xs.NumRows, (a, b) => _var730.Invoke(_var731.At(a, b)));
             }
         }
         public static Bounds3D Bounds(this IArray<Vector3D> xs) => xs.Reduce(Bounds3D.Empty, (a, b) => a.Include(b));
+        public static IArray2D<Integer4> AllQuadFaceIndices<T>(this IArray2D<T> xs, Boolean closedX, Boolean closedY) => xs.NumColumns.AllQuadFaceIndices(xs.NumRows, closedX, closedY);
         public static IArray<Vector2D> Points(this IArray<Line2D> xs) => xs.FlatMap((x) => x);
         public static IArray<Vector3D> Points(this IArray<Line3D> xs) => xs.FlatMap((x) => x);
         public static IArray<Vector2D> Points(this IArray<Triangle2D> xs) => xs.FlatMap((x) => x);

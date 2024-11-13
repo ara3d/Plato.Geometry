@@ -55,7 +55,8 @@ library INumerical
     AlmostEqual(x: Number, y: Number): Boolean => (x-y).Abs <= x.MultiplyEpsilon(y);
     AlmostZero(x: Number): Boolean => x.Abs < Epsilon;
     AlmostZeroOrOne(x: Number): Boolean => AlmostEqual(x, 0) || AlmostEqual(x, 1);
-   
+    Fract(x: Number): Number => x - x.Floor;
+
     //==
     // IArithmetic operations 
 
@@ -170,6 +171,26 @@ library INumerical
     One(x: INumerical): INumerical
         => x.MapComponents((i) => 1.0);
 
+    MaxComponent(x: INumerical): Number
+    {
+        var n = x.NumComponents;
+        if (n == 0) return 0;
+        var r = x.Component(0);
+        for (var i = 1; i < n; i = i + 1)
+            r = r.Max(x.Component(i));
+        return r;
+    }
+
+    MinComponent(x: INumerical): Number
+    {
+        var n = x.NumComponents;
+        if (n == 0) return 0;
+        var r = x.Component(0);
+        for (var i = 1; i < n; i = i + 1)
+            r = r.Min(x.Component(i));
+        return r;
+    }
+
     MinValue(x: INumerical): INumerical
         => x.MapComponents((x) => x.MinValue);
 
@@ -194,6 +215,9 @@ library INumerical
     ClampZeroOne(x: INumerical): INumerical
         => x.Clamp(x.Zero, x.One);
 
+    Clamp01(x: INumerical): INumerical
+        => x.ClampZeroOne;
+
     Abs(x: INumerical): INumerical
 		=> x.MapComponents((i) => i.Abs);
     
@@ -203,6 +227,14 @@ library INumerical
     Max(x: INumerical, y: INumerical): INumerical 
         => x.ZipComponents(y, (a, b) => a.Max(b));
     
+    // TODO: functions like the following two should be auto-implemented by Plato. It is silly to repeat ourselves here. 
+
+    Floor(n: INumerical): INumerical
+        => n.MapComponents((c) => c.Floor);
+
+    Fract(n: INumerical): INumerical
+        => n.MapComponents((c) => c.Fract);
+
     //==
     // IEquatable functions
 

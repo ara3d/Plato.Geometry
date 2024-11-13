@@ -1,11 +1,106 @@
-﻿library Solids
+﻿//==
+// 3D Solids 
+// These are all assumed to be centered at the origin.
+//==
+
+type Sphere
+    implements ISolid
+{
+    Radius: Number;
+}
+
+type Cylinder
+    implements ISurface
+{
+    Height: Number;
+    Radius: Number;
+}
+
+type Capsule
+    implements ISolid
+{
+    Height: Number;
+    Radius: Number;
+}
+
+type Cone
+    implements ISolid
+{
+    Height: Number;
+    Radius: Number;
+}
+
+type ConeSegment
+    implements ISolid
+{
+    Height: Number;
+    Radius1: Number;
+    Radius2: Number;
+}
+
+type Box
+    implements ISolid
+{
+    Extent: Vector3D; 
+}
+
+type Pyramid
+    implements ISolid
+{
+    Height: Number;
+    BaseLength: Number;
+}
+
+type Torus
+    implements ISolid
+{
+    MajorRadius: Number;
+    MinorRadius: Number;
+}
+
+// TODO: not implemented yet
+type NPrism
+    implements ISolid
+{
+    Height: Number;
+    Radius: Number;
+    NumSides: Integer;
+}
+
+// TODO: not implemented yet
+type Tube
+    implements ISolid
+{
+    Height: Number;
+    InnerRadius: Number;
+    OuterRadius: Number;
+}
+
+// TODO: not implemented yet
+type NPyramid
+    implements ISolid
+{
+    Height: Number;
+    Radius: Number;
+    NumSides: Integer;
+}
+
+// TODO: not implemented yet
+type Ellipsoid
+    implements ISolid
+{
+    Radii: Vector3D;
+}
+
+
+library Solids
 {
     /*
-    
+
     //==
     // Sphere
 
-    Unit(_: Sphere) => 1;
+    Unit(_: Sphere): Sphere => 1;
 
     // Evaluates the 3D position on the sphere surface for given spherical coordinates (u, v)
     Eval(x: Sphere, uv: Vector2D): Vector3D
@@ -15,22 +110,16 @@
 
     // Finds the spherical coordinates (u, v) closest to a given point p
     ClosestUV(x: Sphere, p: Vector3D): Vector2D
-        => (Atan2(p.Y, p.X), Acos(p.Z / x.Radius));
+        => (Atan2(p.Y, p.X), (p.Z / x.Radius).Turns.Acos);
 
     // Computes the signed distance from point p to the sphere surface
     Distance(x: Sphere, p: Vector3D): Number
         => p.Length - x.Radius;
 
-    // Evaluates the 3D position on the cylinder surface for given parameters (u, v)
-    Eval(x: Cylinder, uv: Vector2D): Vector3D
-        => (x.Radius * uv.X.Cos,
-            x.Radius * uv.X.Sin,
-            uv.Y * x.Height);
-
     //==
     // Cylinder
 
-    Unit(_: Cylinder) => (1, 1);
+    Unit(_: Cylinder): Cylinder => (1, 1);
 
     // Finds the parameters (u, v) closest to a given point p
     ClosestUV(x: Cylinder, p: Vector3D): Vector2D
@@ -39,7 +128,7 @@
     // Computes the signed distance from point p to the finite cylinder
     Distance(x: Cylinder, p: Vector3D): Number
     {
-        var d = p.Vector2D.Length - x.Radius;
+        var d = p.XY.Length - x.Radius;
         var dz = Max(p.Z - x.Height, -p.Z, 0.0);
         if (d > 0.0 && dz > 0.0)
             return (d.Square + dz.Square).Sqrt;
@@ -51,17 +140,24 @@
             return Max(d, dz); // Negative inside
     }
 
+    
+    // Evaluates the 3D position on the cylinder surface for given parameters (u, v)
+    Eval(x: Cylinder, uv: Vector2D): Vector3D
+        => (x.Radius * uv.X.Cos,
+            x.Radius * uv.X.Sin,
+            uv.Y * x.Height);
+
     //==
     // Capsule
 
-    Unit(_: Capsule) => (1, 1);
+    Unit(_: Capsule): Capsule => (1, 1);
 
     // Evaluates the 3D position on the capsule surface for given parameters (u, v)
     Eval(x: Capsule, uv: Vector2D): Vector3D
     {
         var angle = uv.X;
-        var v = uv.Y * (x.Height - 2 * x.Radius);
-        var h = v - (x.Height - 2 * x.Radius) / 2.0;
+        var v = uv.Y * (x.Height - (2.0 * x.Radius));
+        var h = v - (x.Height - (2.0 * x.Radius)) / 2.0;
 
         // Position along the central axis
         var p = new Vector3D(0, 0, h);
@@ -70,21 +166,21 @@
         if (h > ((x.Height - 2 * x.Radius) / 2.0))
         {
             // Top hemisphere
-            var theta = (h - ((x.Height - 2 * x.Radius) / 2.0)) / x.Radius;
+            var theta = (h - ((x.Height - 2.0 * x.Radius) / 2.0)) / x.Radius;
             p = new Vector3D(
                 x.Radius * theta.Cos * angle.Cos,
                 x.Radius * theta.Cos * angle.Sin,
-                ((x.Height - 2 * x.Radius) / 2.0) + x.Radius * theta.Sin
+                ((x.Height - 2.0 * x.Radius) / 2.0) + x.Radius * theta.Sin
             );
         }
-        else if (h < -((x.Height - 2 * x.Radius) / 2.0))
+        else if (h < -((x.Height - 2.0 * x.Radius) / 2.0))
         {
             // Bottom hemisphere
-            var theta = (h + ((x.Height - 2 * x.Radius) / 2.0)) / x.Radius;
+            var theta = (h + ((x.Height - 2.0 * x.Radius) / 2.0)) / x.Radius;
             p = new Vector3D(
                 x.Radius * theta.Cos * angle.Cos,
                 x.Radius * theta.Cos * angle.Sin,
-                -((x.Height - 2 * x.Radius) / 2.0) + x.Radius * theta.Sin
+                -((x.Height - 2.0 * x.Radius) / 2.0) + x.Radius * theta.Sin
             );
         }
         else
@@ -223,13 +319,13 @@
     }
 
     //==
-    // Box3D
+    // Box
     
-    Unit(_: Box3D): Box3D 
+    Unit(_: Box): Box 
         => (1, 1, 1);
 
     // Evaluates the 3D position on the box surface for given parameters (u, v)
-    Eval(x: Box3D, uv: Vector2D): Vector3D
+    Eval(x: Box, uv: Vector2D): Vector3D
     {
         // Map uv to six faces of the box
         var face = (uv.Y * 6.0).Floor;
@@ -249,18 +345,16 @@
     }
 
     // Finds the parameters (u, v) closest to a given point p
-    ClosestUV(x: Box3D, p: Vector3D): Vector2D
+    ClosestUV(x: Box, p: Vector3D): Vector2D
     {
         // Find the face the point is closest to
         var maxComponent = p.MaxComponent.Abs;
 
-        var faceIndex = 0;
-        if (maxComponent == p.X.Abs)
-            faceIndex = p.X > 0 ? 2 : 3;
-        else if (maxComponent == p.Y.Abs)
-            faceIndex = p.Y > 0 ? 4 : 5;
-        else
-            faceIndex = p.Z > 0 ? 0 : 1;
+        var faceIndex = 
+            (maxComponent == p.X.Abs) ? 
+            (p.X > 0 ? 2 : 3) : (maxComponent == p.Y.Abs) ? 
+            (p.Y > 0 ? 4 : 5) : 
+            (p.Z > 0 ? 0 : 1);
 
         // Map the point to UV on that face
         var localP = p / x.Extent.ToVector3D();
@@ -272,7 +366,7 @@
     }
 
     // Computes the signed distance from point p to the box surface
-    Distance(x: Box3D, p: Vector3D): Number
+    Distance(x: Box, p: Vector3D): Number
     {
         var d = p.Abs - x.Extent.Vector3D;
         var maxDist = d.MaxComponent;
@@ -346,6 +440,5 @@
         var q = new Vector2D(p.XY.Length - x.Radius1, p.Z);
         return q.Length - x.Radius2;
     }
-
     */
 }

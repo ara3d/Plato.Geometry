@@ -301,21 +301,14 @@ library IGeometry
     RotateY(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.YRotation);
     RotateZ(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.ZRotation);
 
-    TranslateX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (s,0,0));
+    TranslateX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (s,0,0));   
     TranslateY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,s,0));
     TranslateZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,0,s));
 
     ScaleX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (s,1,1));
     ScaleY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,s,1));
     ScaleZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,1,s));
-
-    Add(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Translate(v);
-    Subtract(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Translate(-v);
-    Multiply(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Scale(v);
-    Multiply(x: IDeformable3D, s: Number): IDeformable3D => x.Scale(s);
-    Divide(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Scale(1.0 / v);
-    Divide(x: IDeformable3D, s: Number): IDeformable3D => x.Scale(1.0 / s);
-
+ 
     //==
     // Some constants 
 
@@ -362,8 +355,10 @@ library IGeometry
     //==
     // QuadGrid3D
 
+    NumColumns(x: QuadGrid3D): Integer => x.PointGrid.NumColumns;
+    NumRows(x: QuadGrid3D): Integer => x.PointGrid.NumRows;
     Points(x: QuadGrid3D): IArray<Vector3D> => x.PointGrid;
-    Indices(x: QuadGrid3D): IArray<Integer> => x.PointGrid.Indices();
+    Indices(x: QuadGrid3D): IArray<Integer> => x.PointGrid.AllQuadFaceIndices(x.ClosedX, x.ClosedY).FlatMap(x => x);
 
     // d -- c
     // |    |
@@ -371,18 +366,21 @@ library IGeometry
     // Where a == (col,row), b == (col+1,row), c == (col+1,row+1), d == (col,row+1)
     QuadFaceIndices(col: Integer, row: Integer, nCols: Integer, nRows: Integer): Integer4
     {
-        var a = row * nCols + col;
-        var b = row * nCols + (col + 1) % nCols;
-        var c = (row + 1) % nRows * nCols + (col + 1) % nCols;
-        var d = (row + 1) % nRows * nCols + col;
+        var a = (row * nCols) + col;
+        var b = (row * nCols) + ((col + 1) % nCols);
+        var c = (((row + 1) % nRows) * nCols) + ((col + 1) % nCols);
+        var d = (((row + 1) % nRows) * nCols) + col;
         return (a, b, c, d);
     }
+
+    AllQuadFaceIndices(xs: IArray2D<$T>, closedX: Boolean, closedY: Boolean): IArray2D<Integer4>
+        => AllQuadFaceIndices(xs.NumColumns, xs.NumRows, closedX, closedY);
 
     AllQuadFaceIndices(nCols: Integer, nRows: Integer, closedX: Boolean, closedY: Boolean): IArray2D<Integer4>
     {
         var nx = nCols - (closedX ? 0 : 1);
         var ny = nRows - (closedY ? 0 : 1);
-        return nx.Range.CartesianProduct(ny.Range, (col, row) => QuadFaceIndices(col, row, nCols, nRows));
+        return nx.MakeArray2D(ny, (col, row) => QuadFaceIndices(col, row, nCols, nRows));
     }
     
     //==

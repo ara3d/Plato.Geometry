@@ -10,8 +10,8 @@ interface IArray<T>
 interface IArray2D<T>
     inherits IArray<T>
 { 
-    RowCount(xs: Self): Integer;
-    ColumnCount(xs: Self): Integer;
+    NumRows(xs: Self): Integer;
+    NumColumns(xs: Self): Integer;
     At(xs: Self, column: Integer, row: Integer): T;
 }
 
@@ -19,9 +19,9 @@ interface IArray2D<T>
 interface IArray3D<T>
     inherits IArray<T>
 { 
-    RowCount(xs: Self): Integer;
-    ColumnCount(xs: Self): Integer;
-    LayerCount(xs: Self): Integer;
+    NumRows(xs: Self): Integer;
+    NumColumns(xs: Self): Integer;
+    NumLayers(xs: Self): Integer;
     At(xs: Self, column: Integer, row: Integer, layer: Integer): T;
 }
 
@@ -37,16 +37,16 @@ library ArrayLibrary
 		=> xs.Count.Range;
 
     Count(xs: IArray2D<$T>): Integer 
-        => xs.RowCount * xs.ColumnCount;
+        => xs.NumRows * xs.NumColumns;
 
     Count(xs: IArray3D<$T>): Integer 
-        => xs.RowCount * xs.ColumnCount * xs.LayerCount;
+        => xs.NumRows * xs.NumColumns * xs.NumLayers;
     
     At(xs: IArray2D<$T>, i: Integer): $T 
-        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount);
+        => xs.At(i % xs.NumColumns, i / xs.NumColumns);
     
     At(xs: IArray3D<$T>, i: Integer): $T 
-        => xs.At(i % xs.ColumnCount, i / xs.ColumnCount, i / xs.LayerCount);    
+        => xs.At(i % xs.NumColumns, i / xs.NumColumns, i / xs.NumLayers);    
         
     IsEmpty(xs: IArray<$T>): Boolean
         => xs.Count == 0;
@@ -138,9 +138,6 @@ library ArrayLibrary
     WithNext(xs: IArray<$T0>, f: Function2<$T0, $T0, $T1>, connect: Boolean): IArray<$T1> 
         => connect ? xs.WithNextAndBeginning(f) : xs.WithNext(f);
 
-    CartesianProduct(a: Integer, b: Integer, f: Function2<Integer, Integer, $T>): IArray2D<$T>
-        => a.Range.CartesianProduct(b.Range, f);
-
     EveryNth(self: IArray<$T>, n: Integer): IArray<$T>
         => self.Indices().Map(i => self.ModuloAt(i * n));
 
@@ -148,7 +145,8 @@ library ArrayLibrary
         => columns.Count.MakeArray2D(rows.Count, (i, j) => func(columns[i], rows[j]));
 
     Reverse(self: IArray<$T>): IArray<$T>
-        => self.Indices().Map(i => self[self.Count - 1 - i]);
+        // TODO: there is a bug in the Plato compiler that requires subtraction to be parenthesized
+        => self.Indices().Map(i => self[(self.Count - 1) - i]);
 
     Concat(xs: IArray<$T>, ys: IArray<$T>): IArray<$T>
         => (xs.Count + ys.Count).MapRange(i => i < xs.Count ? xs[i] : ys[i - xs.Count]);
@@ -166,7 +164,7 @@ library ArrayLibrary
     // 2D functions 
 
     Map(xs: IArray2D<$T1>, f: Function1<$T1, $T2>): IArray2D<$T2> 
-        => xs.ColumnCount.MakeArray2D(xs.RowCount, (a, b) => f(xs.At(a, b)));
+        => xs.NumColumns.MakeArray2D(xs.NumRows, (a, b) => f(xs.At(a, b)));
 
 
 } 

@@ -9,6 +9,7 @@
     Acos(x: Number): Angle;
     Asin(x: Number): Angle;
     Atan(x: Number): Angle;    
+    Atan2(y: Number, x: Number): Angle;
 
     Pow(x: Number, y: Number): Number;
     Log(x: Number, y: Number): Number;
@@ -66,11 +67,11 @@
     Equals(x: Boolean, y: Boolean): Boolean;
 
     Count(xs: Array<$T>): Integer;
-    RowCount(xs: Array2D<$T>): Integer;
-    ColumnCount(xs: Array2D<$T>): Integer;
-    RowCount(xs: Array3D<$T>): Integer;
-    ColumnCount(xs: Array3D<$T>): Integer;
-    LayerCount(xs: Array3D<$T>): Integer;
+    NumRows(xs: Array2D<$T>): Integer;
+    NumColumns(xs: Array2D<$T>): Integer;
+    NumRows(xs: Array3D<$T>): Integer;
+    NumColumns(xs: Array3D<$T>): Integer;
+    NumLayers(xs: Array3D<$T>): Integer;
     At(xs: Array<$T>, n: Integer): $T;
     At(xs: Array2D<$T>, i: Integer, j: Integer): $T;
     At(xs: Array3D<$T>, i: Integer, j: Integer, k: Integer): $T;

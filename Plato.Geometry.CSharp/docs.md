@@ -70,17 +70,17 @@ Fields: Max:ConcreteType:Vector3D, Min:ConcreteType:Vector3D.
 
 Implements: IAny, IBounds, IDeformable3D, IEquatable, IValue.
 
+## Type Box
+
+Fields: Extent:ConcreteType:Vector3D.
+
+Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSurface, ISolid, ISurface.
+
 ## Type Box2D
 
 Fields: Center:ConcreteType:Vector2D, Extent:ConcreteType:Vector2D, Rotation:ConcreteType:Angle.
 
 Implements: IGeometry, IGeometry2D, IShape2D.
-
-## Type Box3D
-
-Fields: Extent:ConcreteType:Vector3D.
-
-Implements: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSurface, ISolid, ISurface.
 
 ## Type ButterflyCurve
 
@@ -808,6 +808,12 @@ Fields: Rotation:ConcreteType:Quaternion, Scale:ConcreteType:Vector3D, Translati
 
 Implements: IAny, IEquatable, ITransform3D, IValue.
 
+## Type Translation3D
+
+Fields: Translation:ConcreteType:Vector3D.
+
+Implements: ITransform3D.
+
 ## Type TrefoilKnot
 
 Fields: .
@@ -1105,9 +1111,7 @@ Implemented by: Array2D.
 
 Inherited by: .
 
-Functions: At, ColumnCount, RowCount.
-
-
+Functions: At, NumColumns, NumRows.
 
 
 
@@ -1139,10 +1143,7 @@ Implemented by: Array3D.
 
 Inherited by: .
 
-Functions: At, ColumnCount, LayerCount, RowCount.
-
-
-
+Functions: At, NumColumns, NumLayers, NumRows.
 
 
 
@@ -1404,7 +1405,7 @@ Functions: Distance.
 
 Inherits: .
 
-Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, PolyLine3D.
+Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Line3D, Triangle3D, Quad3D, PolyLine3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
 
 Inherited by: IAngularCurve3D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, ISolid.
 
@@ -1460,7 +1461,7 @@ Functions: .
 
 Inherits: .
 
-Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine2D, PolyLine3D, PointArray2D, PointArray3D, LineArray2D, LineArray3D, TriangleArray2D, TriangleArray3D, QuadArray2D, QuadArray3D, QuadGrid3D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Lens, Rect2D, Ring, Arc, Sector, Chord, Segment, RegularPolygon, Box2D, Line3D, Triangle3D, Quad3D, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine2D, PolyLine3D, PointArray2D, PointArray3D, LineArray2D, LineArray3D, TriangleArray2D, TriangleArray3D, QuadArray2D, QuadArray3D, QuadGrid3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
 
 Inherited by: IAngularCurve2D, IPolarCurve, IAngularCurve3D, IGeometry2D, IGeometry3D, IShape2D, IShape3D, IOpenShape2D, IClosedShape2D, IOpenShape3D, IClosedShape3D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, ISolid, IPointGeometry2D, IPointGeometry3D, IPrimitiveGeometry2D, IPrimitiveGeometry3D, ILineGeometry2D, ILineGeometry3D, ITriangleGeometry2D, ITriangleGeometry3D, IQuadGeometry2D, IQuadGeometry3D, IIndexedGeometry2D, IIndexedGeometry3D, ILineMesh2D, ILineMesh3D, ITriangleMesh2D, ITriangleMesh3D, IQuadMesh2D, IQuadMesh3D, IPointArray2D, IPointArray3D, ILineArray2D, ILineArray3D, ITriangleArray2D, ITriangleArray3D, IQuadArray2D, IQuadArray3D, IQuadGrid3D.
 
@@ -1478,7 +1479,7 @@ Functions: .
 
 Inherits: IGeometry.
 
-Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Line3D, Triangle3D, Quad3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine3D, PointArray3D, LineArray3D, TriangleArray3D, QuadArray3D, QuadGrid3D.
+Implemented by: TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Line3D, Triangle3D, Quad3D, LineMesh3D, TriangleMesh3D, QuadMesh3D, PolyLine3D, PointArray3D, LineArray3D, TriangleArray3D, QuadArray3D, QuadGrid3D, Sphere, Cylinder, Capsule, Cone, ConeSegment, Box, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
 
 Inherited by: IAngularCurve3D, IShape3D, IOpenShape3D, IClosedShape3D, ICurve3D, IClosedCurve3D, IOpenCurve3D, ISurface, IProceduralSurface, IExplicitSurface, IImplicitSurface, IImplicitVolume, IPolyLine3D, IClosedPolyLine3D, IPolygon3D, ISolid, IPointGeometry3D, IPrimitiveGeometry3D, ILineGeometry3D, ITriangleGeometry3D, IQuadGeometry3D, IIndexedGeometry3D, ILineMesh3D, ITriangleMesh3D, IQuadMesh3D, IPointArray3D, ILineArray3D, ITriangleArray3D, IQuadArray3D, IQuadGrid3D.
 
@@ -2039,7 +2040,7 @@ Functions: .
 
 Inherits: .
 
-Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Line3D, Triangle3D, Quad3D, Sphere, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid, PolyLine2D, PolyLine3D.
+Implemented by: Spiral, QuadraticBezier2D, CubicBezier2D, Circle, Ellipse, Epicycloid, Hypocycloid, Epitrochoid, Hypotrochoid, ButterflyCurve, Lissajous, CycloidOfCeva, Limacon, Cardoid, Rose, ArchimedeanSpiral, ConicSection, LemniscateOfBernoulli, TrisectrixOfMaclaurin, ConchoidOfDeSluze, TschirnhausenCubic, SinusoidalSpiral, FermatsSpiral, LogarithmicSpiral, TorusKnot, TrefoilKnot, FigureEightKnot, Helix, Triangle2D, Quad2D, Line2D, Rect2D, RegularPolygon, Line3D, Triangle3D, Quad3D, PolyLine2D, PolyLine3D, Sphere, Capsule, Cone, ConeSegment, Box, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
 
 Inherited by: IAngularCurve2D, IPolarCurve, IAngularCurve3D, ICurve, ICurve1D, ICurve2D, IClosedCurve2D, IOpenCurve2D, ICurve3D, IClosedCurve3D, IOpenCurve3D, IProceduralSurface, IExplicitSurface, IImplicitProcedural, IImplicitSurface, IImplicitCurve2D, IImplicitVolume, IPolyLine2D, IPolyLine3D, IClosedPolyLine2D, IClosedPolyLine3D, IPolygon2D, IPolygon3D, ISolid.
 
@@ -2052,7 +2053,7 @@ Functions: Eval.
 
 Inherits: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, ISurface.
 
-Implemented by: Sphere, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
+Implemented by: Sphere, Capsule, Cone, ConeSegment, Box, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
 
 Inherited by: ISolid.
 
@@ -2259,7 +2260,7 @@ Functions: .
 
 Inherits: IDistanceField3D, IGeometry, IGeometry3D, IProcedural, IProceduralSurface, ISurface.
 
-Implemented by: Sphere, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
+Implemented by: Sphere, Capsule, Cone, ConeSegment, Box, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
 
 Inherited by: .
 
@@ -2268,7 +2269,7 @@ Functions: .
 
 Inherits: IDistanceField3D, IGeometry, IGeometry3D.
 
-Implemented by: Sphere, Cylinder, Capsule, Cone, ConeSegment, Box3D, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
+Implemented by: Sphere, Cylinder, Capsule, Cone, ConeSegment, Box, Pyramid, Torus, NPrism, Tube, NPyramid, Ellipsoid.
 
 Inherited by: IProceduralSurface, IExplicitSurface, IImplicitSurface, ISolid.
 
@@ -2277,7 +2278,7 @@ Functions: .
 
 Inherits: .
 
-Implemented by: Matrix4x4, IdentityTransform3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D.
+Implemented by: Matrix4x4, IdentityTransform3D, Translation3D, Transform3D, Pose3D, Frame3D, Quaternion, AxisAngle, EulerAngles, Rotation3D.
 
 Inherited by: .
 
