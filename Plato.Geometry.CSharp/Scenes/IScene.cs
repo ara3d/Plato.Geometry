@@ -17,6 +17,7 @@ namespace Plato.Geometry.Scenes
         IReadOnlyList<ISceneObject> Objects { get; }
         IReadOnlyList<ISceneNode> Children { get; }
         IEnumerable<KeyValuePair<string, object>> GetProps();
+        object GetProp(string key);
     }
 
     public interface ISceneObject

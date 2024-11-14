@@ -142,7 +142,7 @@ namespace Plato.DoublePrecision
             => points.ToTriangleMesh(points.Indices());
 
         public static IArray<Integer> FlipWindingOrderTriangleIndices(this IArray<Integer> indices)
-            => indices.Indices().Slices(3).FlatMap(slice => slice.Reverse());
+            => indices.Slices(3).FlatMap(slice => slice.Reverse());
 
         public static TriangleMesh3D DoubleSided(this TriangleMesh3D mesh)
             => mesh.Points.ToTriangleMesh(mesh.Indices.Concat(mesh.Indices.FlipWindingOrderTriangleIndices()));
@@ -562,13 +562,24 @@ namespace Plato.DoublePrecision
         //==
         // Curve functions
 
-        public static IArray<Vector2D> Points(this ICurve2D curve, Integer count)
-            => (curve.Closed ? count.LinearSpaceExclusive : count.LinearSpace).Map(curve.Eval);
+        public static IArray<Vector2D> Points(this ICurve2D curve, Integer count, Number from, Number to)
+            => (curve.Closed ? count.LinearSpaceExclusive : count.LinearSpace).Map(t => curve.Eval(from.Lerp(to, t)));
 
-        public static PolyLine2D ToPolyLine2D(this ICurve2D curve, int segments)
-            => new PolyLine2D(curve.Points(segments), curve.Closed);
+        public static PolyLine3D ToPolyLine3D(this ICurve2D curve, int segments, Number from, Number to)
+            => new PolyLine3D(curve.Points(segments, from, to).To3D(), curve.Closed);
 
-        public static PolyLine3D ToPolyLine3D(this ICurve2D curve, int segments)
-            => new PolyLine3D(curve.Points(segments).To3D(), curve.Closed);
+        // TODO: there are more of these that need to be added to the library.
+        // Given just an interface, there is an obvious class that implements the interface
+        public class Curve2D : ICurve2D
+        {
+            public Boolean Closed { get; }    
+            public Func<Number, Vector2D> Func { get; }
+            public Vector2D Eval(Number t) => Func(t);
+            public Curve2D(Func<Number, Vector2D> f, Boolean closed) { Func = f; Closed = closed; }
+            public Number Distance(Vector2D v) => throw new NotImplementedException();
+        }
+
+        public static ICurve2D ToCurve(this IRealFunction f)
+            => new Curve2D(t => (t, f.Eval(t)), false);
     }
 }

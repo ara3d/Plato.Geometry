@@ -9,9 +9,9 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/ara3d/Plato.Geometry</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ara3d/Plato.Geometry</RepositoryUrl>
-    <Version>1.0.0-alpha1</Version>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <AssemblyFileVersion>1.0.0.1</AssemblyFileVersion>
+    <Version>1.0.0-alpha2</Version>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <AssemblyFileVersion>1.0.0.2</AssemblyFileVersion>
     <Authors>Ara 3D Inc.</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright (c) Ara 3D Inc 2024, Licensed under MIT License</Copyright>

@@ -4,13 +4,13 @@ namespace Plato.Geometry.Tests
 {
     public static class GeometryTests
     {
-        public static void OutputArray<T>(IArray<T> self)
+        public static void OutputArray<T>(IArray<T> self, bool truncate = true)
         {
-            for (var i = 0; i < self.Count && i < 5; i++)
+            for (var i = 0; i < self.Count && (!truncate || i < 5); i++)
             {
                 Console.Write($"xs[{i}] = {self[i]} ");
             }
-            if (self.Count > 5)
+            if (truncate && self.Count > 5)
             {
                 Console.Write("...");
                 Console.Write($"xs[{self.Count-1}] == {self.Last()}");
@@ -53,6 +53,58 @@ namespace Plato.Geometry.Tests
             OutputArray(ys.Map(g => $"{g[0]}, {g[1]}, {g[2]}"));
             ys = ys.Map(g => g.Reverse());
             OutputArray(ys.Map(g => $"{g[0]}, {g[1]}, {g[2]}"));
+
+            OutputArray(xs, false);
+            var zs = xs.FlipWindingOrderTriangleIndices();
+            OutputArray(zs, false);
+        }
+
+        [Test]
+        public static void FacetedTest()
+        {
+            // NOTE: this test passes, but facetedd meshes don't draw correctly./
+
+            var m = PlatonicSolids.Tetrahedron;
+            OutputTriMesh(m);
+
+            var test = m.Indices.Slices(3).Map((xs) => $"{xs[0]},{xs[1]},{xs[2]}");
+            OutputArray(test);
+
+            var tris = m.Triangles;
+            OutputArray(tris);
+            for (var i=0; i < tris.Count; i++)
+            {
+                for (var j = i + 1; j < tris.Count; j++)
+                {
+                    Assert.IsTrue(!tris[i].Equals(tris[j]));
+                }
+            }
+
+            var faceted = m.Faceted();
+            var tris2 = faceted.Triangles;
+            Assert.IsTrue(tris2.Count == tris.Count);
+            for (var i = 0; i < tris2.Count; i++)
+            {
+                Assert.IsTrue(tris[i].Equals(tris2[i]));
+                for (var j = i + 1; j < tris2.Count; j++)
+                {
+                    Assert.IsTrue(!tris2[i].Equals(tris2[j]));
+                }
+            }
+
+            OutputTriMesh(faceted);
+        }
+
+        [Test]
+        public static void TestBounds()
+        {
+            var m = PlatonicSolids.Tetrahedron;
+            Console.WriteLine($"Min vector : {Vector3D.MinValue}, Max vector: {Vector3D.MaxValue}");
+            var b1 = new Bounds3D((1, 1, 1), (2, 2, 2));
+            Console.WriteLine($"Constructed bounds = {b1}");
+            Console.WriteLine($"Empty: {Bounds3D.Empty}");
+            var b = m.Points.Bounds();
+            Console.WriteLine($"Bounds: {b}");
         }
 
         [Test]

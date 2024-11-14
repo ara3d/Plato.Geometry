@@ -16,7 +16,7 @@ namespace Plato.DoublePrecision
         public static string ChangePrecision(this string self) => self;
 
         public static Number MinNumber => double.MinValue;
-        public static Number MaxNumber => double.MinValue;
+        public static Number MaxNumber => double.MaxValue;
 
         public static Number Cos(Angle x) => (double)System.Math.Cos(x.Radians);
         public static Number Sin(Angle x) => (double)System.Math.Sin(x.Radians);
@@ -3503,7 +3503,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Radius));
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.Circle(this.Center, this.Radius);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var433 = this;
@@ -3538,7 +3538,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Center), new Dynamic(Size));
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.UnitCircle.Multiply(this.Size).Add(this.Center);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var434 = this;
@@ -3573,7 +3573,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius1), new Dynamic(Radius2));
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.Epicycloid(this.Radius1, this.Radius2);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var435 = this;
@@ -3608,7 +3608,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius1), new Dynamic(Radius2));
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.Hypocycloid(this.Radius1, this.Radius2);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var436 = this;
@@ -3645,7 +3645,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius1), new Dynamic(Radius2), new Dynamic(Dist));
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.Epitrochoid(this.Radius1, this.Radius2, this.Dist);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var437 = this;
@@ -3682,7 +3682,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius1), new Dynamic(Radius2), new Dynamic(Dist));
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.Hypotrochoid(this.Radius1, this.Radius2, this.Dist);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var438 = this;
@@ -3707,7 +3707,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.ButterflyCurve;
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var439 = this;
@@ -3744,7 +3744,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Delta), new Dynamic(A), new Dynamic(B));
         // Implemented concept functions and type functions
         public Vector2D GetPoint(Angle t) => t.Lissajous(this.A, this.B, this.Delta);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var440 = this;
@@ -3771,7 +3771,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.CycloidOfCeva;
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var441 = this;
@@ -3808,7 +3808,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.Limacon(this.A, this.B);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var442 = this;
@@ -3835,7 +3835,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.Cardoid;
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var443 = this;
@@ -3869,7 +3869,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.Rose(this.K);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var444 = this;
@@ -3906,7 +3906,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.ArchimedeanSpiral(this.A, this.B);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var445 = this;
@@ -3943,7 +3943,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.ConicSection(this.SemiLatusRectum, this.Eccentricity);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var446 = this;
@@ -3981,7 +3981,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.LemniscateOfBernoulli(this.A);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var447 = this;
@@ -4019,7 +4019,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.TrisectrixOfMaclaurin(this.A);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var448 = this;
@@ -4057,7 +4057,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.ConchoidOfDeSluze(this.A);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var449 = this;
@@ -4095,7 +4095,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.TschirnhausenCubic(this.A);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var450 = this;
@@ -4132,7 +4132,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.SinusoidalSpiral(this.A, this.N);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var451 = this;
@@ -4170,7 +4170,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.FermatsSpiral(this.A);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var452 = this;
@@ -4207,7 +4207,7 @@ namespace Plato.DoublePrecision
         public Number GetRadius(Angle t) => t.LogarithmicSpiral(this.A, this.K);
         public PolarCoordinate EvalPolar(Angle t) => this.GetRadius(t).Tuple2(t);
         public Vector2D GetPoint(Angle t) => this.EvalPolar(t);
-        public Vector2D Eval(Number t) => this.GetPoint(t);
+        public Vector2D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector2D> Sample(Integer numPoints){
             var _var453 = this;
@@ -4334,7 +4334,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(P), new Dynamic(Q), new Dynamic(Radius));
         // Implemented concept functions and type functions
         public Vector3D GetPoint(Angle t) => t.TorusKnot(this.P, this.Q).Multiply(this.Radius);
-        public Vector3D Eval(Angle t) => this.GetPoint(t);
+        public Vector3D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
             var _var454 = this;
@@ -4343,7 +4343,6 @@ namespace Plato.DoublePrecision
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
         public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Number t) => Intrinsics.Eval(this, t);
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
     public readonly partial struct TrefoilKnot: IAngularCurve3D, IClosedShape
@@ -4360,7 +4359,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
         // Implemented concept functions and type functions
         public Vector3D GetPoint(Angle t) => t.TrefoilKnot;
-        public Vector3D Eval(Angle t) => this.GetPoint(t);
+        public Vector3D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
             var _var455 = this;
@@ -4369,7 +4368,6 @@ namespace Plato.DoublePrecision
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
         public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Number t) => Intrinsics.Eval(this, t);
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
     public readonly partial struct FigureEightKnot: IAngularCurve3D, IClosedShape
@@ -4386,7 +4384,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>();
         // Implemented concept functions and type functions
         public Vector3D GetPoint(Angle t) => t.FigureEightKnot;
-        public Vector3D Eval(Angle t) => this.GetPoint(t);
+        public Vector3D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)true);
         public IArray<Vector3D> Sample(Integer numPoints){
             var _var456 = this;
@@ -4395,7 +4393,6 @@ namespace Plato.DoublePrecision
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
         public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Number t) => Intrinsics.Eval(this, t);
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
     public readonly partial struct Helix: IAngularCurve3D, IOpenShape
@@ -4424,7 +4421,7 @@ namespace Plato.DoublePrecision
         public IArray<Dynamic> FieldValues => Intrinsics.MakeArray<Dynamic>(new Dynamic(Radius), new Dynamic(Height), new Dynamic(NumTurns));
         // Implemented concept functions and type functions
         public Vector3D GetPoint(Angle t) => t.Helix(this.NumTurns).Multiply(this.Radius.Tuple3(this.Radius, this.Height));
-        public Vector3D Eval(Angle t) => this.GetPoint(t);
+        public Vector3D Eval(Number t) => this.GetPoint(t.Turns);
         public Boolean Closed => ((Boolean)false);
         public IArray<Vector3D> Sample(Integer numPoints){
             var _var457 = this;
@@ -4433,7 +4430,6 @@ namespace Plato.DoublePrecision
         public PolyLine3D ToPolyLine3D(Integer numPoints) => this.Sample(numPoints).Tuple2(this.Closed);
         // Unimplemented concept functions
         public Number Distance(Vector3D p) => Intrinsics.Distance(this, p);
-        public Vector3D Eval(Number t) => Intrinsics.Eval(this, t);
     }
     [DataContract, StructLayout(LayoutKind.Sequential, Pack=1)]
     public readonly partial struct Transform2D: IValue<Transform2D>
@@ -6840,11 +6836,11 @@ namespace Plato.DoublePrecision
         public Number Linear(Number m, Number b) => m.Multiply(this).Add(b);
         public Number Quadratic(Number a, Number b, Number c) => a.Multiply(this.Sqr).Add(b.Multiply(this).Add(c));
         public Number Cubic(Number a, Number b, Number c, Number d) => a.Multiply(this.Cube).Add(b.Multiply(this.Sqr).Add(c.Multiply(this).Add(d)));
-        public Number SineWave(Number amplitude, Number frequency, Number phase) => amplitude.Multiply(frequency.Multiply(this).Add(phase));
+        public Number SineWave(Number amplitude, Number frequency, Number phase) => amplitude.Multiply(frequency.Multiply(this.Turns.Sin).Add(phase));
         public Number StaircaseFloor(Integer steps) => this.Multiply(steps).Floor.Divide(steps);
         public Number StaircaseCeiling(Integer steps) => this.Multiply(steps).Ceiling.Divide(steps);
         public Number StaircaseRound(Integer steps) => this.Multiply(steps).Round.Divide(steps);
-        public Vector2D Spiral(Number R, Number r, Number numTurns) => Vector2D.New(this.Multiply(numTurns).Cos, this.Multiply(numTurns).Sin).Multiply(r.Lerp(R, this));
+        public Vector2D Spiral(Number R, Number r, Number numTurns) => Vector2D.New(this.Turns.Multiply(numTurns).Cos, this.Turns.Multiply(numTurns).Sin).Multiply(r.Lerp(R, this));
         public Angle Acos => Intrinsics.Acos(this);
         public Angle Asin => Intrinsics.Asin(this);
         public Angle Atan => Intrinsics.Atan(this);

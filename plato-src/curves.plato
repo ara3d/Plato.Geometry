@@ -45,7 +45,7 @@ library Curves
 
     //https://en.wikipedia.org/wiki/Sine_wave   
     SineWave(x: Number, amplitude: Number, frequency: Number, phase: Number): Number
-		=> amplitude * (frequency * x + phase);
+		=> amplitude * (frequency * x.Turns.Sin + phase);
 
     Eval(f: SineWave, x: Number): Number 
         => x.SineWave(f.Amplitude, f.Frequency, f.Phase);
@@ -156,7 +156,7 @@ type SineWave
 library Curves2D
 {
     Spiral(t: Number, R: Number, r: Number, numTurns: Number): Vector2D
-        => new Vector2D((t * numTurns).Cos, (t * numTurns).Sin) * r.Lerp(R, t);
+        => new Vector2D((t.Turns * numTurns).Cos, (t.Turns * numTurns).Sin) * r.Lerp(R, t);
 
     Eval(curve: Spiral, t: Number): Vector2D
 		=> t.Spiral(curve.Radius1, curve.Radius2, curve.NumTurns);
@@ -207,7 +207,7 @@ library AngularCurves2D
 {
     // Angular curves are defined in terms of a parameter t that is an angle    
     Eval(curve: IAngularCurve2D, t: Number): Vector2D
-    	=> curve.GetPoint(t);
+    	=> curve.GetPoint(t.Turns);
 
     UnitCircle(t: Angle): Vector2D
 		=> (t.Cos, t.Sin);
@@ -579,8 +579,8 @@ interface IAngularCurve3D
 
 library AngularCurves3D
 {
-    Eval(curve: IAngularCurve3D, t: Angle): Vector3D
-		=> curve.GetPoint(t);
+    Eval(curve: IAngularCurve3D, t: Number): Vector3D
+		=> curve.GetPoint(t.Turns);
 
     // https://en.wikipedia.org/wiki/Torus_knot
     TorusKnot(t: Angle, p: Number, q: Number): Vector3D

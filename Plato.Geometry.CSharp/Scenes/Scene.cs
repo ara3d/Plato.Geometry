@@ -27,6 +27,7 @@ namespace Plato.Geometry.Scenes
         IReadOnlyList<ISceneObject> ISceneNode.Objects => Objects;
         public readonly List<ISceneNode> Children = new List<ISceneNode>();
         IReadOnlyList<ISceneNode> ISceneNode.Children => Children;
+        public object GetProp(string key) => Properties.TryGetValue(key, out var r) ? r : null;
     }
 
     public class SceneMesh : ISceneMesh
