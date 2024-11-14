@@ -316,6 +316,100 @@ namespace Plato.DoublePrecision
             return true;
         }
 
+        public static bool Intersects(this Triangle3D t1, Triangle3D t2)
+        {
+            if (!t1.Bounds().Overlaps(t2.Bounds()))
+                return false;
+
+            // Step 2: For each edge of t1, check if it intersects t2
+            if (SegmentIntersectsTriangle(t1.A, t1.B, t2) ||
+                SegmentIntersectsTriangle(t1.B, t1.C, t2) || 
+                SegmentIntersectsTriangle(t1.C, t1.A, t2)) return true;
+
+            // Step 3: For each edge of t2, check if it intersects t1
+            if (SegmentIntersectsTriangle(t2.A, t2.B, t1) || 
+                SegmentIntersectsTriangle(t2.B, t2.C, t1) || 
+                SegmentIntersectsTriangle(t2.C, t2.A, t1)) return true;
+
+            // Step 4: Check if any vertex of t1 is inside t2
+            if (t2.Contains(t1.A) || t2.Contains(t1.B) || t2.Contains(t1.C)) return true;
+
+            // Step 5: Check if any vertex of t2 is inside t1
+            if (t1.Contains(t2.A) || t1.Contains(t2.B) || t1.Contains(t2.C)) return true;
+
+            // No intersection found
+            return false;
+        }
+
+        public static Bounds3D Bounds(this Triangle3D tri)
+            => ((tri.A.X.Min(tri.B.X).Min(tri.C.X),
+                    tri.A.Y.Min(tri.B.Y).Min(tri.C.Y),
+                    tri.A.Z.Min(tri.B.Z).Min(tri.C.Z)),
+                (tri.A.X.Max(tri.B.X).Max(tri.C.X),
+                    tri.A.Y.Max(tri.B.Y).Max(tri.C.Y),
+                    tri.A.Z.Max(tri.B.Z).Max(tri.C.Z)));
+
+        public static bool SegmentIntersectsTriangle(Vector3D p0, Vector3D p1, Triangle3D tri)
+        {
+            // Compute plane normal
+            var edge1 = tri.B - tri.A;
+            var edge2 = tri.C - tri.A;
+            var normal = edge1.Cross(edge2);
+
+            // Compute denominator to check if segment and plane are parallel
+            var dir = p1 - p0;
+            var denom = normal.Dot(dir);
+
+            if (denom.Abs < 1e-8)
+            {
+                // Segment is parallel to the plane
+                return false;
+            }
+
+            // Compute t where the segment intersects the plane
+            var t = -(normal.Dot(p0 - tri.A)) / denom;
+
+            if (t < 0.0 || t > 1.0)
+            {
+                // Intersection point is not on the segment
+                return false;
+            }
+
+            // Compute the intersection point
+            var p = p0 + dir * t;
+
+            // Check if the point P is inside the triangle
+            return tri.Contains(p);
+        }
+
+        public static bool Contains(this Triangle3D tri, Vector3D p)
+        {
+            var v0 = tri.C - tri.A;
+            var v1 = tri.B - tri.A;
+            var v2 = p - tri.A;
+
+            // Compute dot products
+            var dot00 = v0.Dot(v0);
+            var dot01 = v0.Dot(v1);
+            var dot02 = v0.Dot(v2);
+            var dot11 = v1.Dot(v1);
+            var dot12 = v1.Dot(v2);
+
+            // Compute barycentric coordinates
+            var denom = dot00 * dot11 - dot01 * dot01;
+            if (denom.Abs < 1e-8)
+            {
+                // Triangle is degenerate
+                return false;
+            }
+            var invDenom = 1.0 / denom;
+            var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+            var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+            // Check if point is in triangle
+            return (u >= 0) && (v >= 0) && (u + v <= 1);
+        }
+
         // Returns the distance between two lines
         // t and u are the distances if the intersection points along the two lines
         public static Number LineLineDistance(Line2D line1, Line2D line2, out Number t, out Number u, double epsilon = 0.0000001f)
@@ -359,7 +453,7 @@ namespace Plato.DoublePrecision
                 minDistance = distance;
                 t = amount;
                 u = 1.0f;
-            }
+            }   
 
             distance = Distance(line2, line1.A, out amount);
             if (distance < minDistance)
@@ -462,5 +556,19 @@ namespace Plato.DoublePrecision
             (0, 1, 0, 0),
             (0, 0, 0, 1));
 
+        public static Number Unlerp(this Number a, Number b, Number x)
+            => (x - a) / (b - a);
+
+        //==
+        // Curve functions
+
+        public static IArray<Vector2D> Points(this ICurve2D curve, Integer count)
+            => (curve.Closed ? count.LinearSpaceExclusive : count.LinearSpace).Map(curve.Eval);
+
+        public static PolyLine2D ToPolyLine2D(this ICurve2D curve, int segments)
+            => new PolyLine2D(curve.Points(segments), curve.Closed);
+
+        public static PolyLine3D ToPolyLine3D(this ICurve2D curve, int segments)
+            => new PolyLine3D(curve.Points(segments).To3D(), curve.Closed);
     }
 }

@@ -15,6 +15,13 @@ namespace Plato.Geometry.Scenes
     {
         public string Id { get; set; }
         public string Name { get; set; }
+
+        // TODO: I am going to need to replace this with a property database for performance reasons.
+        // This is effectively going to allow us to implement efficient property databases like we are doing for IFC
+        // So that we can have millions of objects each with hundreds of properties and still be able to store and query them efficiently
+        public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+        public IEnumerable<KeyValuePair<string, object>> GetProps() => Properties;
+
         public ITransform3D Transform { get; set; } = IdentityTransform3D.Default;
         public readonly List<ISceneObject> Objects = new List<ISceneObject>();
         IReadOnlyList<ISceneObject> ISceneNode.Objects => Objects;

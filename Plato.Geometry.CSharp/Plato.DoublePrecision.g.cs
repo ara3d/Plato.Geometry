@@ -6814,6 +6814,8 @@ namespace Plato.DoublePrecision
         public Number TroyOunceToGram => this.Multiply(((Number)31.1034768));
         public Number GrainToMilligram => this.Multiply(((Number)64.79891));
         public Number Mole => this.Multiply(((Number)6.02214076E+23));
+        public Number Min(Number y) => this.LessThanOrEquals(y) ? this : y;
+        public Number Max(Number y) => this.GreaterThanOrEquals(y) ? this : y;
         public Number Inverse => ((Number)1).Divide(this);
         public Number Reciprocal => this.Inverse;
         public Number SquareRoot => this.Pow(((Number)0.5));
@@ -6932,8 +6934,6 @@ namespace Plato.DoublePrecision
         public Number Clamp(Number a, Number b) => this.FromComponents(this.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
         public Number ClampZeroOne => this.Clamp(this.Zero, this.One);
         public Number Clamp01 => this.ClampZeroOne;
-        public Number Min(Number y) => this.ZipComponents(y, (a, b) => a.Min(b));
-        public Number Max(Number y) => this.ZipComponents(y, (a, b) => a.Max(b));
         public IArray<Number> Repeat(Integer n){
             var _var660 = this;
             return n.MapRange((i) => _var660);
@@ -8303,6 +8303,10 @@ namespace Plato.DoublePrecision
         public Vector3D ZYX => this.Z.Tuple3(this.Y, this.X);
         public Vector2D XY => this.X.Tuple2(this.Y);
         public Vector2D YX => this.Y.Tuple2(this.X);
+        public Vector2D XZ => this.X.Tuple2(this.Z);
+        public Vector2D ZX => this.Z.Tuple2(this.X);
+        public Vector2D YZ => this.Y.Tuple2(this.Z);
+        public Vector2D ZY => this.Z.Tuple2(this.Y);
         public Vector3D MidPoint(Vector3D b) => this.Add(b).Divide(((Number)2));
         public Line3D Line(Vector3D b) => this.Tuple2(b);
         public Ray3D Ray(Vector3D b) => this.Tuple2(b);

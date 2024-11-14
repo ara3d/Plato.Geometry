@@ -11,10 +11,12 @@ namespace Plato.Geometry.Scenes
 
     public interface ISceneNode
     {
+        string Id { get; }
         string Name { get; }
         ITransform3D Transform { get; }
         IReadOnlyList<ISceneObject> Objects { get; }
         IReadOnlyList<ISceneNode> Children { get; }
+        IEnumerable<KeyValuePair<string, object>> GetProps();
     }
 
     public interface ISceneObject

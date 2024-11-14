@@ -41,7 +41,9 @@ library INumerical
 
     //==
     // Number operations 
-        
+    
+    Min(x: Number, y: Number): Number => x <= y ? x : y;
+    Max(x: Number, y: Number): Number => x >= y ? x : y;
     Inverse(x: Number): Number => 1.0 / x;
     Reciprocal(x: Number): Number => x.Inverse;
     SquareRoot(x: Number): Number => x.Pow(0.5);
@@ -66,14 +68,7 @@ library INumerical
     Pow5(x: IArithmetic): IArithmetic => x.Pow4 * x;
     Square(x: IArithmetic): IArithmetic => x.Pow2;
     Sqr(x: IArithmetic): IArithmetic => x.Pow2;
-    Cube(x: IArithmetic): IArithmetic  => x.Pow3;
-
-    //==
-    // INumerical Operations 
-
-    PlusOne(x: INumerical): INumerical => x + One;
-    MinusOne(x: INumerical): INumerical => x - One;    
-    FromOne(x: INumerical): INumerical => One - x;
+    Cube(x: IArithmetic): IArithmetic  => x.Pow3;    
 
     //==
     // IWholeNumber Operations 
@@ -152,6 +147,10 @@ library INumerical
 
     //==
     // INumerical functions
+   
+    PlusOne(x: INumerical): INumerical => x + One;
+    MinusOne(x: INumerical): INumerical => x - One;    
+    FromOne(x: INumerical): INumerical => One - x;
 
     Component(x: INumerical, n: Integer): Number
         => x.Components[n];

@@ -21,9 +21,9 @@ namespace Plato.Geometry.Speckle
         //==
         // From Speckle to Plato.Geometry
 
-        public static IScene ToScene(this SpeckleObject self)
+        public static Scene ToScene(this SpeckleObject self, Dictionary<string, (SpeckleObject, SceneNode)> d = null)
         {
-            var d = new Dictionary<string, SceneNode>();
+            d = d ?? new Dictionary<string, (SpeckleObject, SceneNode)>();
             var r = self.ToPlato(d);
             // TODO: this is a hack and needs to be replaced, while sitill making things work.. 
             var scl = 0.001;
@@ -31,15 +31,16 @@ namespace Plato.Geometry.Speckle
             return new Scene(r);
         }
 
-        public static SceneNode ToPlato(this SpeckleObject self, Dictionary<string, SceneNode> d)
+        public static SceneNode ToPlato(this SpeckleObject self, Dictionary<string, (SpeckleObject, SceneNode)> d)
         {
-            if (d.TryGetValue(self.Id, out var node))
-                return node;
-            var r = d[self.Id] = new SceneNode
+            if (d.TryGetValue(self.Id, out var pair))
+                return pair.Item2;
+            var r = new SceneNode
             {
                 Name = self.Name,
                 Id = self.Id
             };
+            d[self.Id] = (self, r);
             var mat = self.Material?.ToMaterial();
             var mesh = self.Mesh?.ToPlato();
             if (self.Transform == null)
@@ -50,8 +51,18 @@ namespace Plato.Geometry.Speckle
                 r.Transform = new Transform3D(pos.ToPlato(), rot.ToPlato(), scale.ToPlato());
             }
 
+            // Copy the properties over 
+            foreach (var kv in self.Properties)
+            {
+                r.Properties[kv.Key] = kv.Value;
+                r.Properties["_Name"] = self.Name;
+                r.Properties["_Id"] = self.Id;
+                r.Properties["_Type"] = self.SpeckleType;
+            }
+
             if (mesh != null)
                 r.Objects.Add(new SceneMesh(mat, mesh.Value));
+
             r.Children.AddRange(self.Children.Select(c => c.ToPlato(d)));
             return r;
         }
@@ -63,7 +74,7 @@ namespace Plato.Geometry.Speckle
             => (self.X, self.Y, self.Z);
 
         public static Rotation3D ToPlato(this Quaternion self)
-            => new Plato.DoublePrecision.Quaternion(self.X, self.Y, self.Z, self.W);
+            => new PQuaternion(self.X, self.Y, self.Z, self.W);
 
         public static Material ToMaterial(this RenderMaterial self)
             => new Material(self.diffuseColor.ToColor(self.opacity))

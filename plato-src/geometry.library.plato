@@ -112,6 +112,10 @@ library IGeometry
     ZYX(v: Vector3D): Vector3D => (v.Z, v.Y, v.X);
     XY(v: Vector3D): Vector2D => (v.X, v.Y);
     YX(v: Vector3D): Vector2D => (v.Y, v.X);
+    XZ(v: Vector3D): Vector2D => (v.X, v.Z);
+    ZX(v: Vector3D): Vector2D => (v.Z, v.X);
+    YZ(v: Vector3D): Vector2D => (v.Y, v.Z);
+    ZY(v: Vector3D): Vector2D => (v.Z, v.Y);
     MidPoint(a: Vector3D, b: Vector3D): Vector3D => (a + b) / 2.0;
     Line(a: Vector3D, b: Vector3D): Line3D => (a, b);
     Ray(a: Vector3D, b: Vector3D): Ray3D => (a, b);
