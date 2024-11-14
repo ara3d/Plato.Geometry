@@ -75,7 +75,7 @@ namespace Plato.Geometry.Experimental
 
         public static SignedDistanceField Union(SignedDistanceField a, SignedDistanceField b)
         {
-            return new SignedDistanceField(p => a.Distance(p).Max(b.Distance(p)));
+            return new SignedDistanceField(p => a.Distance(p).Min(b.Distance(p)));
         }
 
         public static SignedDistanceField Intersection(SignedDistanceField a, SignedDistanceField b)

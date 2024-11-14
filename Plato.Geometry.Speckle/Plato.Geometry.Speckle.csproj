@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\IFC-toolkit\Ara3D.Speckle.Data\Ara3D.Speckle.Data.csproj" />
-    <ProjectReference Include="..\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
   </ItemGroup>
 
 </Project>

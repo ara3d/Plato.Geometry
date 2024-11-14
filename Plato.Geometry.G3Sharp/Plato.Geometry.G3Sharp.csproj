@@ -10,8 +10,4 @@
     <PackageReference Include="geometry3Sharp" Version="1.0.324" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
-  </ItemGroup>
-
 </Project>
