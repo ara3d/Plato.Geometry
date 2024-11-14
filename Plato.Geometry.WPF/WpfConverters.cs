@@ -157,7 +157,7 @@ namespace Plato.Geometry.WPF
 
         public static Model3DGroup ToWpf(this ISceneNode node)
         {
-            var meshes = node.GetMeshObjects().Select(ToWpf).ToList();
+            var meshes = node.GetMeshes().Select(ToWpf).ToList();
             var children = node.Children.Select(ToWpf).ToList();
                 
             var r = new Model3DGroup {

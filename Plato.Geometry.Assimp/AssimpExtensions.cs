@@ -87,9 +87,9 @@ namespace Plato.Geometry.Assimp
                     throw new Exception($"Each face of the assimp mesh must have 3 corners .but found one with {f.IndexCount}");
             }
 
-            var indices = mesh.GetIndices();
-            if (indices.Length % 3 != 0)
-                throw new Exception($"The mesh index buffer length {indices.Length} is not divisible by 3");
+            var testIndices = mesh.GetIndices();
+            if (testIndices.Length % 3 != 0)
+                throw new Exception($"The mesh index buffer length {testIndices.Length} is not divisible by 3");
 
             var verts = mesh.Vertices.Select(ToPlato).ToList().ToIArray();
             var indices = mesh.GetIndices().Select(x => (Integer)x).ToList().ToIArray();
