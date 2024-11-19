@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.DoubleNumerics;
+using System.Drawing;
 using System.Linq;
-using Ara3D.Speckle.Data;
+using Objects;
 using Objects.Geometry;
 using Objects.Other;
 using Objects.Utils;
@@ -10,12 +12,143 @@ using Plato.DoublePrecision;
 using Plato.Geometry.Graphics;
 using Plato.Geometry.Scenes;
 using Speckle.Core.Models;
+using Color = Plato.DoublePrecision.Color;
 using Material = Plato.Geometry.Graphics.Material;
+using Point = Objects.Geometry.Point;
 using Quaternion = System.DoubleNumerics.Quaternion;
 using PQuaternion = Plato.DoublePrecision.Quaternion;
 
 namespace Plato.Geometry.Speckle
 {
+    public static class SpeckleConverter
+    {
+        public static object ToSpeckleObject(this object o, Dictionary<string, SpeckleObject> lookup)
+        {
+            if (o is Base b)
+                return ToSpeckleObject(b, lookup);
+
+            if (o is string s)
+                return s;
+
+            if (o is IDictionary d)
+            {
+                var r = new SpeckleObject { DotNetType = o.GetType().Name };
+                foreach (var k in d.Keys)
+                    r.Properties.Add((string)k, ToSpeckleObject(d[k], lookup));
+                if (r.Properties.Count == 0)
+                    return null;
+                return r;
+            }
+
+            if (o is IEnumerable seq)
+            {
+                var r = new SpeckleObject { DotNetType = o.GetType().Name };
+                foreach (var item in seq)
+                    r.Elements.Add(ToSpeckleObject(item, lookup));
+                if (r.Elements.Count == 0)
+                    return null;
+                return r;
+            }
+
+            return o;
+        }
+
+        public static SpeckleObject ToSpeckleObject(this Base b, Dictionary<string, SpeckleObject> lookup = null)
+        {
+            if (b == null)
+                return null;
+
+            lookup = lookup ?? new Dictionary<string, SpeckleObject>();
+
+            // Get or compute the ID. 
+            // NOTE: "ComputeId" would be a better name for ID.
+            var id = b.id ?? b.GetId();
+
+            if (lookup.TryGetValue(id, out var found))
+                return found;
+
+            // Create a new SpeckleObject
+            var r = lookup[id]
+                = new SpeckleObject { Id = id };
+
+            if (b is Mesh m)
+            {
+                r.Mesh = m;
+                r.Material = m["renderMaterial"] as RenderMaterial;
+            }
+
+            if (b is BlockDefinition block)
+            {
+                r.BasePoint = block.basePoint;
+                foreach (var g in block.geometry)
+                    r.Elements.Add(ToSpeckleObject(g, lookup));
+            }
+
+            if (b is Collection collection)
+            {
+                r.Name = collection.name;
+                foreach (var x in collection.elements)
+                    r.Elements.Add(ToSpeckleObject(x, lookup));
+            }
+
+            if (b is Instance instance)
+            {
+                var def = ToSpeckleObject(instance.definition, lookup);
+                r.Transform = instance.transform;
+                r.InstanceDefinition = def;
+                def.Instances.Add(r);
+            }
+
+            if (b is IDisplayValue<List<Mesh>> displayMeshList)
+                foreach (var mesh in displayMeshList.displayValue)
+                    r.Elements.Add(ToSpeckleObject(mesh, lookup));
+
+            var type = b.GetType();
+            r.DotNetType = type.Name;
+            r.SpeckleType = b.speckle_type;
+
+            foreach (var kv in b.GetDynamicAndInstanceMembers())
+                r.Properties.Add(kv.Key, ToSpeckleObject(kv.Value, lookup));
+
+            return r;
+        }
+    }
+
+    public static class SpeckleExtensions
+    {
+        public static IEnumerable<KeyValuePair<string, object>> GetDynamicAndInstanceMembers(this Base self)
+            => self.GetMembers(DynamicBaseMemberType.Instance | DynamicBaseMemberType.Dynamic);
+    }
+    
+    /// <summary>
+     /// This is generated from a 'Base' object, which is a base class for all objects in the Speckle API.
+     /// It is easier to navigate and convert to/from other formats. 
+     /// </summary>
+    public class SpeckleObject
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; }
+
+        public List<object> Elements { get; set; } = new List<object>();
+        public IEnumerable<SpeckleObject> Children => Elements.Concat(Properties.Values).OfType<SpeckleObject>();
+        public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+
+        public bool IsSimpleDictionary => Properties.Count > 0 && Elements.Count == 0 && DotNetType == "Dictionary`2";
+        public bool IsSimpleList => Properties.Count == 0 && Elements.Count > 0 && DotNetType == "List`1";
+
+        public Mesh Mesh { get; set; }
+        public RenderMaterial Material { get; set; }
+
+        public Transform Transform { get; set; }
+        public SpeckleObject InstanceDefinition { get; set; }
+        public string InstanceDefinitionId => InstanceDefinition?.Id ?? "";
+        public List<SpeckleObject> Instances { get; set; } = new List<SpeckleObject>();
+        public bool IsInstanced { get; set; }
+        public Point BasePoint { get; set; }
+        public string SpeckleType { get; set; }
+        public string DotNetType { get; set; }
+    }
+
     public static class SpeckleConverters
     {
         //==

@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Ara3D.Speckle.Data\Ara3D.Speckle.Data.csproj" />
+    <PackageReference Include="Speckle.Core" Version="2.20.5" />
+    <PackageReference Include="Speckle.Objects" Version="2.20.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
   </ItemGroup>
 
