@@ -349,6 +349,9 @@ namespace Plato.DoublePrecision
                     tri.A.Y.Max(tri.B.Y).Max(tri.C.Y),
                     tri.A.Z.Max(tri.B.Z).Max(tri.C.Z)));
 
+        public static TriangleMesh3D TriangleMesh3D(this Bounds3D bounds)
+            => PlatonicSolids.Cube.Scale(bounds.Size).Translate(bounds.Center).TriangleMesh3D;
+
         public static bool SegmentIntersectsTriangle(Vector3D p0, Vector3D p1, Triangle3D tri)
         {
             // Compute plane normal
