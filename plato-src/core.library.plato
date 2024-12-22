@@ -148,9 +148,9 @@ library INumerical
     //==
     // INumerical functions
    
-    PlusOne(x: INumerical): INumerical => x + One;
-    MinusOne(x: INumerical): INumerical => x - One;    
-    FromOne(x: INumerical): INumerical => One - x;
+    PlusOne(x: INumerical): INumerical => x + x.One;
+    MinusOne(x: INumerical): INumerical => x - x.One;    
+    FromOne(x: INumerical): INumerical => x.One - x;
 
     Component(x: INumerical, n: Integer): Number
         => x.Components[n];
@@ -280,7 +280,7 @@ library INumerical
         => x.FromComponents([n]);
 
     Compare(a: INumberLike, b: INumberLike): Integer
-        => a.ToNumber.Compare(b.ToNumber);
+        => a.ToNumber < b.ToNumber ? -1 : a.ToNumber > b.ToNumber ? 1 : 0;
 
     Add(x: INumberLike, y: Number): INumberLike
 		=> x.FromNumber(x.ToNumber + y);

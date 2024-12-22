@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
@@ -13,6 +6,18 @@ using Ara3D.Utils;
 
 namespace Plato.Geometry.Tests
 {
+    
+    public static class Tools
+    {
+        [Test, Explicit]
+        public static void CountChars()
+        {
+            var d = new DirectoryPath(@"C:\Users\cdigg\git\ara3d\Plato.Geometry\plato-src");
+            var sum = d.GetFiles("*.plato").Sum(fp => fp.ReadAllText().Length);
+            Console.WriteLine($"Totla number of characters {sum}");
+        }
+    }
+
     public static unsafe class BoundsCalculator
     {
         public static (Vector3, Vector3) ComputeBoundsLINQ(Vector3[] points)

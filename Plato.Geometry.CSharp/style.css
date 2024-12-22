@@ -1,0 +1,165 @@
+/* 
+ * Global Styles
+ * -------------
+ * Choose a modern, legible font and apply a clean, neutral color palette.
+ * This stylesheet is intended for easily maintaining a modern look and feel.
+ */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    /* Use a modern, widely-available font stack */
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 14px;
+    /* line-height: 1.5; */
+    color: #333;
+    background: #ffffff;
+    overflow: hidden; /* Prevents body from scrolling, so we handle scrolling in each pane */
+}
+
+h1, h2, h3 {
+    font-family: 'Open Sans';
+}
+
+a {
+    text-decoration: none;
+    color: #007acc; /* Modern blue accent for links */
+}
+
+    a:hover, a:focus {
+        text-decoration: underline;
+    }
+
+/* 
+ * Layout Container
+ * ----------------
+ * Use flex layout to position the nav (TOC) on the left and content on the right.
+ */
+
+.container {
+    display: flex;
+    height: 100vh; /* Full viewport height so nav and content can scroll independently */
+    overflow: hidden; /* Contained scrolling within each section */
+}
+
+/* 
+ * Navigation Sidebar (TOC)
+ * ------------------------
+ * Make it scrollable independently and visually distinct.
+ */
+
+.nav {
+    width: 25%; /* 300px; */
+    background: #f5f7fa; /* Light neutral background */
+    border-right: 1px solid #e1e4e8;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Independent vertical scroll */
+    overflow-x: hidden;
+    position: sticky; /* Stays fixed as content scrolls */
+    top: 0;
+}
+
+    /* Nav Heading and Lists */
+    .nav h1, .nav h2, .nav h3 {
+        margin-top: 0;
+        font-weight: 600;
+        color: #24292e;
+    }
+
+    .nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav li {
+        margin: 0.5em 0;
+    }
+
+        .nav li a {
+            display: inline-block;
+            padding: 4px 0;
+            color: #0366d6;
+        }
+
+/* 
+ * Main Content Area
+ * -----------------
+ * Also scrollable, with a clean reading layout.
+ */
+
+.content {
+    flex: 1;
+    overflow-y: auto; /* Independent vertical scroll */
+    padding: 40px;
+    box-sizing: border-box;
+    background: #ffffff;
+}
+
+    /* Headings in content */
+    .content h1, .content h2, .content h3 {
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        font-weight: 600;
+        color: #24292e;
+    }
+
+    .content h1 {
+        font-size: 1.8em;
+        border-bottom: 1px solid #e1e4e8;
+        padding-bottom: 0.2em;
+    }
+
+    .content h2 {
+        font-size: 1.4em;
+    }
+
+    .content h3 {
+        font-size: 1.2em;
+    }
+
+    /* Paragraphs and spacing */
+    .content p {
+        margin: 1em 0;
+        max-width: 800px; /* A comfortable reading width */
+    }
+
+/* Code blocks and inline code */
+code, pre {
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 0.9em;
+    background: #f6f8fa;
+    color: #333;
+}
+
+pre {
+    padding: 1em;
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
+/* Inline code */
+code {
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* 
+ * Additional Elements
+ * -------------------
+ * You can easily adjust colors and spacing here to maintain a modern look.
+ */
+
+hr {
+    border: none;
+    border-bottom: 1px solid #e1e4e8;
+    margin: 2em 0;
+}
+
+strong {
+    font-weight: 600;
+    color: #24292e;
+}

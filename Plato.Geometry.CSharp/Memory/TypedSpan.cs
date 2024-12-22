@@ -1,17 +1,31 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Plato.Geometry.Memory
 {
-    public readonly unsafe struct TypedSpan<T> where T : unmanaged
+    public readonly unsafe struct TypedSpan<T> : IReadOnlyList<T>
+        where T : unmanaged
     {
-        public readonly T* Pointer;
-        public readonly int Length;
-
-        public TypedSpan(T* pointer, int length)
+        public TypedSpan(T* pointer, int count)
         {
             Pointer = pointer;
-            Length = length;
+            Count = count;
         }
+
+        public readonly T* Pointer;
+        public long ByteLength => Count * sizeof(T);
+        public byte* BytePointer => (byte*)Pointer;
+        
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (var i=0; i < Count; i++)
+                yield return this[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public int Count { get; }
+        public T this[int index] => Pointer[index];
     }
 
     public static unsafe class SpanExtensions

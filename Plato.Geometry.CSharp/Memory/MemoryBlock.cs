@@ -35,7 +35,7 @@ namespace Plato.Geometry
         /// <param name="alignment">The alignment in bytes.</param>
         public MemoryBlock(long sizeInBytes, int alignment)
         {
-            if (sizeInBytes <= 0)
+            if (sizeInBytes < 0)
                 throw new ArgumentOutOfRangeException(nameof(sizeInBytes), "Size must be positive.");
             if (alignment <= 0 || (alignment & (alignment - 1)) != 0)
                 throw new ArgumentException("Alignment must be a positive power of two.", nameof(alignment));
@@ -43,14 +43,9 @@ namespace Plato.Geometry
             Alignment = alignment;
             var paddedSize = sizeInBytes + Alignment;
             SizeInBytes = sizeInBytes;
-            UnalignedPointer = Marshal.AllocHGlobal(new IntPtr(paddedSize));
 
-            if (UnalignedPointer == IntPtr.Zero)
-                throw new OutOfMemoryException("Failed to allocate unmanaged memory.");
-
-            var rawAddress = UnalignedPointer.ToInt64();
-            var offset = (Alignment - rawAddress % Alignment) % Alignment;
-            Pointer = new IntPtr(rawAddress + offset);
+            throw new NotImplementedException();
+            //Pointer = NativeMemory.AlignedAlloc(paddedSize, alignment);
         }
 
         /// <summary>
