@@ -61,7 +61,7 @@ namespace Plato.SinglePrecision
 
         // This is a built-in implementation
         public static IArray<T1> FlatMap<T0, T1>(IArray<T0> xs, System.Func<T0, IArray<T1>> f) 
-        {
+        {   
             var r = new System.Collections.Generic.List<T1>();
             for (var i=0; i < xs.Count; ++i)
                 r.AddRange(f(xs[i]));            

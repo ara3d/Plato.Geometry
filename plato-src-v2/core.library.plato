@@ -1,0 +1,346 @@
+library INumerical
+{
+    //==
+    // Constants
+
+    XAxis2D(): Vector2D => (1, 0);
+    YAxis2D(): Vector2D => (0, 1);
+    XAxis3D(): Vector3D => (1, 0, 0);
+    YAxis3D(): Vector3D => (0, 1, 0);
+    ZAxis3D(): Vector3D => (0, 0, 1);
+    UnitInterval(): NumberInterval => (0.0, 1.0);
+    Pi(): Number => 3.1415926535897;   
+    E(): Number => 2.7182818284590;
+    TwoPi(): Number => Pi.Twice;    
+    HalfPi(): Number => Pi.Half;
+
+    // TODO: define is as an intrinsic because it depends on the prevision. 
+    Epsilon(): Number => 1E-15;    
+    
+    UnitCircle(): Circle => ((0, 0), 1);
+
+    //==
+    // Some helpful conversion functions
+
+    FeetPerMeter(): Number => 3.280839895;
+    FeetPerMile(): Number => 5280;    
+    MetersPerLightyear(): Number => 9.46073047258e+15;    
+    MetersPerAU(): Number => 149597870691.0;    
+    DaltonPerKilogram(): Number => 1.66053e-27;    
+    PoundPerKilogram(): Number => 0.45359237;    
+    PoundPerTon(): Number => 2000;    
+    KilogramPerSolarMass(): Number => 1.9889200011446E+30;    
+    JulianYearSeconds(): Number => 31557600;    
+    GregorianYearDays(): Number => 365.2425;
+    RadiansPerDegree(): Number => Pi / 180.0;
+    DegreesPerRadian(): Number => 180.0 / Pi;
+    OunceToGram(x: Number): Number => x * 28.349523125;   
+    TroyOunceToGram(x: Number): Number => x * 31.1034768;    
+    GrainToMilligram(x: Number): Number => x * 64.79891;        
+    Mole(x: Number): Number => x * 6.02214076e+23;
+
+    //==
+    // Number operations 
+    
+    Min(x: Number, y: Number): Number => x <= y ? x : y;
+    Max(x: Number, y: Number): Number => x >= y ? x : y;
+    Inverse(x: Number): Number => 1.0 / x;
+    Reciprocal(x: Number): Number => x.Inverse;
+    SquareRoot(x: Number): Number => x.Pow(0.5);
+    Sqrt(x: Number): Number => x.SquareRoot;
+    InversePow(x: Number, n: Number): Number => x.Pow(n.Reciprocal);
+    Exp(x: Number): Number => E.Pow(x);
+    SmoothStep(x: Number): Number => x.Square * (3.0 - x.Twice);    
+    MultiplyEpsilon(x: Number, y: Number): Number => x.Abs.Greater(y.Abs) * Epsilon;
+
+    // https://stackoverflow.com/a/2411661
+    AlmostEqual(x: Number, y: Number): Boolean => (x-y).Abs <= x.MultiplyEpsilon(y);
+    AlmostZero(x: Number): Boolean => x.Abs < Epsilon;
+    AlmostZeroOrOne(x: Number): Boolean => AlmostEqual(x, 0) || AlmostEqual(x, 1);
+    Fract(x: Number): Number => x - x.Floor;
+
+    //==
+    // IArithmetic operations 
+
+    Pow2(x: IArithmetic): IArithmetic => x * x;
+    Pow3(x: IArithmetic): IArithmetic => x.Pow2 * x;
+    Pow4(x: IArithmetic): IArithmetic => x.Pow3 * x;
+    Pow5(x: IArithmetic): IArithmetic => x.Pow4 * x;
+    Square(x: IArithmetic): IArithmetic => x.Pow2;
+    Sqr(x: IArithmetic): IArithmetic => x.Pow2;
+    Cube(x: IArithmetic): IArithmetic  => x.Pow3;    
+
+    //==
+    // IWholeNumber Operations 
+
+    //==
+    // Integer operations
+
+    ToNumber(x: Integer): Number => x.Number;
+    PlusOne(x: Integer): Integer => x + 1;
+    MinusOne(x: Integer): Integer => x - 1;    
+    FromOne(x: Integer): Integer => 1 - x;
+    FloatDivision(x: Integer, y: Integer): Number => x.ToNumber / y.ToNumber;        
+	Fractions(x: Integer): IArray<Number> => x.Range.Map((i) => i.FloatDivision(x - 1));
+	FractionsExclusive(x: Integer): IArray<Number> => x.Range.Map((i) => i.FloatDivision(x));
+
+    //==
+    // INumberLike Operations 
+
+    Multiply(x: INumberLike, y: INumberLike): INumberLike => x.FromNumber(x.ToNumber * y.ToNumber);   
+    Divide(x: INumberLike, y: INumberLike): INumberLike => x.FromNumber(x.ToNumber / y.ToNumber);   
+    Modulo(x: INumberLike, y: INumberLike): INumberLike => x.FromNumber(x.ToNumber % y.ToNumber);
+   
+    //==
+    // IReal Operations 
+
+    Magnitude(x: IReal): Number => x.Value;
+    GtZ(x : IReal): Boolean => x > x.Zero;
+    LtZ(x : IReal): Boolean => x < x.Zero;
+    GtEqZ(x : IReal): Boolean => x >= x.Zero;
+    LtEqZ(x : IReal): Boolean => x <= x.Zero;
+    IsPositive(x: IReal): Boolean => x.GtEqZ;
+    IsNegative(x: IReal): Boolean => x.LtZ;
+    Sign(x: IReal): Integer => x.LtZ ? -1 : x.GtZ ? 1 : 0;
+    Abs(x: IReal): IReal => x.LtZ ? -x: x;
+    Inverse(x: IReal): IReal => x.One / x;
+    Between(self: IReal, min: IReal, max: IReal): Boolean => self >= min && self <= max;
+
+    //==
+    // IScalarArithmetic operations 
+
+    Half(x: IScalarArithmetic): IScalarArithmetic => x / 2.0;        
+    Quarter(x: IScalarArithmetic): IScalarArithmetic => x / 4.0;    
+    Eight(x: IScalarArithmetic): IScalarArithmetic => x / 8.0;    
+    Sixteenth(x: IScalarArithmetic): IScalarArithmetic => x / 16.0;
+    Tenth(x: IScalarArithmetic): IScalarArithmetic => x / 10.0;    
+    Twice(x: IScalarArithmetic): IScalarArithmetic => x * 2.0;              
+    Hundred(x: IScalarArithmetic): IScalarArithmetic => x * 100.0;      
+    Thousand(x: IScalarArithmetic): IScalarArithmetic => x * 1000.0;
+    Million(x: IScalarArithmetic): IScalarArithmetic => x.Thousand.Thousand;
+    Billion(x: IScalarArithmetic): IScalarArithmetic => x.Thousand.Million;
+   
+    //==
+	// Angle conversion functions 
+
+	Turns(x: Number): Angle => (x * TwoPi).Radians;
+	Degrees(x: Number): Angle => (x / 360.0).Turns;
+	Gradians(x: Number): Angle => (x / 400.0).Turns;
+	Radians(x: Number): Angle => x;
+	Turns(x: Angle): Number => x.Radians / TwoPi;
+	Degrees(x: Angle): Number => x.Turns * 360.0;
+	Gradians(x: Angle): Number => x.Turns * 400.0;
+
+    //==
+    // Trig functions on Numbers
+
+    Sin(x: Number): Number => x.Turns.Sin;
+    Cos(x: Number): Number => x.Turns.Cos;
+    Tan(x: Number): Number => x.Turns.Tan;
+
+    //==
+    // Additional trig functions 
+
+    Sec(x: Angle): Number => x.Cos.Reciprocal;
+    Csc(x: Angle): Number => x.Sin.Reciprocal;
+    Cot(x: Angle): Number => x.Tan.Reciprocal;
+
+    //==
+    // INumerical functions
+   
+    PlusOne(x: INumerical): INumerical => x + x.One;
+    MinusOne(x: INumerical): INumerical => x - x.One;    
+    FromOne(x: INumerical): INumerical => x.One - x;
+
+    Component(x: INumerical, n: Integer): Number
+        => x.Components[n];
+
+    NumComponents(x: INumerical): Integer
+        => x.Components.Count;
+
+    MapComponents(x: INumerical, f: Function1<Number, Number>): INumerical
+        => x.FromComponents(x.Components.Map(f));
+
+    ZipComponents(x: INumerical, y: INumerical, f: Function2<Number, Number, Number>): INumerical
+        => x.FromComponents(x.Components.Zip(y.Components, f));
+
+    Zero(x: INumerical): INumerical
+        => x.MapComponents((i) => 0.0);
+
+    One(x: INumerical): INumerical
+        => x.MapComponents((i) => 1.0);
+
+    MaxComponent(x: INumerical): Number
+    {
+        var n = x.NumComponents;
+        if (n == 0) return 0;
+        var r = x.Component(0);
+        for (var i = 1; i < n; i = i + 1)
+            r = r.Max(x.Component(i));
+        return r;
+    }
+
+    MinComponent(x: INumerical): Number
+    {
+        var n = x.NumComponents;
+        if (n == 0) return 0;
+        var r = x.Component(0);
+        for (var i = 1; i < n; i = i + 1)
+            r = r.Min(x.Component(i));
+        return r;
+    }
+
+    MinValue(x: INumerical): INumerical
+        => x.MapComponents((x) => x.MinValue);
+
+    MaxValue(x: INumerical): INumerical
+        => x.MapComponents((x) => x.MaxValue);
+
+    AllComponents(x: INumerical, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.All(predicate);
+
+    AnyComponent(x: INumerical, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.Any(predicate);
+
+    Between(x: INumerical, a: INumerical, b: INumerical): Boolean
+        => x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Between(a0, b0)).All(x0 => x0);
+
+    BetweenZeroOne(x: INumerical): Boolean
+        => x.Between(x.Zero, x.One);
+
+    Clamp(x: INumerical, a: INumerical, b: INumerical): INumerical
+        => x.FromComponents(x.Components.Zip(a.Components, b.Components, (x0, a0, b0) => x0.Clamp(a0, b0)));
+
+    ClampZeroOne(x: INumerical): INumerical
+        => x.Clamp(x.Zero, x.One);
+
+    Clamp01(x: INumerical): INumerical
+        => x.ClampZeroOne;
+
+    Abs(x: INumerical): INumerical
+		=> x.MapComponents((i) => i.Abs);
+    
+    Min(x: INumerical, y: INumerical): INumerical 
+        => x.ZipComponents(y, (a, b) => a.Min(b));
+    
+    Max(x: INumerical, y: INumerical): INumerical 
+        => x.ZipComponents(y, (a, b) => a.Max(b));
+    
+    // TODO: functions like the following two should be auto-implemented by Plato. It is silly to repeat ourselves here. 
+
+    Floor(n: INumerical): INumerical
+        => n.MapComponents((c) => c.Floor);
+
+    Fract(n: INumerical): INumerical
+        => n.MapComponents((c) => c.Fract);
+
+    //==
+    // IEquatable functions
+
+    Equals(a: IEquatable, b: IEquatable): Boolean
+        => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All(x => x);
+
+    NotEquals(a: IEquatable, b: IEquatable): Boolean
+        => !a.Equals(b);
+
+    //==
+    // Comparable functions
+    
+    LessThan(a: IOrderable, b: IOrderable): Boolean 
+        => a <= b && a != b;
+    
+    GreaterThan(a: IOrderable, b: IOrderable): Boolean 
+        => b < a;
+    
+    GreaterThanOrEquals(a: IOrderable, b: IOrderable): Boolean 
+        => b <= a;
+       
+    Lesser(a: IOrderable, b: IOrderable): IOrderable 
+        => a <= b ? a : b;
+    
+    Greater(a: IOrderable, b: IOrderable): IOrderable 
+        => a >= b ? a : b;
+   
+    CompareTo(a: IOrderable, b: IOrderable): Integer
+		=> a <= b ? (a == b ? 0 : - 1) : 1;
+    
+    //==
+    // Number-like
+
+    ToNumber(x: Number): Number
+        => x;
+
+    Number(x: INumberLike): Number
+        => x.ToNumber;
+
+    ToNumber(x: INumberLike): Number
+        => x.Component(0);
+
+    FromNumber(x: INumberLike, n: Number): INumberLike
+        => x.FromComponents([n]);
+
+    Compare(a: INumberLike, b: INumberLike): Integer
+        => a.ToNumber < b.ToNumber ? -1 : a.ToNumber > b.ToNumber ? 1 : 0;
+
+    Add(x: INumberLike, y: Number): INumberLike
+		=> x.FromNumber(x.ToNumber + y);
+
+    Subract(x: INumberLike, y: Number): INumberLike
+		=> x.FromNumber(x.ToNumber - y);
+
+    //==
+    // INumerical implementation of IScalarArithmetic 
+
+    Multiply(x: INumerical, s: Number): INumerical
+        => x.MapComponents((i) => i * s);
+
+    Divide(x: INumerical, s: Number): INumerical
+        => x.MapComponents((i) => i / s);
+
+    Modulo(x: INumerical, s: Number): INumerical
+        => x.MapComponents((i) => i % s);       
+
+    //==
+    // INumerical implementation of AdditiveArithmetic
+
+    Add(x: INumerical, y: INumerical): INumerical
+        => x.ZipComponents(y, (a, b) => a + b);
+
+    Subtract(x: INumerical, y: INumerical): INumerical
+        => x.ZipComponents(y, (a, b) => a - b);
+
+    Negative(x: INumerical): INumerical
+        => x.MapComponents((a) => -a);
+
+    //==
+    // IVector implementation of IMultiplicative arithmetic
+    // This is component wise, and doesn't make sense for measurements (which have components)
+        
+    Multiply(x: IVector, y: IVector): IVector
+        => x.ZipComponents(y, (a, b) => a * b);
+
+    Divide(x: IVector, y: IVector): IVector
+        => x.ZipComponents(y, (a, b) => a / b);
+
+    Modulo(x: IVector, y: IVector): IVector
+        => x.ZipComponents(y, (a, b) => a % b);
+
+    //==
+    // NOTE:
+    // There are many other operations that make sense on INumerical types. 
+    // For example, everything that works on a single value. 
+    // MinValue/MaxValue/Negate/Reciprocal/Inverse/Clamp/SmoothStep/Step/Sign/IsZero/IsOne/IsPositive/IsNegative/IsEven/IsOdd/IsPowerOfTwo/IsPowerOfTen/IsPowerOfTwo/IsPowerOfTen/IsPrime/IsComposite/IsPerfectIsSquare/IsCube/IsPowerOf/IsRootOf/IsFactorOf/IsMultipleOf/IsDivisorOf/IsDivisibleBy
+
+    //==
+    // IInterpolatable functions. 
+
+    // Linear interpolation
+    Lerp(a: IInterpolatable, b: IInterpolatable, t: Number): IInterpolatable
+        => a * t.FromOne + b * t;
+          
+    // Barycentric interpolation (e.g. triangle)
+    // NOTE: we may want to put the Vector2D at the front of the type, but then this would not be made available 
+    // for the range of Interpolatable types (at least not now, based on limitations of the Plato compiler)
+    Barycentric(v1: IInterpolatable, v2: IInterpolatable, v3: IInterpolatable, uv: Vector2D): IInterpolatable 
+        => (v1 + (v2 - v1)) * uv.X + (v3 - v1) * uv.Y;   
+}

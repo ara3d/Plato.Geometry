@@ -34,7 +34,7 @@ namespace Plato.DoublePrecision
 
             var profile = Intrinsics.MakeArray(first, a, b, c, last);
             return profile.SurfaceOfRevolution(Vector3D.UnitZ, radialSegments, true, true);
-        }
+        }   
 
         public static IArray<Vector3D> Transform(this IArray<Vector3D> points, Transform3D t)
             => points.Map(t.Transform);
