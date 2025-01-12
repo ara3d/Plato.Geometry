@@ -84,7 +84,7 @@ interface IOrderable
 	LessThanOrEquals(x: Self, y: Self): Boolean;
 }
 
-// Supported for when two values are equal 
+// Supported for when two values can be compared to see if they are equal 
 interface IEquatable
     inherits IAny
 {

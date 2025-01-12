@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Scenes;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Matrix4x4 = Plato.DoublePrecision.Matrix4x4;
+using Matrix4x4 = Plato.SinglePrecision.Matrix4x4;
 using Quaternion = UnityEngine.Quaternion;
 
 namespace Plato.Geometry.Unity

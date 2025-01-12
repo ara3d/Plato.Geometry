@@ -6,4 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <Import Project="..\Plato.Intrinsics\Plato.Intrinsics.projitems" Label="Shared" />
+
 </Project>

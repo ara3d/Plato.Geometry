@@ -1,4 +1,4 @@
-﻿using Plato.DoublePrecision;
+﻿using Plato.SinglePrecision;
 
 namespace Plato.Geometry.Tests
 {

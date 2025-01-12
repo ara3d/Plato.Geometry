@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 
 namespace Plato.Geometry.Tests
 {

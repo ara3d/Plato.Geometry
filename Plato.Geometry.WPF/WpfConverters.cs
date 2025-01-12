@@ -1,13 +1,13 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Graphics;
 using Plato.Geometry.Scenes;
-using Color = Plato.DoublePrecision.Color;
-using Colors = Plato.DoublePrecision.Colors;
+using Color = Plato.SinglePrecision.Color;
+using Colors = Plato.SinglePrecision.Colors;
 using Material = Plato.Geometry.Graphics.Material;
-using Vector3D = Plato.DoublePrecision.Vector3D;
+using Vector3D = Plato.SinglePrecision.Vector3D;
 using WVector3D = System.Windows.Media.Media3D.Vector3D;
 using WColor = System.Windows.Media.Color;
 using WTransform3D = System.Windows.Media.Media3D.Transform3D;

@@ -1,14 +1,14 @@
 ﻿// In Plato, the primitive types are assumed to exist, by name, by the compiler.
 // This file is used to define the relationships and member data contained in those primitives.   
 
-// A floating point representation of a real number 
-type Number 
+// A floating point representation of a real float 
+type float 
     implements IReal
 { }
 
-// A positive or negative whole number 
+// A positive or negative whole float 
 type Integer   
-    implements IWholeNumber
+    implements IWholefloat
 { }
 
 // Text
@@ -106,3 +106,61 @@ type Array2D<T>
 type Array3D<T>
     implements IArray3D<T>
 { }
+
+// A 2-dimensional vector
+type Vector2
+    implements IVector
+{
+    X: float;
+    Y: float;
+}
+
+// A 3-dimensional vector    
+type Vector3
+    implements IVector
+{
+    X: float;
+    Y: float;
+    Z: float;
+}
+
+// A 4-dimensional vector
+type Vector4
+    implements IVector
+{
+    X: float;
+    Y: float;
+    Z: float;
+    W: float;
+}
+
+// Affine 2D transformation matrix 
+// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
+type Matrix3x2 
+    implements IValue, IArray<Vector3>
+{
+    Row1: Vector2;   
+    Row2: Vector2;   
+    Row3: Vector2;   
+}
+
+// Affine 3D transformation matrix 
+// https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
+// https://mindcontrol.org/~hplus/graphics/matrix-layout.html
+type Matrix4x4
+    implements IValue, IArray<Vector4>
+{
+    Row1: Vector4;
+    Row2: Vector4;
+    Row3: Vector4;
+    Row4: Vector4;
+}
+
+type Quaternion
+    implements IValue, IArray<float>
+{
+    X: float;
+    Y: float;
+    Z: float;
+    W: float;
+}

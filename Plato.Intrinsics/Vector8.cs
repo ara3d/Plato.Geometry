@@ -76,9 +76,6 @@ namespace Plato
             get => 8;
         }
 
-        [MethodImpl(AggressiveInlining)]
-        public Number GetElement(int index) => Value.GetElement(index);
-
         public Vector128<float> Lower
         {
             [MethodImpl(AggressiveInlining)] get => Value.GetLower();
@@ -286,15 +283,17 @@ namespace Plato
             [MethodImpl(AggressiveInlining)] get => Avx.ReciprocalSqrt(Value);
         }
 
-        [MethodImpl(AggressiveInlining)]
-        public Vector8 Round(MidpointRounding mr) => Vector256.Round(Value, mr);
+        public Vector8 Round
+        {
+            [MethodImpl(AggressiveInlining)] get => Vector256.Round(Value);
+        }
 
         public Vector8 Sign
         {
             [MethodImpl(AggressiveInlining)] get => Vector256.CopySign(One.Value, Value);
         }
 
-        public Vector8 Sqrt
+        public Vector8 SquareRoot
         {
             [MethodImpl(AggressiveInlining)] get => Vector256.Sqrt(Value);
         }

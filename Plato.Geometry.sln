@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Intrinsics.Tests", "Plato.Intrinsics.Tests\Plato.Intrinsics.Tests.csproj", "{08B53390-D96C-4092-9924-EB50868F5344}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plato-src", "plato-src\plato-src.csproj", "{27645FF5-C6E2-4752-B283-F95D9E0E7DCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plato.Core", "Plato.Core\Plato.Core.csproj", "{28CD6AA6-FD0E-40FA-B8B7-78396C9CC48F}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Plato.Intrinsics", "Plato.Intrinsics\Plato.Intrinsics.shproj", "{1F13FB85-3985-48EC-83BC-5335A83A21D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracer", "..\labs\PathTracer\PathTracer.csproj", "{97E0F1D4-1AC6-4B7D-921E-9569CF1BF220}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08B53390-D96C-4092-9924-EB50868F5344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08B53390-D96C-4092-9924-EB50868F5344}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08B53390-D96C-4092-9924-EB50868F5344}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08B53390-D96C-4092-9924-EB50868F5344}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27645FF5-C6E2-4752-B283-F95D9E0E7DCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27645FF5-C6E2-4752-B283-F95D9E0E7DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27645FF5-C6E2-4752-B283-F95D9E0E7DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27645FF5-C6E2-4752-B283-F95D9E0E7DCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28CD6AA6-FD0E-40FA-B8B7-78396C9CC48F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28CD6AA6-FD0E-40FA-B8B7-78396C9CC48F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28CD6AA6-FD0E-40FA-B8B7-78396C9CC48F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28CD6AA6-FD0E-40FA-B8B7-78396C9CC48F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97E0F1D4-1AC6-4B7D-921E-9569CF1BF220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97E0F1D4-1AC6-4B7D-921E-9569CF1BF220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97E0F1D4-1AC6-4B7D-921E-9569CF1BF220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97E0F1D4-1AC6-4B7D-921E-9569CF1BF220}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Plato.Intrinsics\Plato.Intrinsics.projitems*{08b53390-d96c-4092-9924-eb50868f5344}*SharedItemsImports = 5
+		Plato.Intrinsics\Plato.Intrinsics.projitems*{1f13fb85-3985-48ec-83bc-5335a83a21d5}*SharedItemsImports = 13
+		Plato.Intrinsics\Plato.Intrinsics.projitems*{28cd6aa6-fd0e-40fa-b8b7-78396c9cc48f}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal

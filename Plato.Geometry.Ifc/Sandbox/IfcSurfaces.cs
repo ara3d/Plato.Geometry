@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 
 namespace IfcGeometry
 {

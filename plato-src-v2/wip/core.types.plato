@@ -1,0 +1,35 @@
+            
+// A numerical type that is normally in the range of 0 to 1. 
+type Unit
+    implements IReal
+{
+    Value: Number;
+}
+
+// A pair of integers 
+type Integer2
+    implements IValue, IArray<Integer>
+{
+    A: Integer;
+    B: Integer;
+}
+
+// A tuple of 3 integers 
+type Integer3
+    implements IValue, IArray<Integer>
+{
+    A: Integer;
+    B: Integer;
+    C: Integer;
+}
+
+// A tuple of 4 integers 
+type Integer4
+    implements IValue, IArray<Integer>
+{
+    A: Integer;
+    B: Integer;
+    C: Integer;
+    D: Integer;
+}
+

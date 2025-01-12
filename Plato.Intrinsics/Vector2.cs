@@ -2,26 +2,52 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNVector2 = System.Numerics.Vector2;
 
-namespace Plato.Geometry
+namespace Plato
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public partial struct Vector2 : IEquatable<Vector2>
     {
         // Fields
 
-        public readonly float X;
-        public readonly float Y;
+        public SNVector2 Value;
 
         // Constructor
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2(float x, float y)
+        [MethodImpl(AggressiveInlining)]
+        public Vector2(float x, float y) => Value = new(x, y);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector2(float x) => Value = new(x);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector2(SNVector2 x) => Value = x;
+
+        // Properties
+
+        public Number X
         {
-            X = x;
-            Y = y;
+            [MethodImpl(AggressiveInlining)]
+            get => Value.X; 
         }
+
+        public Number Y
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.Y;
+        }
+        
+        // Immutable "setters"
+        
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 WithX(Number x)
+            => new(x, Y);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 WithY(Number y)
+            => new(X, y);
 
         // Static properties
 
@@ -39,17 +65,14 @@ namespace Plato.Geometry
         public static readonly Vector2 Zero = SNVector2.Zero;
 
         // Implicit casts 
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SNVector2 ToSystem() => Unsafe.As<Vector2, SNVector2>(ref this);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
+        [MethodImpl(AggressiveInlining)]
         public static Vector2 FromSystem(SNVector2 v) => Unsafe.As<SNVector2, Vector2>(ref v);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator SNVector2(Vector2 v) => v.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static implicit operator SNVector2(Vector2 v) => v.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static implicit operator Vector2(SNVector2 v) => FromSystem(v);
 
         // Static operators  
@@ -57,111 +80,111 @@ namespace Plato.Geometry
         /// <summary>
         /// Adds two Vector2D instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator +(Vector2 left, Vector2 right) => left.ToSystem() + right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator +(Vector2 left, Vector2 right) => left.Value + right.Value;
 
         /// <summary>
         /// Subtracts the right Vector2D from the left Vector2D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator -(Vector2 left, Vector2 right) => left.ToSystem() - right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator -(Vector2 left, Vector2 right) => left.Value - right.Value;
 
         /// <summary>
         /// Multiplies two Vector2D instances element-wise.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator *(Vector2 left, Vector2 right) => left.ToSystem() * right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator *(Vector2 left, Vector2 right) => left.Value * right.Value;
 
         /// <summary>
         /// Multiplies a Vector2D by a scalar.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator *(Vector2 left, float scalar) => left.ToSystem() * scalar;
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator *(Vector2 left, float scalar) => left.Value * scalar;
 
         /// <summary>
         /// Multiplies a scalar by a Vector2D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator *(float scalar, Vector2 right) => scalar * right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator *(float scalar, Vector2 right) => scalar * right.Value;
 
         /// <summary>
         /// Divides the left Vector2D by the right Vector2D element-wise.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator /(Vector2 left, Vector2 right) => left.ToSystem() / right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator /(Vector2 left, Vector2 right) => left.Value / right.Value;
 
         /// <summary>
         /// Divides a Vector2D by a scalar.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator /(Vector2 left, float scalar) => left.ToSystem() / scalar;
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator /(Vector2 left, float scalar) => left.Value / scalar;
 
         /// <summary>
         /// Negates the specified Vector2D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 operator -(Vector2 value) => -value.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator -(Vector2 value) => -value.Value;
 
         /// <summary>
         /// Determines whether two Vector2D instances are equal.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Vector2 left, Vector2 right) => left.ToSystem() == right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Boolean operator ==(Vector2 left, Vector2 right) => left.Value == right.Value;
 
         /// <summary>
         /// Determines whether two Vector2D instances are not equal.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Vector2 left, Vector2 right) => left.ToSystem() != right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Boolean operator !=(Vector2 left, Vector2 right) => left.Value != right.Value;
 
         /// <summary>
         /// Determines whether the specified Vector2D is equal to the current Vector2D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Vector2 other) => this.ToSystem().Equals(other.ToSystem());
+        [MethodImpl(AggressiveInlining)]
+        public bool Equals(Vector2 other) => Value.Equals(other.Value);
 
         /// <summary>
         /// Determines whether the specified object is equal to the current Vector2D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public override bool Equals(object? obj) => obj is Vector2 other && Equals(other);
 
         /// <summary>
         /// Returns a hash code for the Vector2D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public override int GetHashCode() => HashCode.Combine(X, Y);
 
         /// <summary>
         /// Returns the dot product of two <see cref="Vector2"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DotProduct(Vector2 right) => SNVector2.Dot(this, right);
+        [MethodImpl(AggressiveInlining)]
+        public float Dot(Vector2 right) => SNVector2.Dot(Value, right);
 
         /// <summary>
         /// Returns the Euclidean distance between two <see cref="Vector2"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Distance(Vector2 value2) => SNVector2.Distance(this, value2);
+        [MethodImpl(AggressiveInlining)]
+        public float Distance(Vector2 value2) => SNVector2.Distance(Value, value2);
 
         /// <summary>
         /// Returns the squared Euclidean distance between two <see cref="Vector2"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DistanceSquared(Vector2 value2) => SNVector2.DistanceSquared(this, value2);
+        [MethodImpl(AggressiveInlining)]
+        public float DistanceSquared(Vector2 value2) => SNVector2.DistanceSquared(Value, value2);
 
         /// <summary>
         /// Returns a vector that clamps each element of the <see cref="Vector2"/> between the corresponding elements of the minimum and maximum vectors.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Clamp(Vector2 min, Vector2 max) => SNVector2.Clamp(this, min, max);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 Clamp(Vector2 min, Vector2 max) => SNVector2.Clamp(Value, min, max);
 
         /// <summary>
         /// Returns a normalized version of the specified <see cref="Vector2"/>.
         /// </summary>
         public Vector2 Normalize
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Normalize(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Normalize(Value);
         }
 
         /// <summary>
@@ -169,7 +192,7 @@ namespace Plato.Geometry
         /// </summary>
         public float Length
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.ToSystem().Length();
+            [MethodImpl(AggressiveInlining)] get => Value.Length();
         }
 
         /// <summary>
@@ -177,22 +200,22 @@ namespace Plato.Geometry
         /// </summary>
         public float LengthSquared
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get =>  this.ToSystem().LengthSquared();
+            [MethodImpl(AggressiveInlining)]
+            get =>  Value.LengthSquared();
         }
 
         /// <summary>
         /// Returns a vector that is the reflection of the specified vector off a plane defined by the specified normal.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Reflect(Vector2 normal) => SNVector2.Reflect(this, normal);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 Reflect(Vector2 normal) => SNVector2.Reflect(Value, normal);
 
         /// <summary>
         /// Returns a vector whose elements are the absolute values of each element in the specified <see cref="Vector2"/>.
         /// </summary>
         public Vector2 Abs
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Abs(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Abs(Value);
         }
 
         /// <summary>
@@ -200,7 +223,7 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 SquareRoot
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.SquareRoot(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.SquareRoot(Value);
         }
 
         /// <summary>
@@ -208,7 +231,7 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 Sin
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Sin(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Sin(Value);
         }
 
         /// <summary>
@@ -216,7 +239,7 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 Cos
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Cos(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Cos(Value);
         }
 
         /// <summary>
@@ -224,10 +247,10 @@ namespace Plato.Geometry
         /// </summary>
         public (Vector2 Sin, Vector2 Cos) SinCos
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [MethodImpl(AggressiveInlining)]
             get
             {
-                var (sin, cos) = SNVector2.SinCos(this);
+                var (sin, cos) = SNVector2.SinCos(Value);
                 return (sin, cos);
             }
         }
@@ -237,7 +260,7 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 DegreesToRadians
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.DegreesToRadians(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.DegreesToRadians(Value);
         }
 
         /// <summary>
@@ -245,7 +268,7 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 RadiansToDegrees
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.RadiansToDegrees(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.RadiansToDegrees(Value);
         }
 
         /// <summary>
@@ -253,7 +276,7 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 Exp
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Exp(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Exp(Value);
         }
 
         /// <summary>
@@ -261,7 +284,7 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 Log
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Log(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Log(Value);
         }
 
         /// <summary>
@@ -269,135 +292,107 @@ namespace Plato.Geometry
         /// </summary>
         public Vector2 Log2
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Log2(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Log2(Value);
         }
 
         /// <summary>
         /// Transforms a <see cref="Vector2"/> by a 3x2 matrix.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Transform(Matrix3x2 matrix) => SNVector2.Transform(this, matrix);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 Transform(Matrix3x2 matrix) => SNVector2.Transform(Value, matrix);
 
         /// <summary>
         /// Transforms a <see cref="Vector2"/> by a 4x4 matrix.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Transform(Matrix4x4 matrix) => SNVector2.Transform(this, matrix);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 Transform(Matrix4x4 matrix) => SNVector2.Transform(Value, matrix);
 
         /// <summary>
         /// Transforms a <see cref="Vector2"/> by a quaternion rotation.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Transform(Quaternion rotation) => SNVector2.Transform(this, rotation);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 Transform(Quaternion rotation) => SNVector2.Transform(Value, rotation);
 
         /// <summary>
         /// Transforms a normal vector by a 3x2 matrix.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 TransformNormal(Matrix3x2 matrix) => SNVector2.TransformNormal(this, matrix);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 TransformNormal(Matrix3x2 matrix) => SNVector2.TransformNormal(Value, matrix);
 
         /// <summary>
         /// Transforms a normal vector by a 4x4 matrix.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 TransformNormal(Matrix4x4 matrix) => SNVector2.TransformNormal(this, matrix);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 TransformNormal(Matrix4x4 matrix) => SNVector2.TransformNormal(Value, matrix);
 
         /// <summary>
         /// Returns the maximum of two <see cref="Vector2"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Max(Vector2 value2) => SNVector2.Max(this, value2);
-
-        /// <summary>
-        /// Returns the maximum magnitude of two <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 MaxMagnitude(Vector2 value2) => SNVector2.MaxMagnitude(this, value2);
-
-        /// <summary>
-        /// Returns the maximum magnitude number of two <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 MaxMagnitudeNumber(Vector2 value2) => SNVector2.MaxMagnitudeNumber(this, value2);
-
-        /// <summary>
-        /// Returns the maximum number of two <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 MaxNumber(Vector2 value2) => SNVector2.MaxNumber(this, value2);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 Max(Vector2 value2) => SNVector2.Max(Value, value2);
 
         /// <summary>
         /// Returns the minimum of two <see cref="Vector2"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Min(Vector2 value2) => SNVector2.Min(this, value2);
-
-        /// <summary>
-        /// Returns the minimum magnitude of two <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 MinMagnitude(Vector2 value2) => SNVector2.MinMagnitude(this, value2);
-
-        /// <summary>
-        /// Returns the minimum magnitude number of two <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 MinMagnitudeNumber(Vector2 value2) => SNVector2.MinMagnitudeNumber(this, value2);
-
-        /// <summary>
-        /// Returns the minimum number of two <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 MinNumber(Vector2 value2) => SNVector2.MinNumber(this, value2);
-
-        /// <summary>
-        /// Performs a fused multiply-add operation on the specified <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 FusedMultiplyAdd(Vector2 right, Vector2 addend) => SNVector2.FusedMultiplyAdd(this, right, addend);
-
-        /// <summary>
-        /// Performs a multiply-add estimate operation on the specified <see cref="Vector2"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 MultiplyAddEstimate(Vector2 right, Vector2 addend) => SNVector2.MultiplyAddEstimate(this, right, addend);
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 Min(Vector2 value2) => SNVector2.Min(Value, value2);
 
         /// <summary>
         /// Returns a truncated version of the specified <see cref="Vector2"/>.
         /// </summary>
         public Vector2 Truncate
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => SNVector2.Truncate(this);
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Truncate(Value);
         }
 
         /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer.
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest even integer.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Round() => SNVector2.Round(this);
+        public Vector2 Round
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector2.Round(Value, MidpointRounding.ToEven);
+        }
 
         /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer using the specified rounding mode.
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards zero.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 Round(MidpointRounding mode) => SNVector2.Round(this, mode);
+        public Vector2 RoundTowardsZero
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector2.Round(Value, MidpointRounding.ToZero);
+        }
+
+        /// <summary>
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, away from zero.
+        /// </summary>
+        public Vector2 RoundAwayFromZero
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector2.Round(Value, MidpointRounding.AwayFromZero);
+        }
+
+        /// <summary>
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards negative infinity
+        /// </summary>
+        public Vector2 Floor
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector2.Round(Value, MidpointRounding.ToNegativeInfinity);
+        }
+        
+        /// <summary>
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards positive infinity
+        /// </summary>
+        public Vector2 Ceiling
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector2.Round(Value, MidpointRounding.ToPositiveInfinity);
+        }
 
         /// <summary>
         /// Returns the string representation of the <see cref="Vector2"/> using default formatting.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() => this.ToSystem().ToString();
-
-        /// <summary>
-        /// Returns the string representation of the <see cref="Vector2"/> using the specified format.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string? format) => this.ToSystem().ToString(format);
-
-        /// <summary>
-        /// Returns the string representation of the <see cref="Vector2"/> using the specified format and format provider.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string? format, IFormatProvider? formatProvider) => this.ToSystem().ToString(format, formatProvider);
+        [MethodImpl(AggressiveInlining)]
+        public override string ToString() => Value.ToString();
     }
 }

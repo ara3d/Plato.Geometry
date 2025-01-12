@@ -1,4 +1,6 @@
 ﻿using System.Numerics;
+using Plato.SinglePrecision;
+using Line = Ara3D.Mathematics.Line;
 
 namespace Plato.Geometry.Tests.Plato.Geometry
 {
@@ -8,7 +10,7 @@ namespace Plato.Geometry.Tests.Plato.Geometry
         /// Computes the union of bounding boxes (element-wise).
         /// For each index i, the union encloses a[i] and b[i].
         /// </summary>
-        public static void Union(Bounds[] a, Bounds[] b, out Bounds[] r)
+        public static void Union(Bounds3D[] a, Bounds[] b, out Bounds[] r)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Arrays must have the same length.");

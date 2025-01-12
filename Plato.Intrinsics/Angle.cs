@@ -31,24 +31,24 @@ namespace Plato
         // Converting the angle to a numerical value using different units 
         // -------------------------------------------------------------------------------
 
-        public float Radians
+        public Number Radians
         {
             [MethodImpl(AggressiveInlining)] get => Value;
         }
 
-        public float Degrees
+        public Number Degrees
         {
-            [MethodImpl(AggressiveInlining)] get => Value * 180f / (float)Math.PI;
+            [MethodImpl(AggressiveInlining)] get => Value * 180f / MathF.PI;
         }
 
-        public float Turns
+        public Number Turns
         {
             [MethodImpl(AggressiveInlining)] get => HalfTurns / 2f;
         }
 
-        public float HalfTurns
+        public Number HalfTurns
         {
-            [MethodImpl(AggressiveInlining)] get => Value / (float)Math.PI;
+            [MethodImpl(AggressiveInlining)] get => Value / MathF.PI;
         }
 
         // -------------------------------------------------------------------------------
@@ -80,6 +80,7 @@ namespace Plato
         // -------------------------------------------------------------------------------
         // Operators (forward to float)
         // -------------------------------------------------------------------------------
+        
         [MethodImpl(AggressiveInlining)]
         public static Angle operator +(Angle a, Angle b)
             => new(a.Value + b.Value);
@@ -110,30 +111,30 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static Angle operator -(Angle n)
-            => (-n.Value);
+            => -n.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator ==(Angle a, Angle b)
+        public static Boolean operator ==(Angle a, Angle b)
             => a.Value == b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator !=(Angle a, Angle b)
+        public static Boolean operator !=(Angle a, Angle b)
             => a.Value != b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator <(Angle a, Angle b)
+        public static Boolean operator <(Angle a, Angle b)
             => a.Value < b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator <=(Angle a, Angle b)
+        public static Boolean operator <=(Angle a, Angle b)
             => a.Value <= b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator >(Angle a, Angle b)
+        public static Boolean operator >(Angle a, Angle b)
             => a.Value > b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator >=(Angle a, Angle b)
+        public static Boolean operator >=(Angle a, Angle b)
             => a.Value >= b.Value;
 
         // -------------------------------------------------------------------------------

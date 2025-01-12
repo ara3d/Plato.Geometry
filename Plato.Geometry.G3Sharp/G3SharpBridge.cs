@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using g3;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 
 namespace Plato.Geometry.G3Sharp
 {

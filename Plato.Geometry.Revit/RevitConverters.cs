@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.DirectContext3D;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Graphics;
 using RPlane = Autodesk.Revit.DB.Plane;
-using Plane = Plato.DoublePrecision.Plane;
-using Color = Plato.DoublePrecision.Color;
+using Plane = Plato.SinglePrecision.Plane;
+using Color = Plato.SinglePrecision.Color;
 
 namespace Plato.Geometry.Revit
 {

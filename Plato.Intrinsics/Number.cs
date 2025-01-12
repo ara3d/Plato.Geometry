@@ -20,6 +20,7 @@ namespace Plato
         // -------------------------------------------------------------------------------
         // Constructors
         // -------------------------------------------------------------------------------
+
         [MethodImpl(AggressiveInlining)]
         public Number(float value) => Value = value;
 
@@ -28,16 +29,13 @@ namespace Plato
         // -------------------------------------------------------------------------------
 
         [MethodImpl(AggressiveInlining)]
-        public float ToFloat() => Value;
+        public static Number FromSystem(float f) => new(f);
 
         [MethodImpl(AggressiveInlining)]
-        public static Number FromFloat(float f) => new(f);
+        public static implicit operator Number(float f) => FromSystem(f);
 
         [MethodImpl(AggressiveInlining)]
-        public static implicit operator Number(float f) => FromFloat(f);
-
-        [MethodImpl(AggressiveInlining)]
-        public static implicit operator float(Number n) => n.ToFloat();
+        public static implicit operator float(Number n) => n.Value;
 
         // -------------------------------------------------------------------------------
         // Common Constants
@@ -65,46 +63,46 @@ namespace Plato
         // -------------------------------------------------------------------------------
         [MethodImpl(AggressiveInlining)]
         public static Number operator +(Number a, Number b)
-            => (a.Value + b.Value);
+            => a.Value + b.Value;
 
         [MethodImpl(AggressiveInlining)]
         public static Number operator -(Number a, Number b)
-            => (a.Value - b.Value);
+            => a.Value - b.Value;
 
         [MethodImpl(AggressiveInlining)]
         public static Number operator *(Number a, Number b)
-            => (a.Value * b.Value);
+            => a.Value * b.Value;
 
         [MethodImpl(AggressiveInlining)]
         public static Number operator /(Number a, Number b)
-            => (a.Value / b.Value);
+            => a.Value / b.Value;
 
         [MethodImpl(AggressiveInlining)]
         public static Number operator -(Number n)
-            => (-n.Value);
+            => -n.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator ==(Number a, Number b)
+        public static Boolean operator ==(Number a, Number b)
             => a.Value == b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator !=(Number a, Number b)
+        public static Boolean operator !=(Number a, Number b)
             => a.Value != b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator <(Number a, Number b)
+        public static Boolean operator <(Number a, Number b)
             => a.Value < b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator <=(Number a, Number b)
+        public static Boolean operator <=(Number a, Number b)
             => a.Value <= b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator >(Number a, Number b)
+        public static Boolean operator >(Number a, Number b)
             => a.Value > b.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator >=(Number a, Number b)
+        public static Boolean operator >=(Number a, Number b)
             => a.Value >= b.Value;
 
         // -------------------------------------------------------------------------------
@@ -116,7 +114,7 @@ namespace Plato
             => Value.Equals(other.Value);
 
         [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is Number n && Equals(n);
 
         [MethodImpl(AggressiveInlining)]
@@ -399,7 +397,7 @@ namespace Plato
         /// <summary>
         /// An estimate of the reciprocal square root of the number.
         /// </summary>
-        public Number ReciprocalSqrtEstimate
+        public Number ReciprocalSquareRootEstimate
         {
             [MethodImpl(AggressiveInlining)] get => MathF.ReciprocalSqrtEstimate(Value);
         }
@@ -408,13 +406,13 @@ namespace Plato
         /// Rounds the value to the number of fractional digits using the specified rounding convention.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public Number Round(int digits, MidpointRounding mode) => MathF.Round(Value, digits, mode);
+        public Number Round(Integer digits, MidpointRounding mode) => MathF.Round(Value, digits, mode);
 
         /// <summary>
         /// Rounds the value to the number of fractional digits, rounding midpoint values to the nearest even number.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public Number Round(int digits) => MathF.Round(Value, digits);
+        public Number Round(Integer digits) => MathF.Round(Value, digits);
 
         /// <summary>
         /// Rounds the value to an integer using the specified rounding convention.
@@ -432,12 +430,12 @@ namespace Plato
         /// Returns x multiplied by 2 raised to the power of n, computed efficiently.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public Number ScaleB(int n) => MathF.ScaleB(Value, n);
+        public Number ScaleB(Integer n) => MathF.ScaleB(Value, n);
 
         /// <summary>
         /// An integer that indicates the sign of the number.
         /// </summary>
-        public int Sign
+        public Integer Sign
         {
             [MethodImpl(AggressiveInlining)] get => MathF.Sign(Value);
         }
@@ -445,9 +443,18 @@ namespace Plato
         /// <summary>
         /// The square root of the number.
         /// </summary>
-        public Number Sqrt
+        public Number SquareRoot
         {
             [MethodImpl(AggressiveInlining)] get => MathF.Sqrt(Value);
+        }
+
+        /// <summary>
+        /// The square root of the number.
+        /// </summary>
+        public Number Square
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value * Value;
         }
 
         /// <summary>

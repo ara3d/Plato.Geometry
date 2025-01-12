@@ -1,6 +1,6 @@
 using Plato.Geometry.Graphics;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
     public readonly partial struct Color
     {

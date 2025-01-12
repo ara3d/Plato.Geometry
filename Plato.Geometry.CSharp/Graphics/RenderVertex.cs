@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 
 namespace Plato.Geometry.Graphics
 {

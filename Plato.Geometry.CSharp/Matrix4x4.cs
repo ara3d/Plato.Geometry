@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
     /// <summary>
     /// A structure encapsulating a 4x4 matrix.

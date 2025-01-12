@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
     public static class Polygons
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Memory;
 
 namespace Plato.Geometry.Graphics

@@ -1,59 +1,42 @@
 
 //# 2D Shapes
 
-type Transform2D
-    implements IValue
-{
-    Translation: Vector2D;
-    Rotation: Angle;
-    Scale: Vector2D;
-}
-
-type Pose2D
-    implements IValue
-{
-    Position: Vector2D;
-    Rotation: Angle;
-}
-
-// Axis-Aligned bounding box 
 type Bounds2D
-    implements IBounds<Vector2D>
+    implements IBounds<Vector2>
 {
-    Min: Vector2D;
-    Max: Vector2D;
+    Min: Vector2;
+    Max: Vector2;
 }
 
 type Ray2D
     implements IValue
 {
-    Origin: Vector2D;
-    Direction: Vector2D;
+    Origin: Vector2;
+    Direction: Vector2;
 }
 
 type Triangle2D
     implements IPolygon2D
 {
-    A: Vector2D;
-    B: Vector2D;
-    C: Vector2D;
+    A: Vector2;
+    B: Vector2;
+    C: Vector2;
 }
 
 type Quad2D
     implements IPolygon2D
 {
-    A: Vector2D;
-    B: Vector2D;
-    C: Vector2D;
-    D: Vector2D;
+    A: Vector2;
+    B: Vector2;
+    C: Vector2;
+    D: Vector2;
 }
-
-// A line segment in 2D.
+    
 type Line2D
-    implements IPolyLine2D, IOpenShape2D, IArray<Vector2D>, IInterval<Vector2D>
+    implements IPolyLine2D, IOpenShape2D, IArray<Vector2>, IInterval<Vector2>
 {
-    A: Vector2D;
-    B: Vector2D;
+    A: Vector2;
+    B: Vector2;
 }
 
 // https://en.wikipedia.org/wiki/Lens_(geometry)
@@ -67,14 +50,14 @@ type Lens
 type Rect2D
     implements IPolygon2D
 {
-    Center: Vector2D;
-    Size: Vector2D;
+    Center: Vector2;
+    Size: Vector2;
 }
 
 type Ring
     implements IClosedShape2D
 {
-    Center: Vector2D;
+    Center: Vector2;
     InnerRadius: Number;
     OuterRadius: Number;
 }
@@ -82,7 +65,8 @@ type Ring
 type Arc
     implements IOpenShape2D
 {
-    Angles: AnglePair;
+    Start: Angle;
+    End: Angle;
     Circle: Circle;
 }
 
@@ -108,14 +92,15 @@ type RegularPolygon
     implements IPolygon2D
 {
     NumPoints: Integer;
+    Radius: Number;
 }
 
 type Box2D
     implements IShape2D
 {
-    Center: Vector2D;
+    Center: Vector2;
     Rotation: Angle;
-    Extent: Vector2D;
+    Extent: Vector2;
 }
 
 //==
@@ -126,50 +111,62 @@ type Box2D
 type Plane
     implements IValue
 {
-    Normal: Vector3D;
+    Normal: Vector3;
     D: Number;
+}
+
+// Bounding frustum, representing the viewable area of a camera.
+type Frustum
+    implements IValue
+{
+    Near: Plane;
+    Far: Plane;
+    Left: Plane;
+    Right: Plane;
+    Top: Plane;
+    Bottom: Plane;
 }
 
 // Axis-Aligned bounding box 
 type Bounds3D
-    implements IBounds<Vector3D>, IDeformable3D
+    implements IBounds<Vector3>, IDeformable3D
 {
-    Min: Vector3D;
-    Max: Vector3D;
+    Min: Vector3;
+    Max: Vector3;
 }
 
 // A line segment in 3D.
 type Line3D 
-    implements IPolyLine3D, IOpenShape3D, IDeformable3D, IArray<Vector3D>, IInterval<Vector3D>
+    implements IPolyLine3D, IOpenShape3D, IDeformable3D, IArray<Vector3>, IInterval<Vector3>
 {
-    A: Vector3D;
-    B: Vector3D;
+    A: Vector3;
+    B: Vector3;
 }
 
+// An infinite directed line in 3D.
 type Ray3D
     implements IValue, IDeformable3D
 {
-    Origin: Vector3D;
-    Direction: Vector3D;
+    Origin: Vector3;
+    Direction: Vector3;
 }
 
-//==
-// 3D Curves 
-//== 
-
+// A triangle in 3D.
 type Triangle3D
     implements IPolygon3D, IDeformable3D
 {
-    A: Vector3D;
-    B: Vector3D;
-    C: Vector3D;
+    A: Vector3;
+    B: Vector3;
+    C: Vector3;
 }
 
+// A quadrilateral (four-sided) shape in 3D.
 type Quad3D
     implements IPolygon3D, IDeformable3D
 {
-    A: Vector3D;
-    B: Vector3D;
-    C: Vector3D;
-    D: Vector3D;
+    A: Vector3;
+    B: Vector3;
+    C: Vector3;
+    D: Vector3;
 }
+        

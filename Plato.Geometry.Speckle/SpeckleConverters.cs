@@ -8,15 +8,15 @@ using Objects;
 using Objects.Geometry;
 using Objects.Other;
 using Objects.Utils;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Graphics;
 using Plato.Geometry.Scenes;
 using Speckle.Core.Models;
-using Color = Plato.DoublePrecision.Color;
+using Color = Plato.SinglePrecision.Color;
 using Material = Plato.Geometry.Graphics.Material;
 using Point = Objects.Geometry.Point;
 using Quaternion = System.DoubleNumerics.Quaternion;
-using PQuaternion = Plato.DoublePrecision.Quaternion;
+using PQuaternion = Plato.SinglePrecision.Quaternion;
 
 namespace Plato.Geometry.Speckle
 {

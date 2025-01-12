@@ -3,7 +3,7 @@
     Size(x: IBounds<$T>): $T
         => x.Max - x.Min;
  
-    Lerp(x: IBounds<$T>, amount: Number): $T
+    Lerp(x: IBounds<$T>, amount: float): $T
         => x.Min.Lerp(x.Max, amount);
         
     Center(x: IBounds<$T>): $T

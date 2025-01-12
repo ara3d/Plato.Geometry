@@ -9,18 +9,22 @@ namespace Plato
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public partial struct Matrix4x4 : IEquatable<Matrix4x4>
     {
-        public readonly Vector4 Row1;
-        public readonly Vector4 Row2;
-        public readonly Vector4 Row3;
-        public readonly Vector4 Row4;
+        public readonly SNMatrix4x4 Value;
 
         // --------------------------------------------------------------------------------
         // Constructor
         // --------------------------------------------------------------------------------
 
         [MethodImpl(AggressiveInlining)]
-        public Matrix4x4(Vector4 row1, Vector4 row2, Vector4 row3, Vector4 row4) =>
-            (Row1, Row2, Row3, Row4) = (row1, row2, row3, row4);
+        public Matrix4x4(SNMatrix4x4 matrix) => Value = matrix;
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix4x4(Vector4 row1, Vector4 row2, Vector4 row3, Vector4 row4)
+            : this(row1.X, row1.Y, row1.Z, row1.W,
+                row2.X, row2.Y, row2.Z, row2.W,
+                row3.X, row3.Y, row3.Z, row3.W,
+                row4.X, row4.Y, row4.Z, row4.W)
+        { }
 
         [MethodImpl(AggressiveInlining)]
         public Matrix4x4(
@@ -28,21 +32,16 @@ namespace Plato
             Number m21, Number m22, Number m23, Number m24,
             Number m31, Number m32, Number m33, Number m34,
             Number m41, Number m42, Number m43, Number m44)
-            : this(
-                new(m11, m12, m13, m14),
-                new(m21, m22, m23, m24),
-                new(m31, m32, m33, m34),
-                new(m41, m42, m43, m44))
-        { }
+            => Value = new SNMatrix4x4(m11, m12, m13, m14,
+                m21, m22, m23, m24,
+                m31, m32, m33, m34,
+                m41, m42, m43, m44);
 
         // --------------------------------------------------------------------------------
         // Convert to/from System.Numerics.Matrix4x4
         // --------------------------------------------------------------------------------
 
-        [MethodImpl(AggressiveInlining)]
-        public SNMatrix4x4 ToSystem()
-            => Unsafe.As<Matrix4x4, SNMatrix4x4>(ref this);
-
+        
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 FromSystem(SNMatrix4x4 sysMat)
             => Unsafe.As<SNMatrix4x4, Matrix4x4>(ref sysMat);
@@ -53,7 +52,7 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static implicit operator SNMatrix4x4(Matrix4x4 m) 
-            => m.ToSystem();
+            => m.Value;
 
         // --------------------------------------------------------------------------------
         // Identity
@@ -67,42 +66,43 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 operator +(Matrix4x4 value1, Matrix4x4 value2)
-            => value1.ToSystem() + value2.ToSystem();
+            => value1.Value + value2.Value;
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 operator -(Matrix4x4 value1, Matrix4x4 value2)
-            => value1.ToSystem() - value2.ToSystem();
+            => value1.Value - value2.Value;
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 operator *(Matrix4x4 value1, Matrix4x4 value2)
-            => value1.ToSystem() * value2.ToSystem();
+            => value1.Value * value2.Value;
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 operator *(Matrix4x4 value1, Number f)
-            => value1.ToSystem() * f;
+            => value1.Value * f;
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 operator *(Number f, Matrix4x4 value1)
-            => value1.ToSystem() * f;
+            => value1.Value * f;
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 operator /(Matrix4x4 value1, Number f)
-            => value1.ToSystem() * f.ReciprocalEstimate;
+            => value1.Value * f.ReciprocalEstimate;
 
         // --------------------------------------------------------------------------------
         // One-to-one static methods (Add, Multiply, Subtract, etc.)
         // --------------------------------------------------------------------------------
+       
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 Add(Matrix4x4 value1, Matrix4x4 value2)
-            => SNMatrix4x4.Add(value1.ToSystem(), value2.ToSystem());
+            => SNMatrix4x4.Add(value1.Value, value2.Value);
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 Subtract(Matrix4x4 value1, Matrix4x4 value2)
-            => SNMatrix4x4.Subtract(value1.ToSystem(), value2.ToSystem());
+            => SNMatrix4x4.Subtract(value1.Value, value2.Value);
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 Multiply(Matrix4x4 value1, Matrix4x4 value2)
-            => SNMatrix4x4.Multiply(value1.ToSystem(), value2.ToSystem());
+            => SNMatrix4x4.Multiply(value1.Value, value2.Value);
 
         // --------------------------------------------------------------------------------
         // Example "Create*" static methods (forwarded)
@@ -138,34 +138,32 @@ namespace Plato
 
         /// <summary>
         /// Attempts to extract scale, rotation (as a <see cref="Quaternion"/>),
-        /// and translation from this matrix.
+        /// and translation from Value matrix.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public bool Decompose(out Vector3 scale, out Quaternion rotation, out Vector3 translation)
+        public (Vector3, Quaternion, Vector3, Boolean) Decompose()
         {
-            var success = SNMatrix4x4.Decompose(this, out var sysScale, out var sysQuat, out var sysTrans);
-            scale = sysScale;
-            rotation = sysQuat; 
-            translation = sysTrans;
-            return success;
+            var success = SNMatrix4x4.Decompose(Value, out var scl, out var rot, out var trans);
+            return (trans, rot, scl, success);
         }
 
         public Number Determinant
         {
-            [MethodImpl(AggressiveInlining)] get => ToSystem().GetDeterminant();
+            [MethodImpl(AggressiveInlining)] get => Value.GetDeterminant();
         }
 
         public Matrix4x4 Transpose
         {
-            [MethodImpl(AggressiveInlining)] get => SNMatrix4x4.Transpose(ToSystem());
+            [MethodImpl(AggressiveInlining)] get => SNMatrix4x4.Transpose(Value);
         }
 
         // --------------------------------------------------------------------------------
         // Equality, hashing, and ToString
         // --------------------------------------------------------------------------------
+        
         [MethodImpl(AggressiveInlining)]
         public bool Equals(Matrix4x4 other)
-            => ToSystem().Equals(other.ToSystem());
+            => Value.Equals(other.Value);
 
         [MethodImpl(AggressiveInlining)]
         public override bool Equals(object obj)
@@ -173,34 +171,29 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public override int GetHashCode()
-            => ToSystem().GetHashCode();
+            => Value.GetHashCode();
 
         [MethodImpl(AggressiveInlining)]
         public override string ToString()
-            => ToSystem().ToString();
+            => Value.ToString();
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator ==(Matrix4x4 a, Matrix4x4 b) 
+        public static Boolean operator ==(Matrix4x4 a, Matrix4x4 b) 
             => a.Equals(b);
 
         [MethodImpl(AggressiveInlining)]
-        public static bool operator !=(Matrix4x4 a, Matrix4x4 b) 
+        public static Boolean operator !=(Matrix4x4 a, Matrix4x4 b) 
             => !a.Equals(b);
 
         [MethodImpl(AggressiveInlining)]
-        public static Matrix4x4 Negate(Matrix4x4 value)
-            => SNMatrix4x4.Negate(value.ToSystem());
-
-        [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 Lerp(Matrix4x4 matrix1, Matrix4x4 matrix2, Number amount)
-            => SNMatrix4x4.Lerp(matrix1.ToSystem(), matrix2.ToSystem(), amount);
+            => SNMatrix4x4.Lerp(matrix1.Value, matrix2.Value, amount);
 
         [MethodImpl(AggressiveInlining)]
-        public static bool Invert(Matrix4x4 matrix, out Matrix4x4 result)
+        public (Matrix4x4, Boolean) Invert()
         {
-            var success = SNMatrix4x4.Invert(matrix.ToSystem(), out var sysResult);
-            result = sysResult;
-            return success;
+            var success = SNMatrix4x4.Invert(Value, out var result);
+            return (result, success);
         }
 
         [MethodImpl(AggressiveInlining)]

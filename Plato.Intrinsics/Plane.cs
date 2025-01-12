@@ -15,8 +15,31 @@ namespace Plato
         // Fields
         // --------------------------------------------------------------------
         
-        public readonly Vector3 Normal;
-        public readonly float D;
+        public readonly SNPlane Value;
+
+        // --------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------
+
+        public Vector3 Normal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Value.Normal;
+        }
+
+        public Number D
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Value.D;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Plane WithNormal(Vector3 normal)
+            => new(normal, D);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Plane WithD(Number d)
+            => new(Normal, d);
 
         // --------------------------------------------------------------------
         // Constructors
@@ -26,22 +49,16 @@ namespace Plato
         /// Creates a new <see cref="Plane"/> with the specified normal and distance.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane(Vector3 normal, float d)
-        {
-            Normal = normal;
-            D = d;
-        }
+        public Plane(Vector3 normal, Number d)
+            => Value = new(normal, d);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Plane(SNPlane plane)
+            => Value = Value;
 
         // --------------------------------------------------------------------
         // Internal: Convert to/from Plane
         // --------------------------------------------------------------------
-
-        /// <summary>
-        /// Converts this wrapper to a <see cref="Plane"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SNPlane ToSystem()
-            => Unsafe.As<Plane, SNPlane>(ref this);
 
         /// <summary>
         /// Converts a <see cref="Plane"/> to this wrapper.
@@ -56,7 +73,7 @@ namespace Plato
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator SNPlane(Plane plane)
-            => plane.ToSystem();
+            => plane.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Plane(SNPlane plane)
@@ -68,7 +85,7 @@ namespace Plato
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Plane other)
-            => ToSystem().Equals(other.ToSystem());
+            => Value.Equals(other.Value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object? obj)
@@ -76,24 +93,24 @@ namespace Plato
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
-            => ToSystem().GetHashCode();
+            => Value.GetHashCode();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
-            => ToSystem().ToString();
+            => Value.ToString();
 
         /// <summary>
         /// Equality operator.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Plane left, Plane right)
+        public static Boolean operator ==(Plane left, Plane right)
             => left.Equals(right);
 
         /// <summary>
         /// Inequality operator.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Plane left, Plane right)
+        public static Boolean operator !=(Plane left, Plane right)
             => !left.Equals(right);
 
         // --------------------------------------------------------------------
@@ -112,21 +129,21 @@ namespace Plato
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Dot(Vector4 value)
-            => SNPlane.Dot(ToSystem(), value);
+            => SNPlane.Dot(Value, value);
 
         /// <summary>
         /// Returns the dot product of a plane's normal with a 3D coordinate, plus the plane's D value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float DotCoordinate(Vector3 value)
-            => SNPlane.DotCoordinate(ToSystem(), value);
+            => SNPlane.DotCoordinate(Value, value);
 
         /// <summary>
         /// Returns the dot product of a plane's normal with a 3D normal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float DotNormal(Vector3 value)
-            => SNPlane.DotNormal(ToSystem(), value);
+            => SNPlane.DotNormal(Value, value);
 
         /// <summary>
         /// Returns a copy of the plane with a normal of length of 1.
@@ -134,7 +151,7 @@ namespace Plato
         public Plane Normalize
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => SNPlane.Normalize(ToSystem());
+            get => SNPlane.Normalize(Value);
         }
 
         /// <summary>
@@ -142,13 +159,13 @@ namespace Plato
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Plane Transform(Quaternion rotation)
-            => SNPlane.Transform(ToSystem(), rotation);
+            => SNPlane.Transform(Value, rotation);
 
         /// <summary>
         /// Transforms by a 4x4 matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Plane Transform(Matrix4x4 matrix)
-            => SNPlane.Transform(ToSystem(), matrix);
+            => SNPlane.Transform(Value, matrix);
     }
 }

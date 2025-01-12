@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
         public static partial class Intrinsics
     {

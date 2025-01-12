@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Memory;
 
 namespace Plato.Geometry.IO

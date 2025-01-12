@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
     /// <summary>
     /// Many of these functions, once validated, will move into the Plato library.

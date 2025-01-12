@@ -1,4 +1,4 @@
-
+    
 // Arrays provide a count and support the indexing operator [] 
 interface IArray<T>
 {

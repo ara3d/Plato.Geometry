@@ -1,4 +1,4 @@
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
     public static class IntegerExtensions
     {

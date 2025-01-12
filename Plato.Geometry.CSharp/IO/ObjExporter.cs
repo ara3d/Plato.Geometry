@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 
 namespace Plato.Geometry.IO
 {

@@ -1,0 +1,61 @@
+﻿type IdentityTransform3D
+    implements IValue, ITransform3D
+{
+}
+
+type Translation3D
+    implements ITransform3D
+{
+    Translation: Vector3;
+}
+
+type Translation3D
+    implements ITransform3D
+{
+    Scale: Vector3;
+}
+
+type Transform3D
+    implements IValue, ITransform3D
+{
+    Translation: Translation3D;
+    Rotation: Rotation3D;
+    Scale: Scale3D;
+}
+
+// Also known as a Rigid Body Transform
+type Pose3D
+    implements IValue, ITransform3D
+{
+    Translation: Translation3D;
+    Rotation: Rotation3D;
+}
+
+type Frame3D
+    implements IValue, ITransform3D
+{
+    Forward: Vector3;
+    Up: Vector3;
+    Position: Vector3;
+}
+
+type AxisAngle
+    implements IValue, ITransform3D
+{
+    Axis: Vector3;
+    Angle: Angle;
+}
+
+type EulerAngles
+    implements IValue, ITransform3D
+{
+    Yaw: Angle;
+    Pitch: Angle;
+    Roll: Angle;
+}
+
+type Rotation3D
+    implements IValue, ITransform3D
+{
+    Quaternion: Quaternion;
+}

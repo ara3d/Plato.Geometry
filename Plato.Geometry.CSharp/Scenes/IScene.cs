@@ -1,4 +1,4 @@
-﻿using Plato.DoublePrecision;
+﻿using Plato.SinglePrecision;
 using Plato.Geometry.Graphics;
 using System.Collections.Generic;
 

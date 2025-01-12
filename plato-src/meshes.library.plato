@@ -58,17 +58,17 @@
     NumFaces(g: IIndexedGeometry): Integer => g.NumPrimitives;
     
     FaceIndices(g: IIndexedGeometry, f: Integer): IArray<Integer> => g.Indices.NthSlice(f, g.PrimitiveSize);
-    FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2D> => g.FaceIndices(f).Map(i => g.Vertex(i));
-    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3D> => g.FaceIndices(f).Map(i => g.Vertex(i));
+    FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2> => g.FaceIndices(f).Map(i => g.Vertex(i));
+    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3> => g.FaceIndices(f).Map(i => g.Vertex(i));
     AllFaceIndices(g: IIndexedGeometry): IArray<IArray<Integer>> => g.Indices.Slices(g.PrimitiveSize);
-    Vertex(g: IIndexedGeometry2D, n: Integer): Vector2D => g.Points[g.Indices[n]];
-    Vertex(g: IIndexedGeometry3D, n: Integer): Vector3D => g.Points[g.Indices[n]];
-    Vertices(g: IIndexedGeometry2D, xs: IArray<Integer>): IArray<Vector2D> => xs.Map(i => g.Vertex(i));
-    Vertices(g: IIndexedGeometry3D, xs: IArray<Integer>): IArray<Vector3D> => xs.Map(i => g.Vertex(i));
-    AllFaceVertices(g: IIndexedGeometry2D): IArray<IArray<Vector2D>> => g.Indices.Slices(g.PrimitiveSize).Map(xs => g.Vertices(xs));
-    AllFaceVertices(g: IIndexedGeometry3D): IArray<IArray<Vector3D>> => g.Indices.Slices(g.PrimitiveSize).Map(xs => g.Vertices(xs));
-    AllVertices(g: IIndexedGeometry2D): IArray<Vector2D> => g.Vertices(g.Indices);
-    AllVertices(g: IIndexedGeometry3D): IArray<Vector3D> => g.Vertices(g.Indices);     
+    Vertex(g: IIndexedGeometry2D, n: Integer): Vector2 => g.Points[g.Indices[n]];
+    Vertex(g: IIndexedGeometry3D, n: Integer): Vector3 => g.Points[g.Indices[n]];
+    Vertices(g: IIndexedGeometry2D, xs: IArray<Integer>): IArray<Vector2> => xs.Map(i => g.Vertex(i));
+    Vertices(g: IIndexedGeometry3D, xs: IArray<Integer>): IArray<Vector3> => xs.Map(i => g.Vertex(i));
+    AllFaceVertices(g: IIndexedGeometry2D): IArray<IArray<Vector2>> => g.Indices.Slices(g.PrimitiveSize).Map(xs => g.Vertices(xs));
+    AllFaceVertices(g: IIndexedGeometry3D): IArray<IArray<Vector3>> => g.Indices.Slices(g.PrimitiveSize).Map(xs => g.Vertices(xs));
+    AllVertices(g: IIndexedGeometry2D): IArray<Vector2> => g.Vertices(g.Indices);
+    AllVertices(g: IIndexedGeometry3D): IArray<Vector3> => g.Vertices(g.Indices);     
 
     Lines(x: ILineMesh2D): IArray<Line2D> => x.AllFaceVertices.Map(xs => new Line2D(xs[0], xs[1]));
     Lines(x: ILineMesh3D): IArray<Line3D> => x.AllFaceVertices.Map(xs => new Line3D(xs[0], xs[1]));
@@ -82,12 +82,12 @@
     //==
     // Points, Lines, Triangles, and Quads implementations 
 
-    Points(x: Line2D): IArray<Vector2D> => [x.A, x.B];
-    Points(x: Line3D): IArray<Vector3D> => [x.A, x.B];
-    Points(x: Triangle2D): IArray<Vector2D> => [x.A, x.B, x.C];
-    Points(x: Triangle3D): IArray<Vector3D> => [x.A, x.B, x.C];
-    Points(x: Quad2D): IArray<Vector2D> => [x.A, x.B, x.C, x.D];
-    Points(x: Quad3D): IArray<Vector3D> => [x.A, x.B, x.C, x.D];
+    Points(x: Line2D): IArray<Vector2> => [x.A, x.B];
+    Points(x: Line3D): IArray<Vector3> => [x.A, x.B];
+    Points(x: Triangle2D): IArray<Vector2> => [x.A, x.B, x.C];
+    Points(x: Triangle3D): IArray<Vector3> => [x.A, x.B, x.C];
+    Points(x: Quad2D): IArray<Vector2> => [x.A, x.B, x.C, x.D];
+    Points(x: Quad3D): IArray<Vector3> => [x.A, x.B, x.C, x.D];
 
     Lines(x: Triangle2D): IArray<Line2D> => [new Line2D(x.A, x.B), new Line2D(x.B, x.C), new Line2D(x.C, x.A)];
     Lines(x: Triangle3D): IArray<Line3D> => [new Line3D(x.A, x.B), new Line3D(x.B, x.C), new Line3D(x.C, x.A)];
@@ -97,12 +97,12 @@
     Triangles(q: Quad2D): IArray<Triangle2D> => [new Triangle2D(q.A, q.B, q.C), new Triangle2D(q.C, q.D, q.A)];
     Triangles(q: Quad3D): IArray<Triangle3D> => [new Triangle3D(q.A, q.B, q.C), new Triangle3D(q.C, q.D, q.A)];
 
-    Points(xs: IArray<Line2D>): IArray<Vector2D> => xs.FlatMap(x => x);
-    Points(xs: IArray<Line3D>): IArray<Vector3D> => xs.FlatMap(x => x);
-    Points(xs: IArray<Triangle2D>): IArray<Vector2D> => xs.FlatMap(x => x);
-    Points(xs: IArray<Triangle3D>): IArray<Vector3D> => xs.FlatMap(x => x);
-    Points(xs: IArray<Quad2D>): IArray<Vector2D> => xs.FlatMap(x => x);
-    Points(xs: IArray<Quad3D>): IArray<Vector3D> => xs.FlatMap(x => x);
+    Points(xs: IArray<Line2D>): IArray<Vector2> => xs.FlatMap(x => x);
+    Points(xs: IArray<Line3D>): IArray<Vector3> => xs.FlatMap(x => x);
+    Points(xs: IArray<Triangle2D>): IArray<Vector2> => xs.FlatMap(x => x);
+    Points(xs: IArray<Triangle3D>): IArray<Vector3> => xs.FlatMap(x => x);
+    Points(xs: IArray<Quad2D>): IArray<Vector2> => xs.FlatMap(x => x);
+    Points(xs: IArray<Quad3D>): IArray<Vector3> => xs.FlatMap(x => x);
 
     Lines(xs: IArray<Line2D>): IArray<Line2D> => xs;
     Lines(xs: IArray<Line3D>): IArray<Line3D> => xs;
@@ -116,12 +116,12 @@
     Triangles(xs: IArray<Quad2D>): IArray<Triangle2D> => xs.FlatMap(x => x.Triangles);
     Triangles(xs: IArray<Quad3D>): IArray<Triangle3D> => xs.FlatMap(x => x.Triangles);
     
-    Points(xs: ILineArray2D): IArray<Vector2D> => xs.Lines.FlatMap(x => x.Points);
-    Points(xs: ILineArray3D): IArray<Vector3D> => xs.Lines.FlatMap(x => x.Points);
-    Points(xs: ITriangleArray2D): IArray<Vector2D> => xs.Triangles.FlatMap(x => x.Points);
-    Points(xs: ITriangleArray3D): IArray<Vector3D> => xs.Triangles.FlatMap(x => x.Points);
-    Points(xs: IQuadArray2D): IArray<Vector2D> => xs.Quads.FlatMap(x => x.Points);
-    Points(xs: IQuadArray3D): IArray<Vector3D> => xs.Quads.FlatMap(x => x.Points);
+    Points(xs: ILineArray2D): IArray<Vector2> => xs.Lines.FlatMap(x => x.Points);
+    Points(xs: ILineArray3D): IArray<Vector3> => xs.Lines.FlatMap(x => x.Points);
+    Points(xs: ITriangleArray2D): IArray<Vector2> => xs.Triangles.FlatMap(x => x.Points);
+    Points(xs: ITriangleArray3D): IArray<Vector3> => xs.Triangles.FlatMap(x => x.Points);
+    Points(xs: IQuadArray2D): IArray<Vector2> => xs.Quads.FlatMap(x => x.Points);
+    Points(xs: IQuadArray3D): IArray<Vector3> => xs.Quads.FlatMap(x => x.Points);
 
     Lines(xs: ITriangleArray2D): IArray<Line2D> => xs.Triangles.FlatMap(x => x.Lines);
     Lines(xs: ITriangleArray3D): IArray<Line3D> => xs.Triangles.FlatMap(x => x.Lines);
@@ -134,8 +134,8 @@
     Lines(xs: IPolyLine2D): IArray<Line2D> => xs.Points.WithNext((a, b) => new Line2D(a, b), xs.Closed); 
     Lines(xs: IPolyLine3D): IArray<Line3D> => xs.Points.WithNext((a, b) => new Line3D(a, b), xs.Closed); 
     
-    ToLines(xs: IArray<Vector2D>, ys: IArray<Vector2D>): IArray<Line2D> => xs.Zip(ys, (a, b) => new Line2D(a, b));
-    ToLines(xs: IArray<Vector3D>, ys: IArray<Vector3D>): IArray<Line3D> => xs.Zip(ys, (a, b) => new Line3D(a, b));     
+    ToLines(xs: IArray<Vector2>, ys: IArray<Vector2>): IArray<Line2D> => xs.Zip(ys, (a, b) => new Line2D(a, b));
+    ToLines(xs: IArray<Vector3>, ys: IArray<Vector3>): IArray<Line3D> => xs.Zip(ys, (a, b) => new Line3D(a, b));     
     
     ClosedX(xs: ISolid): Boolean => true;
     ClosedY(xs: ISolid): Boolean => true;
@@ -143,50 +143,50 @@
     //==
     // IDeformable implementations 
 
-    Deform(x: Line3D, f: Function1<Vector3D, Vector3D>): Line3D => (f(x.A), f(x.B));
-    Deform(x: Ray3D, f: Function1<Vector3D, Vector3D>): Ray3D => (f(x.Origin), f(x.Origin + x.Direction).Normalize);
-    Deform(t: Triangle3D, f: Function1<Vector3D, Vector3D>): Triangle3D => (f(t.A), f(t.B), f(t.C));
-    Deform(q: Quad3D, f: Function1<Vector3D, Vector3D>): Quad3D => (f(q.A), f(q.B), f(q.C), f(q.D));
-    Deform(v: Vector3D, f: Function1<Vector3D, Vector3D>): Vector3D => f(v);
-    Deform(x: LineMesh3D, f: Function1<Vector3D, Vector3D>): LineMesh3D => (x.Points.Map(f), x.Indices);
-    Deform(x: TriangleMesh3D, f: Function1<Vector3D, Vector3D>): TriangleMesh3D => (x.Points.Map(f), x.Indices);
-    Deform(x: QuadMesh3D, f: Function1<Vector3D, Vector3D>): QuadMesh3D => (x.Points.Map(f), x.Indices);
-    Deform(x: PolyLine3D, f: Function1<Vector3D, Vector3D>): PolyLine3D => (x.Points.Map(f), x.Closed);
-    Deform(x: LineArray3D, f: Function1<Vector3D, Vector3D>): LineArray3D => new LineArray3D(x.Lines.Map(l => l.Deform(f)));
-    Deform(x: TriangleArray3D, f: Function1<Vector3D, Vector3D>): TriangleArray3D => new TriangleArray3D(x.Triangles.Map(t => t.Deform(f)));
-    Deform(x: PointArray3D, f: Function1<Vector3D, Vector3D>): PointArray3D => new PointArray3D(x.Points.Map(f));
-    Deform(x: QuadArray3D, f: Function1<Vector3D, Vector3D>): QuadArray3D => new QuadArray3D(x.Quads.Map(q => q.Deform(f)));
-    Deform(x: QuadGrid3D, f: Function1<Vector3D, Vector3D>): QuadGrid3D => new QuadGrid3D(x.PointGrid.Map(f), x.ClosedX, x.ClosedY);
-    Deform(x: Bounds3D, f: Function1<Vector3D, Vector3D>): Bounds3D => x.Corners.Map(f).Bounds();
+    Deform(x: Line3D, f: Function1<Vector3, Vector3>): Line3D => (f(x.A), f(x.B));
+    Deform(x: Ray3D, f: Function1<Vector3, Vector3>): Ray3D => (f(x.Origin), f(x.Origin + x.Direction).Normalize);
+    Deform(t: Triangle3D, f: Function1<Vector3, Vector3>): Triangle3D => (f(t.A), f(t.B), f(t.C));
+    Deform(q: Quad3D, f: Function1<Vector3, Vector3>): Quad3D => (f(q.A), f(q.B), f(q.C), f(q.D));
+    Deform(v: Vector3, f: Function1<Vector3, Vector3>): Vector3 => f(v);
+    Deform(x: LineMesh3D, f: Function1<Vector3, Vector3>): LineMesh3D => (x.Points.Map(f), x.Indices);
+    Deform(x: TriangleMesh3D, f: Function1<Vector3, Vector3>): TriangleMesh3D => (x.Points.Map(f), x.Indices);
+    Deform(x: QuadMesh3D, f: Function1<Vector3, Vector3>): QuadMesh3D => (x.Points.Map(f), x.Indices);
+    Deform(x: PolyLine3D, f: Function1<Vector3, Vector3>): PolyLine3D => (x.Points.Map(f), x.Closed);
+    Deform(x: LineArray3D, f: Function1<Vector3, Vector3>): LineArray3D => new LineArray3D(x.Lines.Map(l => l.Deform(f)));
+    Deform(x: TriangleArray3D, f: Function1<Vector3, Vector3>): TriangleArray3D => new TriangleArray3D(x.Triangles.Map(t => t.Deform(f)));
+    Deform(x: PointArray3D, f: Function1<Vector3, Vector3>): PointArray3D => new PointArray3D(x.Points.Map(f));
+    Deform(x: QuadArray3D, f: Function1<Vector3, Vector3>): QuadArray3D => new QuadArray3D(x.Quads.Map(q => q.Deform(f)));
+    Deform(x: QuadGrid3D, f: Function1<Vector3, Vector3>): QuadGrid3D => new QuadGrid3D(x.PointGrid.Map(f), x.ClosedX, x.ClosedY);
+    Deform(x: Bounds3D, f: Function1<Vector3, Vector3>): Bounds3D => x.Corners.Map(f).Bounds();
 
     //==
     // Deformable functions
 
     Deform(x: IDeformable3D, t: ITransform3D): IDeformable3D => x.Deform(v => t.Transform(v));
 
-    Translate(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Deform(p => p + v);
+    Translate(x: IDeformable3D, v: Vector3): IDeformable3D => x.Deform(p => p + v);
     Rotate(x: IDeformable3D, q: Quaternion): IDeformable3D => x.Deform(q);
-    Scale(x: IDeformable3D, v: Vector3D): IDeformable3D => x.Deform(p => p * v);
-    Scale(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * s);
+    Scale(x: IDeformable3D, v: Vector3): IDeformable3D => x.Deform(p => p * v);
+    Scale(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * s);
 
     RotateX(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.XRotation);
     RotateY(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.YRotation);
     RotateZ(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.ZRotation);
 
-    TranslateX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (s,0,0));   
-    TranslateY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,s,0));
-    TranslateZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,0,s));
+    TranslateX(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p + (s,0,0));   
+    TranslateY(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p + (0,s,0));
+    TranslateZ(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p + (0,0,s));
 
-    ScaleX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (s,1,1));
-    ScaleY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,s,1));
-    ScaleZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,1,s));
+    ScaleX(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * (s,1,1));
+    ScaleY(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * (1,s,1));
+    ScaleZ(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * (1,1,s));
  
     //==
     // QuadGrid3D
 
     NumColumns(x: QuadGrid3D): Integer => x.PointGrid.NumColumns;
     NumRows(x: QuadGrid3D): Integer => x.PointGrid.NumRows;
-    Points(x: QuadGrid3D): IArray<Vector3D> => x.PointGrid;
+    Points(x: QuadGrid3D): IArray<Vector3> => x.PointGrid;
     Indices(x: QuadGrid3D): IArray<Integer> => x.PointGrid.AllQuadFaceIndices(x.ClosedX, x.ClosedY).FlatMap(x => x);
 
     // d -- c

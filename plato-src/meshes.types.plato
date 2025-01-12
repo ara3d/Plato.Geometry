@@ -6,48 +6,48 @@
 type LineMesh3D
     implements ILineMesh3D
 { 
-    Points: IArray<Vector3D>;
+    Points: IArray<Vector3>;
     Indices: IArray<Integer>;
 }
 
 type TriangleMesh3D
     implements ITriangleMesh3D
 { 
-    Points: IArray<Vector3D>;
+    Points: IArray<Vector3>;
     Indices: IArray<Integer>;
 }
 
 type QuadMesh3D
     implements IQuadMesh3D
 {   
-    Points: IArray<Vector3D>;
+    Points: IArray<Vector3>;
     Indices: IArray<Integer>;
 }
 
 type PolyLine2D
     implements IPolyLine2D
 {
-    Points: IArray<Vector2D>;
+    Points: IArray<Vector2>;
     Closed: Boolean;
 }
 
 type PolyLine3D
     implements IPolyLine3D
 {
-    Points: IArray<Vector3D>;
+    Points: IArray<Vector3>;
     Closed: Boolean;
 }
 
 type PointArray2D
     implements IPointArray2D
 {
-	Points: IArray<Vector2D>;
+	Points: IArray<Vector2>;
 }
 
 type PointArray3D
 	implements IPointArray3D 
 {
-	Points: IArray<Vector3D>;
+	Points: IArray<Vector3>;
 }
 
 type LineArray2D
@@ -89,7 +89,7 @@ type QuadArray3D
 type QuadGrid3D
 	implements IQuadGrid3D
 {
-	PointGrid: IArray2D<Vector3D>;
+	PointGrid: IArray2D<Vector3>;
 	ClosedX: Boolean;
     ClosedY: Boolean;
 }

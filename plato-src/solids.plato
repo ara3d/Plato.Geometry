@@ -6,84 +6,84 @@
 type Sphere
     implements ISolid
 {
-    Radius: Number;
+    Radius: float;
 }
 
 type Cylinder
     implements ISurface
 {
-    Height: Number;
-    Radius: Number;
+    Height: float;
+    Radius: float;
 }
 
 type Capsule
     implements ISolid
 {
-    Height: Number;
-    Radius: Number;
+    Height: float;
+    Radius: float;
 }
 
 type Cone
     implements ISolid
 {
-    Height: Number;
-    Radius: Number;
+    Height: float;
+    Radius: float;
 }
 
 type ConeSegment
     implements ISolid
 {
-    Height: Number;
-    Radius1: Number;
-    Radius2: Number;
+    Height: float;
+    Radius1: float;
+    Radius2: float;
 }
 
 type Box
     implements ISolid
 {
-    Extent: Vector3D; 
+    Extent: Vector3; 
 }
 
 type Pyramid
     implements ISolid
 {
-    Height: Number;
-    BaseLength: Number;
+    Height: float;
+    BaseLength: float;
 }
 
 type Torus
     implements ISolid
 {
-    MajorRadius: Number;
-    MinorRadius: Number;
+    MajorRadius: float;
+    MinorRadius: float;
 }
 
 type NPrism
     implements ISolid
 {
-    Height: Number;
-    Radius: Number;
+    Height: float;
+    Radius: float;
     NumSides: Integer;
 }
 
 type Tube
     implements ISolid
 {
-    Height: Number;
-    InnerRadius: Number;
-    OuterRadius: Number;
+    Height: float;
+    InnerRadius: float;
+    OuterRadius: float;
 }
 
 type NPyramid
     implements ISolid
 {
-    Height: Number;
-    Radius: Number;
+    Height: float;
+    Radius: float;
     NumSides: Integer;
 }
 
 type Ellipsoid
     implements ISolid
 {
-    Radii: Vector3D;
+    Radii: Vector3;
 }

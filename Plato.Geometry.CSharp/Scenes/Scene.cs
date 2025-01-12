@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Graphics;
 
 namespace Plato.Geometry.Scenes

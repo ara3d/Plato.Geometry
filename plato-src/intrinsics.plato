@@ -1,32 +1,32 @@
 ﻿library Intrinsics
 {
-    MinNumber(): Number;
-    MaxNumber(): Number;
+    Minfloat(): float;
+    Maxfloat(): float;
 
-    Cos(x: Angle): Number;
-    Sin(x: Angle): Number;
-    Tan(x: Angle): Number;
-    Acos(x: Number): Angle;
-    Asin(x: Number): Angle;
-    Atan(x: Number): Angle;    
-    Atan2(y: Number, x: Number): Angle;
+    Cos(x: Angle): float;
+    Sin(x: Angle): float;
+    Tan(x: Angle): float;
+    Acos(x: float): Angle;
+    Asin(x: float): Angle;
+    Atan(x: float): Angle;    
+    Atan2(y: float, x: float): Angle;
 
-    Pow(x: Number, y: Number): Number;
-    Log(x: Number, y: Number): Number;
-    Ln(x: Number): Number;
-    Exp(x: Number): Number;  
+    Pow(x: float, y: float): float;
+    Log(x: float, y: float): float;
+    Ln(x: float): float;
+    Exp(x: float): float;  
 
-    Floor(x: Number): Number;
-    Ceiling(x: Number): Number;
-    Round(x: Number): Number;
-    Truncate(x: Number): Number;
+    Floor(x: float): float;
+    Ceiling(x: float): float;
+    Round(x: float): float;
+    Truncate(x: float): float;
 
-    Add(x: Number, y: Number): Number;  
-    Subtract(x: Number, y: Number): Number;
-    Divide(x: Number, y: Number): Number;
-    Multiply(x: Number, y: Number): Number;
-    Modulo(x: Number, y: Number): Number;
-    Negative(x: Number): Number;
+    Add(x: float, y: float): float;  
+    Subtract(x: float, y: float): float;
+    Divide(x: float, y: float): float;
+    Multiply(x: float, y: float): float;
+    Modulo(x: float, y: float): float;
+    Negative(x: float): float;
 
     Add(x: Integer, y: Integer): Integer;
     Subtract(x: Integer, y: Integer): Integer;
@@ -39,8 +39,8 @@
     Or(x: Boolean, y: Boolean): Boolean;
     Not(x: Boolean): Boolean;
    
-    Number(x: Integer): Number;
-    Number(x: Character): Number;
+    float(x: Integer): float;
+    float(x: Character): float;
     Integer(x: Character): Integer;
 
     Invoke(f: Function0<$TR>): $TR;
@@ -55,13 +55,13 @@
     Count(x: String): Integer;
 
     LessThanOrEquals(x: Integer, y: Integer): Boolean;
-    LessThanOrEquals(x: Number, y: Number): Boolean;
+    LessThanOrEquals(x: float, y: float): Boolean;
     LessThanOrEquals(x: Character, y: Character): Boolean;
     LessThanOrEquals(x: String, y: String): Boolean;
     LessThanOrEquals(x: Boolean, y: Boolean): Boolean;    
 
     Equals(x: Integer, y: Integer): Boolean;
-    Equals(x: Number, y: Number): Boolean;
+    Equals(x: float, y: float): Boolean;
     Equals(x: Character, y: Character): Boolean;
     Equals(x: String, y: String): Boolean;
     Equals(x: Boolean, y: Boolean): Boolean;

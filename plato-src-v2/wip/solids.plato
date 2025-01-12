@@ -41,7 +41,7 @@ type ConeSegment
 type Box
     implements ISolid
 {
-    Extent: Vector3D; 
+    Extent: Vector3; 
 }
 
 type Pyramid
@@ -85,5 +85,5 @@ type NPyramid
 type Ellipsoid
     implements ISolid
 {
-    Radii: Vector3D;
+    Radii: Vector3;
 }

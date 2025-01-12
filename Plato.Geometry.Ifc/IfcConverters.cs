@@ -1,6 +1,6 @@
 ﻿using Ara3D.IfcLoader;
 using Ara3D.Utils;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using Plato.Geometry.Graphics;
 using Plato.Geometry.Memory;
 using Plato.Geometry.Scenes;

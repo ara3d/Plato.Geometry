@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using Assimp;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 using AVector2D = Assimp.Vector2D;
-using PVector2D = Plato.DoublePrecision.Vector2D;
+using PVector2D = Plato.SinglePrecision.Vector2D;
 using AVector3D = Assimp.Vector3D;
-using PVector3D = Plato.DoublePrecision.Vector3D;
+using PVector3D = Plato.SinglePrecision.Vector3D;
 using AMatrix4x4 = Assimp.Matrix4x4;
-using PMatrix4x4 = Plato.DoublePrecision.Matrix4x4;
+using PMatrix4x4 = Plato.SinglePrecision.Matrix4x4;
 using PScene = Plato.Geometry.Scenes.Scene;
 using AScene = Assimp.Scene;
 using AMaterial = Assimp.Material;

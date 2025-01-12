@@ -1,156 +1,195 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNQuaternion = System.Numerics.Quaternion;
 
-namespace Plato.Geometry
+namespace Plato
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public partial struct Quaternion
     {
         // Fields 
 
-        public readonly Number X;
-        public readonly Number Y;
-        public readonly Number Z;
-        public readonly Number W;
+        public readonly SNQuaternion Value;
 
-        // Constructor 
+        // Constructor
+        
+        [MethodImpl(AggressiveInlining)]
+        public Quaternion(SNQuaternion v) => Value = v;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Quaternion(Number x, Number y, Number z, Number w) 
-            => (X, Y, Z, W) = (x, y, z, w);
+        [MethodImpl(AggressiveInlining)]
+        public Quaternion(Number x, Number y, Number z, Number w) => Value = new(x, y, z, w);
+
+        // Properties
+
+        public Number X
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.X;
+        }
+
+        public Number Y
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.Y;
+        }
+
+        public Number Z
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.Z;
+        }
+
+        public Number W
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.W;
+        }
+
+        // Immutable "setters"
+
+        [MethodImpl(AggressiveInlining)]
+        public Quaternion WithX(Number x)
+            => new(x, Y, Z, W);
+
+        [MethodImpl(AggressiveInlining)]
+        public Quaternion WithY(Number y)
+            => new(X, y, Z, W);
+
+        [MethodImpl(AggressiveInlining)]
+        public Quaternion WithZ(Number z)
+            => new(X, Y, z, W);
+
+        [MethodImpl(AggressiveInlining)]
+        public Quaternion WithW(Number w)
+            => new(X, Y, Z, w);
 
         // Static properties 
 
         public static readonly Quaternion Identity
             = SNQuaternion.Identity;
 
-        // Helper functions 
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SNQuaternion ToSystem()
-            => Unsafe.As<Quaternion, SNQuaternion>(ref this);
-
         // Implicit casts 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static implicit operator SNQuaternion(Quaternion v)
-            => v.ToSystem();
+            => v.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static implicit operator Quaternion(SNQuaternion v)
             => Unsafe.As<SNQuaternion, Quaternion>(ref v);
 
         // Operators
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion operator +(Quaternion a, Quaternion b)
-            => a.ToSystem() + b.ToSystem();
+            => a.Value + b.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion operator -(Quaternion a, Quaternion b)
-            => a.ToSystem() - b.ToSystem();
+            => a.Value - b.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion operator -(Quaternion a)
-            => -a.ToSystem();
+            => -a.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion operator *(Quaternion a, Quaternion b)
-            => a.ToSystem() * b.ToSystem();
+            => a.Value * b.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion operator *(Quaternion a, Number scalar)
-            => a.ToSystem() * scalar;
+            => a.Value * scalar;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion operator /(Quaternion a, Quaternion b)
-            => a.ToSystem() / b.ToSystem();
+            => a.Value / b.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Quaternion a, Quaternion b)
+        [MethodImpl(AggressiveInlining)]
+        public static Boolean operator ==(Quaternion a, Quaternion b)
             => a.Equals(b);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Quaternion a, Quaternion b)
+        [MethodImpl(AggressiveInlining)]
+        public static Boolean operator !=(Quaternion a, Quaternion b)
             => !a.Equals(b);
 
         // Forwarded static methods
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion CreateFromAxisAngle(Vector3 axis, Number angle)
             => SNQuaternion.CreateFromAxisAngle(axis, angle);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion CreateFromYawPitchRoll(Angle yaw, Angle pitch, Angle roll)
             => SNQuaternion.CreateFromYawPitchRoll(yaw, pitch, roll);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion CreateFromRotationMatrix(Matrix4x4 matrix)
             => SNQuaternion.CreateFromRotationMatrix(matrix);
 
         //==
         // Static methods converted into instance methods 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public Quaternion Concatenate(Quaternion value2)
-            => SNQuaternion.Concatenate(ToSystem(), value2.ToSystem());
+            => SNQuaternion.Concatenate(Value, value2.Value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public Number Dot(Quaternion quaternion2)
-            => SNQuaternion.Dot(ToSystem(), quaternion2.ToSystem());
+            => SNQuaternion.Dot(Value, quaternion2.Value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion Lerp(Quaternion quaternion1, Quaternion quaternion2, Number amount)
-            => SNQuaternion.Lerp(quaternion1.ToSystem(), quaternion2.ToSystem(), amount);
+            => SNQuaternion.Lerp(quaternion1.Value, quaternion2.Value, amount);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Quaternion Slerp(Quaternion quaternion1, Quaternion quaternion2, Number amount)
-            => SNQuaternion.Slerp(quaternion1.ToSystem(), quaternion2.ToSystem(), amount);
+            => SNQuaternion.Slerp(quaternion1.Value, quaternion2.Value, amount);
         
         // Properties
 
         public Number Length
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ToSystem().Length();
+            [MethodImpl(AggressiveInlining)] get => Value.Length();
         }
 
         public Number LengthSquared
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ToSystem().LengthSquared();
+            [MethodImpl(AggressiveInlining)] get => Value.LengthSquared();
         }
 
         public Quaternion Normalize
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => SNQuaternion.Normalize(ToSystem());
+            [MethodImpl(AggressiveInlining)]
+            get => SNQuaternion.Normalize(Value);
         }
 
         public Quaternion Conjugate
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => SNQuaternion.Conjugate(ToSystem());
+            [MethodImpl(AggressiveInlining)]
+            get => SNQuaternion.Conjugate(Value);
         }
 
         public Quaternion Inverse
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => SNQuaternion.Inverse(ToSystem());
+            [MethodImpl(AggressiveInlining)]
+            get => SNQuaternion.Inverse(Value);
         }
 
         // Equality and hashing
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public bool Equals(Quaternion other)
-            => ToSystem().Equals(other.ToSystem());
+            => Value.Equals(other.Value);
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is Quaternion q && Equals(q);
 
         public override int GetHashCode()
-            => ToSystem().GetHashCode();
+            => Value.GetHashCode();
 
         public override string ToString()
-            => ToSystem().ToString();
+            => Value.ToString();
     }
 }

@@ -1,10 +1,10 @@
-﻿using Plato.DoublePrecision;
+﻿using Plato.SinglePrecision;
 using UnityEngine;
-using Color = Plato.DoublePrecision.Color;
+using Color = Plato.SinglePrecision.Color;
 using UColor = UnityEngine.Color;
-using Matrix4x4 = Plato.DoublePrecision.Matrix4x4;
+using Matrix4x4 = Plato.SinglePrecision.Matrix4x4;
 using UMatrix4x4 = UnityEngine.Matrix4x4;
-using Quaternion = Plato.DoublePrecision.Quaternion;
+using Quaternion = Plato.SinglePrecision.Quaternion;
 using UQuaternion = UnityEngine.Quaternion;
 
 namespace Plato.Geometry.Unity

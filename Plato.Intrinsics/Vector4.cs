@@ -1,30 +1,72 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNVector4 = System.Numerics.Vector4;
 
-namespace Plato.Geometry
+namespace Plato
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public partial struct Vector4 : IEquatable<Vector4>
     {
         // Fields
 
-        public readonly float X;
-        public readonly float Y;
-        public readonly float Z;
-        public readonly float W;
+        public readonly SNVector4 Value;
 
         // Constructor
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4(float x, float y, float z, float w)
+        [MethodImpl(AggressiveInlining)]
+        public Vector4(SNVector4 v) => Value = v;
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector4(Number x, Number y, Number z, Number w) => Value = new(x, y, z, w);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector4(Number x) => Value = new(x);
+
+        // Properties
+
+        public Number X
         {
-            X = x;
-            Y = y;
-            Z = z;
-            W = w;
+            [MethodImpl(AggressiveInlining)]
+            get => Value.X;
         }
+
+        public Number Y
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.Y;
+        }
+
+        public Number Z
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.Z;
+        }
+
+        public Number W
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value.W;
+        }
+
+        // Immutable "setters"
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 WithX(Number x)
+            => new(x, Y, Z, W);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 WithY(Number y)
+            => new(X, y, Z, W);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 WithZ(Number z)
+            => new(X, Y, z, W);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 WithW(Number w)
+            => new(X, Y, Z, w);
 
         // Static properties
 
@@ -45,16 +87,13 @@ namespace Plato.Geometry
 
         // Implicit casts 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SNVector4 ToSystem() => Unsafe.As<Vector4, SNVector4>(ref this);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static Vector4 FromSystem(SNVector4 v) => Unsafe.As<SNVector4, Vector4>(ref v);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator SNVector4(Vector4 v) => v.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static implicit operator SNVector4(Vector4 v) => v.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public static implicit operator Vector4(SNVector4 v) => FromSystem(v);
 
         // Static operators  
@@ -62,321 +101,293 @@ namespace Plato.Geometry
         /// <summary>
         /// Adds two Vector4D instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator +(Vector4 left, Vector4 right) => left.ToSystem() + right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator +(Vector4 left, Vector4 right) => left.Value + right.Value;
 
         /// <summary>
         /// Subtracts the right Vector4D from the left Vector4D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator -(Vector4 left, Vector4 right) => left.ToSystem() - right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator -(Vector4 left, Vector4 right) => left.Value - right.Value;
 
         /// <summary>
         /// Multiplies two Vector4D instances element-wise.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator *(Vector4 left, Vector4 right) => left.ToSystem() * right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator *(Vector4 left, Vector4 right) => left.Value * right.Value;
 
         /// <summary>
         /// Multiplies a Vector4D by a scalar.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator *(Vector4 left, float scalar) => left.ToSystem() * scalar;
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator *(Vector4 left, float scalar) => left.Value * scalar;
 
         /// <summary>
         /// Multiplies a scalar by a Vector4D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator *(float scalar, Vector4 right) => scalar * right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator *(float scalar, Vector4 right) => scalar * right.Value;
 
         /// <summary>
         /// Divides the left Vector4D by the right Vector4D element-wise.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator /(Vector4 left, Vector4 right) => left.ToSystem() / right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator /(Vector4 left, Vector4 right) => left.Value / right.Value;
 
         /// <summary>
         /// Divides a Vector4D by a scalar.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator /(Vector4 left, float scalar) => left.ToSystem() / scalar;
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator /(Vector4 left, float scalar) => left.Value / scalar;
 
         /// <summary>
         /// Negates the specified Vector4D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 operator -(Vector4 value) => -value.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator -(Vector4 value) => -value.Value;
 
         /// <summary>
         /// Determines whether two Vector4D instances are equal.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Vector4 left, Vector4 right) => left.ToSystem() == right.ToSystem();
+        [MethodImpl(AggressiveInlining)]
+        public static Boolean operator ==(Vector4 left, Vector4 right) => left.Value == right.Value;
 
         /// <summary>
         /// Determines whether two Vector4D instances are not equal.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Vector4 left, Vector4 right) => left.ToSystem() != right.ToSystem();
-
-        #region IEquatable<Vector4D> Implementation
+        [MethodImpl(AggressiveInlining)]
+        public static Boolean operator !=(Vector4 left, Vector4 right) => left.Value != right.Value;
 
         /// <summary>
         /// Determines whether the specified Vector4D is equal to the current Vector4D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Vector4 other) => this.ToSystem().Equals(other.ToSystem());
+        [MethodImpl(AggressiveInlining)]
+        public bool Equals(Vector4 other) => Value.Equals(other.Value);
 
         /// <summary>
         /// Determines whether the specified object is equal to the current Vector4D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public override bool Equals(object? obj) => obj is Vector4 other && Equals(other);
 
         /// <summary>
         /// Returns a hash code for the Vector4D.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(AggressiveInlining)]
         public override int GetHashCode() => HashCode.Combine(X, Y);
 
         /// <summary>
         /// Returns the dot product of two <see cref="Vector4"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DotProduct(Vector4 right) => SNVector4.Dot(this, right);
+        [MethodImpl(AggressiveInlining)]
+        public float Dot(Vector4 right) => SNVector4.Dot(Value, right);
 
         /// <summary>
         /// Returns the Euclidean distance between two <see cref="Vector4"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Distance(Vector4 value2) => SNVector4.Distance(this, value2);
+        [MethodImpl(AggressiveInlining)]
+        public float Distance(Vector4 value2) => SNVector4.Distance(Value, value2);
 
         /// <summary>
         /// Returns the squared Euclidean distance between two <see cref="Vector4"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DistanceSquared(Vector4 value2) => SNVector4.DistanceSquared(this, value2);
+        [MethodImpl(AggressiveInlining)]
+        public float DistanceSquared(Vector4 value2) => SNVector4.DistanceSquared(Value, value2);
 
         /// <summary>
         /// Returns a vector that clamps each element of the <see cref="Vector4"/> between the corresponding elements of the minimum and maximum vectors.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Clamp(Vector4 min, Vector4 max) => SNVector4.Clamp(this, min, max);
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 Clamp(Vector4 min, Vector4 max) => SNVector4.Clamp(Value, min, max);
 
         /// <summary>
         /// Returns a normalized version of the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Normalize() => SNVector4.Normalize(this);
+        public Vector4 Normalize
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.Normalize(Value);
+        }
 
         /// <summary>
         /// Returns the length of the <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Length() => this.ToSystem().Length();
+        public float Length
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.Length();
+        }
 
         /// <summary>
         /// Returns the squared length of the <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float LengthSquared() => this.ToSystem().LengthSquared();
+        public float LengthSquared
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.LengthSquared();
+        }
 
         /// <summary>
         /// Returns a vector whose elements are the absolute values of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Abs() => SNVector4.Abs(this);
+        public Vector4 Abs
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.Abs(Value);
+        }
 
         /// <summary>
         /// Returns the square root of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 SquareRoot() => SNVector4.SquareRoot(this);
-
-        #endregion
-
-        #region Trigonometric Operations
+        public Vector4 SquareRoot
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.SquareRoot(Value);
+        }
 
         /// <summary>
         /// Returns the sine of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Sin() => SNVector4.Sin(this);
+        public Vector4 Sin
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.Sin(Value);
+        }
 
         /// <summary>
         /// Returns the cosine of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Cos() => SNVector4.Cos(this);
+        public Vector4 Cos
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.Cos(Value);
+        }
 
         /// <summary>
         /// Returns a vector whose elements are the sine and cosine of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public (Vector4 Sin, Vector4 Cos) SinCos()
+        public (Vector4 Sin, Vector4 Cos) SinCos
         {
-            var (sin, cos) = SNVector4.SinCos(this);
-            return (sin, cos);
+            [MethodImpl(AggressiveInlining)]
+            get
+            {
+                var (sin, cos) = SNVector4.SinCos(Value);
+                return (sin, cos);
+            }
         }
 
         /// <summary>
         /// Converts degrees to radians for each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 DegreesToRadians() => SNVector4.DegreesToRadians(this);
+        public Vector4 DegreesToRadians
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.DegreesToRadians(Value);
+        }
 
         /// <summary>
         /// Converts radians to degrees for each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 RadiansToDegrees() => SNVector4.RadiansToDegrees(this);
-
-        #endregion
-
-        #region Exponential and Logarithmic Operations
+        public Vector4 RadiansToDegrees
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.RadiansToDegrees(Value);
+        }
 
         /// <summary>
         /// Returns the exponential of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Exp() => SNVector4.Exp(this);
+        public Vector4 Exp
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.Exp(Value);
+        }
 
         /// <summary>
         /// Returns the natural logarithm (base e) of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Log() => SNVector4.Log(this);
+        public Vector4 Log
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.Log(Value);
+        }
 
         /// <summary>
         /// Returns the base-2 logarithm of each element in the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Log2() => SNVector4.Log2(this);
-
-        #endregion
-
-        #region Transformation Operations
+        public Vector4 Log2
+        {
+            [MethodImpl(AggressiveInlining)] get => SNVector4.Log2(Value);
+        }
 
         /// <summary>
         /// Transforms a <see cref="Vector4"/> by a 4x4 matrix.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Transform(Matrix4x4 matrix) => SNVector4.Transform(this, matrix);
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 Transform(Matrix4x4 matrix) => SNVector4.Transform(Value, matrix);
 
         /// <summary>
         /// Transforms a <see cref="Vector4"/> by a quaternion rotation.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Transform(Quaternion rotation) => SNVector4.Transform(this, rotation);
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 Transform(Quaternion rotation) => SNVector4.Transform(Value, rotation);
         
-        #endregion
-
-        #region Utility Operations
-
         /// <summary>
         /// Returns the maximum of two <see cref="Vector4"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Max(Vector4 value2) => SNVector4.Max(this, value2);
-
-        /// <summary>
-        /// Returns the maximum magnitude of two <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 MaxMagnitude(Vector4 value2) => SNVector4.MaxMagnitude(this, value2);
-
-        /// <summary>
-        /// Returns the maximum magnitude number of two <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 MaxMagnitudeNumber(Vector4 value2) => SNVector4.MaxMagnitudeNumber(this, value2);
-
-        /// <summary>
-        /// Returns the maximum number of two <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 MaxNumber(Vector4 value2) => SNVector4.MaxNumber(this, value2);
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 Max(Vector4 value2) => SNVector4.Max(Value, value2);
 
         /// <summary>
         /// Returns the minimum of two <see cref="Vector4"/> instances.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Min(Vector4 value2) => SNVector4.Min(this, value2);
-
-        /// <summary>
-        /// Returns the minimum magnitude of two <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 MinMagnitude(Vector4 value2) => SNVector4.MinMagnitude(this, value2);
-
-        /// <summary>
-        /// Returns the minimum magnitude number of two <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 MinMagnitudeNumber(Vector4 value2) => SNVector4.MinMagnitudeNumber(this, value2);
-
-        /// <summary>
-        /// Returns the minimum number of two <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 MinNumber(Vector4 value2) => SNVector4.MinNumber(this, value2);
-
-        /// <summary>
-        /// Performs a fused multiply-add operation on the specified <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 FusedMultiplyAdd(Vector4 right, Vector4 addend) => SNVector4.FusedMultiplyAdd(this, right, addend);
-
-        /// <summary>
-        /// Performs a multiply-add estimate operation on the specified <see cref="Vector4"/> instances.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 MultiplyAddEstimate(Vector4 right, Vector4 addend) => SNVector4.MultiplyAddEstimate(this, right, addend);
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 Min(Vector4 value2) => SNVector4.Min(Value, value2);
 
         /// <summary>
         /// Returns a truncated version of the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Truncate() => SNVector4.Truncate(this);
-
-        #endregion
-
-        #region Rounding Operations
+        [MethodImpl(AggressiveInlining)]
+        public Vector4 Truncate() => SNVector4.Truncate(Value);
 
         /// <summary>
-        /// Rounds each element of the specified <see cref="Vector4"/> to the nearest integer.
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest even integer.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Round() => SNVector4.Round(this);
+        public Vector4 Round
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector4.Round(Value, MidpointRounding.ToEven);
+        }
 
         /// <summary>
-        /// Rounds each element of the specified <see cref="Vector4"/> to the nearest integer using the specified rounding mode.
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards zero.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector4 Round(MidpointRounding mode) => SNVector4.Round(this, mode);
+        public Vector4 RoundTowardsZero
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector4.Round(Value, MidpointRounding.ToZero);
+        }
 
-        #endregion
+        /// <summary>
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, away from zero.
+        /// </summary>
+        public Vector4 RoundAwayFromZero
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector4.Round(Value, MidpointRounding.AwayFromZero);
+        }
 
-        #region String Representation
+        /// <summary>
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards negative infinity
+        /// </summary>
+        public Vector4 Floor
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector4.Round(Value, MidpointRounding.ToNegativeInfinity);
+        }
+
+        /// <summary>
+        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards positive infinity
+        /// </summary>
+        public Vector4 Ceiling
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector4.Round(Value, MidpointRounding.ToPositiveInfinity);
+        }
 
         /// <summary>
         /// Returns the string representation of the <see cref="Vector4"/> using default formatting.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() => this.ToSystem().ToString();
-
-        /// <summary>
-        /// Returns the string representation of the <see cref="Vector4"/> using the specified format.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string? format) => this.ToSystem().ToString(format);
-
-        /// <summary>
-        /// Returns the string representation of the <see cref="Vector4"/> using the specified format and format provider.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string? format, IFormatProvider? formatProvider) => this.ToSystem().ToString(format, formatProvider);
-
-        #endregion
+        [MethodImpl(AggressiveInlining)]
+        public override string ToString() => Value.ToString();
     }
 }

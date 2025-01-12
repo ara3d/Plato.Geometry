@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
     public static class ExtraIntrinsics
     {

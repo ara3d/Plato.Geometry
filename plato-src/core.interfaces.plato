@@ -13,39 +13,39 @@ interface IValue
 { 
 }
 
-// A numerical type represents things like reals, integers, vectors, complex numbers, and measures.
-// It is a generalization of real numbers to multiple dimensions, and with or without units of measure.
+// A numerical type represents things like reals, integers, vectors, complex floats, and measures.
+// It is a generalization of real floats to multiple dimensions, and with or without units of measure.
 // The NumComponents function returns the dimensionality of the numerical type. 
 // Individual components are returned via the Component type. 
 interface INumerical 
     inherits IValue, IScalarArithmetic, IAdditive
 {
-    Components(x: Self): IArray<Number>;
-    FromComponents(x: Self, xs: IArray<Number>): Self;
+    Components(x: Self): IArray<float>;
+    FromComponents(x: Self, xs: IArray<float>): Self;
 }   
 
-// These are things that can be converted to and from numbers. It includes measures, and reals.
-// Whole numbers are not included because converting to/from a number would change the result.
-// It also includes Numbers of-course. 
-interface INumberLike
+// These are things that can be converted to and from floats. It includes measures, and reals.
+// Whole floats are not included because converting to/from a float would change the result.
+// It also includes floats of-course. 
+interface IfloatLike
     inherits INumerical, IOrderable
 {
-	ToNumber(x: Self): Number;
-    FromNumber(x: Self, n: Number): Self;
+	Tofloat(x: Self): float;
+    Fromfloat(x: Self, n: float): Self;
 }
 
 // Represents a continuous one dimensional value.
-// https://en.wikipedia.org/wiki/Real_number
-// The "IValue" or a IReal is the number itself, and is equal to the Magnitude  
+// https://en.wikipedia.org/wiki/Real_float
+// The "IValue" or a IReal is the float itself, and is equal to the Magnitude  
 interface IReal
-    inherits INumberLike, IAlgebraic, IArithmetic
+    inherits IfloatLike, IAlgebraic, IArithmetic
 {
 }
 
 // Used for integer and cardinal types. 
 // Somewhat counter intuitively, they are not considered INumerical types.
 // They do however support arithmetic operations.
-interface IWholeNumber 
+interface IWholefloat 
     inherits IValue, IOrderable, IArithmetic
 {
 }
@@ -55,15 +55,15 @@ interface IWholeNumber
 // getting a new type. It does however support IAdditive on itself.
 // The idea of interpolation, combines a couple of existing concepts. 
 interface IMeasure
-    inherits INumberLike, IAdditive, IInterpolatable
+    inherits IfloatLike, IAdditive, IInterpolatable
 {
 }
 
 // Vectors are specialization of the INumerical type.
 // Unlike reals and measures they cannot be compared in any meaningful way 
-// They are also "array-like" in that they have a fixed number of components.
+// They are also "array-like" in that they have a fixed float of components.
 interface IVector
-    inherits INumerical, IArithmetic, IArray<Number>, IInterpolatable, IAlgebraic
+    inherits INumerical, IArithmetic, IArray<float>, IInterpolatable, IAlgebraic
 { 
 }
 
@@ -104,9 +104,9 @@ interface IAdditive
 interface IScalarArithmetic
     inherits IAny
 { 
-    Modulo(self: Self, other: Number): Self;    
-    Divide(self: Self, other: Number): Self;    
-    Multiply(self: Self, other: Number): Self;    
+    Modulo(self: Self, other: float): Self;    
+    Divide(self: Self, other: float): Self;    
+    Multiply(self: Self, other: float): Self;    
 }
 
 // A type which can be multiplied by itself
@@ -189,4 +189,21 @@ interface IBounds<T>
 {
     Min(x: Self): T;
     Max(x: Self): T;
+}
+
+
+// Used for types that represent transformations in 3D space
+interface ITransform3D
+{
+    // Transforms a point using the transformation
+    Transform(x: Self, v: Vector3): Vector3;
+
+    // Transforms a normal vector using the transformation (ignores scale and translation)
+    TransformNormal(x: Self, v: Vector3): Vector3;
+
+    // Returns a 4x4 matrix representation of the transformation. 
+    Matrix(x: Self): Matrix4x4;
+
+    // Returns the inverted version of the transformation
+    Invert(x: Self): Self;)
 }

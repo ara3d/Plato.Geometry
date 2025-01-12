@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
 
     /// <summary>

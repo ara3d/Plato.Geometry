@@ -1,7 +1,7 @@
 using System;
-using Plato.DoublePrecision;
+using Plato.SinglePrecision;
 
-namespace Plato.DoublePrecision
+namespace Plato.SinglePrecision
 {
     public static class Colors
     {
