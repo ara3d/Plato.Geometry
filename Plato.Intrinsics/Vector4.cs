@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNVector4 = System.Numerics.Vector4;
 
@@ -23,6 +24,26 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public Vector4(Number x) => Value = new(x);
+
+        //-------------------------------------------------------------------------------------
+        // Indexer
+        //-------------------------------------------------------------------------------------
+
+        public Number this[Integer index]
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => index == 0 ? X
+                : index == 1 ? Y
+                : index == 2 ? Z
+                : index == 3 ? W
+                : throw new IndexOutOfRangeException();
+        }
+
+        public Integer Count
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => 4;
+        }
 
         // Properties
 
@@ -95,6 +116,12 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static implicit operator Vector4(SNVector4 v) => FromSystem(v);
+
+        [MethodImpl(AggressiveInlining)]
+        public static unsafe implicit operator Vector128<float>(Vector4 v) => *(Vector128<float>*)&v;
+
+        [MethodImpl(AggressiveInlining)]
+        public static unsafe implicit operator Vector4(Vector128<float> v) => *(Vector4*)&v;
 
         // Static operators  
 

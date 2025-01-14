@@ -1,5 +1,4 @@
 
-
 library Transforms
 {
     //==
@@ -30,25 +29,25 @@ library Transforms
     //==
     // Matrix operations   
 
-    M11(m: Matrix4x4): float => m.Row1.X;
-    M12(m: Matrix4x4): float => m.Row1.Y;
-    M13(m: Matrix4x4): float => m.Row1.Z;
-    M14(m: Matrix4x4): float => m.Row1.W;
+    M11(m: Matrix4x4): Number => m.Row1.X;
+    M12(m: Matrix4x4): Number => m.Row1.Y;
+    M13(m: Matrix4x4): Number => m.Row1.Z;
+    M14(m: Matrix4x4): Number => m.Row1.W;
 
-    M21(m: Matrix4x4): float => m.Row2.X;
-    M22(m: Matrix4x4): float => m.Row2.Y;
-    M23(m: Matrix4x4): float => m.Row2.Z;
-    M24(m: Matrix4x4): float => m.Row2.W;
+    M21(m: Matrix4x4): Number => m.Row2.X;
+    M22(m: Matrix4x4): Number => m.Row2.Y;
+    M23(m: Matrix4x4): Number => m.Row2.Z;
+    M24(m: Matrix4x4): Number => m.Row2.W;
     
-    M31(m: Matrix4x4): float => m.Row3.X;
-    M32(m: Matrix4x4): float => m.Row3.Y;
-    M33(m: Matrix4x4): float => m.Row3.X;
-    M34(m: Matrix4x4): float => m.Row3.W;
+    M31(m: Matrix4x4): Number => m.Row3.X;
+    M32(m: Matrix4x4): Number => m.Row3.Y;
+    M33(m: Matrix4x4): Number => m.Row3.X;
+    M34(m: Matrix4x4): Number => m.Row3.W;
     
-    M41(m: Matrix4x4): float => m.Row4.X;
-    M42(m: Matrix4x4): float => m.Row4.Y;
-    M43(m: Matrix4x4): float => m.Row4.Z;
-    M44(m: Matrix4x4): float => m.Row4.W;
+    M41(m: Matrix4x4): Number => m.Row4.X;
+    M42(m: Matrix4x4): Number => m.Row4.Y;
+    M43(m: Matrix4x4): Number => m.Row4.Z;
+    M44(m: Matrix4x4): Number => m.Row4.W;
 
     Column1(m: Matrix4x4): Vector4 => (M11, M21, M31, M41);
     Column2(m: Matrix4x4): Vector4 => (M12, M22, M32, M42);
@@ -86,10 +85,10 @@ library Transforms
     Transpose(m: Matrix4x4): Matrix4x4
         => (m.Row1, m.Row2, m.Row3, m.Row4);
 
-    Multiply(m: Matrix4x4, s: float): Matrix4x4
+    Multiply(m: Matrix4x4, s: Number): Matrix4x4
         => (m.Column1 * s, m.Column2 * s, m.Column3 * s, m.Column4 * s);
 
-    Divide(m: Matrix4x4, s: float): Matrix4x4
+    Divide(m: Matrix4x4, s: Number): Matrix4x4
         => (m.Column1 / s, m.Column2 / s, m.Column3 / s, m.Column4 / s);
 
     Multiply(a: Matrix4x4, b: Matrix4x4): Matrix4x4
@@ -119,34 +118,7 @@ library Transforms
 
     Matrix(m: Matrix4x4): Matrix4x4
 		=> m;
-
-    //==
-    // Matrix3x3 operations   
-
-    Row1(m: Matrix3x3): Vector3
-        => (m.Column1.X, m.Column2.X, m.Column3.X);
-
-    Row2(m: Matrix3x3): Vector3
-        => (m.Column1.Y, m.Column2.Y, m.Column3.Y);
-
-    Row3(m: Matrix3x3): Vector3
-        => (m.Column1.Z, m.Column2.Z, m.Column3.Z);
-    
-    M11(m: Matrix3x3): float => Column1.X;
-    M12(m: Matrix3x3): float => Column2.X;
-    M13(m: Matrix3x3): float => Column3.X;
-    M21(m: Matrix3x3): float => Column1.Y;
-    M22(m: Matrix3x3): float => Column2.Y;
-    M23(m: Matrix3x3): float => Column3.Y;
-    M31(m: Matrix3x3): float => Column1.Z;
-    M32(m: Matrix3x3): float => Column2.Z;
-    M33(m: Matrix3x3): float => Column3.Z;
-
-    Determinant(m: Matrix3x3): float
-        => M11 * (M22 * M33 - M23 * M32)
-           - M12 * (M21 * M33 - M23 * M31)
-           + M13 * (M21 * M32 - M22 * M31);
-
+   
     //==
     // IdentityTransform3D
 
@@ -209,22 +181,7 @@ library Transforms
 
     //==
     // EulerAngles
-
-    Quaternion(e: EulerAngles): Quaternion
-	{
-		var cy = e.Yaw.Half.Cos;        
-        var sy = e.Yaw.Half.Sin;
-        var cp = e.Pitch.Half.Cos;
-        var sp = e.Pitch.Half.Sin;
-        var cr = e.Roll.Half.Cos;
-        var sr = e.Roll.Half.Sin;
-        return (
-            sr * cp * cy - cr * sp * sy,
-            cr * sp * cy + sr * cp * sy,
-            cr * cp * sy - sr * sp * cy,
-            cr * cp * cy + sr * sp * sy);
-	}
-
+   
     Transform(e: EulerAngles, v: Vector3): Vector3
         => e.Quaternion.Transform(v);
 
@@ -270,64 +227,14 @@ library Transforms
     Vector4(q: Quaternion): Vector4
 		=> (q.X, q.Y, q.Z, q.W);
 
-    Magnitude(q: Quaternion): float
+    Magnitude(q: Quaternion): Number
         => q.Vector4.Magnitude;
 
-    MagnitudeSquared(q: Quaternion): float
+    MagnitudeSquared(q: Quaternion): Number
         => q.Vector4.MagnitudeSquared;
-
-	Transform(q: Quaternion, v: Vector3): Vector3
-    {
-        var x2 = q.X + q.X;
-        var y2 = q.Y + q.Y;
-        var z2 = q.Z + q.Z;
-
-        var wx2 = q.W * x2;
-        var wy2 = q.W * y2;
-        var wz2 = q.W * z2;
-        var xx2 = q.X * x2; 
-        var xy2 = q.X * y2;
-        var xz2 = q.X * z2;
-        var yy2 = q.Y * y2;
-        var yz2 = q.Y * z2;
-        var zz2 = q.Z * z2;
-
-        return (
-            v.X * (1.0 - yy2 - zz2) + v.Y * (xy2 - wz2) + v.Z * (xz2 + wy2),
-            v.X * (xy2 + wz2) + v.Y * (1.0 - xx2 - zz2) + v.Z * (yz2 - wx2),
-            v.X * (xz2 - wy2) + v.Y * (yz2 + wx2) + v.Z * (1.0 - xx2 - yy2));
-    }
-
-	TransformNormal(q: Quaternion, v: Vector3): Vector3
-		=> q.Transform(v);
-
-	Concatenate(q1: Quaternion, q2: Quaternion): Quaternion
-		=> q1.ReverseConcatenate(q2);
-
-    Conjugate(q: Quaternion): Quaternion
-		=> (-q.X, -q.Y, -q.Z, q.W);
-
-    Inverse(q: Quaternion): Quaternion
-        => q.Conjugate * q.MagnitudeSquared.Inverse;
-
-    Normalize(q: Quaternion): Quaternion
-        => q.Vector4.Normalize;
 
 	XYZ(q: Quaternion): Vector3
         => (X, Y, Z);
-
-	ReverseConcatenate(q2: Quaternion, q1: Quaternion): Quaternion
-    {
-        var av = q2.XYZ;
-        var bv = q1.XYZ;
-        var cv = av.Cross(bv);
-        var dot = av.Dot(bv);
-        return (
-            q2.X * q1.W + q1.X * q2.W + cv.X,
-            q2.Y * q1.W + q1.Y * q2.W + cv.Y,
-            q2.Z * q1.W + q1.Z * q2.W + cv.Z,
-            q2.W * q1.W - dot);
-    }
  
     AxisAngle(v: Vector3, a: Angle): AxisAngle
         => (v, a);
@@ -377,10 +284,10 @@ library Transforms
         }
     }
 
-    Multiply(q: Quaternion, scalar: float): Quaternion
+    Multiply(q: Quaternion, scalar: Number): Quaternion
         => q.Vector4 * scalar;
 
-    Divide(q: Quaternion, scalar: float): Quaternion
+    Divide(q: Quaternion, scalar: Number): Quaternion
         => q.Vector4 / scalar;
 
     Rotation(v: Vector3, theta: Angle): Quaternion
@@ -404,10 +311,10 @@ library Transforms
     Subtract(q1: Quaternion, q2: Quaternion): Quaternion
         => q1.Vector4 - q2.Vector4;
 
-    Dot(q1: Quaternion, q2: Quaternion): float
+    Dot(q1: Quaternion, q2: Quaternion): Number
         => q1.Vector4.Dot(q2.Vector4);
 
-    Slerp(q1: Quaternion, q2: Quaternion, t: float): Quaternion
+    Slerp(q1: Quaternion, q2: Quaternion, t: Number): Quaternion
     {
         var cosOmega = q1.Dot(q2);
         var flip = cosOmega < 0.0;
@@ -453,47 +360,5 @@ library Transforms
             (0, 0, 0, 1));
 
         return rotationMatrix.QuaternionFromRotationMatrix.Normalize;
-    }
-
-    Multiply(q1: Quaternion, q2: Quaternion): Quaternion
-    {
-        // 9 muls, 27 adds
-        var tmp_00 = (q1.Z - q1.Y) * (q2.Y - q2.Z);
-        var tmp_01 = (q1.W + q1.X) * (q2.W + q2.X);
-        var tmp_02 = (q1.W - q1.X) * (q2.Y + q2.Z);
-        var tmp_03 = (q1.Y + q1.Z) * (q2.W - q2.X);
-        var tmp_04 = (q1.Z - q1.X) * (q2.X - q2.Y);
-        var tmp_05 = (q1.Z + q1.X) * (q2.X + q2.Y);
-        var tmp_06 = (q1.W + q1.Y) * (q2.W - q2.Z);
-        var tmp_07 = (q1.W - q1.Y) * (q2.W + q2.Z);
-        var tmp_08 = tmp_05 + tmp_06 + tmp_07;
-        var tmp_09 = (tmp_04 + tmp_08) * 0.5;
-
-        return (
-            tmp_01 + tmp_09 - tmp_08,
-            tmp_02 + tmp_09 - tmp_07,
-            tmp_03 + tmp_09 - tmp_06,
-            tmp_00 + tmp_09 - tmp_05);
-    }
-
-    Matrix(q: Quaternion): Matrix4x4
-    {
-        var q1 = q.Normalize;
-
-        var xx = q1.X * q1.X;
-        var yy = q1.Y * q1.Y;
-        var zz = q1.Z * q1.Z;
-
-        var xy = q1.X * q1.Y;
-        var wz = q1.Z * q1.W;
-        var xz = q1.Z * q1.X;
-        var wy = q1.Y * q1.W;
-        var yz = q1.Y * q1.Z;
-        var wx = q1.X * q1.W;
-
-        return ((1.0 - 2.0 * (yy + zz), 2.0 * (xy + wz), 2.0 * (xz - wy), 0.0),
-            (2.0 * (xy - wz), 1.0 - 2.0 * (zz + xx), 2.0 * (yz + wx), 0.0),
-            (2.0 * (xz + wy), 2.0 * (yz - wx), 1.0 - 2.0 * (yy + xx), 0.0),
-            (0.0, 0.0, 0.0, 1.0));
     }
 }

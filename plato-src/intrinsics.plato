@@ -1,48 +1,5 @@
 ﻿library Intrinsics
-{
-    Minfloat(): float;
-    Maxfloat(): float;
-
-    Cos(x: Angle): float;
-    Sin(x: Angle): float;
-    Tan(x: Angle): float;
-    Acos(x: float): Angle;
-    Asin(x: float): Angle;
-    Atan(x: float): Angle;    
-    Atan2(y: float, x: float): Angle;
-
-    Pow(x: float, y: float): float;
-    Log(x: float, y: float): float;
-    Ln(x: float): float;
-    Exp(x: float): float;  
-
-    Floor(x: float): float;
-    Ceiling(x: float): float;
-    Round(x: float): float;
-    Truncate(x: float): float;
-
-    Add(x: float, y: float): float;  
-    Subtract(x: float, y: float): float;
-    Divide(x: float, y: float): float;
-    Multiply(x: float, y: float): float;
-    Modulo(x: float, y: float): float;
-    Negative(x: float): float;
-
-    Add(x: Integer, y: Integer): Integer;
-    Subtract(x: Integer, y: Integer): Integer;
-    Divide(x: Integer, y: Integer): Integer;
-    Multiply(x: Integer, y: Integer): Integer;
-    Modulo(x: Integer, y: Integer): Integer;
-    Negative(x: Integer): Integer;
-
-    And(x: Boolean, y: Boolean): Boolean;
-    Or(x: Boolean, y: Boolean): Boolean;
-    Not(x: Boolean): Boolean;
-   
-    float(x: Integer): float;
-    float(x: Character): float;
-    Integer(x: Character): Integer;
-
+{     
     Invoke(f: Function0<$TR>): $TR;
     Invoke(f: Function1<$T0, $TR>, a0: $T0): $TR;
     Invoke(f: Function2<$T0, $T1, $TR>, a0: $T0, a1: $T1): $TR;
@@ -51,27 +8,13 @@
 
     New(t: Type, args: IArray<IAny>): Dynamic;
 
-    At(x: String, y: Integer): Character;
-    Count(x: String): Integer;
-
-    LessThanOrEquals(x: Integer, y: Integer): Boolean;
-    LessThanOrEquals(x: float, y: float): Boolean;
-    LessThanOrEquals(x: Character, y: Character): Boolean;
-    LessThanOrEquals(x: String, y: String): Boolean;
-    LessThanOrEquals(x: Boolean, y: Boolean): Boolean;    
-
-    Equals(x: Integer, y: Integer): Boolean;
-    Equals(x: float, y: float): Boolean;
-    Equals(x: Character, y: Character): Boolean;
-    Equals(x: String, y: String): Boolean;
-    Equals(x: Boolean, y: Boolean): Boolean;
-
     Count(xs: Array<$T>): Integer;
     NumRows(xs: Array2D<$T>): Integer;
     NumColumns(xs: Array2D<$T>): Integer;
     NumRows(xs: Array3D<$T>): Integer;
     NumColumns(xs: Array3D<$T>): Integer;
     NumLayers(xs: Array3D<$T>): Integer;
+
     At(xs: Array<$T>, n: Integer): $T;
     At(xs: Array2D<$T>, i: Integer, j: Integer): $T;
     At(xs: Array3D<$T>, i: Integer, j: Integer, k: Integer): $T;

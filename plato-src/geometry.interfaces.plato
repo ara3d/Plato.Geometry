@@ -60,32 +60,32 @@ interface IClosedShape2D inherits IGeometry2D, IClosedShape { }
 interface IOpenShape3D inherits IGeometry3D, IOpenShape { }
 interface IClosedShape3D inherits IGeometry3D, IClosedShape { }
 
-// A parametric geometry in any float of dimensions
+// A parametric geometry in any Number of dimensions
 interface IProcedural<TDomain, TRange>
 {
     Eval(x: Self, t: TDomain): TRange;
 }
 
-// Curves map a single float to a point in 1D, 2D, 3D, or higher space.
+// Curves map a single Number to a point in 1D, 2D, 3D, or higher space.
 // They are effectively functions. 
 interface ICurve<TRange> 
-    inherits IProcedural<float, TRange>, IOpenClosedShape
+    inherits IProcedural<Number, TRange>, IOpenClosedShape
 { }
 
 interface IDistanceField2D
 { 
-    Distance(x: Self, p: Vector2): float;
+    Distance(x: Self, p: Vector2): Number;
 }
 
 interface IDistanceField3D
 { 
-    Distance(x: Self, p: Vector3): float;
+    Distance(x: Self, p: Vector3): Number;
 }
 
 // A 1 dimensional shape with a topological space of 1 dimensions
 // Basically a simple function 
 interface ICurve1D 
-    inherits ICurve<float>
+    inherits ICurve<Number>
 { }
 
 // A 2 dimensional shape with a topological space of 1 dimensions
@@ -137,7 +137,7 @@ interface IProceduralSurface
 
 // Explicit surfaces are defined as functions from UV space to a z value (height)
 interface IExplicitSurface 
-    inherits IProcedural<Vector2, float>, ISurface
+    inherits IProcedural<Vector2, Number>, ISurface
 { }
 
 // An implicit procedural could represent a curve in 2D, a surface, solid, or volume in 3D. 

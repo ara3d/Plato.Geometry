@@ -1,6 +1,10 @@
 // This file is auto-generated
 library GeneratedInstrinsics
 {
+
+    //==
+    // Matrix4x4
+    //==
     Determinant(self: Matrix4x4): Number;
     Transpose(self: Matrix4x4): Matrix4x4;
     Add(value1: Matrix4x4, value2: Matrix4x4): Matrix4x4;
@@ -18,13 +22,13 @@ library GeneratedInstrinsics
     CreateRotationX(self: Matrix4x4, angle: Angle): Matrix4x4;
     CreateRotationY(self: Matrix4x4, angle: Angle): Matrix4x4;
     CreateRotationZ(self: Matrix4x4, angle: Angle): Matrix4x4;
-    Decompose(self: Matrix4x4): ValueTuple<Vector3, Quaternion, Vector3, Boolean>;
-    GetHashCode(self: Matrix4x4): int;
-    ToString(self: Matrix4x4): string;
+    Decompose(self: Matrix4x4): Tuple4<Vector3, Quaternion, Vector3, Boolean>;
+    GetHashCode(self: Matrix4x4): Integer;
+    ToString(self: Matrix4x4): String;
     Equals(a: Matrix4x4, b: Matrix4x4): Boolean;
     NotEquals(a: Matrix4x4, b: Matrix4x4): Boolean;
     Lerp(self: Matrix4x4, matrix1: Matrix4x4, matrix2: Matrix4x4, amount: Number): Matrix4x4;
-    Invert(self: Matrix4x4): ValueTuple<Matrix4x4, Boolean>;
+    Invert(self: Matrix4x4): Tuple2<Matrix4x4, Boolean>;
     CreatePerspectiveFieldOfView(self: Matrix4x4, fieldOfView: Number, aspectRatio: Number, nearPlane: Number, farPlane: Number): Matrix4x4;
     CreateBillboard(self: Matrix4x4, objectPosition: Vector3, cameraPosition: Vector3, cameraUpVector: Vector3, cameraForwardVector: Vector3): Matrix4x4;
     CreateConstrainedBillboard(self: Matrix4x4, objectPosition: Vector3, cameraPosition: Vector3, rotateAxis: Vector3, cameraForwardVector: Vector3, objectForwardVector: Vector3): Matrix4x4;
@@ -40,6 +44,10 @@ library GeneratedInstrinsics
     CreateShadow(self: Matrix4x4, lightDirection: Vector3, plane: Plane): Matrix4x4;
     CreateWorld(self: Matrix4x4, position: Vector3, forward: Vector3, up: Vector3): Matrix4x4;
     GetType(self: Matrix4x4): Type;
+
+    //==
+    // Matrix3x2
+    //==
     Determinant(self: Matrix3x2): Number;
     Add(value1: Matrix3x2, value2: Matrix3x2): Matrix3x2;
     Subtract(value1: Matrix3x2, value2: Matrix3x2): Matrix3x2;
@@ -57,21 +65,26 @@ library GeneratedInstrinsics
     CreateScale(self: Matrix3x2, xScale: Number, yScale: Number, centerPoint: Vector2): Matrix3x2;
     CreateRotation(self: Matrix3x2, radians: Number): Matrix3x2;
     CreateRotation(self: Matrix3x2, radians: Number, centerPoint: Vector2): Matrix3x2;
-    Invert(self: Matrix3x2): ValueTuple<Matrix3x2, Boolean>;
+    Invert(self: Matrix3x2): Tuple2<Matrix3x2, Boolean>;
     Lerp(self: Matrix3x2, matrix2: Matrix3x2, amount: Number): Matrix3x2;
-    GetHashCode(self: Matrix3x2): int;
-    ToString(self: Matrix3x2): string;
+    GetHashCode(self: Matrix3x2): Integer;
+    ToString(self: Matrix3x2): String;
     GetType(self: Matrix3x2): Type;
+
+    //==
+    // Vector2
+    //==
+    Count(self: Vector2): Integer;
     X(self: Vector2): Number;
     Y(self: Vector2): Number;
     Normalize(self: Vector2): Vector2;
-    Length(self: Vector2): float;
-    LengthSquared(self: Vector2): float;
+    Length(self: Vector2): Number;
+    LengthSquared(self: Vector2): Number;
     Abs(self: Vector2): Vector2;
     SquareRoot(self: Vector2): Vector2;
     Sin(self: Vector2): Vector2;
     Cos(self: Vector2): Vector2;
-    SinCos(self: Vector2): ValueTuple<Vector2, Vector2>;
+    SinCos(self: Vector2): Tuple2<Vector2, Vector2>;
     DegreesToRadians(self: Vector2): Vector2;
     RadiansToDegrees(self: Vector2): Vector2;
     Exp(self: Vector2): Vector2;
@@ -88,17 +101,17 @@ library GeneratedInstrinsics
     Add(left: Vector2, right: Vector2): Vector2;
     Subtract(left: Vector2, right: Vector2): Vector2;
     Multiply(left: Vector2, right: Vector2): Vector2;
-    Multiply(left: Vector2, scalar: float): Vector2;
-    Multiply(scalar: float, right: Vector2): Vector2;
+    Multiply(left: Vector2, scalar: Number): Vector2;
+    Multiply(scalar: Number, right: Vector2): Vector2;
     Divide(left: Vector2, right: Vector2): Vector2;
-    Divide(left: Vector2, scalar: float): Vector2;
+    Divide(left: Vector2, scalar: Number): Vector2;
     Negative(value: Vector2): Vector2;
     Equals(left: Vector2, right: Vector2): Boolean;
     NotEquals(left: Vector2, right: Vector2): Boolean;
-    GetHashCode(self: Vector2): int;
-    Dot(self: Vector2, right: Vector2): float;
-    Distance(self: Vector2, value2: Vector2): float;
-    DistanceSquared(self: Vector2, value2: Vector2): float;
+    GetHashCode(self: Vector2): Integer;
+    Dot(self: Vector2, right: Vector2): Number;
+    Distance(self: Vector2, value2: Vector2): Number;
+    DistanceSquared(self: Vector2, value2: Vector2): Number;
     Clamp(self: Vector2, min: Vector2, max: Vector2): Vector2;
     Reflect(self: Vector2, normal: Vector2): Vector2;
     Transform(self: Vector2, matrix: Matrix3x2): Vector2;
@@ -108,8 +121,13 @@ library GeneratedInstrinsics
     TransformNormal(self: Vector2, matrix: Matrix4x4): Vector2;
     Max(self: Vector2, value2: Vector2): Vector2;
     Min(self: Vector2, value2: Vector2): Vector2;
-    ToString(self: Vector2): string;
+    ToString(self: Vector2): String;
     GetType(self: Vector2): Type;
+
+    //==
+    // Vector3
+    //==
+    Count(self: Vector3): Integer;
     X(self: Vector3): Number;
     Y(self: Vector3): Number;
     Z(self: Vector3): Number;
@@ -120,7 +138,7 @@ library GeneratedInstrinsics
     SquareRoot(self: Vector3): Vector3;
     Sin(self: Vector3): Vector3;
     Cos(self: Vector3): Vector3;
-    SinCos(self: Vector3): ValueTuple<Vector3, Vector3>;
+    SinCos(self: Vector3): Tuple2<Vector3, Vector3>;
     DegreesToRadians(self: Vector3): Vector3;
     RadiansToDegrees(self: Vector3): Vector3;
     Exp(self: Vector3): Vector3;
@@ -145,7 +163,7 @@ library GeneratedInstrinsics
     Negative(value: Vector3): Vector3;
     Equals(left: Vector3, right: Vector3): Boolean;
     NotEquals(left: Vector3, right: Vector3): Boolean;
-    GetHashCode(self: Vector3): int;
+    GetHashCode(self: Vector3): Integer;
     Dot(self: Vector3, right: Vector3): Number;
     Cross(self: Vector3, right: Vector3): Vector3;
     Distance(self: Vector3, value2: Vector3): Number;
@@ -157,20 +175,25 @@ library GeneratedInstrinsics
     TransformNormal(self: Vector3, matrix: Matrix4x4): Vector3;
     Max(self: Vector3, value2: Vector3): Vector3;
     Min(self: Vector3, value2: Vector3): Vector3;
-    ToString(self: Vector3): string;
+    ToString(self: Vector3): String;
     GetType(self: Vector3): Type;
+
+    //==
+    // Vector4
+    //==
+    Count(self: Vector4): Integer;
     X(self: Vector4): Number;
     Y(self: Vector4): Number;
     Z(self: Vector4): Number;
     W(self: Vector4): Number;
     Normalize(self: Vector4): Vector4;
-    Length(self: Vector4): float;
-    LengthSquared(self: Vector4): float;
+    Length(self: Vector4): Number;
+    LengthSquared(self: Vector4): Number;
     Abs(self: Vector4): Vector4;
     SquareRoot(self: Vector4): Vector4;
     Sin(self: Vector4): Vector4;
     Cos(self: Vector4): Vector4;
-    SinCos(self: Vector4): ValueTuple<Vector4, Vector4>;
+    SinCos(self: Vector4): Tuple2<Vector4, Vector4>;
     DegreesToRadians(self: Vector4): Vector4;
     RadiansToDegrees(self: Vector4): Vector4;
     Exp(self: Vector4): Vector4;
@@ -188,32 +211,36 @@ library GeneratedInstrinsics
     Add(left: Vector4, right: Vector4): Vector4;
     Subtract(left: Vector4, right: Vector4): Vector4;
     Multiply(left: Vector4, right: Vector4): Vector4;
-    Multiply(left: Vector4, scalar: float): Vector4;
-    Multiply(scalar: float, right: Vector4): Vector4;
+    Multiply(left: Vector4, scalar: Number): Vector4;
+    Multiply(scalar: Number, right: Vector4): Vector4;
     Divide(left: Vector4, right: Vector4): Vector4;
-    Divide(left: Vector4, scalar: float): Vector4;
+    Divide(left: Vector4, scalar: Number): Vector4;
     Negative(value: Vector4): Vector4;
     Equals(left: Vector4, right: Vector4): Boolean;
     NotEquals(left: Vector4, right: Vector4): Boolean;
-    GetHashCode(self: Vector4): int;
-    Dot(self: Vector4, right: Vector4): float;
-    Distance(self: Vector4, value2: Vector4): float;
-    DistanceSquared(self: Vector4, value2: Vector4): float;
+    GetHashCode(self: Vector4): Integer;
+    Dot(self: Vector4, right: Vector4): Number;
+    Distance(self: Vector4, value2: Vector4): Number;
+    DistanceSquared(self: Vector4, value2: Vector4): Number;
     Clamp(self: Vector4, min: Vector4, max: Vector4): Vector4;
     Transform(self: Vector4, matrix: Matrix4x4): Vector4;
     Transform(self: Vector4, rotation: Quaternion): Vector4;
     Max(self: Vector4, value2: Vector4): Vector4;
     Min(self: Vector4, value2: Vector4): Vector4;
     Truncate(self: Vector4): Vector4;
-    ToString(self: Vector4): string;
+    ToString(self: Vector4): String;
     GetType(self: Vector4): Type;
+
+    //==
+    // Vector8
+    //==
     Indices(self: Vector8): Vector8;
-    Count(self: Vector8): int;
-    Lower(self: Vector8): Vector128<float>;
-    Upper(self: Vector8): Vector128<float>;
+    Count(self: Vector8): Integer;
+    Lower(self: Vector8): Vector128<Number>;
+    Upper(self: Vector8): Vector128<Number>;
     Sin(self: Vector8): Vector8;
     Cos(self: Vector8): Vector8;
-    SinCos(self: Vector8): ValueTuple<Vector8, Vector8>;
+    SinCos(self: Vector8): Tuple2<Vector8, Vector8>;
     Abs(self: Vector8): Vector8;
     Ceiling(self: Vector8): Vector8;
     DegreesToRadians(self: Vector8): Vector8;
@@ -265,28 +292,36 @@ library GeneratedInstrinsics
     Lerp(self: Vector8, b: Vector8, t: Vector8): Vector8;
     FirstElement(self: Vector8): Number;
     Truncate(self: Vector8): Vector8;
-    WithElement(self: Vector8, i: int, f: Number): Vector8;
-    WithLower(self: Vector8, lower: Vector128<float>): Vector8;
-    WithUpper(self: Vector8, upper: Vector128<float>): Vector8;
-    ToString(self: Vector8): string;
-    GetHashCode(self: Vector8): int;
+    WithElement(self: Vector8, i: Integer, f: Number): Vector8;
+    WithLower(self: Vector8, lower: Vector128<Number>): Vector8;
+    WithUpper(self: Vector8, upper: Vector128<Number>): Vector8;
+    ToString(self: Vector8): String;
+    GetHashCode(self: Vector8): Integer;
     GetType(self: Vector8): Type;
+
+    //==
+    // Plane
+    //==
     Normal(self: Plane): Vector3;
     D(self: Plane): Number;
     Normalize(self: Plane): Plane;
     WithNormal(self: Plane, normal: Vector3): Plane;
     WithD(self: Plane, d: Number): Plane;
-    GetHashCode(self: Plane): int;
-    ToString(self: Plane): string;
+    GetHashCode(self: Plane): Integer;
+    ToString(self: Plane): String;
     Equals(left: Plane, right: Plane): Boolean;
     NotEquals(left: Plane, right: Plane): Boolean;
     CreateFromVertices(self: Plane, point1: Vector3, point2: Vector3, point3: Vector3): Plane;
-    Dot(self: Plane, value: Vector4): float;
-    DotCoordinate(self: Plane, value: Vector3): float;
-    DotNormal(self: Plane, value: Vector3): float;
+    Dot(self: Plane, value: Vector4): Number;
+    DotCoordinate(self: Plane, value: Vector3): Number;
+    DotNormal(self: Plane, value: Vector3): Number;
     Transform(self: Plane, rotation: Quaternion): Plane;
     Transform(self: Plane, matrix: Matrix4x4): Plane;
     GetType(self: Plane): Type;
+
+    //==
+    // Quaternion
+    //==
     X(self: Quaternion): Number;
     Y(self: Quaternion): Number;
     Z(self: Quaternion): Number;
@@ -315,9 +350,75 @@ library GeneratedInstrinsics
     Dot(self: Quaternion, quaternion2: Quaternion): Number;
     Lerp(self: Quaternion, quaternion1: Quaternion, quaternion2: Quaternion, amount: Number): Quaternion;
     Slerp(self: Quaternion, quaternion1: Quaternion, quaternion2: Quaternion, amount: Number): Quaternion;
-    GetHashCode(self: Quaternion): int;
-    ToString(self: Quaternion): string;
+    GetHashCode(self: Quaternion): Integer;
+    ToString(self: Quaternion): String;
     GetType(self: Quaternion): Type;
+
+    //==
+    // Number
+    //==
+    HalfTurns(self: Number): Angle;
+    Turns(self: Number): Angle;
+    Degrees(self: Number): Angle;
+    Radians(self: Number): Angle;
+    Abs(self: Number): Number;
+    Acos(self: Number): Angle;
+    Acosh(self: Number): Angle;
+    Asin(self: Number): Angle;
+    Asinh(self: Number): Angle;
+    Atan(self: Number): Angle;
+    Atanh(self: Number): Angle;
+    BitDecrement(self: Number): Number;
+    BitIncrement(self: Number): Number;
+    Cbrt(self: Number): Number;
+    Ceiling(self: Number): Number;
+    Exp(self: Number): Number;
+    Floor(self: Number): Number;
+    ILogB(self: Number): Number;
+    NaturalLog(self: Number): Number;
+    Log10(self: Number): Number;
+    Log2(self: Number): Number;
+    Reciprocal(self: Number): Number;
+    ReciprocalEstimate(self: Number): Number;
+    ReciprocalSquareRootEstimate(self: Number): Number;
+    Sign(self: Number): Integer;
+    SquareRoot(self: Number): Number;
+    Square(self: Number): Number;
+    Truncate(self: Number): Number;
+    Add(a: Number, b: Number): Number;
+    Subtract(a: Number, b: Number): Number;
+    Multiply(a: Number, b: Number): Number;
+    Divide(a: Number, b: Number): Number;
+    Negative(n: Number): Number;
+    Equals(a: Number, b: Number): Boolean;
+    NotEquals(a: Number, b: Number): Boolean;
+    LessThan(a: Number, b: Number): Boolean;
+    LessThanOrEquals(a: Number, b: Number): Boolean;
+    GreaterThan(a: Number, b: Number): Boolean;
+    GreaterThanOrEquals(a: Number, b: Number): Boolean;
+    GetHashCode(self: Number): Integer;
+    ToString(self: Number): String;
+    CompareTo(self: Number, other: Number): Integer;
+    CompareTo(self: Number, obj: Object): Integer;
+    Atan2(self: Number, x: Number): Angle;
+    CopySign(self: Number, y: Number): Number;
+    FusedMultiplyAdd(self: Number, y: Number, z: Number): Number;
+    IEEERemainder(self: Number, y: Number): Number;
+    Log(self: Number, newBase: Number): Number;
+    Max(self: Number, other: Number): Number;
+    MaxMagnitude(self: Number, other: Number): Number;
+    Min(self: Number, other: Number): Number;
+    MinMagnitude(self: Number, other: Number): Number;
+    Pow(self: Number, power: Number): Number;
+    RoundToZero(self: Number, digits: Integer): Number;
+    RoundAwayFromZero(self: Number, digits: Integer): Number;
+    Round(self: Number, digits: Integer): Number;
+    ScaleB(self: Number, n: Integer): Number;
+    GetType(self: Number): Type;
+
+    //==
+    // Integer
+    //==
     Abs(self: Integer): Integer;
     Sign(self: Integer): Integer;
     Increment(self: Integer): Integer;
@@ -334,11 +435,15 @@ library GeneratedInstrinsics
     LessThanOrEquals(a: Integer, b: Integer): Boolean;
     GreaterThan(a: Integer, b: Integer): Boolean;
     GreaterThanOrEquals(a: Integer, b: Integer): Boolean;
-    GetHashCode(self: Integer): int;
-    ToString(self: Integer): string;
-    CompareTo(self: Integer, other: Integer): int;
-    CompareTo(self: Integer, obj: object): int;
+    GetHashCode(self: Integer): Integer;
+    ToString(self: Integer): String;
+    CompareTo(self: Integer, other: Integer): Integer;
+    CompareTo(self: Integer, obj: Object): Integer;
     GetType(self: Integer): Type;
+
+    //==
+    // Boolean
+    //==
     IsTrue(self: Boolean): Boolean;
     IsFalse(self: Boolean): Boolean;
     Toggle(self: Boolean): Boolean;
@@ -348,9 +453,43 @@ library GeneratedInstrinsics
     Not(b: Boolean): Boolean;
     Equals(a: Boolean, b: Boolean): Boolean;
     NotEquals(a: Boolean, b: Boolean): Boolean;
-    GetHashCode(self: Boolean): int;
-    ToString(self: Boolean): string;
-    CompareTo(self: Boolean, other: Boolean): int;
-    CompareTo(self: Boolean, obj: object): int;
+    GetHashCode(self: Boolean): Integer;
+    ToString(self: Boolean): String;
+    CompareTo(self: Boolean, other: Boolean): Integer;
+    CompareTo(self: Boolean, obj: Object): Integer;
     GetType(self: Boolean): Type;
+
+    //==
+    // Angle
+    //==
+    Radians(self: Angle): Number;
+    Degrees(self: Angle): Number;
+    Turns(self: Angle): Number;
+    HalfTurns(self: Angle): Number;
+    Cos(self: Angle): Number;
+    Cosh(self: Angle): Number;
+    Sin(self: Angle): Number;
+    SinCos(self: Angle): Tuple2<Number, Number>;
+    Sinh(self: Angle): Number;
+    Tan(self: Angle): Number;
+    Tanh(self: Angle): Number;
+    Add(a: Angle, b: Angle): Angle;
+    Subtract(a: Angle, b: Angle): Angle;
+    Multiply(a: Angle, b: Angle): Angle;
+    Divide(a: Angle, b: Angle): Angle;
+    Multiply(a: Angle, x: Number): Angle;
+    Multiply(x: Number, a: Angle): Angle;
+    Divide(a: Angle, x: Number): Angle;
+    Negative(n: Angle): Angle;
+    Equals(a: Angle, b: Angle): Boolean;
+    NotEquals(a: Angle, b: Angle): Boolean;
+    LessThan(a: Angle, b: Angle): Boolean;
+    LessThanOrEquals(a: Angle, b: Angle): Boolean;
+    GreaterThan(a: Angle, b: Angle): Boolean;
+    GreaterThanOrEquals(a: Angle, b: Angle): Boolean;
+    GetHashCode(self: Angle): Integer;
+    ToString(self: Angle): String;
+    CompareTo(self: Angle, other: Angle): Integer;
+    CompareTo(self: Angle, obj: Object): Integer;
+    GetType(self: Angle): Type;
 }

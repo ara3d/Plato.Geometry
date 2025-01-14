@@ -22,8 +22,8 @@ type ColorLAB
 implements ICoordinate
 {
     Lightness: Unit;
-    A: float; 
-    B: float;
+    A: Number; 
+    B: Number;
 }
 
 // https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_model

@@ -9,7 +9,7 @@ type Translation3D
     Translation: Vector3;
 }
 
-type Translation3D
+type Scale3D
     implements ITransform3D
 {
     Scale: Vector3;

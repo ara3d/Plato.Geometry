@@ -2,7 +2,7 @@
 type SphericalCoordinate
 implements ICoordinate
 {
-    RadialDistance: float;
+    RadialDistance: Number;
     Azimuth: Angle;
     Polar: Angle;
 }
@@ -11,7 +11,7 @@ implements ICoordinate
 type PolarCoordinate
 implements ICoordinate
 {
-    Radius: float;
+    Radius: Number;
     Angle: Angle;
 }
 
@@ -19,7 +19,7 @@ implements ICoordinate
 type LogPolarCoordinate
 implements ICoordinate
 {
-    Rho: float;
+    Rho: Number;
     Azimuth: Angle;
 }
 
@@ -27,9 +27,9 @@ implements ICoordinate
 type CylindricalCoordinate
 implements ICoordinate
 {
-    RadialDistance: float;
+    RadialDistance: Number;
     Azimuth: Angle;
-    Height: float;
+    Height: Number;
 }
 
 // https://en.wikipedia.org/wiki/Horizontal_coordinate_system    
@@ -53,5 +53,5 @@ type GeoCoordinateWithAltitude
 implements ICoordinate
 {
     ICoordinate: GeoCoordinate;
-    Altitude: float;
+    Altitude: Number;
 }

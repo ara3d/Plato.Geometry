@@ -3,7 +3,7 @@
 type Unit
     implements IReal
 {
-    Value: float;
+    Value: Number;
 }
 
 // A pair of integers 
@@ -37,13 +37,13 @@ type Integer4
 type Angle
     implements IMeasure
 {
-    Radians: float;
+    Radians: Number;
 }
 
 type Time
     implements IMeasure
 {
-    Seconds: float;
+    Seconds: Number;
 }
 
 type AnglePair
@@ -54,8 +54,8 @@ type AnglePair
 }
 
 type floatInterval
-    implements IInterval<float>
+    implements IInterval<Number>
 {
-    Start: float;
-    End: float;
+    Start: Number;
+    End: Number;
 }

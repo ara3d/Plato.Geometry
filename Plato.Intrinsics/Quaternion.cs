@@ -183,12 +183,15 @@ namespace Plato
         public bool Equals(Quaternion other)
             => Value.Equals(other.Value);
 
+        [MethodImpl(AggressiveInlining)]
         public override bool Equals(object? obj)
             => obj is Quaternion q && Equals(q);
 
+        [MethodImpl(AggressiveInlining)]
         public override int GetHashCode()
             => Value.GetHashCode();
 
+        [MethodImpl(AggressiveInlining)]
         public override string ToString()
             => Value.ToString();
     }

@@ -871,7 +871,6 @@ namespace Plato.SinglePrecision
         public static Unit Default = new Unit();
         public static Unit New(Number value) => new Unit(value);
         public Plato.SinglePrecision.Unit ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Unit(Unit self) => self.ChangePrecision();
         public static implicit operator Number(Unit self) => self.Value;
         public static implicit operator Unit(Number value) => new Unit(value);
         public static implicit operator Unit(Integer value) => new Unit(value);
@@ -1059,7 +1058,6 @@ namespace Plato.SinglePrecision
         public static Probability Default = new Probability();
         public static Probability New(Number value) => new Probability(value);
         public Plato.SinglePrecision.Probability ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Probability(Probability self) => self.ChangePrecision();
         public static implicit operator Number(Probability self) => self.Value;
         public static implicit operator Probability(Number value) => new Probability(value);
         public static implicit operator Probability(Integer value) => new Probability(value);
@@ -1223,7 +1221,7 @@ namespace Plato.SinglePrecision
         public static Complex Default = new Complex();
         public static Complex New(Number iReal, Number imaginary) => new Complex(iReal, imaginary);
         public Plato.SinglePrecision.Complex ChangePrecision() => (IReal.ChangePrecision(), Imaginary.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Complex(Complex self) => self.ChangePrecision();
+
         public static implicit operator (Number, Number)(Complex self) => (self.IReal, self.Imaginary);
         public static implicit operator Complex((Number, Number) value) => new Complex(value.Item1, value.Item2);
         public void Deconstruct(out Number iReal, out Number imaginary) { iReal = IReal; imaginary = Imaginary; }
@@ -1408,7 +1406,6 @@ namespace Plato.SinglePrecision
         public static Integer2 Default = new Integer2();
         public static Integer2 New(Integer a, Integer b) => new Integer2(a, b);
         public Plato.SinglePrecision.Integer2 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer2(Integer2 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer)(Integer2 self) => (self.A, self.B);
         public static implicit operator Integer2((Integer, Integer) value) => new Integer2(value.Item1, value.Item2);
         public void Deconstruct(out Integer a, out Integer b) { a = A; b = B; }
@@ -1459,7 +1456,6 @@ namespace Plato.SinglePrecision
         public static Integer3 Default = new Integer3();
         public static Integer3 New(Integer a, Integer b, Integer c) => new Integer3(a, b, c);
         public Plato.SinglePrecision.Integer3 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer3(Integer3 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Integer)(Integer3 self) => (self.A, self.B, self.C);
         public static implicit operator Integer3((Integer, Integer, Integer) value) => new Integer3(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Integer a, out Integer b, out Integer c) { a = A; b = B; c = C; }
@@ -1512,7 +1508,6 @@ namespace Plato.SinglePrecision
         public static Integer4 Default = new Integer4();
         public static Integer4 New(Integer a, Integer b, Integer c, Integer d) => new Integer4(a, b, c, d);
         public Plato.SinglePrecision.Integer4 ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer4(Integer4 self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Integer, Integer)(Integer4 self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Integer4((Integer, Integer, Integer, Integer) value) => new Integer4(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Integer a, out Integer b, out Integer c, out Integer d) { a = A; b = B; c = C; d = D; }
@@ -1565,7 +1560,6 @@ namespace Plato.SinglePrecision
         public static Color Default = new Color();
         public static Color New(Unit r, Unit g, Unit b, Unit a) => new Color(r, g, b, a);
         public Plato.SinglePrecision.Color ChangePrecision() => (R.ChangePrecision(), G.ChangePrecision(), B.ChangePrecision(), A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Color(Color self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit, Unit)(Color self) => (self.R, self.G, self.B, self.A);
         public static implicit operator Color((Unit, Unit, Unit, Unit) value) => new Color(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Unit r, out Unit g, out Unit b, out Unit a) { r = R; g = G; b = B; a = A; }
@@ -1602,7 +1596,6 @@ namespace Plato.SinglePrecision
         public static ColorLUV Default = new ColorLUV();
         public static ColorLUV New(Unit lightness, Unit u, Unit v) => new ColorLUV(lightness, u, v);
         public Plato.SinglePrecision.ColorLUV ChangePrecision() => (Lightness.ChangePrecision(), U.ChangePrecision(), V.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorLUV(ColorLUV self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit)(ColorLUV self) => (self.Lightness, self.U, self.V);
         public static implicit operator ColorLUV((Unit, Unit, Unit) value) => new ColorLUV(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit lightness, out Unit u, out Unit v) { lightness = Lightness; u = U; v = V; }
@@ -1639,7 +1632,6 @@ namespace Plato.SinglePrecision
         public static ColorLAB Default = new ColorLAB();
         public static ColorLAB New(Unit lightness, Number a, Number b) => new ColorLAB(lightness, a, b);
         public Plato.SinglePrecision.ColorLAB ChangePrecision() => (Lightness.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorLAB(ColorLAB self) => self.ChangePrecision();
         public static implicit operator (Unit, Number, Number)(ColorLAB self) => (self.Lightness, self.A, self.B);
         public static implicit operator ColorLAB((Unit, Number, Number) value) => new ColorLAB(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit lightness, out Number a, out Number b) { lightness = Lightness; a = A; b = B; }
@@ -1674,7 +1666,6 @@ namespace Plato.SinglePrecision
         public static ColorLCh Default = new ColorLCh();
         public static ColorLCh New(Unit lightness, PolarCoordinate chromaHue) => new ColorLCh(lightness, chromaHue);
         public Plato.SinglePrecision.ColorLCh ChangePrecision() => (Lightness.ChangePrecision(), ChromaHue.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorLCh(ColorLCh self) => self.ChangePrecision();
         public static implicit operator (Unit, PolarCoordinate)(ColorLCh self) => (self.Lightness, self.ChromaHue);
         public static implicit operator ColorLCh((Unit, PolarCoordinate) value) => new ColorLCh(value.Item1, value.Item2);
         public void Deconstruct(out Unit lightness, out PolarCoordinate chromaHue) { lightness = Lightness; chromaHue = ChromaHue; }
@@ -1711,7 +1702,6 @@ namespace Plato.SinglePrecision
         public static ColorHSV Default = new ColorHSV();
         public static ColorHSV New(Angle hue, Unit s, Unit v) => new ColorHSV(hue, s, v);
         public Plato.SinglePrecision.ColorHSV ChangePrecision() => (Hue.ChangePrecision(), S.ChangePrecision(), V.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorHSV(ColorHSV self) => self.ChangePrecision();
         public static implicit operator (Angle, Unit, Unit)(ColorHSV self) => (self.Hue, self.S, self.V);
         public static implicit operator ColorHSV((Angle, Unit, Unit) value) => new ColorHSV(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle hue, out Unit s, out Unit v) { hue = Hue; s = S; v = V; }
@@ -1748,7 +1738,6 @@ namespace Plato.SinglePrecision
         public static ColorHSL Default = new ColorHSL();
         public static ColorHSL New(Angle hue, Unit saturation, Unit luminance) => new ColorHSL(hue, saturation, luminance);
         public Plato.SinglePrecision.ColorHSL ChangePrecision() => (Hue.ChangePrecision(), Saturation.ChangePrecision(), Luminance.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorHSL(ColorHSL self) => self.ChangePrecision();
         public static implicit operator (Angle, Unit, Unit)(ColorHSL self) => (self.Hue, self.Saturation, self.Luminance);
         public static implicit operator ColorHSL((Angle, Unit, Unit) value) => new ColorHSL(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle hue, out Unit saturation, out Unit luminance) { hue = Hue; saturation = Saturation; luminance = Luminance; }
@@ -1785,7 +1774,6 @@ namespace Plato.SinglePrecision
         public static ColorYCbCr Default = new ColorYCbCr();
         public static ColorYCbCr New(Unit y, Unit cb, Unit cr) => new ColorYCbCr(y, cb, cr);
         public Plato.SinglePrecision.ColorYCbCr ChangePrecision() => (Y.ChangePrecision(), Cb.ChangePrecision(), Cr.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ColorYCbCr(ColorYCbCr self) => self.ChangePrecision();
         public static implicit operator (Unit, Unit, Unit)(ColorYCbCr self) => (self.Y, self.Cb, self.Cr);
         public static implicit operator ColorYCbCr((Unit, Unit, Unit) value) => new ColorYCbCr(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Unit y, out Unit cb, out Unit cr) { y = Y; cb = Cb; cr = Cr; }
@@ -1822,7 +1810,6 @@ namespace Plato.SinglePrecision
         public static SphericalCoordinate Default = new SphericalCoordinate();
         public static SphericalCoordinate New(Number radialDistance, Angle azimuth, Angle polar) => new SphericalCoordinate(radialDistance, azimuth, polar);
         public Plato.SinglePrecision.SphericalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Polar.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.SphericalCoordinate(SphericalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle, Angle)(SphericalCoordinate self) => (self.RadialDistance, self.Azimuth, self.Polar);
         public static implicit operator SphericalCoordinate((Number, Angle, Angle) value) => new SphericalCoordinate(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radialDistance, out Angle azimuth, out Angle polar) { radialDistance = RadialDistance; azimuth = Azimuth; polar = Polar; }
@@ -1857,7 +1844,6 @@ namespace Plato.SinglePrecision
         public static PolarCoordinate Default = new PolarCoordinate();
         public static PolarCoordinate New(Number radius, Angle angle) => new PolarCoordinate(radius, angle);
         public Plato.SinglePrecision.PolarCoordinate ChangePrecision() => (Radius.ChangePrecision(), Angle.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.PolarCoordinate(PolarCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle)(PolarCoordinate self) => (self.Radius, self.Angle);
         public static implicit operator PolarCoordinate((Number, Angle) value) => new PolarCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Number radius, out Angle angle) { radius = Radius; angle = Angle; }
@@ -1894,7 +1880,6 @@ namespace Plato.SinglePrecision
         public static LogPolarCoordinate Default = new LogPolarCoordinate();
         public static LogPolarCoordinate New(Number rho, Angle azimuth) => new LogPolarCoordinate(rho, azimuth);
         public Plato.SinglePrecision.LogPolarCoordinate ChangePrecision() => (Rho.ChangePrecision(), Azimuth.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LogPolarCoordinate(LogPolarCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle)(LogPolarCoordinate self) => (self.Rho, self.Azimuth);
         public static implicit operator LogPolarCoordinate((Number, Angle) value) => new LogPolarCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Number rho, out Angle azimuth) { rho = Rho; azimuth = Azimuth; }
@@ -1931,7 +1916,6 @@ namespace Plato.SinglePrecision
         public static CylindricalCoordinate Default = new CylindricalCoordinate();
         public static CylindricalCoordinate New(Number radialDistance, Angle azimuth, Number height) => new CylindricalCoordinate(radialDistance, azimuth, height);
         public Plato.SinglePrecision.CylindricalCoordinate ChangePrecision() => (RadialDistance.ChangePrecision(), Azimuth.ChangePrecision(), Height.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.CylindricalCoordinate(CylindricalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Number, Angle, Number)(CylindricalCoordinate self) => (self.RadialDistance, self.Azimuth, self.Height);
         public static implicit operator CylindricalCoordinate((Number, Angle, Number) value) => new CylindricalCoordinate(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radialDistance, out Angle azimuth, out Number height) { radialDistance = RadialDistance; azimuth = Azimuth; height = Height; }
@@ -1966,7 +1950,6 @@ namespace Plato.SinglePrecision
         public static HorizontalCoordinate Default = new HorizontalCoordinate();
         public static HorizontalCoordinate New(Angle altitude, Angle azimuth) => new HorizontalCoordinate(altitude, azimuth);
         public Plato.SinglePrecision.HorizontalCoordinate ChangePrecision() => (Altitude.ChangePrecision(), Azimuth.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.HorizontalCoordinate(HorizontalCoordinate self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(HorizontalCoordinate self) => (self.Altitude, self.Azimuth);
         public static implicit operator HorizontalCoordinate((Angle, Angle) value) => new HorizontalCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Angle altitude, out Angle azimuth) { altitude = Altitude; azimuth = Azimuth; }
@@ -2001,7 +1984,6 @@ namespace Plato.SinglePrecision
         public static GeoCoordinate Default = new GeoCoordinate();
         public static GeoCoordinate New(Angle latitude, Angle longitude) => new GeoCoordinate(latitude, longitude);
         public Plato.SinglePrecision.GeoCoordinate ChangePrecision() => (Latitude.ChangePrecision(), Longitude.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.GeoCoordinate(GeoCoordinate self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(GeoCoordinate self) => (self.Latitude, self.Longitude);
         public static implicit operator GeoCoordinate((Angle, Angle) value) => new GeoCoordinate(value.Item1, value.Item2);
         public void Deconstruct(out Angle latitude, out Angle longitude) { latitude = Latitude; longitude = Longitude; }
@@ -2036,7 +2018,6 @@ namespace Plato.SinglePrecision
         public static GeoCoordinateWithAltitude Default = new GeoCoordinateWithAltitude();
         public static GeoCoordinateWithAltitude New(GeoCoordinate iCoordinate, Number altitude) => new GeoCoordinateWithAltitude(iCoordinate, altitude);
         public Plato.SinglePrecision.GeoCoordinateWithAltitude ChangePrecision() => (ICoordinate.ChangePrecision(), Altitude.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.GeoCoordinateWithAltitude(GeoCoordinateWithAltitude self) => self.ChangePrecision();
         public static implicit operator (GeoCoordinate, Number)(GeoCoordinateWithAltitude self) => (self.ICoordinate, self.Altitude);
         public static implicit operator GeoCoordinateWithAltitude((GeoCoordinate, Number) value) => new GeoCoordinateWithAltitude(value.Item1, value.Item2);
         public void Deconstruct(out GeoCoordinate iCoordinate, out Number altitude) { iCoordinate = ICoordinate; altitude = Altitude; }
@@ -2071,7 +2052,6 @@ namespace Plato.SinglePrecision
         public static Rational Default = new Rational();
         public static Rational New(Integer numerator, Integer denominator) => new Rational(numerator, denominator);
         public Plato.SinglePrecision.Rational ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rational(Rational self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer)(Rational self) => (self.Numerator, self.Denominator);
         public static implicit operator Rational((Integer, Integer) value) => new Rational(value.Item1, value.Item2);
         public void Deconstruct(out Integer numerator, out Integer denominator) { numerator = Numerator; denominator = Denominator; }
@@ -2106,7 +2086,6 @@ namespace Plato.SinglePrecision
         public static Fraction Default = new Fraction();
         public static Fraction New(Number numerator, Number denominator) => new Fraction(numerator, denominator);
         public Plato.SinglePrecision.Fraction ChangePrecision() => (Numerator.ChangePrecision(), Denominator.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Fraction(Fraction self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Fraction self) => (self.Numerator, self.Denominator);
         public static implicit operator Fraction((Number, Number) value) => new Fraction(value.Item1, value.Item2);
         public void Deconstruct(out Number numerator, out Number denominator) { numerator = Numerator; denominator = Denominator; }
@@ -2139,7 +2118,6 @@ namespace Plato.SinglePrecision
         public static Angle Default = new Angle();
         public static Angle New(Number radians) => new Angle(radians);
         public Plato.SinglePrecision.Angle ChangePrecision() => (Radians.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Angle(Angle self) => self.ChangePrecision();
         public static implicit operator Number(Angle self) => self.Radians;
         public static implicit operator Angle(Number value) => new Angle(value);
         public static implicit operator Angle(Integer value) => new Angle(value);
@@ -2346,7 +2324,6 @@ namespace Plato.SinglePrecision
         public static Length Default = new Length();
         public static Length New(Number meters) => new Length(meters);
         public Plato.SinglePrecision.Length ChangePrecision() => (Meters.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Length(Length self) => self.ChangePrecision();
         public static implicit operator Number(Length self) => self.Meters;
         public static implicit operator Length(Number value) => new Length(value);
         public static implicit operator Length(Integer value) => new Length(value);
@@ -2508,7 +2485,6 @@ namespace Plato.SinglePrecision
         public static Mass Default = new Mass();
         public static Mass New(Number kilograms) => new Mass(kilograms);
         public Plato.SinglePrecision.Mass ChangePrecision() => (Kilograms.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Mass(Mass self) => self.ChangePrecision();
         public static implicit operator Number(Mass self) => self.Kilograms;
         public static implicit operator Mass(Number value) => new Mass(value);
         public static implicit operator Mass(Integer value) => new Mass(value);
@@ -2670,7 +2646,6 @@ namespace Plato.SinglePrecision
         public static Temperature Default = new Temperature();
         public static Temperature New(Number celsius) => new Temperature(celsius);
         public Plato.SinglePrecision.Temperature ChangePrecision() => (Celsius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Temperature(Temperature self) => self.ChangePrecision();
         public static implicit operator Number(Temperature self) => self.Celsius;
         public static implicit operator Temperature(Number value) => new Temperature(value);
         public static implicit operator Temperature(Integer value) => new Temperature(value);
@@ -2832,7 +2807,6 @@ namespace Plato.SinglePrecision
         public static Time Default = new Time();
         public static Time New(Number seconds) => new Time(seconds);
         public Plato.SinglePrecision.Time ChangePrecision() => (Seconds.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Time(Time self) => self.ChangePrecision();
         public static implicit operator Number(Time self) => self.Seconds;
         public static implicit operator Time(Number value) => new Time(value);
         public static implicit operator Time(Integer value) => new Time(value);
@@ -2994,7 +2968,6 @@ namespace Plato.SinglePrecision
         public static DateTime Default = new DateTime();
         public static DateTime New(Number value) => new DateTime(value);
         public Plato.SinglePrecision.DateTime ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.DateTime(DateTime self) => self.ChangePrecision();
         public static implicit operator Number(DateTime self) => self.Value;
         public static implicit operator DateTime(Number value) => new DateTime(value);
         public static implicit operator DateTime(Integer value) => new DateTime(value);
@@ -3032,7 +3005,6 @@ namespace Plato.SinglePrecision
         public static AnglePair Default = new AnglePair();
         public static AnglePair New(Angle start, Angle end) => new AnglePair(start, end);
         public Plato.SinglePrecision.AnglePair ChangePrecision() => (Start.ChangePrecision(), End.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.AnglePair(AnglePair self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle)(AnglePair self) => (self.Start, self.End);
         public static implicit operator AnglePair((Angle, Angle) value) => new AnglePair(value.Item1, value.Item2);
         public void Deconstruct(out Angle start, out Angle end) { start = Start; end = End; }
@@ -3124,7 +3096,6 @@ namespace Plato.SinglePrecision
         public static NumberInterval Default = new NumberInterval();
         public static NumberInterval New(Number start, Number end) => new NumberInterval(start, end);
         public Plato.SinglePrecision.NumberInterval ChangePrecision() => (Start.ChangePrecision(), End.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NumberInterval(NumberInterval self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(NumberInterval self) => (self.Start, self.End);
         public static implicit operator NumberInterval((Number, Number) value) => new NumberInterval(value.Item1, value.Item2);
         public void Deconstruct(out Number start, out Number end) { start = Start; end = End; }
@@ -3216,7 +3187,6 @@ namespace Plato.SinglePrecision
         public static LinearEquation Default = new LinearEquation();
         public static LinearEquation New(Number slope, Number yIntercept) => new LinearEquation(slope, yIntercept);
         public Plato.SinglePrecision.LinearEquation ChangePrecision() => (Slope.ChangePrecision(), YIntercept.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LinearEquation(LinearEquation self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(LinearEquation self) => (self.Slope, self.YIntercept);
         public static implicit operator LinearEquation((Number, Number) value) => new LinearEquation(value.Item1, value.Item2);
         public void Deconstruct(out Number slope, out Number yIntercept) { slope = Slope; yIntercept = YIntercept; }
@@ -3245,7 +3215,6 @@ namespace Plato.SinglePrecision
         public static Quadratic Default = new Quadratic();
         public static Quadratic New(Number a, Number b, Number c) => new Quadratic(a, b, c);
         public Plato.SinglePrecision.Quadratic ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quadratic(Quadratic self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Quadratic self) => (self.A, self.B, self.C);
         public static implicit operator Quadratic((Number, Number, Number) value) => new Quadratic(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number a, out Number b, out Number c) { a = A; b = B; c = C; }
@@ -3276,7 +3245,6 @@ namespace Plato.SinglePrecision
         public static Cubic Default = new Cubic();
         public static Cubic New(Number a, Number b, Number c, Number d) => new Cubic(a, b, c, d);
         public Plato.SinglePrecision.Cubic ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cubic(Cubic self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Cubic self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Cubic((Number, Number, Number, Number) value) => new Cubic(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number a, out Number b, out Number c, out Number d) { a = A; b = B; c = C; d = D; }
@@ -3323,7 +3291,6 @@ namespace Plato.SinglePrecision
         public static SineWave Default = new SineWave();
         public static SineWave New(Number amplitude, Number frequency, Number phase) => new SineWave(amplitude, frequency, phase);
         public Plato.SinglePrecision.SineWave ChangePrecision() => (Amplitude.ChangePrecision(), Frequency.ChangePrecision(), Phase.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.SineWave(SineWave self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(SineWave self) => (self.Amplitude, self.Frequency, self.Phase);
         public static implicit operator SineWave((Number, Number, Number) value) => new SineWave(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number amplitude, out Number frequency, out Number phase) { amplitude = Amplitude; frequency = Frequency; phase = Phase; }
@@ -3353,7 +3320,6 @@ namespace Plato.SinglePrecision
         public static Spiral Default = new Spiral();
         public static Spiral New(Number radius1, Number radius2, Number numTurns) => new Spiral(radius1, radius2, numTurns);
         public Plato.SinglePrecision.Spiral ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), NumTurns.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Spiral(Spiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Spiral self) => (self.Radius1, self.Radius2, self.NumTurns);
         public static implicit operator Spiral((Number, Number, Number) value) => new Spiral(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius1, out Number radius2, out Number numTurns) { radius1 = Radius1; radius2 = Radius2; numTurns = NumTurns; }
@@ -3389,7 +3355,6 @@ namespace Plato.SinglePrecision
         public static QuadraticBezier2D Default = new QuadraticBezier2D();
         public static QuadraticBezier2D New(Vector2D a, Vector2D b, Vector2D c) => new QuadraticBezier2D(a, b, c);
         public Plato.SinglePrecision.QuadraticBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.QuadraticBezier2D(QuadraticBezier2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D)(QuadraticBezier2D self) => (self.A, self.B, self.C);
         public static implicit operator QuadraticBezier2D((Vector2D, Vector2D, Vector2D) value) => new QuadraticBezier2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
@@ -3441,7 +3406,6 @@ namespace Plato.SinglePrecision
         public static CubicBezier2D Default = new CubicBezier2D();
         public static CubicBezier2D New(Vector2D a, Vector2D b, Vector2D c, Vector2D d) => new CubicBezier2D(a, b, c, d);
         public Plato.SinglePrecision.CubicBezier2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.CubicBezier2D(CubicBezier2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D, Vector2D)(CubicBezier2D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator CubicBezier2D((Vector2D, Vector2D, Vector2D, Vector2D) value) => new CubicBezier2D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
@@ -3489,7 +3453,6 @@ namespace Plato.SinglePrecision
         public static Circle Default = new Circle();
         public static Circle New(Vector2D center, Number radius) => new Circle(center, radius);
         public Plato.SinglePrecision.Circle ChangePrecision() => (Center.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Circle(Circle self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Number)(Circle self) => (self.Center, self.Radius);
         public static implicit operator Circle((Vector2D, Number) value) => new Circle(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D center, out Number radius) { center = Center; radius = Radius; }
@@ -3524,7 +3487,6 @@ namespace Plato.SinglePrecision
         public static Ellipse Default = new Ellipse();
         public static Ellipse New(Vector2D center, Vector2D size) => new Ellipse(center, size);
         public Plato.SinglePrecision.Ellipse ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ellipse(Ellipse self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Ellipse self) => (self.Center, self.Size);
         public static implicit operator Ellipse((Vector2D, Vector2D) value) => new Ellipse(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D center, out Vector2D size) { center = Center; size = Size; }
@@ -3559,7 +3521,6 @@ namespace Plato.SinglePrecision
         public static Epicycloid Default = new Epicycloid();
         public static Epicycloid New(Number radius1, Number radius2) => new Epicycloid(radius1, radius2);
         public Plato.SinglePrecision.Epicycloid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Epicycloid(Epicycloid self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Epicycloid self) => (self.Radius1, self.Radius2);
         public static implicit operator Epicycloid((Number, Number) value) => new Epicycloid(value.Item1, value.Item2);
         public void Deconstruct(out Number radius1, out Number radius2) { radius1 = Radius1; radius2 = Radius2; }
@@ -3594,7 +3555,6 @@ namespace Plato.SinglePrecision
         public static Hypocycloid Default = new Hypocycloid();
         public static Hypocycloid New(Number radius1, Number radius2) => new Hypocycloid(radius1, radius2);
         public Plato.SinglePrecision.Hypocycloid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Hypocycloid(Hypocycloid self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Hypocycloid self) => (self.Radius1, self.Radius2);
         public static implicit operator Hypocycloid((Number, Number) value) => new Hypocycloid(value.Item1, value.Item2);
         public void Deconstruct(out Number radius1, out Number radius2) { radius1 = Radius1; radius2 = Radius2; }
@@ -3631,7 +3591,6 @@ namespace Plato.SinglePrecision
         public static Epitrochoid Default = new Epitrochoid();
         public static Epitrochoid New(Number radius1, Number radius2, Number dist) => new Epitrochoid(radius1, radius2, dist);
         public Plato.SinglePrecision.Epitrochoid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), Dist.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Epitrochoid(Epitrochoid self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Epitrochoid self) => (self.Radius1, self.Radius2, self.Dist);
         public static implicit operator Epitrochoid((Number, Number, Number) value) => new Epitrochoid(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius1, out Number radius2, out Number dist) { radius1 = Radius1; radius2 = Radius2; dist = Dist; }
@@ -3668,7 +3627,6 @@ namespace Plato.SinglePrecision
         public static Hypotrochoid Default = new Hypotrochoid();
         public static Hypotrochoid New(Number radius1, Number radius2, Number dist) => new Hypotrochoid(radius1, radius2, dist);
         public Plato.SinglePrecision.Hypotrochoid ChangePrecision() => (Radius1.ChangePrecision(), Radius2.ChangePrecision(), Dist.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Hypotrochoid(Hypotrochoid self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Hypotrochoid self) => (self.Radius1, self.Radius2, self.Dist);
         public static implicit operator Hypotrochoid((Number, Number, Number) value) => new Hypotrochoid(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius1, out Number radius2, out Number dist) { radius1 = Radius1; radius2 = Radius2; dist = Dist; }
@@ -3730,7 +3688,6 @@ namespace Plato.SinglePrecision
         public static Lissajous Default = new Lissajous();
         public static Lissajous New(Angle delta, Number a, Number b) => new Lissajous(delta, a, b);
         public Plato.SinglePrecision.Lissajous ChangePrecision() => (Delta.ChangePrecision(), A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Lissajous(Lissajous self) => self.ChangePrecision();
         public static implicit operator (Angle, Number, Number)(Lissajous self) => (self.Delta, self.A, self.B);
         public static implicit operator Lissajous((Angle, Number, Number) value) => new Lissajous(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle delta, out Number a, out Number b) { delta = Delta; a = A; b = B; }
@@ -3792,7 +3749,6 @@ namespace Plato.SinglePrecision
         public static Limacon Default = new Limacon();
         public static Limacon New(Number a, Number b) => new Limacon(a, b);
         public Plato.SinglePrecision.Limacon ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Limacon(Limacon self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Limacon self) => (self.A, self.B);
         public static implicit operator Limacon((Number, Number) value) => new Limacon(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number b) { a = A; b = B; }
@@ -3854,7 +3810,6 @@ namespace Plato.SinglePrecision
         public static Rose Default = new Rose();
         public static Rose New(Integer k) => new Rose(k);
         public Plato.SinglePrecision.Rose ChangePrecision() => (K.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rose(Rose self) => self.ChangePrecision();
         public static implicit operator Integer(Rose self) => self.K;
         public static implicit operator Rose(Integer value) => new Rose(value);
         public override bool Equals(object obj) { if (!(obj is Rose)) return false; var other = (Rose)obj; return K.Equals(other.K); }
@@ -3890,7 +3845,6 @@ namespace Plato.SinglePrecision
         public static ArchimedeanSpiral Default = new ArchimedeanSpiral();
         public static ArchimedeanSpiral New(Number a, Number b) => new ArchimedeanSpiral(a, b);
         public Plato.SinglePrecision.ArchimedeanSpiral ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ArchimedeanSpiral(ArchimedeanSpiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(ArchimedeanSpiral self) => (self.A, self.B);
         public static implicit operator ArchimedeanSpiral((Number, Number) value) => new ArchimedeanSpiral(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number b) { a = A; b = B; }
@@ -3927,7 +3881,6 @@ namespace Plato.SinglePrecision
         public static ConicSection Default = new ConicSection();
         public static ConicSection New(Number eccentricity, Number semiLatusRectum) => new ConicSection(eccentricity, semiLatusRectum);
         public Plato.SinglePrecision.ConicSection ChangePrecision() => (Eccentricity.ChangePrecision(), SemiLatusRectum.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ConicSection(ConicSection self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(ConicSection self) => (self.Eccentricity, self.SemiLatusRectum);
         public static implicit operator ConicSection((Number, Number) value) => new ConicSection(value.Item1, value.Item2);
         public void Deconstruct(out Number eccentricity, out Number semiLatusRectum) { eccentricity = Eccentricity; semiLatusRectum = SemiLatusRectum; }
@@ -3962,7 +3915,6 @@ namespace Plato.SinglePrecision
         public static LemniscateOfBernoulli Default = new LemniscateOfBernoulli();
         public static LemniscateOfBernoulli New(Number a) => new LemniscateOfBernoulli(a);
         public Plato.SinglePrecision.LemniscateOfBernoulli ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LemniscateOfBernoulli(LemniscateOfBernoulli self) => self.ChangePrecision();
         public static implicit operator Number(LemniscateOfBernoulli self) => self.A;
         public static implicit operator LemniscateOfBernoulli(Number value) => new LemniscateOfBernoulli(value);
         public static implicit operator LemniscateOfBernoulli(Integer value) => new LemniscateOfBernoulli(value);
@@ -4000,7 +3952,6 @@ namespace Plato.SinglePrecision
         public static TrisectrixOfMaclaurin Default = new TrisectrixOfMaclaurin();
         public static TrisectrixOfMaclaurin New(Number a) => new TrisectrixOfMaclaurin(a);
         public Plato.SinglePrecision.TrisectrixOfMaclaurin ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.TrisectrixOfMaclaurin(TrisectrixOfMaclaurin self) => self.ChangePrecision();
         public static implicit operator Number(TrisectrixOfMaclaurin self) => self.A;
         public static implicit operator TrisectrixOfMaclaurin(Number value) => new TrisectrixOfMaclaurin(value);
         public static implicit operator TrisectrixOfMaclaurin(Integer value) => new TrisectrixOfMaclaurin(value);
@@ -4038,7 +3989,6 @@ namespace Plato.SinglePrecision
         public static ConchoidOfDeSluze Default = new ConchoidOfDeSluze();
         public static ConchoidOfDeSluze New(Number a) => new ConchoidOfDeSluze(a);
         public Plato.SinglePrecision.ConchoidOfDeSluze ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ConchoidOfDeSluze(ConchoidOfDeSluze self) => self.ChangePrecision();
         public static implicit operator Number(ConchoidOfDeSluze self) => self.A;
         public static implicit operator ConchoidOfDeSluze(Number value) => new ConchoidOfDeSluze(value);
         public static implicit operator ConchoidOfDeSluze(Integer value) => new ConchoidOfDeSluze(value);
@@ -4076,7 +4026,6 @@ namespace Plato.SinglePrecision
         public static TschirnhausenCubic Default = new TschirnhausenCubic();
         public static TschirnhausenCubic New(Number a) => new TschirnhausenCubic(a);
         public Plato.SinglePrecision.TschirnhausenCubic ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.TschirnhausenCubic(TschirnhausenCubic self) => self.ChangePrecision();
         public static implicit operator Number(TschirnhausenCubic self) => self.A;
         public static implicit operator TschirnhausenCubic(Number value) => new TschirnhausenCubic(value);
         public static implicit operator TschirnhausenCubic(Integer value) => new TschirnhausenCubic(value);
@@ -4116,7 +4065,6 @@ namespace Plato.SinglePrecision
         public static SinusoidalSpiral Default = new SinusoidalSpiral();
         public static SinusoidalSpiral New(Number a, Number n) => new SinusoidalSpiral(a, n);
         public Plato.SinglePrecision.SinusoidalSpiral ChangePrecision() => (A.ChangePrecision(), N.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.SinusoidalSpiral(SinusoidalSpiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(SinusoidalSpiral self) => (self.A, self.N);
         public static implicit operator SinusoidalSpiral((Number, Number) value) => new SinusoidalSpiral(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number n) { a = A; n = N; }
@@ -4151,7 +4099,6 @@ namespace Plato.SinglePrecision
         public static FermatsSpiral Default = new FermatsSpiral();
         public static FermatsSpiral New(Number a) => new FermatsSpiral(a);
         public Plato.SinglePrecision.FermatsSpiral ChangePrecision() => (A.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.FermatsSpiral(FermatsSpiral self) => self.ChangePrecision();
         public static implicit operator Number(FermatsSpiral self) => self.A;
         public static implicit operator FermatsSpiral(Number value) => new FermatsSpiral(value);
         public static implicit operator FermatsSpiral(Integer value) => new FermatsSpiral(value);
@@ -4191,7 +4138,6 @@ namespace Plato.SinglePrecision
         public static LogarithmicSpiral Default = new LogarithmicSpiral();
         public static LogarithmicSpiral New(Number a, Number k) => new LogarithmicSpiral(a, k);
         public Plato.SinglePrecision.LogarithmicSpiral ChangePrecision() => (A.ChangePrecision(), K.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.LogarithmicSpiral(LogarithmicSpiral self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(LogarithmicSpiral self) => (self.A, self.K);
         public static implicit operator LogarithmicSpiral((Number, Number) value) => new LogarithmicSpiral(value.Item1, value.Item2);
         public void Deconstruct(out Number a, out Number k) { a = A; k = K; }
@@ -4232,7 +4178,6 @@ namespace Plato.SinglePrecision
         public static CubicBezier3D Default = new CubicBezier3D();
         public static CubicBezier3D New(Vector3D a, Vector3D b, Vector3D c, Vector3D d) => new CubicBezier3D(a, b, c, d);
         public Plato.SinglePrecision.CubicBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.CubicBezier3D(CubicBezier3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D, Vector3D)(CubicBezier3D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator CubicBezier3D((Vector3D, Vector3D, Vector3D, Vector3D) value) => new CubicBezier3D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
@@ -4276,7 +4221,6 @@ namespace Plato.SinglePrecision
         public static QuadraticBezier3D Default = new QuadraticBezier3D();
         public static QuadraticBezier3D New(Vector3D a, Vector3D b, Vector3D c) => new QuadraticBezier3D(a, b, c);
         public Plato.SinglePrecision.QuadraticBezier3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.QuadraticBezier3D(QuadraticBezier3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(QuadraticBezier3D self) => (self.A, self.B, self.C);
         public static implicit operator QuadraticBezier3D((Vector3D, Vector3D, Vector3D) value) => new QuadraticBezier3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
@@ -4320,7 +4264,6 @@ namespace Plato.SinglePrecision
         public static TorusKnot Default = new TorusKnot();
         public static TorusKnot New(Integer p, Integer q, Number radius) => new TorusKnot(p, q, radius);
         public Plato.SinglePrecision.TorusKnot ChangePrecision() => (P.ChangePrecision(), Q.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.TorusKnot(TorusKnot self) => self.ChangePrecision();
         public static implicit operator (Integer, Integer, Number)(TorusKnot self) => (self.P, self.Q, self.Radius);
         public static implicit operator TorusKnot((Integer, Integer, Number) value) => new TorusKnot(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Integer p, out Integer q, out Number radius) { p = P; q = Q; radius = Radius; }
@@ -4407,7 +4350,6 @@ namespace Plato.SinglePrecision
         public static Helix Default = new Helix();
         public static Helix New(Number radius, Number height, Number numTurns) => new Helix(radius, height, numTurns);
         public Plato.SinglePrecision.Helix ChangePrecision() => (Radius.ChangePrecision(), Height.ChangePrecision(), NumTurns.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Helix(Helix self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Helix self) => (self.Radius, self.Height, self.NumTurns);
         public static implicit operator Helix((Number, Number, Number) value) => new Helix(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number radius, out Number height, out Number numTurns) { radius = Radius; height = Height; numTurns = NumTurns; }
@@ -4444,7 +4386,6 @@ namespace Plato.SinglePrecision
         public static Transform2D Default = new Transform2D();
         public static Transform2D New(Vector2D translation, Angle rotation, Vector2D scale) => new Transform2D(translation, rotation, scale);
         public Plato.SinglePrecision.Transform2D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Transform2D(Transform2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle, Vector2D)(Transform2D self) => (self.Translation, self.Rotation, self.Scale);
         public static implicit operator Transform2D((Vector2D, Angle, Vector2D) value) => new Transform2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D translation, out Angle rotation, out Vector2D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
@@ -4479,7 +4420,6 @@ namespace Plato.SinglePrecision
         public static Pose2D Default = new Pose2D();
         public static Pose2D New(Vector2D position, Angle rotation) => new Pose2D(position, rotation);
         public Plato.SinglePrecision.Pose2D ChangePrecision() => (Position.ChangePrecision(), Rotation.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Pose2D(Pose2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle)(Pose2D self) => (self.Position, self.Rotation);
         public static implicit operator Pose2D((Vector2D, Angle) value) => new Pose2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D position, out Angle rotation) { position = Position; rotation = Rotation; }
@@ -4514,7 +4454,6 @@ namespace Plato.SinglePrecision
         public static Bounds2D Default = new Bounds2D();
         public static Bounds2D New(Vector2D min, Vector2D max) => new Bounds2D(min, max);
         public Plato.SinglePrecision.Bounds2D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Bounds2D(Bounds2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Bounds2D self) => (self.Min, self.Max);
         public static implicit operator Bounds2D((Vector2D, Vector2D) value) => new Bounds2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D min, out Vector2D max) { min = Min; max = Max; }
@@ -4567,7 +4506,6 @@ namespace Plato.SinglePrecision
         public static Ray2D Default = new Ray2D();
         public static Ray2D New(Vector2D origin, Vector2D direction) => new Ray2D(origin, direction);
         public Plato.SinglePrecision.Ray2D ChangePrecision() => (Origin.ChangePrecision(), Direction.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ray2D(Ray2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Ray2D self) => (self.Origin, self.Direction);
         public static implicit operator Ray2D((Vector2D, Vector2D) value) => new Ray2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D origin, out Vector2D direction) { origin = Origin; direction = Direction; }
@@ -4607,7 +4545,6 @@ namespace Plato.SinglePrecision
         public static Triangle2D Default = new Triangle2D();
         public static Triangle2D New(Vector2D a, Vector2D b, Vector2D c) => new Triangle2D(a, b, c);
         public Plato.SinglePrecision.Triangle2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Triangle2D(Triangle2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D)(Triangle2D self) => (self.A, self.B, self.C);
         public static implicit operator Triangle2D((Vector2D, Vector2D, Vector2D) value) => new Triangle2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c) { a = A; b = B; c = C; }
@@ -4674,7 +4611,6 @@ namespace Plato.SinglePrecision
         public static Quad2D Default = new Quad2D();
         public static Quad2D New(Vector2D a, Vector2D b, Vector2D c, Vector2D d) => new Quad2D(a, b, c, d);
         public Plato.SinglePrecision.Quad2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quad2D(Quad2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D, Vector2D, Vector2D)(Quad2D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Quad2D((Vector2D, Vector2D, Vector2D, Vector2D) value) => new Quad2D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector2D a, out Vector2D b, out Vector2D c, out Vector2D d) { a = A; b = B; c = C; d = D; }
@@ -4742,7 +4678,6 @@ namespace Plato.SinglePrecision
         public static Line2D Default = new Line2D();
         public static Line2D New(Vector2D a, Vector2D b) => new Line2D(a, b);
         public Plato.SinglePrecision.Line2D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Line2D(Line2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Line2D self) => (self.A, self.B);
         public static implicit operator Line2D((Vector2D, Vector2D) value) => new Line2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D a, out Vector2D b) { a = A; b = B; }
@@ -4852,7 +4787,6 @@ namespace Plato.SinglePrecision
         public static Lens Default = new Lens();
         public static Lens New(Circle a, Circle b) => new Lens(a, b);
         public Plato.SinglePrecision.Lens ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Lens(Lens self) => self.ChangePrecision();
         public static implicit operator (Circle, Circle)(Lens self) => (self.A, self.B);
         public static implicit operator Lens((Circle, Circle) value) => new Lens(value.Item1, value.Item2);
         public void Deconstruct(out Circle a, out Circle b) { a = A; b = B; }
@@ -4879,7 +4813,6 @@ namespace Plato.SinglePrecision
         public static Rect2D Default = new Rect2D();
         public static Rect2D New(Vector2D center, Vector2D size) => new Rect2D(center, size);
         public Plato.SinglePrecision.Rect2D ChangePrecision() => (Center.ChangePrecision(), Size.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rect2D(Rect2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Vector2D)(Rect2D self) => (self.Center, self.Size);
         public static implicit operator Rect2D((Vector2D, Vector2D) value) => new Rect2D(value.Item1, value.Item2);
         public void Deconstruct(out Vector2D center, out Vector2D size) { center = Center; size = Size; }
@@ -4944,7 +4877,6 @@ namespace Plato.SinglePrecision
         public static Ring Default = new Ring();
         public static Ring New(Vector2D center, Number innerRadius, Number outerRadius) => new Ring(center, innerRadius, outerRadius);
         public Plato.SinglePrecision.Ring ChangePrecision() => (Center.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ring(Ring self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Number, Number)(Ring self) => (self.Center, self.InnerRadius, self.OuterRadius);
         public static implicit operator Ring((Vector2D, Number, Number) value) => new Ring(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D center, out Number innerRadius, out Number outerRadius) { center = Center; innerRadius = InnerRadius; outerRadius = OuterRadius; }
@@ -4971,7 +4903,6 @@ namespace Plato.SinglePrecision
         public static Arc Default = new Arc();
         public static Arc New(AnglePair angles, Circle circle) => new Arc(angles, circle);
         public Plato.SinglePrecision.Arc ChangePrecision() => (Angles.ChangePrecision(), Circle.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Arc(Arc self) => self.ChangePrecision();
         public static implicit operator (AnglePair, Circle)(Arc self) => (self.Angles, self.Circle);
         public static implicit operator Arc((AnglePair, Circle) value) => new Arc(value.Item1, value.Item2);
         public void Deconstruct(out AnglePair angles, out Circle circle) { angles = Angles; circle = Circle; }
@@ -4996,7 +4927,6 @@ namespace Plato.SinglePrecision
         public static Sector Default = new Sector();
         public static Sector New(Arc arc) => new Sector(arc);
         public Plato.SinglePrecision.Sector ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Sector(Sector self) => self.ChangePrecision();
         public static implicit operator Arc(Sector self) => self.Arc;
         public static implicit operator Sector(Arc value) => new Sector(value);
         public override bool Equals(object obj) { if (!(obj is Sector)) return false; var other = (Sector)obj; return Arc.Equals(other.Arc); }
@@ -5020,7 +4950,6 @@ namespace Plato.SinglePrecision
         public static Chord Default = new Chord();
         public static Chord New(Arc arc) => new Chord(arc);
         public Plato.SinglePrecision.Chord ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Chord(Chord self) => self.ChangePrecision();
         public static implicit operator Arc(Chord self) => self.Arc;
         public static implicit operator Chord(Arc value) => new Chord(value);
         public override bool Equals(object obj) { if (!(obj is Chord)) return false; var other = (Chord)obj; return Arc.Equals(other.Arc); }
@@ -5044,7 +4973,6 @@ namespace Plato.SinglePrecision
         public static Segment Default = new Segment();
         public static Segment New(Arc arc) => new Segment(arc);
         public Plato.SinglePrecision.Segment ChangePrecision() => (Arc.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Segment(Segment self) => self.ChangePrecision();
         public static implicit operator Arc(Segment self) => self.Arc;
         public static implicit operator Segment(Arc value) => new Segment(value);
         public override bool Equals(object obj) { if (!(obj is Segment)) return false; var other = (Segment)obj; return Arc.Equals(other.Arc); }
@@ -5068,7 +4996,6 @@ namespace Plato.SinglePrecision
         public static RegularPolygon Default = new RegularPolygon();
         public static RegularPolygon New(Integer numPoints) => new RegularPolygon(numPoints);
         public Plato.SinglePrecision.RegularPolygon ChangePrecision() => (NumPoints.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.RegularPolygon(RegularPolygon self) => self.ChangePrecision();
         public static implicit operator Integer(RegularPolygon self) => self.NumPoints;
         public static implicit operator RegularPolygon(Integer value) => new RegularPolygon(value);
         public override bool Equals(object obj) { if (!(obj is RegularPolygon)) return false; var other = (RegularPolygon)obj; return NumPoints.Equals(other.NumPoints); }
@@ -5116,7 +5043,6 @@ namespace Plato.SinglePrecision
         public static Box2D Default = new Box2D();
         public static Box2D New(Vector2D center, Angle rotation, Vector2D extent) => new Box2D(center, rotation, extent);
         public Plato.SinglePrecision.Box2D ChangePrecision() => (Center.ChangePrecision(), Rotation.ChangePrecision(), Extent.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Box2D(Box2D self) => self.ChangePrecision();
         public static implicit operator (Vector2D, Angle, Vector2D)(Box2D self) => (self.Center, self.Rotation, self.Extent);
         public static implicit operator Box2D((Vector2D, Angle, Vector2D) value) => new Box2D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector2D center, out Angle rotation, out Vector2D extent) { center = Center; rotation = Rotation; extent = Extent; }
@@ -5142,7 +5068,6 @@ namespace Plato.SinglePrecision
         public static Plane Default = new Plane();
         public static Plane New(Vector3D normal, Number d) => new Plane(normal, d);
         public Plato.SinglePrecision.Plane ChangePrecision() => (Normal.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Plane(Plane self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Number)(Plane self) => (self.Normal, self.D);
         public static implicit operator Plane((Vector3D, Number) value) => new Plane(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D normal, out Number d) { normal = Normal; d = D; }
@@ -5177,7 +5102,6 @@ namespace Plato.SinglePrecision
         public static Bounds3D Default = new Bounds3D();
         public static Bounds3D New(Vector3D min, Vector3D max) => new Bounds3D(min, max);
         public Plato.SinglePrecision.Bounds3D ChangePrecision() => (Min.ChangePrecision(), Max.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Bounds3D(Bounds3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D)(Bounds3D self) => (self.Min, self.Max);
         public static implicit operator Bounds3D((Vector3D, Vector3D) value) => new Bounds3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D min, out Vector3D max) { min = Min; max = Max; }
@@ -5275,7 +5199,6 @@ namespace Plato.SinglePrecision
         public static Line3D Default = new Line3D();
         public static Line3D New(Vector3D a, Vector3D b) => new Line3D(a, b);
         public Plato.SinglePrecision.Line3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Line3D(Line3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D)(Line3D self) => (self.A, self.B);
         public static implicit operator Line3D((Vector3D, Vector3D) value) => new Line3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D a, out Vector3D b) { a = A; b = B; }
@@ -5431,7 +5354,6 @@ namespace Plato.SinglePrecision
         public static Ray3D Default = new Ray3D();
         public static Ray3D New(Vector3D origin, Vector3D direction) => new Ray3D(origin, direction);
         public Plato.SinglePrecision.Ray3D ChangePrecision() => (Origin.ChangePrecision(), Direction.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ray3D(Ray3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D)(Ray3D self) => (self.Origin, self.Direction);
         public static implicit operator Ray3D((Vector3D, Vector3D) value) => new Ray3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D origin, out Vector3D direction) { origin = Origin; direction = Direction; }
@@ -5518,7 +5440,6 @@ namespace Plato.SinglePrecision
         public static Triangle3D Default = new Triangle3D();
         public static Triangle3D New(Vector3D a, Vector3D b, Vector3D c) => new Triangle3D(a, b, c);
         public Plato.SinglePrecision.Triangle3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Triangle3D(Triangle3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Triangle3D self) => (self.A, self.B, self.C);
         public static implicit operator Triangle3D((Vector3D, Vector3D, Vector3D) value) => new Triangle3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c) { a = A; b = B; c = C; }
@@ -5636,7 +5557,6 @@ namespace Plato.SinglePrecision
         public static Quad3D Default = new Quad3D();
         public static Quad3D New(Vector3D a, Vector3D b, Vector3D c, Vector3D d) => new Quad3D(a, b, c, d);
         public Plato.SinglePrecision.Quad3D ChangePrecision() => (A.ChangePrecision(), B.ChangePrecision(), C.ChangePrecision(), D.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quad3D(Quad3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D, Vector3D)(Quad3D self) => (self.A, self.B, self.C, self.D);
         public static implicit operator Quad3D((Vector3D, Vector3D, Vector3D, Vector3D) value) => new Quad3D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector3D a, out Vector3D b, out Vector3D c, out Vector3D d) { a = A; b = B; c = C; d = D; }
@@ -6776,8 +6696,8 @@ namespace Plato.SinglePrecision
         public static Number Default = new Number();
         public static Number New(double value) => new Number(value);
         public Plato.SinglePrecision.Number ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Number(Number self) => self.ChangePrecision();
         public static implicit operator double(Number self) => self.Value;
+        public static implicit operator float(Number self) => (float)self.Value;
         public static implicit operator Number(double value) => new Number(value);
         public override bool Equals(object obj) { if (!(obj is Number)) return false; var other = (Number)obj; return Value.Equals(other.Value); }
         public override int GetHashCode() => Intrinsics.CombineHashCodes(Value);
@@ -6982,7 +6902,6 @@ namespace Plato.SinglePrecision
         public static Integer Default = new Integer();
         public static Integer New(int value) => new Integer(value);
         public Plato.SinglePrecision.Integer ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Integer(Integer self) => self.ChangePrecision();
         public static implicit operator int(Integer self) => self.Value;
         public static implicit operator Integer(int value) => new Integer(value);
         public override bool Equals(object obj) { if (!(obj is Integer)) return false; var other = (Integer)obj; return Value.Equals(other.Value); }
@@ -7094,7 +7013,6 @@ namespace Plato.SinglePrecision
         public static String Default = new String();
         public static String New(string value) => new String(value);
         public Plato.SinglePrecision.String ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.String(String self) => self.ChangePrecision();
         public static implicit operator string(String self) => self.Value;
         public static implicit operator String(string value) => new String(value);
         public override bool Equals(object obj) { if (!(obj is String)) return false; var other = (String)obj; return Value.Equals(other.Value); }
@@ -7148,7 +7066,6 @@ namespace Plato.SinglePrecision
         public static Boolean Default = new Boolean();
         public static Boolean New(bool value) => new Boolean(value);
         public Plato.SinglePrecision.Boolean ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Boolean(Boolean self) => self.ChangePrecision();
         public static implicit operator bool(Boolean self) => self.Value;
         public static implicit operator Boolean(bool value) => new Boolean(value);
         public override bool Equals(object obj) { if (!(obj is Boolean)) return false; var other = (Boolean)obj; return Value.Equals(other.Value); }
@@ -7201,7 +7118,6 @@ namespace Plato.SinglePrecision
         public static Character Default = new Character();
         public static Character New(char value) => new Character(value);
         public Plato.SinglePrecision.Character ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Character(Character self) => self.ChangePrecision();
         public static implicit operator char(Character self) => self.Value;
         public static implicit operator Character(char value) => new Character(value);
         public override bool Equals(object obj) { if (!(obj is Character)) return false; var other = (Character)obj; return Value.Equals(other.Value); }
@@ -7249,7 +7165,6 @@ namespace Plato.SinglePrecision
         public static Type Default = new Type();
         public static Type New(System.Type value) => new Type(value);
         public Plato.SinglePrecision.Type ChangePrecision() => (Value.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Type(Type self) => self.ChangePrecision();
         public static implicit operator System.Type(Type self) => self.Value;
         public static implicit operator Type(System.Type value) => new Type(value);
         public override bool Equals(object obj) { if (!(obj is Type)) return false; var other = (Type)obj; return Value.Equals(other.Value); }
@@ -7690,7 +7605,6 @@ namespace Plato.SinglePrecision
         public static Sphere Default = new Sphere();
         public static Sphere New(Number radius) => new Sphere(radius);
         public Plato.SinglePrecision.Sphere ChangePrecision() => (Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Sphere(Sphere self) => self.ChangePrecision();
         public static implicit operator Number(Sphere self) => self.Radius;
         public static implicit operator Sphere(Number value) => new Sphere(value);
         public static implicit operator Sphere(Integer value) => new Sphere(value);
@@ -7723,7 +7637,6 @@ namespace Plato.SinglePrecision
         public static Cylinder Default = new Cylinder();
         public static Cylinder New(Number height, Number radius) => new Cylinder(height, radius);
         public Plato.SinglePrecision.Cylinder ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cylinder(Cylinder self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Cylinder self) => (self.Height, self.Radius);
         public static implicit operator Cylinder((Number, Number) value) => new Cylinder(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
@@ -7750,7 +7663,6 @@ namespace Plato.SinglePrecision
         public static Capsule Default = new Capsule();
         public static Capsule New(Number height, Number radius) => new Capsule(height, radius);
         public Plato.SinglePrecision.Capsule ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Capsule(Capsule self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Capsule self) => (self.Height, self.Radius);
         public static implicit operator Capsule((Number, Number) value) => new Capsule(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
@@ -7780,7 +7692,6 @@ namespace Plato.SinglePrecision
         public static Cone Default = new Cone();
         public static Cone New(Number height, Number radius) => new Cone(height, radius);
         public Plato.SinglePrecision.Cone ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Cone(Cone self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Cone self) => (self.Height, self.Radius);
         public static implicit operator Cone((Number, Number) value) => new Cone(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number radius) { height = Height; radius = Radius; }
@@ -7812,7 +7723,6 @@ namespace Plato.SinglePrecision
         public static ConeSegment Default = new ConeSegment();
         public static ConeSegment New(Number height, Number radius1, Number radius2) => new ConeSegment(height, radius1, radius2);
         public Plato.SinglePrecision.ConeSegment ChangePrecision() => (Height.ChangePrecision(), Radius1.ChangePrecision(), Radius2.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.ConeSegment(ConeSegment self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(ConeSegment self) => (self.Height, self.Radius1, self.Radius2);
         public static implicit operator ConeSegment((Number, Number, Number) value) => new ConeSegment(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number radius1, out Number radius2) { height = Height; radius1 = Radius1; radius2 = Radius2; }
@@ -7840,7 +7750,6 @@ namespace Plato.SinglePrecision
         public static Box Default = new Box();
         public static Box New(Vector3D extent) => new Box(extent);
         public Plato.SinglePrecision.Box ChangePrecision() => (Extent.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Box(Box self) => self.ChangePrecision();
         public static implicit operator Vector3D(Box self) => self.Extent;
         public static implicit operator Box(Vector3D value) => new Box(value);
         public override bool Equals(object obj) { if (!(obj is Box)) return false; var other = (Box)obj; return Extent.Equals(other.Extent); }
@@ -7869,7 +7778,6 @@ namespace Plato.SinglePrecision
         public static Pyramid Default = new Pyramid();
         public static Pyramid New(Number height, Number baseLength) => new Pyramid(height, baseLength);
         public Plato.SinglePrecision.Pyramid ChangePrecision() => (Height.ChangePrecision(), BaseLength.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Pyramid(Pyramid self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Pyramid self) => (self.Height, self.BaseLength);
         public static implicit operator Pyramid((Number, Number) value) => new Pyramid(value.Item1, value.Item2);
         public void Deconstruct(out Number height, out Number baseLength) { height = Height; baseLength = BaseLength; }
@@ -7899,7 +7807,6 @@ namespace Plato.SinglePrecision
         public static Torus Default = new Torus();
         public static Torus New(Number majorRadius, Number minorRadius) => new Torus(majorRadius, minorRadius);
         public Plato.SinglePrecision.Torus ChangePrecision() => (MajorRadius.ChangePrecision(), MinorRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Torus(Torus self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Torus self) => (self.MajorRadius, self.MinorRadius);
         public static implicit operator Torus((Number, Number) value) => new Torus(value.Item1, value.Item2);
         public void Deconstruct(out Number majorRadius, out Number minorRadius) { majorRadius = MajorRadius; minorRadius = MinorRadius; }
@@ -7931,7 +7838,6 @@ namespace Plato.SinglePrecision
         public static NPrism Default = new NPrism();
         public static NPrism New(Number height, Number radius, Integer numSides) => new NPrism(height, radius, numSides);
         public Plato.SinglePrecision.NPrism ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NPrism(NPrism self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Integer)(NPrism self) => (self.Height, self.Radius, self.NumSides);
         public static implicit operator NPrism((Number, Number, Integer) value) => new NPrism(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
@@ -7963,7 +7869,6 @@ namespace Plato.SinglePrecision
         public static Tube Default = new Tube();
         public static Tube New(Number height, Number innerRadius, Number outerRadius) => new Tube(height, innerRadius, outerRadius);
         public Plato.SinglePrecision.Tube ChangePrecision() => (Height.ChangePrecision(), InnerRadius.ChangePrecision(), OuterRadius.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Tube(Tube self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Tube self) => (self.Height, self.InnerRadius, self.OuterRadius);
         public static implicit operator Tube((Number, Number, Number) value) => new Tube(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number innerRadius, out Number outerRadius) { height = Height; innerRadius = InnerRadius; outerRadius = OuterRadius; }
@@ -7995,7 +7900,6 @@ namespace Plato.SinglePrecision
         public static NPyramid Default = new NPyramid();
         public static NPyramid New(Number height, Number radius, Integer numSides) => new NPyramid(height, radius, numSides);
         public Plato.SinglePrecision.NPyramid ChangePrecision() => (Height.ChangePrecision(), Radius.ChangePrecision(), NumSides.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.NPyramid(NPyramid self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Integer)(NPyramid self) => (self.Height, self.Radius, self.NumSides);
         public static implicit operator NPyramid((Number, Number, Integer) value) => new NPyramid(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number height, out Number radius, out Integer numSides) { height = Height; radius = Radius; numSides = NumSides; }
@@ -8023,7 +7927,6 @@ namespace Plato.SinglePrecision
         public static Ellipsoid Default = new Ellipsoid();
         public static Ellipsoid New(Vector3D radii) => new Ellipsoid(radii);
         public Plato.SinglePrecision.Ellipsoid ChangePrecision() => (Radii.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Ellipsoid(Ellipsoid self) => self.ChangePrecision();
         public static implicit operator Vector3D(Ellipsoid self) => self.Radii;
         public static implicit operator Ellipsoid(Vector3D value) => new Ellipsoid(value);
         public override bool Equals(object obj) { if (!(obj is Ellipsoid)) return false; var other = (Ellipsoid)obj; return Radii.Equals(other.Radii); }
@@ -8052,7 +7955,6 @@ namespace Plato.SinglePrecision
         public static Vector2D Default = new Vector2D();
         public static Vector2D New(Number x, Number y) => new Vector2D(x, y);
         public Plato.SinglePrecision.Vector2D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Vector2D(Vector2D self) => self.ChangePrecision();
         public static implicit operator (Number, Number)(Vector2D self) => (self.X, self.Y);
         public static implicit operator Vector2D((Number, Number) value) => new Vector2D(value.Item1, value.Item2);
         public void Deconstruct(out Number x, out Number y) { x = X; y = Y; }
@@ -8249,7 +8151,6 @@ namespace Plato.SinglePrecision
         public static Vector3D Default = new Vector3D();
         public static Vector3D New(Number x, Number y, Number z) => new Vector3D(x, y, z);
         public Plato.SinglePrecision.Vector3D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Vector3D(Vector3D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number)(Vector3D self) => (self.X, self.Y, self.Z);
         public static implicit operator Vector3D((Number, Number, Number) value) => new Vector3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Number x, out Number y, out Number z) { x = X; y = Y; z = Z; }
@@ -8521,7 +8422,6 @@ namespace Plato.SinglePrecision
         public static Vector4D Default = new Vector4D();
         public static Vector4D New(Number x, Number y, Number z, Number w) => new Vector4D(x, y, z, w);
         public Plato.SinglePrecision.Vector4D ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Vector4D(Vector4D self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Vector4D self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Vector4D((Number, Number, Number, Number) value) => new Vector4D(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -8715,7 +8615,6 @@ namespace Plato.SinglePrecision
         public static Matrix3x3 Default = new Matrix3x3();
         public static Matrix3x3 New(Vector3D column1, Vector3D column2, Vector3D column3) => new Matrix3x3(column1, column2, column3);
         public Plato.SinglePrecision.Matrix3x3 ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Matrix3x3(Matrix3x3 self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Matrix3x3 self) => (self.Column1, self.Column2, self.Column3);
         public static implicit operator Matrix3x3((Vector3D, Vector3D, Vector3D) value) => new Matrix3x3(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D column1, out Vector3D column2, out Vector3D column3) { column1 = Column1; column2 = Column2; column3 = Column3; }
@@ -8783,7 +8682,6 @@ namespace Plato.SinglePrecision
         public static Matrix4x4 Default = new Matrix4x4();
         public static Matrix4x4 New(Vector4D column1, Vector4D column2, Vector4D column3, Vector4D column4) => new Matrix4x4(column1, column2, column3, column4);
         public Plato.SinglePrecision.Matrix4x4 ChangePrecision() => (Column1.ChangePrecision(), Column2.ChangePrecision(), Column3.ChangePrecision(), Column4.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Matrix4x4(Matrix4x4 self) => self.ChangePrecision();
         public static implicit operator (Vector4D, Vector4D, Vector4D, Vector4D)(Matrix4x4 self) => (self.Column1, self.Column2, self.Column3, self.Column4);
         public static implicit operator Matrix4x4((Vector4D, Vector4D, Vector4D, Vector4D) value) => new Matrix4x4(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Vector4D column1, out Vector4D column2, out Vector4D column3, out Vector4D column4) { column1 = Column1; column2 = Column2; column3 = Column3; column4 = Column4; }
@@ -8927,7 +8825,6 @@ namespace Plato.SinglePrecision
         public static Translation3D Default = new Translation3D();
         public static Translation3D New(Vector3D translation) => new Translation3D(translation);
         public Plato.SinglePrecision.Translation3D ChangePrecision() => (Translation.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Translation3D(Translation3D self) => self.ChangePrecision();
         public static implicit operator Vector3D(Translation3D self) => self.Translation;
         public static implicit operator Translation3D(Vector3D value) => new Translation3D(value);
         public override bool Equals(object obj) { if (!(obj is Translation3D)) return false; var other = (Translation3D)obj; return Translation.Equals(other.Translation); }
@@ -8959,7 +8856,6 @@ namespace Plato.SinglePrecision
         public static Transform3D Default = new Transform3D();
         public static Transform3D New(Vector3D translation, Quaternion rotation, Vector3D scale) => new Transform3D(translation, rotation, scale);
         public Plato.SinglePrecision.Transform3D ChangePrecision() => (Translation.ChangePrecision(), Rotation.ChangePrecision(), Scale.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Transform3D(Transform3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Quaternion, Vector3D)(Transform3D self) => (self.Translation, self.Rotation, self.Scale);
         public static implicit operator Transform3D((Vector3D, Quaternion, Vector3D) value) => new Transform3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D translation, out Quaternion rotation, out Vector3D scale) { translation = Translation; rotation = Rotation; scale = Scale; }
@@ -8999,7 +8895,6 @@ namespace Plato.SinglePrecision
         public static Pose3D Default = new Pose3D();
         public static Pose3D New(Vector3D position, Rotation3D rotation) => new Pose3D(position, rotation);
         public Plato.SinglePrecision.Pose3D ChangePrecision() => (Position.ChangePrecision(), Rotation.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Pose3D(Pose3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Rotation3D)(Pose3D self) => (self.Position, self.Rotation);
         public static implicit operator Pose3D((Vector3D, Rotation3D) value) => new Pose3D(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D position, out Rotation3D rotation) { position = Position; rotation = Rotation; }
@@ -9041,7 +8936,6 @@ namespace Plato.SinglePrecision
         public static Frame3D Default = new Frame3D();
         public static Frame3D New(Vector3D forward, Vector3D up, Vector3D position) => new Frame3D(forward, up, position);
         public Plato.SinglePrecision.Frame3D ChangePrecision() => (Forward.ChangePrecision(), Up.ChangePrecision(), Position.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Frame3D(Frame3D self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Vector3D, Vector3D)(Frame3D self) => (self.Forward, self.Up, self.Position);
         public static implicit operator Frame3D((Vector3D, Vector3D, Vector3D) value) => new Frame3D(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Vector3D forward, out Vector3D up, out Vector3D position) { forward = Forward; up = Up; position = Position; }
@@ -9087,7 +8981,6 @@ namespace Plato.SinglePrecision
         public static Quaternion Default = new Quaternion();
         public static Quaternion New(Number x, Number y, Number z, Number w) => new Quaternion(x, y, z, w);
         public Plato.SinglePrecision.Quaternion ChangePrecision() => (X.ChangePrecision(), Y.ChangePrecision(), Z.ChangePrecision(), W.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Quaternion(Quaternion self) => self.ChangePrecision();
         public static implicit operator (Number, Number, Number, Number)(Quaternion self) => (self.X, self.Y, self.Z, self.W);
         public static implicit operator Quaternion((Number, Number, Number, Number) value) => new Quaternion(value.Item1, value.Item2, value.Item3, value.Item4);
         public void Deconstruct(out Number x, out Number y, out Number z, out Number w) { x = X; y = Y; z = Z; w = W; }
@@ -9226,7 +9119,6 @@ namespace Plato.SinglePrecision
         public static AxisAngle Default = new AxisAngle();
         public static AxisAngle New(Vector3D axis, Angle angle) => new AxisAngle(axis, angle);
         public Plato.SinglePrecision.AxisAngle ChangePrecision() => (Axis.ChangePrecision(), Angle.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.AxisAngle(AxisAngle self) => self.ChangePrecision();
         public static implicit operator (Vector3D, Angle)(AxisAngle self) => (self.Axis, self.Angle);
         public static implicit operator AxisAngle((Vector3D, Angle) value) => new AxisAngle(value.Item1, value.Item2);
         public void Deconstruct(out Vector3D axis, out Angle angle) { axis = Axis; angle = Angle; }
@@ -9275,7 +9167,6 @@ namespace Plato.SinglePrecision
         public static EulerAngles Default = new EulerAngles();
         public static EulerAngles New(Angle yaw, Angle pitch, Angle roll) => new EulerAngles(yaw, pitch, roll);
         public Plato.SinglePrecision.EulerAngles ChangePrecision() => (Yaw.ChangePrecision(), Pitch.ChangePrecision(), Roll.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.EulerAngles(EulerAngles self) => self.ChangePrecision();
         public static implicit operator (Angle, Angle, Angle)(EulerAngles self) => (self.Yaw, self.Pitch, self.Roll);
         public static implicit operator EulerAngles((Angle, Angle, Angle) value) => new EulerAngles(value.Item1, value.Item2, value.Item3);
         public void Deconstruct(out Angle yaw, out Angle pitch, out Angle roll) { yaw = Yaw; pitch = Pitch; roll = Roll; }
@@ -9323,7 +9214,6 @@ namespace Plato.SinglePrecision
         public static Rotation3D Default = new Rotation3D();
         public static Rotation3D New(Quaternion quaternion) => new Rotation3D(quaternion);
         public Plato.SinglePrecision.Rotation3D ChangePrecision() => (Quaternion.ChangePrecision());
-        public static implicit operator Plato.SinglePrecision.Rotation3D(Rotation3D self) => self.ChangePrecision();
         public static implicit operator Quaternion(Rotation3D self) => self.Quaternion;
         public static implicit operator Rotation3D(Quaternion value) => new Rotation3D(value);
         public override bool Equals(object obj) { if (!(obj is Rotation3D)) return false; var other = (Rotation3D)obj; return Quaternion.Equals(other.Quaternion); }

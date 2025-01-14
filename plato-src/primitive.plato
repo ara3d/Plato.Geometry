@@ -1,12 +1,16 @@
 ﻿// In Plato, the primitive types are assumed to exist, by name, by the compiler.
 // This file is used to define the relationships and member data contained in those primitives.   
 
-// A floating point representation of a real float 
-type float 
+// A floating point representation of a real Number 
+type Number
     implements IReal
 { }
 
-// A positive or negative whole float 
+type Object
+    implements IValue
+{ }
+
+// A positive or negative whole Number 
 type Integer   
     implements IWholefloat
 { }
@@ -111,27 +115,35 @@ type Array3D<T>
 type Vector2
     implements IVector
 {
-    X: float;
-    Y: float;
+    X: Number;
+    Y: Number;
 }
 
 // A 3-dimensional vector    
 type Vector3
     implements IVector
 {
-    X: float;
-    Y: float;
-    Z: float;
+    X: Number;
+    Y: Number;
+    Z: Number;
 }
 
 // A 4-dimensional vector
 type Vector4
     implements IVector
 {
-    X: float;
-    Y: float;
-    Z: float;
-    W: float;
+    X: Number;
+    Y: Number;  
+    Z: Number;
+    W: Number;
+}
+
+// A 8-dimensional vector
+type Vector8
+    implements IVector
+{
+    Lower: Vector4;
+    Upper: Vector4;
 }
 
 // Affine 2D transformation matrix 
@@ -157,10 +169,10 @@ type Matrix4x4
 }
 
 type Quaternion
-    implements IValue, IArray<float>
+    implements IValue, IArray<Number>
 {
-    X: float;
-    Y: float;
-    Z: float;
-    W: float;
+    X: Number;
+    Y: Number;
+    Z: Number;
+    W: Number;
 }

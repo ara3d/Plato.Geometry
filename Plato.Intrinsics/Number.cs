@@ -403,28 +403,22 @@ namespace Plato
         }
 
         /// <summary>
-        /// Rounds the value to the number of fractional digits using the specified rounding convention.
+        /// Rounds the value to an integer using the specified rounding convention.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public Number Round(Integer digits, MidpointRounding mode) => MathF.Round(Value, digits, mode);
-
-        /// <summary>
-        /// Rounds the value to the number of fractional digits, rounding midpoint values to the nearest even number.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public Number Round(Integer digits) => MathF.Round(Value, digits);
+        public Number RoundToZero(int digits = 0) => MathF.Round(Value, digits, MidpointRounding.ToZero);
 
         /// <summary>
         /// Rounds the value to an integer using the specified rounding convention.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public Number Round(MidpointRounding mode) => MathF.Round(Value, mode);
+        public Number RoundAwayFromZero(int digits = 0) => MathF.Round(Value, digits, MidpointRounding.AwayFromZero);
 
         /// <summary>
         /// Rounds the value to the nearest integral value, rounding midpoint values to the nearest even number.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public Number Round() => MathF.Round(Value);
+        public Number Round(int digits = 0) => MathF.Round(Value, digits);
 
         /// <summary>
         /// Returns x multiplied by 2 raised to the power of n, computed efficiently.

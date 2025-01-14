@@ -3,7 +3,7 @@ library Geometry
     //==
 	// 2D Lines
 	
-	Length(x: Line2D): float => (x.B - x.A).Length;
+	Length(x: Line2D): Number => (x.B - x.A).Length;
 	Direction(x: Line2D): Vector2 => (x.B - x.A);
 	Ray2D(x: Line2D): Ray2D => (x.A, x.Direction);
     Reverse(x: Line2D): Line2D => (x.B, x.A);
@@ -13,7 +13,7 @@ library Geometry
 	//== 
 	// 3D Lines
 	 
-	Length(x: Line3D): float => (x.B - x.A).Length;
+	Length(x: Line3D): Number => (x.B - x.A).Length;
 	Direction(x: Line3D): Vector3 => (x.B - x.A);
 	Ray3D(x: Line3D): Ray3D => (x.A, x.Direction.Normalize);
     Reverse(x: Line3D): Line3D => (x.B, x.A);
@@ -31,7 +31,7 @@ library Geometry
 	//==
 	// Triangle 2D functions 
 
-	Area(t: Triangle2D): float => (t.A.X * (t.C.Y - t.B.Y) + t.B.X * (t.A.Y - t.C.Y) + t.C.X * (t.B.Y - t.A.Y)).Half;
+	Area(t: Triangle2D): Number => (t.A.X * (t.C.Y - t.B.Y) + t.B.X * (t.A.Y - t.C.Y) + t.C.X * (t.B.Y - t.A.Y)).Half;
 	Flip(t: Triangle2D): Triangle2D => (t.C, t.B, t.A);
     Center(t: Triangle2D): Vector2 => (t.A + t.B + t.C) / 3.0;
 	Barycentric(t: Triangle2D, uv: Vector2): Vector2 => t.A.Barycentric(t.B, t.C, uv);
@@ -52,12 +52,12 @@ library Geometry
     //==
     // Rect2D functions 
 
-    Width(x: Rect2D): float => x.Size.X;
-    Height(x: Rect2D): float => x.Size.Y;
-    Left(x: Rect2D): float => x.Center.X - x.Width.Half;
-    Right(x: Rect2D): float => x.Left + x.Width;
-    Bottom(x: Rect2D): float => x.Center.Y - x.Height.Half;
-    Top(x: Rect2D): float => x.Bottom + x.Height;
+    Width(x: Rect2D): Number => x.Size.X;
+    Height(x: Rect2D): Number => x.Size.Y;
+    Left(x: Rect2D): Number => x.Center.X - x.Width.Half;
+    Right(x: Rect2D): Number => x.Left + x.Width;
+    Bottom(x: Rect2D): Number => x.Center.Y - x.Height.Half;
+    Top(x: Rect2D): Number => x.Bottom + x.Height;
     BottomLeft(x: Rect2D): Vector2 => (x.Left, x.Bottom);
     BottomRight(x: Rect2D): Vector2 => (x.Right, x.Bottom);
     TopRight(x: Rect2D): Vector2 => (x.Right, x.Top);
@@ -97,10 +97,10 @@ library Geometry
     Line(a: Vector2, b: Vector2): Line2D => (a, b);
     Ray(a: Vector2, b: Vector2): Ray2D => (a, b);
     RayTo(a: Vector2, b: Vector2): Ray2D => (a, b - a);
-    Cross(a: Vector2, b: Vector2): float => a.X * b.Y - a.Y * b.X;
+    Cross(a: Vector2, b: Vector2): Number => a.X * b.Y - a.Y * b.X;
 
     Vector4(v: Vector3): Vector4 => v.ToVector4D(0);
-    ToVector4D(v: Vector3, w: float): Vector4 => (v.X, v.Y, v.Z, w);
+    ToVector4D(v: Vector3, w: Number): Vector4 => (v.X, v.Y, v.Z, w);
     XZY(v: Vector3): Vector3 => (v.X, v.Z, v.Y);
     YXZ(v: Vector3): Vector3 => (v.Y, v.X, v.Z);
     YZX(v: Vector3): Vector3 => (v.Y, v.Z, v.X);
@@ -119,32 +119,31 @@ library Geometry
     Project(v: Vector3, p: Plane): Vector3 => v - p.Normal * p.Normal.Dot(v);
     To2D(v: Vector3): Vector2 => (v.X, v.Y);
     Cross(a: Vector3, b: Vector3): Vector3 => (a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
-    MixedProduct(a: Vector3, b: Vector3, c: Vector3): float => a.Cross(b).Dot(c);
+    MixedProduct(a: Vector3, b: Vector3, c: Vector3): Number => a.Cross(b).Dot(c);
 
     Count(c: Complex): Integer => 2;   
     Count(v: Vector2): Integer => 2;
     Count(v: Vector3): Integer => 3;
     Count(v: Vector4): Integer => 4;   
-    At(c: Complex, n: Integer): float => n == 0 ? c.IReal : c.Imaginary;
-    At(v: Vector2, n: Integer): float => n == 0 ? v.X : v.Y;
-    At(v: Vector3, n: Integer): float => n == 0 ? v.X : n == 1 ? v.Y : v.Z;
-    At(v: Vector4, n: Integer): float => n == 0 ? v.X : n == 1 ? v.Y : n == 2 ? v.Z : v.W;
+    At(v: Vector2, n: Integer): Number => n == 0 ? v.X : v.Y;
+    At(v: Vector3, n: Integer): Number => n == 0 ? v.X : n == 1 ? v.Y : v.Z;
+    At(v: Vector4, n: Integer): Number => n == 0 ? v.X : n == 1 ? v.Y : n == 2 ? v.Z : v.W;
 
     ToVector3D(v: Vector4): Vector3 => (v.X, v.Y, v.Z);
 
-    Length(a: IVector): float => a.Magnitude;
-    LengthSquared(a: IVector): float => a.MagnitudeSquared;
-    Sum(v: IVector): float  => v.Reduce(0.0, (a, b) => a + b);
-    SumSquares(v: IVector): float => v.Square.Sum;   
-    MagnitudeSquared(v: IVector): float => v.SumSquares;    
-    Magnitude(v: IVector): float => v.MagnitudeSquared.SquareRoot;    
-    Dot(v1: IVector, v2: IVector): float => (v1 * v2).Sum;
-    Average(v: IVector): float => v.Sum / v.Count;        
+    Length(a: IVector): Number => a.Magnitude;
+    LengthSquared(a: IVector): Number => a.MagnitudeSquared;
+    Sum(v: IVector): Number  => v.Reduce(0.0, (a, b) => a + b);
+    SumSquares(v: IVector): Number => v.Square.Sum;   
+    MagnitudeSquared(v: IVector): Number => v.SumSquares;    
+    Magnitude(v: IVector): Number => v.MagnitudeSquared.SquareRoot;    
+    Dot(v1: IVector, v2: IVector): Number => (v1 * v2).Sum;
+    Average(v: IVector): Number => v.Sum / v.Count;        
     Normalize(x: IVector): IVector => x.MagnitudeSquared > 0 ? x / x.Magnitude : x.Zero;
     Reflect(v: IVector, normal: IVector): IVector => v - normal * v.Dot(normal) * 2.0;
     Project(v: IVector, other: IVector): IVector => other * v.Dot(other);
-    Distance(a: IVector, b: IVector): float => (b - a).Magnitude;
-    DistanceSquared(a: IVector, b: IVector): float => (b - a).Magnitude;
+    Distance(a: IVector, b: IVector): Number => (b - a).Magnitude;
+    DistanceSquared(a: IVector, b: IVector): Number => (b - a).Magnitude;
     Angle(a: IVector, b: IVector): Angle => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
     IsParallel(a: Vector3, b: Vector3): Boolean => a.Dot(b).Abs > (1.0 - 1e-6);
 	
@@ -175,11 +174,11 @@ library Geometry
 
     CirclePoints(n: Integer): IArray<Vector2> => n.Fractions.Map(x => x.Turns.UnitCircle);
 	Points(x: RegularPolygon): IArray<Vector2> => x.NumPoints.CirclePoints;
-    At(x: RegularPolygon, n: Integer): Vector2 => (n.float / x.NumPoints).Turns.UnitCircle;
+    At(x: RegularPolygon, n: Integer): Vector2 => (n.Number / x.NumPoints).Turns.UnitCircle;
     Count(x: RegularPolygon): Integer => x.NumPoints;
     
-    Eval(x: Line2D, t: float): Vector2 => x.A.Lerp(x.B, t);
-    Eval(x: Line3D, t: float): Vector3 => x.A.Lerp(x.B, t);  
+    Eval(x: Line2D, t: Number): Vector2 => x.A.Lerp(x.B, t);
+    Eval(x: Line3D, t: Number): Vector3 => x.A.Lerp(x.B, t);  
 
     //==
     // 2D to 3D
@@ -216,8 +215,8 @@ library Geometry
     UnitY(_: Vector3): Vector3 => (0, 1, 0);
     UnitZ(_: Vector3): Vector3 => (0, 0, 1);
 
-    MinValue(_: Vector3): Vector3 => (Minfloat, Minfloat, Minfloat);
-    MaxValue(_: Vector3): Vector3 => (Maxfloat, Maxfloat, Maxfloat);
+    MinValue(_: Vector3): Vector3 => (MinNumber, MinNumber, MinNumber);
+    MaxValue(_: Vector3): Vector3 => (MaxNumber, MaxNumber, MaxNumber);
 
     UnitX(_: Vector4): Vector4 => (1, 0, 0, 0);
     UnitY(_: Vector4): Vector4 => (0, 1, 0, 0);

@@ -10,7 +10,7 @@ namespace Plato
     /// This is a wrapper around Vector256&lt;float&gt; that provides a more user-friendly API.
     /// Note that the Vector256 class can be found in the Runtime.Intrinsics namespace, and
     /// has some design difference from Vector2, Vector3, and Vector4. One of the more notable
-    /// differences is that a Vector8 is sometimes intended used as a bit-mask, or an array of booleans, 
+    /// differences is that a Vector8 is sometimes intended to be used as a bit-mask, or an array of booleans, 
     /// and there are a number of bit-oriented functions around them. The intent of the
     /// Vector256 type was as a wrapper around SIMD operations, and less as a general-purpose vector type.
     /// In the end, we decided to put it in the same namespace, and expose a similar API, as Vector4.  
@@ -35,7 +35,7 @@ namespace Plato
             => Value = Vector256.Create(f0, f1, f2, f3, f4, f5, f6, f7);
 
         [MethodImpl(AggressiveInlining)]
-        public Vector8(Vector128<float> upper, Vector128<float> lower) => Value = Vector256.Create(lower, upper);
+        public Vector8(Vector4 lower, Vector4 upper) => Value = Vector256.Create(lower, upper);
 
         //-------------------------------------------------------------------------------------
         // Implicit operators 
@@ -64,27 +64,35 @@ namespace Plato
         // Indexer
         //-------------------------------------------------------------------------------------
 
-        public Number this[int index]
+        public Number this[Integer index]
         {
             [MethodImpl(AggressiveInlining)]
             get => Value.GetElement(index);
         }
 
-        public int Count
+        public Integer Count
         {
             [MethodImpl(AggressiveInlining)]
             get => 8;
         }
 
-        public Vector128<float> Lower
+        public Vector4 Lower
         {
             [MethodImpl(AggressiveInlining)] get => Value.GetLower();
         }
 
-        public Vector128<float> Upper
+        public Vector4 Upper
         {
             [MethodImpl(AggressiveInlining)] get => Value.GetUpper();
         }
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector8 WithLower(Vector4 lower)
+            => new(lower, Upper);
+
+        [MethodImpl(AggressiveInlining)]
+        public Vector8 WithUpper(Vector4 upper)
+            => new(Lower, upper);
 
         //-------------------------------------------------------------------------------------
         // Operator Overloads

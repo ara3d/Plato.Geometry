@@ -75,8 +75,8 @@ type Ring
     implements IClosedShape2D
 {
     Center: Vector2;
-    InnerRadius: float;
-    OuterRadius: float;
+    InnerRadius: Number;
+    OuterRadius: Number;
 }
 
 type Arc
@@ -127,7 +127,7 @@ type Plane
     implements IValue
 {
     Normal: Vector3;
-    D: float;
+    D: Number;
 }
 
 // Axis-Aligned bounding box 

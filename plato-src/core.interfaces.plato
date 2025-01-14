@@ -20,23 +20,23 @@ interface IValue
 interface INumerical 
     inherits IValue, IScalarArithmetic, IAdditive
 {
-    Components(x: Self): IArray<float>;
-    FromComponents(x: Self, xs: IArray<float>): Self;
+    Components(x: Self): IArray<Number>;
+    FromComponents(x: Self, xs: IArray<Number>): Self;
 }   
 
 // These are things that can be converted to and from floats. It includes measures, and reals.
-// Whole floats are not included because converting to/from a float would change the result.
+// Whole floats are not included because converting to/from a Number would change the result.
 // It also includes floats of-course. 
 interface IfloatLike
     inherits INumerical, IOrderable
 {
-	Tofloat(x: Self): float;
-    Fromfloat(x: Self, n: float): Self;
+	Tofloat(x: Self): Number;
+    Fromfloat(x: Self, n: Number): Self;
 }
 
 // Represents a continuous one dimensional value.
 // https://en.wikipedia.org/wiki/Real_float
-// The "IValue" or a IReal is the float itself, and is equal to the Magnitude  
+// The "IValue" or a IReal is the Number itself, and is equal to the Magnitude  
 interface IReal
     inherits IfloatLike, IAlgebraic, IArithmetic
 {
@@ -61,9 +61,9 @@ interface IMeasure
 
 // Vectors are specialization of the INumerical type.
 // Unlike reals and measures they cannot be compared in any meaningful way 
-// They are also "array-like" in that they have a fixed float of components.
+// They are also "array-like" in that they have a fixed Number of components.
 interface IVector
-    inherits INumerical, IArithmetic, IArray<float>, IInterpolatable, IAlgebraic
+    inherits INumerical, IArithmetic, IArray<Number>, IInterpolatable, IAlgebraic
 { 
 }
 
@@ -104,9 +104,9 @@ interface IAdditive
 interface IScalarArithmetic
     inherits IAny
 { 
-    Modulo(self: Self, other: float): Self;    
-    Divide(self: Self, other: float): Self;    
-    Multiply(self: Self, other: float): Self;    
+    Modulo(self: Self, other: Number): Self;    
+    Divide(self: Self, other: Number): Self;    
+    Multiply(self: Self, other: Number): Self;    
 }
 
 // A type which can be multiplied by itself
@@ -205,5 +205,5 @@ interface ITransform3D
     Matrix(x: Self): Matrix4x4;
 
     // Returns the inverted version of the transformation
-    Invert(x: Self): Self;)
+    Invert(x: Self): Self;
 }

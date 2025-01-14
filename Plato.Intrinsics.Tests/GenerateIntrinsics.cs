@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using Ara3D.Utils;
-using Microsoft.VisualBasic.FileIO;
-using NUnit.Framework.Constraints;
 using Console = System.Console;
 
 namespace Plato.Geometry.Tests
@@ -25,16 +15,17 @@ namespace Plato.Geometry.Tests
             public static Dictionary<Type, string> Types = new()
             {
                 { typeof(Matrix4x4),"System.Numerics.Matrix4x4" },
-                { typeof(Matrix3x2),"System.Numerics.Matrix3x2" },
+                   { typeof(Matrix3x2),"System.Numerics.Matrix3x2" },
                 { typeof(Vector2), "System.Numerics.Vector2" },
                 { typeof(Vector3), "System.Numerics.Vector3" },
                 { typeof(Vector4), "System.Numerics.Vector4" },
                 { typeof(Vector8), "System.Runtime.Intrinsics.Vector256<float>" },
                 { typeof(Plane), "System.Numerics.Plane" },
                 { typeof(Quaternion), "System.Numerics.Quaternion" },
-                //{ typeof(float), "float" },
+                { typeof(Number), "float" },
                 { typeof(Integer), "int" },
                 { typeof(Boolean), "bool" },
+                { typeof(Angle), "float" },
             };
 
             // https://stackoverflow.com/questions/3016429/reflection-and-operator-overloads-in-c-sharp
@@ -61,8 +52,26 @@ namespace Plato.Geometry.Tests
                 ("op_LogicalNot", "!", 1, "Not")
             };
 
+            public static string PlatoType(string type)
+            {
+                if (type == "int") return "Integer";
+                if (type == "float") return "Number";
+                if (type == "bool") return "Boolean";
+                if (type == "object") return "Object";
+                if (type == "string") return "String";
+                if (type.StartsWith("ValueTuple"))
+                {
+                    var n = type.Count(c => c == ',') + 1;
+                    return type.Replace("ValueTuple", $"Tuple{n}");
+                }
+
+                return type;
+            }
+
             public static void WritePlatoFunction(CodeBuilder cb, string retType, string name, IEnumerable<string> parameterNames, IEnumerable<string> parameterTypes)
             {
+                retType = PlatoType(retType);
+                parameterTypes = parameterTypes.Select(PlatoType).ToList();
                 var paramStr = string.Join(", ", parameterNames.Zip(parameterTypes, (n, t) => $"{n}: {t}"));
                 cb.WriteLine($"{name}({paramStr}): {retType};");
             }
@@ -163,7 +172,10 @@ namespace Plato.Geometry.Tests
             public static void WriteTypeFunctions(CodeBuilder cb, CodeBuilder cb2, CodeBuilder cb3, Type t, string altType)
             {
                 var typeName = t.Name;
-                
+                cb3.WriteLine();
+                cb3.WriteLine("//==");
+                cb3.WriteLine($"// {typeName}");
+                cb3.WriteLine("//==");
                 foreach (var f in t.GetFields())
                 {
                     WriteFieldAccessor(cb, cb2, cb3, f, typeName, altType);
@@ -237,7 +249,7 @@ namespace Plato.Geometry.Tests
                 cb.WriteLine();
                 cb.WriteLine("namespace Plato");
                 cb.WriteStartBlock();
-                cb.WriteLine("public static class Intrinsics");
+                cb.WriteLine("public static partial class Intrinsics");
                 cb.WriteStartBlock();
 
                 var cb2 = new CodeBuilder();
@@ -280,7 +292,7 @@ namespace Plato.Geometry.Tests
                 f2.WriteAllText(cb2.ToString());
                 Console.WriteLine($"Wrote text to {f2}");
 
-                var f3 = Dir.RelativeFile("g.intrinsics.plato");
+                var f3 = Dir.RelativeFile("..", "plato-src", "intrinsics.g.plato");
                 f3.WriteAllText(cb3.ToString());
                 Console.WriteLine($"Wrote text to {f3}");
             }

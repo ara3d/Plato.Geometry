@@ -17,13 +17,31 @@ namespace Plato
         // Constructor
 
         [MethodImpl(AggressiveInlining)]
-        public Vector2(float x, float y) => Value = new(x, y);
+        public Vector2(Number x, Number y) => Value = new(x, y);
 
         [MethodImpl(AggressiveInlining)]
-        public Vector2(float x) => Value = new(x);
+        public Vector2(Number x) => Value = new(x);
 
         [MethodImpl(AggressiveInlining)]
         public Vector2(SNVector2 x) => Value = x;
+
+        //-------------------------------------------------------------------------------------
+        // Indexer
+        //-------------------------------------------------------------------------------------
+
+        public Number this[Integer index]
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => index == 0 ? X
+                : index == 1 ? Y
+                : throw new IndexOutOfRangeException();
+        }
+
+        public Integer Count
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => 2;
+        }
 
         // Properties
 

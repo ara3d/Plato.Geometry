@@ -24,6 +24,26 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public Vector3(Number x) => Value = new(x);
 
+        //-------------------------------------------------------------------------------------
+        // Indexer
+        //-------------------------------------------------------------------------------------
+
+        public Number this[Integer index]
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => index == 0 ? X
+                : index == 1 ? Y
+                : index == 2 ? Z
+                : throw new IndexOutOfRangeException();
+        }
+
+        public Integer Count
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => 3;
+        }
+
+
         // Properties
 
         public Number X

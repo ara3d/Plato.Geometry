@@ -167,19 +167,19 @@
     Translate(x: IDeformable3D, v: Vector3): IDeformable3D => x.Deform(p => p + v);
     Rotate(x: IDeformable3D, q: Quaternion): IDeformable3D => x.Deform(q);
     Scale(x: IDeformable3D, v: Vector3): IDeformable3D => x.Deform(p => p * v);
-    Scale(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * s);
+    Scale(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * s);
 
     RotateX(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.XRotation);
     RotateY(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.YRotation);
     RotateZ(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.ZRotation);
 
-    TranslateX(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p + (s,0,0));   
-    TranslateY(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p + (0,s,0));
-    TranslateZ(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p + (0,0,s));
+    TranslateX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (s,0,0));   
+    TranslateY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,s,0));
+    TranslateZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,0,s));
 
-    ScaleX(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * (s,1,1));
-    ScaleY(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * (1,s,1));
-    ScaleZ(x: IDeformable3D, s: float): IDeformable3D => x.Deform(p => p * (1,1,s));
+    ScaleX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (s,1,1));
+    ScaleY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,s,1));
+    ScaleZ(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * (1,1,s));
  
     //==
     // QuadGrid3D

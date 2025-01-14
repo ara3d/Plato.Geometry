@@ -3,28 +3,28 @@
 type Length
     implements IMeasure
 {
-    Meters: float;
+    Meters: Number;
 }
 
 type Mass
     implements IMeasure
 {
-    Kilograms: float;
+    Kilograms: Number;
 }
 
 type Temperature
     implements IMeasure
 {
-    Celsius: float;
+    Celsius: Number;
 }
 
 
-// Unix date-time representation: float of non-leap seconds elapsed since January 1st, 1970.
+// Unix date-time representation: Number of non-leap seconds elapsed since January 1st, 1970.
 // https://en.wikipedia.org/wiki/Unix_time
 type DateTime
     implements ICoordinate
 {
-    Value: float; 
+    Value: Number; 
 }
 
 
@@ -40,8 +40,8 @@ type Rational
 type Fraction
     implements IValue
 {
-    Numerator: float;
-    Denominator: float;
+    Numerator: Number;
+    Denominator: Number;
 }
 
 
@@ -49,13 +49,13 @@ type Fraction
 type Probability
     implements IMeasure
 {
-    Value: float;
+    Value: Number;
 }
 
 // A two dimensional value, have has a real and imaginary component. 
 type Complex
     implements IVector
 {
-    Real: float;
-    Imaginary: float;
+    Real: Number;
+    Imaginary: Number;
 }
