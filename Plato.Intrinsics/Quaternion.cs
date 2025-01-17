@@ -1,17 +1,16 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNQuaternion = System.Numerics.Quaternion;
 
 namespace Plato
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [DataContract]
     public partial struct Quaternion
     {
         // Fields 
 
-        public readonly SNQuaternion Value;
+        [DataMember] public readonly SNQuaternion Value;
 
         // Constructor
         
@@ -23,29 +22,10 @@ namespace Plato
 
         // Properties
 
-        public Number X
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => Value.X;
-        }
-
-        public Number Y
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => Value.Y;
-        }
-
-        public Number Z
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => Value.Z;
-        }
-
-        public Number W
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => Value.W;
-        }
+        public Number X { [MethodImpl(AggressiveInlining)] get => Value.X; }
+        public Number Y { [MethodImpl(AggressiveInlining)] get => Value.Y; }
+        public Number Z { [MethodImpl(AggressiveInlining)] get => Value.Z; }
+        public Number W { [MethodImpl(AggressiveInlining)] get => Value.W; }
 
         // Immutable "setters"
 
@@ -64,12 +44,7 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public Quaternion WithW(Number w)
             => new(X, Y, Z, w);
-
-        // Static properties 
-
-        public static readonly Quaternion Identity
-            = SNQuaternion.Identity;
-
+        
         // Implicit casts 
 
         [MethodImpl(AggressiveInlining)]
@@ -105,14 +80,6 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static Quaternion operator /(Quaternion a, Quaternion b)
             => a.Value / b.Value;
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Quaternion a, Quaternion b)
-            => a.Equals(b);
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Quaternion a, Quaternion b)
-            => !a.Equals(b);
 
         // Forwarded static methods
 
@@ -176,23 +143,5 @@ namespace Plato
             [MethodImpl(AggressiveInlining)]
             get => SNQuaternion.Inverse(Value);
         }
-
-        // Equality and hashing
-
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Quaternion other)
-            => Value.Equals(other.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj)
-            => obj is Quaternion q && Equals(q);
-
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode()
-            => Value.GetHashCode();
-
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString()
-            => Value.ToString();
     }
 }

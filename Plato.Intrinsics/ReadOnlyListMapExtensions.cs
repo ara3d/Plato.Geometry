@@ -2,6 +2,9 @@
 {
     public static class ReadOnlyListMapExtensions
     {
+        // TODO: I have to decide what to do here. 
+
+        /*
         public static IReadOnlyList<T> Repeat<T>(this T value, int count) => 
             new FunctionalArray<T>(count, _ => value);
 
@@ -39,7 +42,9 @@
         public static IReadOnlyList<TR> Map<T0, T1, T2, TR>(this T0 x0, IReadOnlyList<T1> xs1, T2 x2, Func<T0, T1, T2, TR> func) =>
             Map(x0.Repeat(xs1.Count), xs1, x2.Repeat(xs1.Count), func);
 
-        public static IReadOnlyList<TR> Map<T0, T1, T2, TR>(this T0 x0, T1 x1, IReadOnlyList<T2> xs2, Func<T0, T1, T2, TR> func) =>
+        public static IReadOnlyList<TR> Map<T0, T1, T2, TR>(this T0 x0, T1 x1, IReadOnlyList<T2> xs2,
+            Func<T0, T1, T2, TR> func) =>
             Map(x0.Repeat(xs2.Count), x1.Repeat(xs2.Count), xs2, func);
+        */
     }
 }

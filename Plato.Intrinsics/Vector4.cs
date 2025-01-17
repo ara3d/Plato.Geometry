@@ -1,18 +1,17 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Serialization;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNVector4 = System.Numerics.Vector4;
 
 namespace Plato
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Vector4 : IEquatable<Vector4>
+    [DataContract]
+    public partial struct Vector4 
     {
         // Fields
 
-        public readonly SNVector4 Value;
+        [DataMember] public readonly SNVector4 Value;
 
         // Constructor
 
@@ -28,22 +27,6 @@ namespace Plato
         //-------------------------------------------------------------------------------------
         // Indexer
         //-------------------------------------------------------------------------------------
-
-        public Number this[Integer index]
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => index == 0 ? X
-                : index == 1 ? Y
-                : index == 2 ? Z
-                : index == 3 ? W
-                : throw new IndexOutOfRangeException();
-        }
-
-        public Integer Count
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => 4;
-        }
 
         // Properties
 
@@ -88,23 +71,6 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public Vector4 WithW(Number w)
             => new(X, Y, Z, w);
-
-        // Static properties
-
-        public static readonly Vector4 E = SNVector4.E;
-        public static readonly Vector4 Epsilon = SNVector4.Epsilon;
-        public static readonly Vector4 NaN = SNVector4.NaN;
-        public static readonly Vector4 NegativeInfinity = SNVector4.NegativeInfinity;
-        public static readonly Vector4 NegativeZero = SNVector4.NegativeZero;
-        public static readonly Vector4 One = SNVector4.One;
-        public static readonly Vector4 Pi = SNVector4.Pi;
-        public static readonly Vector4 PositiveInfinity = SNVector4.PositiveInfinity;
-        public static readonly Vector4 Tau = SNVector4.Tau;
-        public static readonly Vector4 UnitX = SNVector4.UnitX;
-        public static readonly Vector4 UnitY = SNVector4.UnitY;
-        public static readonly Vector4 UnitZ = SNVector4.UnitZ;
-        public static readonly Vector4 UnitW = SNVector4.UnitW;
-        public static readonly Vector4 Zero = SNVector4.Zero;
 
         // Implicit casts 
 
@@ -172,37 +138,7 @@ namespace Plato
         /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector4 operator -(Vector4 value) => -value.Value;
-
-        /// <summary>
-        /// Determines whether two Vector4D instances are equal.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Vector4 left, Vector4 right) => left.Value == right.Value;
-
-        /// <summary>
-        /// Determines whether two Vector4D instances are not equal.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Vector4 left, Vector4 right) => left.Value != right.Value;
-
-        /// <summary>
-        /// Determines whether the specified Vector4D is equal to the current Vector4D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Vector4 other) => Value.Equals(other.Value);
-
-        /// <summary>
-        /// Determines whether the specified object is equal to the current Vector4D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj) => obj is Vector4 other && Equals(other);
-
-        /// <summary>
-        /// Returns a hash code for the Vector4D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode() => HashCode.Combine(X, Y);
-
+        
         /// <summary>
         /// Returns the dot product of two <see cref="Vector4"/> instances.
         /// </summary>
@@ -410,11 +346,5 @@ namespace Plato
             [MethodImpl(AggressiveInlining)]
             get => SNVector4.Round(Value, MidpointRounding.ToPositiveInfinity);
         }
-
-        /// <summary>
-        /// Returns the string representation of the <see cref="Vector4"/> using default formatting.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString() => Value.ToString();
     }
 }

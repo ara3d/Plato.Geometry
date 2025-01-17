@@ -1,17 +1,16 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNVector3 = System.Numerics.Vector3;
 
 namespace Plato
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Vector3 : IEquatable<Vector3>
+    [DataContract]
+    public partial struct Vector3 
     {
         // Fields
 
-        public readonly SNVector3 Value;
+        [DataMember] public readonly SNVector3 Value;
 
         // Constructor
 
@@ -23,26 +22,6 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public Vector3(Number x) => Value = new(x);
-
-        //-------------------------------------------------------------------------------------
-        // Indexer
-        //-------------------------------------------------------------------------------------
-
-        public Number this[Integer index]
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => index == 0 ? X
-                : index == 1 ? Y
-                : index == 2 ? Z
-                : throw new IndexOutOfRangeException();
-        }
-
-        public Integer Count
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => 3;
-        }
-
 
         // Properties
 
@@ -77,22 +56,6 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public Vector3 WithZ(Number z)
             => new(X, Y, z);
-
-        // Static properties
-
-        public static readonly Vector3 E = SNVector3.E;
-        public static readonly Vector3 Epsilon = SNVector3.Epsilon;
-        public static readonly Vector3 NaN = SNVector3.NaN;
-        public static readonly Vector3 NegativeInfinity = SNVector3.NegativeInfinity;
-        public static readonly Vector3 NegativeZero = SNVector3.NegativeZero;
-        public static readonly Vector3 One = SNVector3.One;
-        public static readonly Vector3 Pi = SNVector3.Pi;
-        public static readonly Vector3 PositiveInfinity = SNVector3.PositiveInfinity;
-        public static readonly Vector3 Tau = SNVector3.Tau;
-        public static readonly Vector3 UnitX = SNVector3.UnitX;
-        public static readonly Vector3 UnitY = SNVector3.UnitY;
-        public static readonly Vector3 UnitZ = SNVector3.UnitZ;
-        public static readonly Vector3 Zero = SNVector3.Zero;
 
         // Implicit casts 
 
@@ -154,37 +117,7 @@ namespace Plato
         /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator -(Vector3 value) => -value.Value;
-
-        /// <summary>
-        /// Determines whether two Vector3D instances are equal.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Vector3 left, Vector3 right) => left.Value == right.Value;
-
-        /// <summary>
-        /// Determines whether two Vector3D instances are not equal.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Vector3 left, Vector3 right) => left.Value != right.Value;
-
-        /// <summary>
-        /// Determines whether the specified Vector3D is equal to the current Vector3D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Vector3 other) => Value.Equals(other.Value);
-
-        /// <summary>
-        /// Determines whether the specified object is equal to the current Vector3D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj) => obj is Vector3 other && Equals(other);
-
-        /// <summary>
-        /// Returns a hash code for the Vector3D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode() => HashCode.Combine(X, Y);
-
+        
         /// <summary>
         /// Returns the dot product of two <see cref="Vector3"/> instances.
         /// </summary>
@@ -412,11 +345,5 @@ namespace Plato
             [MethodImpl(AggressiveInlining)]
             get => SNVector3.Round(Value, MidpointRounding.ToPositiveInfinity);
         }
-        
-        /// <summary>
-        /// Returns the string representation of the <see cref="Vector3"/> using default formatting.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString() => Value.ToString();
     }
 }

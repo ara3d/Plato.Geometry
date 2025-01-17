@@ -1,6 +1,5 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace Plato
@@ -10,14 +9,14 @@ namespace Plato
     /// Separating angles from numbers, makes working with them easier, and
     /// less prone to unit-based errors.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Angle : IEquatable<Angle>, IComparable<Angle>, IComparable
+    [DataContract]
+    public partial struct Angle 
     {
         // -------------------------------------------------------------------------------
         // Field (the wrapped float)
         // -------------------------------------------------------------------------------
 
-        public readonly float Value;
+        [DataMember] public readonly float Value;
 
         // -------------------------------------------------------------------------------
         // Constructors
@@ -26,30 +25,6 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public Angle(float value) 
             => Value = value;
-
-        // -------------------------------------------------------------------------------
-        // Converting the angle to a numerical value using different units 
-        // -------------------------------------------------------------------------------
-
-        public Number Radians
-        {
-            [MethodImpl(AggressiveInlining)] get => Value;
-        }
-
-        public Number Degrees
-        {
-            [MethodImpl(AggressiveInlining)] get => Value * 180f / MathF.PI;
-        }
-
-        public Number Turns
-        {
-            [MethodImpl(AggressiveInlining)] get => HalfTurns / 2f;
-        }
-
-        public Number HalfTurns
-        {
-            [MethodImpl(AggressiveInlining)] get => Value / MathF.PI;
-        }
 
         // -------------------------------------------------------------------------------
         // Convert to/from float
@@ -66,16 +41,6 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static implicit operator Number(Angle n) => n.Value;
-
-        // -------------------------------------------------------------------------------
-        // Common Constants
-        // -------------------------------------------------------------------------------
-
-        public static readonly Angle FullTurn = Number.Pi * 2;
-        public static readonly Angle HalfTurn = Number.Pi;
-        public static readonly Angle QuarterTurn = Number.Pi / 4;
-        public static readonly Angle Degree = Number.Pi / 180;
-        public static readonly Angle Zero = 0;
 
         // -------------------------------------------------------------------------------
         // Operators (forward to float)
@@ -114,14 +79,6 @@ namespace Plato
             => -n.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Angle a, Angle b)
-            => a.Value == b.Value;
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Angle a, Angle b)
-            => a.Value != b.Value;
-
-        [MethodImpl(AggressiveInlining)]
         public static Boolean operator <(Angle a, Angle b)
             => a.Value < b.Value;
 
@@ -138,40 +95,12 @@ namespace Plato
             => a.Value >= b.Value;
 
         // -------------------------------------------------------------------------------
-        // Equality, hashing, and ToString
-        // -------------------------------------------------------------------------------
-        
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Angle other)
-            => Value.Equals(other.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj)
-            => obj is Angle n && Equals(n);
-
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode()
-            => Value.GetHashCode();
-
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString()
-            => Value.ToString();
-
-        // -------------------------------------------------------------------------------
         // IComparable / IComparable<Angle> Implementation
         // -------------------------------------------------------------------------------
 
         [MethodImpl(AggressiveInlining)]
-        public int CompareTo(Angle other)
+        public Integer CompareTo(Angle other)
             => Value.CompareTo(other.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public int CompareTo(object? obj)
-        {
-            if (obj is Angle n)
-                return CompareTo(n);
-            throw new ArgumentException("Object is not a Angle");
-        }
 
         // -------------------------------------------------------------------------------
         // Trigonometric Functions

@@ -75,13 +75,13 @@ library IInterval
     GeometricSpaceExclusive(interval: IInterval<$T>, count: Integer): IArray<$T>
         => count.GeometricSpaceExclusive.Map(x => interval.Lerp(x));
 
-    Intervals(count: Integer): IArray<floatInterval>
-        => (count + 1).LinearSpace.WithNext((a, b) => new floatInterval(a, b));
+    Intervals(count: Integer): IArray<NumberInterval>
+        => (count + 1).LinearSpace.WithNext((a, b) => new NumberInterval(a, b));
 
     Subdivide(interval: IInterval<$T>, start: Number, end: Number): IInterval<$T>
 		=> (interval.Lerp(start), interval.Lerp(end));
 
-    Subdivide(interval: IInterval<$T>, subInterval: floatInterval): IInterval<$T>
+    Subdivide(interval: IInterval<$T>, subInterval: NumberInterval): IInterval<$T>
 		=> interval.Subdivide(subInterval.Start, subInterval.End);
 
     Subdivide(interval: IInterval<$T>, count: Integer): IArray<IInterval<$T>>

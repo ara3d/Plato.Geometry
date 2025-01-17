@@ -2,9 +2,6 @@
 // This is the Top Type in Plato. All types provide this. 
 interface IAny
 { 
-    FieldNames(x: Self): IArray<String>;     
-    FieldValues(x: Self): IArray<Dynamic>;
-    TypeName(x: Self): String;
 }
 
 // A value is a read-only type which has the implicit rule that only Values are members
@@ -27,25 +24,25 @@ interface INumerical
 // These are things that can be converted to and from floats. It includes measures, and reals.
 // Whole floats are not included because converting to/from a Number would change the result.
 // It also includes floats of-course. 
-interface IfloatLike
+interface INumberLike
     inherits INumerical, IOrderable
 {
-	Tofloat(x: Self): Number;
-    Fromfloat(x: Self, n: Number): Self;
+	ToNumber(x: Self): Number;
+    FromNumber(x: Self, n: Number): Self;
 }
 
 // Represents a continuous one dimensional value.
 // https://en.wikipedia.org/wiki/Real_float
 // The "IValue" or a IReal is the Number itself, and is equal to the Magnitude  
 interface IReal
-    inherits IfloatLike, IAlgebraic, IArithmetic
+    inherits INumberLike, IAlgebraic, IArithmetic
 {
 }
 
 // Used for integer and cardinal types. 
 // Somewhat counter intuitively, they are not considered INumerical types.
 // They do however support arithmetic operations.
-interface IWholefloat 
+interface IWholeNumber 
     inherits IValue, IOrderable, IArithmetic
 {
 }
@@ -55,7 +52,7 @@ interface IWholefloat
 // getting a new type. It does however support IAdditive on itself.
 // The idea of interpolation, combines a couple of existing concepts. 
 interface IMeasure
-    inherits IfloatLike, IAdditive, IInterpolatable
+    inherits INumberLike, IAdditive, IInterpolatable
 {
 }
 
@@ -191,19 +188,3 @@ interface IBounds<T>
     Max(x: Self): T;
 }
 
-
-// Used for types that represent transformations in 3D space
-interface ITransform3D
-{
-    // Transforms a point using the transformation
-    Transform(x: Self, v: Vector3): Vector3;
-
-    // Transforms a normal vector using the transformation (ignores scale and translation)
-    TransformNormal(x: Self, v: Vector3): Vector3;
-
-    // Returns a 4x4 matrix representation of the transformation. 
-    Matrix(x: Self): Matrix4x4;
-
-    // Returns the inverted version of the transformation
-    Invert(x: Self): Self;
-}

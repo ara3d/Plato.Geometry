@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Runtime.CompilerServices;
 
 using static System.Runtime.CompilerServices.MethodImplOptions;
@@ -18,10 +17,14 @@ namespace Plato
             Count = count;
         }
 
+        [MethodImpl(AggressiveInlining)]
+        public T At(Integer index)
+            => Func(index);
+
         T IReadOnlyList<T>.this[int index]
         {
             [MethodImpl(AggressiveInlining)]
-            get => Func(index);
+            get => At(index);
         }
 
         T IArray<T>.this[Integer index]

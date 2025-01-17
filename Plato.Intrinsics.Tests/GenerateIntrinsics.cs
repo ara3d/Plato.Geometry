@@ -35,7 +35,7 @@ namespace Plato.Geometry.Tests
                 ("op_Subtraction", "-", 2, "Subtract"),
                 ("op_Division", "/", 2, "Divide"),
                 ("op_Multiply", "*", 2, "Multiply"),
-                ("op_Modulus", "%", 2, "Modulus"),
+                ("op_Modulus", "%", 2, "Modulo"),
                 ("op_ExclusiveOr", "^", 2, "ExclusiveOr"),
                 ("op_BitwiseAnd", "&", 2, "BitwiseAnd"),
                 ("op_BitwiseOr", "|", 2, "BitwiseOr"),
@@ -146,6 +146,15 @@ namespace Plato.Geometry.Tests
                 { typeof(void), "void" }
             };
 
+            public static HashSet<string> SkipList = new()
+            {
+                "Equals",
+                "ToSystem",
+                "FromSystem",
+                "GetType",
+                "ToString",
+            };
+    
             public static string TypeToString(Type t)
             {
                 var name = TypeAliases.TryGetValue(t, out var alias) ? alias : t.Name;
@@ -211,7 +220,9 @@ namespace Plato.Geometry.Tests
                     }
                     else
                     {
-                        if (m.Name == "Equals" || m.Name == "ToSystem" || m.Name == "FromSystem") continue;
+                        if (SkipList.Contains(m.Name))
+                            continue;
+
                         if (m.Name.StartsWith("get_")) continue;
 
                         var self = m.IsStatic ? t.Name : "self";

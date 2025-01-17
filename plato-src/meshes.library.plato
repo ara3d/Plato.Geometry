@@ -169,9 +169,9 @@
     Scale(x: IDeformable3D, v: Vector3): IDeformable3D => x.Deform(p => p * v);
     Scale(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * s);
 
-    RotateX(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.XRotation);
-    RotateY(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.YRotation);
-    RotateZ(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.ZRotation);
+    RotateX(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.RotateX);
+    RotateY(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.RotateY);
+    RotateZ(x: IDeformable3D, a: Angle): IDeformable3D => x.Rotate(a.RotateZ);
 
     TranslateX(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (s,0,0));   
     TranslateY(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p + (0,s,0));

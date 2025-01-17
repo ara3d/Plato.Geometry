@@ -3,25 +3,21 @@ library INumerical
     //==
     // Constants
 
-    XAxis2D(): Vector2 => (1, 0);
-    YAxis2D(): Vector2 => (0, 1);
-    XAxis3D(): Vector3 => (1, 0, 0);
-    YAxis3D(): Vector3 => (0, 1, 0);
-    ZAxis3D(): Vector3 => (0, 0, 1);
-    UnitInterval(): floatInterval => (0.0, 1.0);
+    XAxis2D(): Vector2 => Vector2.UnitX;
+    YAxis2D(): Vector2 => Vector2.UnitY;
+    XAxis3D(): Vector3 => Vector3.UnitX;
+    YAxis3D(): Vector3 => Vector3.UnitY;
+    ZAxis3D(): Vector3 => Vector3.UnitZ;
+    UnitInterval(): NumberInterval => (0.0, 1.0);
     Pi(): Number => 3.1415926535897;   
     E(): Number => 2.7182818284590;
+    Epsilon(): Number => 1e-7;
     TwoPi(): Number => Pi.Twice;    
+    Tau(): Number => TwoPi;
     HalfPi(): Number => Pi.Half;
-
-    // TODO: define is as an intrinsic because it depends on the prevision. 
-    Epsilon(): Number => 1E-15;    
-    
-    UnitCircle(): Circle => ((0, 0), 1);
-
-    //==
-    // Some helpful conversion functions
-
+    MinNumber(): Number => 3.40282347E+38;
+    MaxNumber(): Number => -3.40282347E+38;
+    UnitCircle(): Circle => ((0.0, 0.0), 1.0);
     FeetPerMeter(): Number => 3.280839895;
     FeetPerMile(): Number => 5280;    
     MetersPerLightyear(): Number => 9.46073047258e+15;    
@@ -34,6 +30,9 @@ library INumerical
     GregorianYearDays(): Number => 365.2425;
     RadiansPerDegree(): Number => Pi / 180.0;
     DegreesPerRadian(): Number => 180.0 / Pi;
+
+    // Some helpful conversion functions
+
     OunceToGram(x: Number): Number => x * 28.349523125;   
     TroyOunceToGram(x: Number): Number => x * 31.1034768;    
     GrainToMilligram(x: Number): Number => x * 64.79891;        
@@ -71,25 +70,25 @@ library INumerical
     Cube(x: IArithmetic): IArithmetic  => x.Pow3;    
 
     //==
-    // IWholefloat Operations 
+    // IWholeNumber Operations 
 
     //==
     // Integer operations
 
-    Tofloat(x: Integer): Number => x.Number;
+    ToNumber(x: Integer): Number => x.Number;
     PlusOne(x: Integer): Integer => x + 1;
     MinusOne(x: Integer): Integer => x - 1;    
     FromOne(x: Integer): Integer => 1 - x;
-    FloatDivision(x: Integer, y: Integer): Number => x.Tofloat / y.Tofloat;        
+    FloatDivision(x: Integer, y: Integer): Number => x.ToNumber / y.ToNumber;        
 	Fractions(x: Integer): IArray<Number> => x.Range.Map((i) => i.FloatDivision(x - 1));
 	FractionsExclusive(x: Integer): IArray<Number> => x.Range.Map((i) => i.FloatDivision(x));
 
     //==
-    // IfloatLike Operations 
+    // INumberLike Operations 
 
-    Multiply(x: IfloatLike, y: IfloatLike): IfloatLike => x.Fromfloat(x.Tofloat * y.Tofloat);   
-    Divide(x: IfloatLike, y: IfloatLike): IfloatLike => x.Fromfloat(x.Tofloat / y.Tofloat);   
-    Modulo(x: IfloatLike, y: IfloatLike): IfloatLike => x.Fromfloat(x.Tofloat % y.Tofloat);
+    Multiply(x: INumberLike, y: INumberLike): INumberLike => x.FromNumber(x.ToNumber * y.ToNumber);   
+    Divide(x: INumberLike, y: INumberLike): INumberLike => x.FromNumber(x.ToNumber / y.ToNumber);   
+    Modulo(x: INumberLike, y: INumberLike): INumberLike => x.FromNumber(x.ToNumber % y.ToNumber);
    
     //==
     // IReal Operations 
@@ -235,15 +234,6 @@ library INumerical
         => n.MapComponents((c) => c.Fract);
 
     //==
-    // IEquatable functions
-
-    Equals(a: IEquatable, b: IEquatable): Boolean
-        => a.FieldValues.Zip(b.FieldValues, (a0, b0) => a0.Equals(b0)).All(x => x);
-
-    NotEquals(a: IEquatable, b: IEquatable): Boolean
-        => !a.Equals(b);
-
-    //==
     // Comparable functions
     
     LessThan(a: IOrderable, b: IOrderable): Boolean 
@@ -267,26 +257,26 @@ library INumerical
     //==
     // Number-like
 
-    Tofloat(x: Number): Number
+    ToNumber(x: Number): Number
         => x;
 
-    Number(x: IfloatLike): Number
-        => x.Tofloat;
+    Number(x: INumberLike): Number
+        => x.ToNumber;
 
-    Tofloat(x: IfloatLike): Number
+    ToNumber(x: INumberLike): Number
         => x.Component(0);
 
-    Fromfloat(x: IfloatLike, n: Number): IfloatLike
+    FromNumber(x: INumberLike, n: Number): INumberLike
         => x.FromComponents([n]);
 
-    Compare(a: IfloatLike, b: IfloatLike): Integer
-        => a.Tofloat < b.Tofloat ? -1 : a.Tofloat > b.Tofloat ? 1 : 0;
+    Compare(a: INumberLike, b: INumberLike): Integer
+        => a.ToNumber < b.ToNumber ? -1 : a.ToNumber > b.ToNumber ? 1 : 0;
 
-    Add(x: IfloatLike, y: Number): IfloatLike
-		=> x.Fromfloat(x.Tofloat + y);
+    Add(x: INumberLike, y: Number): INumberLike
+		=> x.FromNumber(x.ToNumber + y);
 
-    Subract(x: IfloatLike, y: Number): IfloatLike
-		=> x.Fromfloat(x.Tofloat - y);
+    Subract(x: INumberLike, y: Number): INumberLike
+		=> x.FromNumber(x.ToNumber - y);
 
     //==
     // INumerical implementation of IScalarArithmetic 

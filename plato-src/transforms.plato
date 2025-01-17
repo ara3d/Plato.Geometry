@@ -1,30 +1,260 @@
+// Used for types that represent transformations in 3D space
+interface ITransform3D
+{
+    // Transforms a point 
+    Transform(x: Self, v: Vector3): Vector3;
+
+    // Transforms a normal vector 
+    TransformNormal(x: Self, v: Vector3): Vector3;
+
+    // Returns a 4x4 matrix representation of the transformation. 
+    Matrix(x: Self): Matrix4x4;
+}
+
+interface IRotationalTransform3D
+    inherits ITransform3D
+{
+    Quaternion(x: Self): Quaternion;
+}
+
+type IdentityTransform3D
+    implements IValue, ITransform3D
+{
+}
+
+type MatrixTransform3D
+    implements ITransform3D
+{
+    Matrix: Matrix4x4;
+}
+
+type Translation3D
+    implements ITransform3D
+{
+    Translation: Vector3;
+}
+
+type Rotation3D
+    implements IRotationalTransform3D
+{
+    Rotation: Quaternion;
+}
+
+type LookRotation
+    implements IRotationalTransform3D
+{
+    Direction: Vector3;
+    Up: Vector3;
+}
+
+type Scaling3D
+    implements ITransform3D
+{
+    Scale: Vector3;
+}
+
+type TRSTransform3D
+    implements ITransform3D
+{
+    Translation: Translation3D;
+    Rotation: Rotation3D;
+    Scale: Scaling3D;
+}
+
+// Also known as a Rigid Body Transform.
+type Pose3D
+    implements ITransform3D
+{
+    Translation: Translation3D;
+    Rotation: Rotation3D;
+}
+
+type AxisAngle
+    implements IRotationalTransform3D
+{
+    Axis: Vector3;
+    Angle: Angle;
+}
+
+type EulerAngles
+    implements IRotationalTransform3D
+{
+    Yaw: Angle;
+    Pitch: Angle;
+    Roll: Angle;
+}
+
+type Perspective3D
+    implements ITransform3D
+{
+    FOV: Angle;
+    AspectRatio: Number;
+    Near: Number;
+    Far: Number;
+}
+
+type Orthographic3D
+    implements ITransform3D
+{
+    Width: Number;
+    Height: Number;
+    Near: Number;
+    Far: Number;
+}
+
+type PlaneProjection
+    implements ITransform3D
+{
+    Direction: Vector3;
+    Plane: Plane;
+}    
 
 library Transforms
-{
-    //==
-    // Vector functions
-
-    Matrix(v: Vector3): Matrix4x4
-		=> Matrix4x4.CreateTranslation(v);
-
-    //==
-    // Translation3D functions
-
-    Matrix(t: Translation3D): Matrix4x4
-        => t.Translation.Matrix;
-
-    Transform(t: Translation3D, v: Vector3): Vector3
-        => v + t.Translation;
-    
-    TransformNormal(t: Translation3D, v: Vector3): Vector3
-        => v;
-            
+{            
     //==
     // General ITransform3D helpers
 
-    // All transforms can be implicitly cast to a matrix 
     Matrix4x4(t: ITransform3D): Matrix4x4
 		=> t.Matrix;
+
+    Transform(t: ITransform3D, v: Vector3): Vector3
+		=> v.Transform(t.Matrix);
+
+    TransformNormal(t: ITransform3D, v: Vector3): Vector3
+        => v.TransformNormal(t.Matrix);
+  
+    Inverse(t: ITransform3D): ITransform3D
+        => new MatrixTransform3D(t.Matrix.Invert);
+
+    //==
+    // General IRotationalTransform3D helpers
+
+    Matrix(r: IRotationalTransform3D): Matrix4x4
+        => r.Quaternion.Matrix;
+
+    Transform(r: IRotationalTransform3D, v: Vector3): Vector3
+		=> v.Transform(r.Quaternion);
+
+    TransformNormal(r: IRotationalTransform3D, v: Vector3): Vector3
+        => v.TransformNormal(r.Quaternion);
+  
+    Inverse(r: IRotationalTransform3D): IRotationalTransform3D
+        => new Rotation3D(r.Quaternion.Inverse);
+
+    //==
+    // Vector2 functions
+    
+    Line(a: Vector2, b: Vector2): Line2D 
+        => (a, b);
+    
+    Ray(a: Vector2, b: Vector2): Ray2D 
+        => (a, b);
+    
+    RayTo(a: Vector2, b: Vector2): Ray2D 
+        => (a, b - a);
+    
+    Vector3(v: Vector2): Vector3 
+        => v.Vector3(0);
+    
+    Vector3(v: Vector2, z: Number): Vector3 
+        => (v.X, v.Y, z);
+    
+    //==
+    // Vector3 Functions 
+
+    XZY(v: Vector3): Vector3 => (v.X, v.Z, v.Y);    
+    YXZ(v: Vector3): Vector3 => (v.Y, v.X, v.Z);    
+    YZX(v: Vector3): Vector3 => (v.Y, v.Z, v.X);    
+    ZXY(v: Vector3): Vector3 => (v.Z, v.X, v.Y);    
+    ZYX(v: Vector3): Vector3 => (v.Z, v.Y, v.X);    
+
+    XY(v: Vector3): Vector2 => (v.X, v.Y);    
+    YX(v: Vector3): Vector2 => (v.Y, v.X);
+    XZ(v: Vector3): Vector2 => (v.X, v.Z);
+    ZX(v: Vector3): Vector2 => (v.Z, v.X);
+    YZ(v: Vector3): Vector2 => (v.Y, v.Z);
+    ZY(v: Vector3): Vector2 => (v.Z, v.Y);
+
+    Line(a: Vector3, b: Vector3): Line3D 
+        => (a, b);
+    
+    Ray(a: Vector3, b: Vector3): Ray3D 
+        => (a, b);
+    
+    RayTo(a: Vector3, b: Vector3): Ray3D 
+        => (a, b - a);
+    
+    Project(v: Vector3, p: Plane): Vector3 
+        => v - p.Normal * p.Normal.Dot(v);
+    
+    To2D(v: Vector3): Vector2 
+        => (v.X, v.Y);
+    
+    MixedProduct(a: Vector3, b: Vector3, c: Vector3): Number 
+        => a.Cross(b).Dot(c);
+    
+    Vector4(v: Vector3): Vector4 
+        => v.Vector4(0);
+
+    Vector4(v: Vector3, w: Number): Vector4 
+        => (v.X, v.Y, v.Z, w);
+
+    //==
+    // Vector 4 functions 
+
+    Vector3(v: Vector4): Vector3 
+        => (v.X, v.Y, v.Z);
+    
+    XYZ(v: Vector4): Vector3 
+        => v.Vector3;
+
+    //==
+    // Generic vector functions
+    
+    MidPoint(a: IVector, b: IVector): Vector2 
+        => (a + b) / 2.0;
+
+    Length(a: IVector): Number 
+        => a.Magnitude;
+    
+    LengthSquared(a: IVector): Number 
+        => a.MagnitudeSquared;
+    
+    Sum(v: IVector): Number 
+        => v.Reduce(0.0, (a, b) => a + b);
+    
+    SumSquares(v: IVector): Number 
+        => v.Square.Sum;   
+    
+    MagnitudeSquared(v: IVector): Number 
+        => v.SumSquares;    
+    
+    Magnitude(v: IVector): Number 
+        => v.MagnitudeSquared.SquareRoot;    
+    
+    Dot(v1: IVector, v2: IVector): Number 
+        => (v1 * v2).Sum;  
+    
+    Normalize(x: IVector): IVector 
+        => x.MagnitudeSquared > 0 ? x / x.Magnitude : x.Zero;
+    
+    Reflect(v: IVector, normal: IVector): IVector 
+        => v - normal * v.Dot(normal) * 2.0;
+    
+    Project(v: IVector, other: IVector): IVector 
+        => other * v.Dot(other);
+    
+    Distance(a: IVector, b: IVector): Number 
+        => (b - a).Magnitude;
+    
+    DistanceSquared(a: IVector, b: IVector): Number 
+        => (b - a).MagnitudeSquared;
+    
+    Angle(a: IVector, b: IVector): Angle 
+        => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
+    
+    IsParallel(a: IVector, b: IVector): Boolean 
+        => a.Dot(b).Abs > (1.0 - Epsilon);
 
     //==
     // Matrix operations   
@@ -41,7 +271,7 @@ library Transforms
     
     M31(m: Matrix4x4): Number => m.Row3.X;
     M32(m: Matrix4x4): Number => m.Row3.Y;
-    M33(m: Matrix4x4): Number => m.Row3.X;
+    M33(m: Matrix4x4): Number => m.Row3.Z;
     M34(m: Matrix4x4): Number => m.Row3.W;
     
     M41(m: Matrix4x4): Number => m.Row4.X;
@@ -53,312 +283,145 @@ library Transforms
     Column2(m: Matrix4x4): Vector4 => (M12, M22, M32, M42);
     Column3(m: Matrix4x4): Vector4 => (M13, M23, M33, M43);
     Column4(m: Matrix4x4): Vector4 => (M14, M24, M34, M44);
-
-    Multiply(m: Matrix4x4, v: Vector3): Vector3
-        => (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31 + m.M41,
-            v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32 + m.M42,
-            v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33 + m.M43);             
-
-    CreateFromRows(_: Matrix4x4, row1: Vector3, row2: Vector3, row3: Vector3): Matrix4x4
-        => Matrix4x4.CreateFromRows(row1, row2, row3, (0, 0, 0, 1));
-
-    WithTranslation(m: Matrix4x4, v:  Vector3): Matrix4x4
-        => Matrix4x4.CreateFromRows(m.Row1, m.Row2, m.Row3, (v.X, v.Y, v.Z, 1));  
+ 
+    WithTranslation(m: Matrix4x4, v: Vector3): Matrix4x4
+        => m.WithRow4(v.X, v.Y, v.Z, 1.0);
                 
     Translation(m: Matrix4x4): Vector3
         => (m.M14, m.M24, m.M34);
 
-    CreateTranslation(_: Matrix4x4, v: Vector3): Matrix4x4
-        => Identity.WithTranslation(v);
-
-    CreateScale(_: Matrix4x4, v: Vector3): Matrix4x4
-        => ((v.X, 0, 0, 0), (0, v.Y, 0, 0), (0, 0, v.Z, 0), (0, 0, 0, 1));
-
     Transform(m: Matrix4x4, v: Vector3): Vector3
-        => m * v;
-        
+        => v.Transform(m);
+    
     TransformNormal(m: Matrix4x4, v: Vector3): Vector3
-        => (v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31,
-            v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32,
-            v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33);
+        => v.TransformNormal(m);
 
-    Transpose(m: Matrix4x4): Matrix4x4
-        => (m.Row1, m.Row2, m.Row3, m.Row4);
+    Multiply(m: Matrix4x4, v: Vector3): Vector3
+        => m.Transform(v);
 
-    Multiply(m: Matrix4x4, s: Number): Matrix4x4
-        => (m.Column1 * s, m.Column2 * s, m.Column3 * s, m.Column4 * s);
+    //==
+    // Quaternion functions
 
-    Divide(m: Matrix4x4, s: Number): Matrix4x4
-        => (m.Column1 / s, m.Column2 / s, m.Column3 / s, m.Column4 / s);
+    Transform(q: Quaternion, v: Vector3): Vector3
+        => v.Transform(q);
+    
+    Multiply(q: Quaternion, v: Vector3): Vector3
+        => q.Transform(v);
 
-    Multiply(a: Matrix4x4, b: Matrix4x4): Matrix4x4
-        => Matrix4x4.CreateFromRows(
-            (a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31 + a.M14 * b.M41,
-            a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32 + a.M14 * b.M42,
-            a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33 + a.M14 * b.M43,
-            a.M11 * b.M14 + a.M12 * b.M24 + a.M13 * b.M34 + a.M14 * b.M44),
+    Matrix4x4(q: Quaternion): Matrix4x4
+        => Matrix4x4.CreateFromQuaternion(q);
 
-            (a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31 + a.M24 * b.M41,
-            a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32 + a.M24 * b.M42,
-            a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33 + a.M24 * b.M43,
-            a.M21 * b.M14 + a.M22 * b.M24 + a.M23 * b.M34 + a.M24 * b.M44),
+    //==
+    // Translation3D functions
 
-            (a.M31 * b.M11 + a.M32 * b.M21 + a.M33 * b.M31 + a.M34 * b.M41,
-            a.M31 * b.M12 + a.M32 * b.M22 + a.M33 * b.M32 + a.M34 * b.M42,
-            a.M31 * b.M13 + a.M32 * b.M23 + a.M33 * b.M33 + a.M34 * b.M43,
-            a.M31 * b.M14 + a.M32 * b.M24 + a.M33 * b.M34 + a.M34 * b.M44),
+    Matrix(t: Translation3D): Matrix4x4
+        => Matrix4x4.CreateTranslation(t.Translation);
 
-            (a.M41 * b.M11 + a.M42 * b.M21 + a.M43 * b.M31 + a.M44 * b.M41,
-            a.M41 * b.M12 + a.M42 * b.M22 + a.M43 * b.M32 + a.M44 * b.M42,
-            a.M41 * b.M13 + a.M42 * b.M23 + a.M43 * b.M33 + a.M44 * b.M43,
-            a.M41 * b.M14 + a.M42 * b.M24 + a.M43 * b.M34 + a.M44 * b.M44));
-
-    Matrix(m: Matrix3x3): Matrix4x4
-		=> Matrix4x4.CreateFromRows(m.Row1, m.Row2, m.Row3, (0, 0, 0, 1));
-
-    Matrix(m: Matrix4x4): Matrix4x4
-		=> m;
-   
+    Transform(t: Translation3D, v: Vector3): Vector3
+        => v + t.Translation;
+    
+    TransformNormal(t: Translation3D, v: Vector3): Vector3
+        => v;
+        
     //==
     // IdentityTransform3D
-
-	Transform(t: IdentityTransform3D, v: Vector3): Vector3
-		=> v;
-
-	TransformNormal(t: IdentityTransform3D, v: Vector3): Vector3
-		=> v;
 
     Matrix(t: IdentityTransform3D): Matrix4x4
 		=> Matrix4x4.Identity;
 
+	Transform(t: IdentityTransform3D, v: Vector3): Vector3
+		=> v;
+
+	TransformDirection(t: IdentityTransform3D, v: Vector3): Vector3
+		=> v;
+
+    IdentityTransform3D(): IdentityTransform3D
+        => new IdentityTransform3D();
+    
     //==
-    // Transform3D
+    // MatrixTransform3D
 
-	Transform(t: Transform3D, v: Vector3): Vector3
-		=> (t.Rotation.Transform(v) + t.Translation) * t.Scale;
+    Transform(t: MatrixTransform3D, v: Vector3): Vector3
+        => v.Transform(t.Matrix);
 
-	TransformNormal(t: Transform3D, v: Vector3): Vector3
-		=> t.Rotation.TransformNormal(v);
+    TransformNormal(t: MatrixTransform3D, v: Vector3): Vector3
+        => v.TransformNormal(t.Matrix);
 
-    Matrix(t: Transform3D): Matrix4x4
-		=> t.Scale.Matrix * t.Rotation.Matrix * t.Translation.Matrix;
+    //==
+    // Rotation3D
+
+    Quaternion(r: Rotation3D): Quaternion
+        => r.Rotation;
+
+    RotateX(a: Angle): Rotation3D
+        => Quaternion.CreateFromAxisAngle(Vector3.UnitX, a);
+
+    RotateY(a: Angle): Rotation3D
+        => Quaternion.CreateFromAxisAngle(Vector3.UnitY, a);
+
+    RotateZ(a: Angle): Rotation3D
+        => Quaternion.CreateFromAxisAngle(Vector3.UnitZ, a);  
+
+    //==
+    // LookRotation
+
+    Matrix(r: LookRotation): Matrix4x4
+        => Matrix4x4.CreateWorld((0.0, 0.0, 0.0), r.Direction, r.Up);
+
+    Quaternion(r: LookRotation): Quaternion
+        => Quaternion.CreateFromRotationMatrix(r.Matrix);
+
+    //==
+    // Scaling3D
+
+    Matrix(s: Scaling3D): Matrix4x4
+        => Matrix4x4.CreateScale(s.Scale.X, s.Scale.Y, s.Scale.Z);           
+
+    UniformScaling3D(x: Number): Scaling3D
+        => (x, x, x);
+
+    //==
+    // TRSTransform3D
+
+	Matrix(t: TRSTransform3D): Matrix4x4
+		=> t.Translation.Matrix * t.Rotation.Matrix * t.Scale.Matrix;
 
     //==
     // Pose3D
 
-	Transform(p: Pose3D, v: Vector3): Vector3
-		=> p.Rotation.Transform(v) + p.Position;
-
-	TransformNormal(p: Pose3D, v: Vector3): Vector3
-		=> p.Rotation.TransformNormal(v);
-
     Matrix(p: Pose3D): Matrix4x4
-        => p.Rotation.Matrix * p.Position.Matrix;
+        => p.Translation.Matrix * p.Rotation.Matrix;
+
+    TRSTransform3D(p: Pose3D): TRSTransform3D
+        => (p.Translation, p.Rotation, (1.0, 1.0, 1.0));
 
     //==
     // AxisAngle
-    
-    Transform(aa: AxisAngle, v: Vector3): Vector3
-		=> aa.Quaternion.Transform(v);
-
-    TransformNormal(aa: AxisAngle, v: Vector3): Vector3
-        => aa.Transform( v);
 
     Quaternion(aa: AxisAngle): Quaternion
-	{
-        var axis = aa.Axis.Normalize;
-        var sinHalfAngle = aa.Angle.Half.Sin;
-        var cosHalfAngle = aa.Angle.Half.Cos;
-        return (
-            axis.X * sinHalfAngle,
-            axis.Y * sinHalfAngle,
-            axis.Z * sinHalfAngle,
-            cosHalfAngle);
-    }
-
-    Matrix(aa: AxisAngle): Matrix4x4
-		=> aa.Quaternion.Matrix;
+	    => Quaternion.CreateFromAxisAngle(aa.Axis, aa.Angle);
 
     //==
     // EulerAngles
-   
-    Transform(e: EulerAngles, v: Vector3): Vector3
-        => e.Quaternion.Transform(v);
 
-    TransformNormal(e: EulerAngles, v: Vector3): Vector3
-        => e.Quaternion.TransformNormal(v);
-
-    Matrix(e: EulerAngles): Matrix4x4
-		=> e.Quaternion.Matrix;
+    Quaternion(e: EulerAngles): Quaternion
+        => Quaternion.CreateFromYawPitchRoll(e.Yaw, e.Pitch, e.Roll);
 
     //==
-	// Frame3D
+    // Perspective3D
 
-	Pose3D(f: Frame3D): Pose3D
-        => (f.Position, f.Forward.LookRotation(f.Up));
-
-    Transform(f: Frame3D, v: Vector3): Vector3
-		=> f.Pose3D.Transform(v);
-
-	TransformNormal(f: Frame3D, v: Vector3): Vector3
-		=> f.Pose3D.TransformNormal(v);
-
-    Matrix(f: Frame3D): Matrix4x4
-		=> f.Pose3D.Matrix;
+    Matrix(p: Perspective3D): Matrix4x4
+        => Matrix4x4.CreatePerspectiveFieldOfView(p.FOV, p.AspectRatio, p.Near, p.Far);
 
     //==
-    // Rotation
+    // Orthographic3D
 
-    Transform(r: Rotation3D, v: Vector3): Vector3
-    	=> r.Quaternion.Transform(v);
-
-    TransformNormal(r: Rotation3D, v: Vector3): Vector3
-    	=> r.Quaternion.TransformNormal(v);
-
-    Matrix(r: Rotation3D): Matrix4x4
-        => r.Quaternion.Matrix;
+    Matrix(o: Orthographic3D): Matrix4x4
+        => Matrix4x4.CreateOrthographic(o.Width, o.Height, o.Near, o.Far);
 
     //==
-    // Quaternion
+    // Plane projection
 
-    Quaternion(v: Vector4): Quaternion
-        => (v.X, v.Y, v.Z, v.W);
-
-    Vector4(q: Quaternion): Vector4
-		=> (q.X, q.Y, q.Z, q.W);
-
-    Magnitude(q: Quaternion): Number
-        => q.Vector4.Magnitude;
-
-    MagnitudeSquared(q: Quaternion): Number
-        => q.Vector4.MagnitudeSquared;
-
-	XYZ(q: Quaternion): Vector3
-        => (X, Y, Z);
- 
-    AxisAngle(v: Vector3, a: Angle): AxisAngle
-        => (v, a);
-
-    QuaternionFromRotationMatrix(m: Matrix4x4): Quaternion
-    {
-        var trace = m.M11 + m.M22 + m.M33;
-
-        if (trace > 0.0)
-        {
-            var s = (trace + 1.0).Sqrt;
-            var w = s * 0.5;
-            var s1 = 0.5 / s;
-            return (
-                (m.M23 - m.M32) * s1,
-                (m.M31 - m.M13) * s1,
-                (m.M12 - m.M21) * s1,
-                w);
-        }
-        if (m.M11 >= m.M22 && m.M11 >= m.M33)
-        {
-            var s = (1.0 + m.M11 - m.M22 - m.M33).Sqrt;
-            var invS = 0.5 / s;
-            return (s.Half,
-                (m.M12 + m.M21) * invS,
-                (m.M13 + m.M31) * invS,
-                (m.M23 - m.M32) * invS);
-        }
-        if (m.M22 > m.M33)
-        {
-            var s = (1.0 + m.M22 - m.M11 - m.M33).Sqrt;
-            var invS = 0.5 / s;
-            return (
-               (m.M21 + m.M12) * invS,
-               s.Half,
-               (m.M32 + m.M23) * invS,
-               (m.M31 - m.M13) * invS);
-        }
-        {
-            var s = (1.0 + m.M33 - m.M11 - m.M22).Sqrt;
-            var invS = 0.5 / s;
-            return (
-                (m.M31 + m.M13) * invS,
-                (m.M32 + m.M23) * invS,
-                s.Half, 
-                (m.M12 - m.M21) * invS);
-        }
-    }
-
-    Multiply(q: Quaternion, scalar: Number): Quaternion
-        => q.Vector4 * scalar;
-
-    Divide(q: Quaternion, scalar: Number): Quaternion
-        => q.Vector4 / scalar;
-
-    Rotation(v: Vector3, theta: Angle): Quaternion
-		=> v.AxisAngle(theta);
-
-    XRotation(theta: Angle): Quaternion
-        => XAxis3D.Rotation(theta);
-
-    YRotation(theta: Angle): Quaternion
-        => YAxis3D.Rotation(theta);
-
-    ZRotation(theta: Angle): Quaternion
-        => ZAxis3D.Rotation(theta);
-
-    Add(q1: Quaternion, q2: Quaternion): Quaternion
-        => q1.Vector4 + q2.Vector4;
-
-    Negate(q: Quaternion): Quaternion
-        => -q.Vector4;
-
-    Subtract(q1: Quaternion, q2: Quaternion): Quaternion
-        => q1.Vector4 - q2.Vector4;
-
-    Dot(q1: Quaternion, q2: Quaternion): Number
-        => q1.Vector4.Dot(q2.Vector4);
-
-    Slerp(q1: Quaternion, q2: Quaternion, t: Number): Quaternion
-    {
-        var cosOmega = q1.Dot(q2);
-        var flip = cosOmega < 0.0;
-
-        if (cosOmega.Abs > (1.0 - 1e-6))
-        {
-            // Too close, do straight linear interpolation.
-            var s1 = 1.0 - t;
-            var s2 = flip ? -t : t;
-            return q1 * s1 + q2 * s2;
-        } 
-        else
-        {
-            var omega = cosOmega.Abs.Acos;
-            var invSinOmega = omega.Sin.Inverse;
-            var s1 = ((1.0 - t) * omega).Sin * invSinOmega;
-            var s2 = flip
-                ? -(t * omega).Sin * invSinOmega
-                : (t * omega).Sin * invSinOmega;
-
-            return q1 * s1 + q2 * s2;
-        }
-    }
-  
-    LookRotation(direction: Vector3, up: Vector3): Quaternion
-    {
-        // Normalize the direction vector to get the forward vector
-        var forward = direction.Normalize;
-
-        var up2 = up.IsParallel(forward) ? Vector3.UnitX : up; 
-
-        // Calculate the right vector and normalize it
-        var right = up2.Cross(forward).Normalize;
-
-        // Recompute the up vector and normalize it
-        var correctedUp = forward.Cross(right).Normalize;
-
-        // Construct the rotation matrix using right, corrected up, and forward vectors
-        var rotationMatrix = new Matrix4x4(
-            (right.X, correctedUp.X, forward.X, 0),
-            (right.Y, correctedUp.Y, forward.Y, 0),
-            (right.Z, correctedUp.Z, forward.Z, 0),
-            (0, 0, 0, 1));
-
-        return rotationMatrix.QuaternionFromRotationMatrix.Normalize;
-    }
+    Matrix(pp: PlaneProjection): Matrix4x4
+        => Matrix4x4.CreateShadow(pp.Direction, pp.Plane);
 }

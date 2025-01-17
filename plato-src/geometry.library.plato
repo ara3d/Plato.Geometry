@@ -90,64 +90,6 @@ library Geometry
     TriangleB(q: Quad3D): Triangle3D => (q.C, q.D, q.A);        
 
     //==
-    // Vector functions
-    
-    Vector3(v: Vector2): Vector3 => (v.X, v.Y, 0);
-    MidPoint(a: Vector2, b: Vector2): Vector2 => (a + b) / 2.0;
-    Line(a: Vector2, b: Vector2): Line2D => (a, b);
-    Ray(a: Vector2, b: Vector2): Ray2D => (a, b);
-    RayTo(a: Vector2, b: Vector2): Ray2D => (a, b - a);
-    Cross(a: Vector2, b: Vector2): Number => a.X * b.Y - a.Y * b.X;
-
-    Vector4(v: Vector3): Vector4 => v.ToVector4D(0);
-    ToVector4D(v: Vector3, w: Number): Vector4 => (v.X, v.Y, v.Z, w);
-    XZY(v: Vector3): Vector3 => (v.X, v.Z, v.Y);
-    YXZ(v: Vector3): Vector3 => (v.Y, v.X, v.Z);
-    YZX(v: Vector3): Vector3 => (v.Y, v.Z, v.X);
-    ZXY(v: Vector3): Vector3 => (v.Z, v.X, v.Y);
-    ZYX(v: Vector3): Vector3 => (v.Z, v.Y, v.X);
-    XY(v: Vector3): Vector2 => (v.X, v.Y);
-    YX(v: Vector3): Vector2 => (v.Y, v.X);
-    XZ(v: Vector3): Vector2 => (v.X, v.Z);
-    ZX(v: Vector3): Vector2 => (v.Z, v.X);
-    YZ(v: Vector3): Vector2 => (v.Y, v.Z);
-    ZY(v: Vector3): Vector2 => (v.Z, v.Y);
-    MidPoint(a: Vector3, b: Vector3): Vector3 => (a + b) / 2.0;
-    Line(a: Vector3, b: Vector3): Line3D => (a, b);
-    Ray(a: Vector3, b: Vector3): Ray3D => (a, b);
-    RayTo(a: Vector3, b: Vector3): Ray3D => (a, b - a);
-    Project(v: Vector3, p: Plane): Vector3 => v - p.Normal * p.Normal.Dot(v);
-    To2D(v: Vector3): Vector2 => (v.X, v.Y);
-    Cross(a: Vector3, b: Vector3): Vector3 => (a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
-    MixedProduct(a: Vector3, b: Vector3, c: Vector3): Number => a.Cross(b).Dot(c);
-
-    Count(c: Complex): Integer => 2;   
-    Count(v: Vector2): Integer => 2;
-    Count(v: Vector3): Integer => 3;
-    Count(v: Vector4): Integer => 4;   
-    At(v: Vector2, n: Integer): Number => n == 0 ? v.X : v.Y;
-    At(v: Vector3, n: Integer): Number => n == 0 ? v.X : n == 1 ? v.Y : v.Z;
-    At(v: Vector4, n: Integer): Number => n == 0 ? v.X : n == 1 ? v.Y : n == 2 ? v.Z : v.W;
-
-    ToVector3D(v: Vector4): Vector3 => (v.X, v.Y, v.Z);
-
-    Length(a: IVector): Number => a.Magnitude;
-    LengthSquared(a: IVector): Number => a.MagnitudeSquared;
-    Sum(v: IVector): Number  => v.Reduce(0.0, (a, b) => a + b);
-    SumSquares(v: IVector): Number => v.Square.Sum;   
-    MagnitudeSquared(v: IVector): Number => v.SumSquares;    
-    Magnitude(v: IVector): Number => v.MagnitudeSquared.SquareRoot;    
-    Dot(v1: IVector, v2: IVector): Number => (v1 * v2).Sum;
-    Average(v: IVector): Number => v.Sum / v.Count;        
-    Normalize(x: IVector): IVector => x.MagnitudeSquared > 0 ? x / x.Magnitude : x.Zero;
-    Reflect(v: IVector, normal: IVector): IVector => v - normal * v.Dot(normal) * 2.0;
-    Project(v: IVector, other: IVector): IVector => other * v.Dot(other);
-    Distance(a: IVector, b: IVector): Number => (b - a).Magnitude;
-    DistanceSquared(a: IVector, b: IVector): Number => (b - a).Magnitude;
-    Angle(a: IVector, b: IVector): Angle => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
-    IsParallel(a: Vector3, b: Vector3): Boolean => a.Dot(b).Abs > (1.0 - 1e-6);
-	
-    //==
     // Bounds3D functions
 
     Center(x: Bounds3D): Vector3 => (x.Min + x.Max).Half;
@@ -204,26 +146,25 @@ library Geometry
     Unit(_: Triangle2D): Triangle2D => 
         ((-0.5, -3.0.Sqrt.Half), 
         (-0.5, 3.0.Sqrt.Half), 
-        (0, 1));
+        (0.0, 1.0));
 
-    Unit(_: Quad2D): Quad2D =>  ((0, 0), (1, 0), (1, 1), (0, 1));
+    Unit(_: Quad2D): Quad2D =>  ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
 
-    UnitX(_: Vector2): Vector2 => (1, 0);
-    UnitY(_: Vector2): Vector2 => (0, 1);
+    UnitX(_: Vector2): Vector2 => (1.0, 0.0);
+    UnitY(_: Vector2): Vector2 => (0.0, 1.0);
     
-    UnitX(_: Vector3): Vector3 => (1, 0, 0);
-    UnitY(_: Vector3): Vector3 => (0, 1, 0);
-    UnitZ(_: Vector3): Vector3 => (0, 0, 1);
+    UnitX(_: Vector3): Vector3 => (1.0, 0.0, 0.0);
+    UnitY(_: Vector3): Vector3 => (0.0, 1.0, 0.0);
+    UnitZ(_: Vector3): Vector3 => (0.0, 0.0, 1.0);
 
     MinValue(_: Vector3): Vector3 => (MinNumber, MinNumber, MinNumber);
     MaxValue(_: Vector3): Vector3 => (MaxNumber, MaxNumber, MaxNumber);
 
-    UnitX(_: Vector4): Vector4 => (1, 0, 0, 0);
-    UnitY(_: Vector4): Vector4 => (0, 1, 0, 0);
-    UnitZ(_: Vector4): Vector4 => (0, 0, 1, 0);
-    UnitW(_: Vector4): Vector4 => (0, 0, 0, 1);
+    UnitX(_: Vector4): Vector4 => (1.0, 0.0, 0.0, 0.0);
+    UnitY(_: Vector4): Vector4 => (0.0, 1.0, 0.0, 0.0);
+    UnitZ(_: Vector4): Vector4 => (0.0, 0.0, 1.0, 0.0);
+    UnitW(_: Vector4): Vector4 => (0.0, 0.0, 0.0, 1.0);
 
-    Identity(_: Matrix3x3): Matrix3x3 => ((1, 0, 0), (0, 1, 0), (0, 0, 1));
-    Identity(_: Matrix4x4): Matrix4x4 => ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1));
-    Identity(_: Quaternion): Quaternion => (0, 0, 0, 1);
+    Identity(_: Matrix4x4): Matrix4x4 => (Vector4.UnitX, Vector4.UnitY, Vector4.UnitZ, Vector4.UnitW);
+    Identity(_: Quaternion): Quaternion => (0.0, 0.0, 0.0, 1.0);
 }

@@ -1,6 +1,5 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using SNPlane = System.Numerics.Plane;
 
 namespace Plato
@@ -8,14 +7,14 @@ namespace Plato
     /// <summary>
     /// A lightweight wrapper around <see cref="System.Numerics.Plane"/>.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Plane : IEquatable<Plane>
+    [DataContract]
+    public partial struct Plane
     {
         // --------------------------------------------------------------------
         // Fields
         // --------------------------------------------------------------------
         
-        public readonly SNPlane Value;
+        [DataMember] public readonly SNPlane Value;
 
         // --------------------------------------------------------------------
         // Properties
@@ -78,40 +77,6 @@ namespace Plato
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Plane(SNPlane plane)
             => FromSystem(plane);
-
-        // --------------------------------------------------------------------
-        // Equality, hashing, and string representation
-        // --------------------------------------------------------------------
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Plane other)
-            => Value.Equals(other.Value);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object? obj)
-            => obj is Plane other && Equals(other);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
-            => Value.GetHashCode();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
-            => Value.ToString();
-
-        /// <summary>
-        /// Equality operator.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Boolean operator ==(Plane left, Plane right)
-            => left.Equals(right);
-
-        /// <summary>
-        /// Inequality operator.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Boolean operator !=(Plane left, Plane right)
-            => !left.Equals(right);
 
         // --------------------------------------------------------------------
         // Static Methods (forwarded to Plane)

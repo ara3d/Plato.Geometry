@@ -1,6 +1,5 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace Plato
@@ -9,13 +8,14 @@ namespace Plato
     /// A simple wrapper around the built-in <c>float</c> type, 
     /// forwarding all arithmetic and common methods to <c>float</c>.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Number : IEquatable<Number>, IComparable<Number>, IComparable
+    [DataContract]
+    public partial struct Number 
     {
         // -------------------------------------------------------------------------------
         // Field (the wrapped float)
         // -------------------------------------------------------------------------------
-        public readonly float Value;
+        
+        [DataMember] public readonly float Value;
 
         // -------------------------------------------------------------------------------
         // Constructors
@@ -36,27 +36,6 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static implicit operator float(Number n) => n.Value;
-
-        // -------------------------------------------------------------------------------
-        // Common Constants
-        // -------------------------------------------------------------------------------
-        
-        public static readonly Number Zero = 0f;
-        public static readonly Number One = 1f;
-        public static readonly Number NegativeOne = -1f;
-        public static readonly Number E = MathF.E;
-        public static readonly Number Pi = MathF.PI;
-        public static readonly Number Tau = MathF.Tau;
-        public static readonly Number HalfPi = MathF.PI / 2f;
-        public static readonly Number TwoPi = MathF.PI * 2f;
-        public static readonly Number Sqrt2 = MathF.Sqrt(2f);
-        public static readonly Number Sqrt3 = MathF.Sqrt(3f);
-        public static readonly Number NegativeInfinity = float.NegativeInfinity;
-        public static readonly Number PositiveInfinity = float.PositiveInfinity;
-        public static readonly Number NaN = float.NaN;
-        public static readonly Number MinValue = float.MinValue;
-        public static readonly Number MaxValue = float.MaxValue;
-        public static readonly Number Epsilon = float.Epsilon;
 
         // -------------------------------------------------------------------------------
         // Operators (forward to float)
@@ -82,14 +61,6 @@ namespace Plato
             => -n.Value;
 
         [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Number a, Number b)
-            => a.Value == b.Value;
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Number a, Number b)
-            => a.Value != b.Value;
-
-        [MethodImpl(AggressiveInlining)]
         public static Boolean operator <(Number a, Number b)
             => a.Value < b.Value;
 
@@ -105,78 +76,9 @@ namespace Plato
         public static Boolean operator >=(Number a, Number b)
             => a.Value >= b.Value;
 
-        // -------------------------------------------------------------------------------
-        // Equality, hashing, and ToString
-        // -------------------------------------------------------------------------------
-
         [MethodImpl(AggressiveInlining)]
-        public bool Equals(Number other)
-            => Value.Equals(other.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj)
-            => obj is Number n && Equals(n);
-
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode()
-            => Value.GetHashCode();
-
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString()
-            => Value.ToString();
-
-        // -------------------------------------------------------------------------------
-        // IComparable / IComparable<Number> Implementation
-        // -------------------------------------------------------------------------------
-
-        [MethodImpl(AggressiveInlining)]
-        public int CompareTo(Number other)
+        public Integer CompareTo(Number other)
             => Value.CompareTo(other.Value);
-
-        // CompareTo(object) just boxes 'other' and calls CompareTo(Number)
-        [MethodImpl(AggressiveInlining)]
-        public int CompareTo(object obj)
-        {
-            if (obj is Number n)
-                return CompareTo(n);
-            throw new ArgumentException("Object is not a Number");
-        }
-
-        //-------------------------------------------------------------------------------
-        // Conversions to Angles
-        //-------------------------------------------------------------------------------
-
-        /// <summary>
-        /// The angle represented by this number of half-turns.
-        /// </summary>
-        public Angle HalfTurns
-        {
-            [MethodImpl(AggressiveInlining)] get => this * Pi;
-        }
-
-        /// <summary>
-        /// The angle represented by this number of full-turns.
-        /// </summary>
-        public Angle Turns
-        {
-            [MethodImpl(AggressiveInlining)] get => this * TwoPi;
-        }
-
-        /// <summary>
-        /// The angle represented by this number of degrees.
-        /// </summary>
-        public Angle Degrees
-        {
-            [MethodImpl(AggressiveInlining)] get => this * (float)Math.PI / 180f;
-        }
-
-        /// <summary>
-        /// The angle represented by this number of radians.
-        /// </summary>
-        public Angle Radians
-        {
-            [MethodImpl(AggressiveInlining)] get => this; 
-        }
 
         //-------------------------------------------------------------------------------
         // Math Intrinsic Functions

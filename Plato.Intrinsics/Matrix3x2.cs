@@ -1,24 +1,23 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using SNMatrix3x2 = System.Numerics.Matrix3x2;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace Plato
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Matrix3x2 : IEquatable<Matrix3x2>
+    [DataContract]
+    public partial struct Matrix3x2 
     {
         // -------------------------------------------------------------------------------
         // Fields (layout must match System.Numerics.Matrix3x2)
         // -------------------------------------------------------------------------------
 
-        public readonly SNMatrix3x2 Value;
+        [DataMember] public readonly SNMatrix3x2 Value;
 
         // -------------------------------------------------------------------------------
         // Constructors
         // -------------------------------------------------------------------------------
-
-
+        
         [MethodImpl(AggressiveInlining)]
         public Matrix3x2(SNMatrix3x2 v) 
             => Value = v;
@@ -38,15 +37,35 @@ namespace Plato
             Vector2 row3)
             => Value = new(row1.X, row1.Y, row2.X,row2.Y, row3.X, row3.Y);
 
-        // -------------------------------------------------------------------------------
-        // Convert to/from System.Numerics.Matrix3x2 (by reinterpreting memory)
-        // -------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------
+        // Properties
+        //-------------------------------------------------------------------------------------
+
+        public Vector2 Row1 { [MethodImpl(AggressiveInlining)] get => new(Value.M11, Value.M12); }
+        public Vector2 Row2 { [MethodImpl(AggressiveInlining)] get => new(Value.M21, Value.M22); }
+        public Vector2 Row3 { [MethodImpl(AggressiveInlining)] get => new(Value.M31, Value.M32); }
         
+        //-------------------------------------------------------------------------------------
+        // Immutable "setters"
+        //-------------------------------------------------------------------------------------
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix3x2 WithRow1(Vector2 v) => new(v, Row2, Row3);
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix3x2 WithRow2(Vector2 v) => new(Row1, v, Row3);
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix3x2 WithRow3(Vector2 v) => new(Row1, Row2, v);
+
+        // -------------------------------------------------------------------------------
+        // Convert to/from System.Numerics.Matrix3x2 
+        // -------------------------------------------------------------------------------
+
         [MethodImpl(AggressiveInlining)]
         public static Matrix3x2 FromSystem(SNMatrix3x2 sysMat)
             => Unsafe.As<SNMatrix3x2, Matrix3x2>(ref sysMat);
 
-        // Implicit conversion operators
         [MethodImpl(AggressiveInlining)]
         public static implicit operator SNMatrix3x2(Matrix3x2 mat)
             => mat.Value;
@@ -56,15 +75,9 @@ namespace Plato
             => FromSystem(sysMat);
 
         // -------------------------------------------------------------------------------
-        // Identity
-        // -------------------------------------------------------------------------------
-       
-        public static readonly Matrix3x2 Identity = SNMatrix3x2.Identity;
-
-        // -------------------------------------------------------------------------------
         // Operators
         // -------------------------------------------------------------------------------
-        
+
         [MethodImpl(AggressiveInlining)]
         public static Matrix3x2 operator +(Matrix3x2 value1, Matrix3x2 value2)
             => FromSystem(value1.Value + value2.Value);
@@ -88,14 +101,6 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static Matrix3x2 operator /(Matrix3x2 value1, Number scalar)
             => value1 * (1f / scalar);
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Matrix3x2 a, Matrix3x2 b)
-            => a.Equals(b);
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Matrix3x2 a, Matrix3x2 b)
-            => !a.Equals(b);
 
         // -------------------------------------------------------------------------------
         // Common 2D transform creation methods (forwarded)
@@ -137,11 +142,14 @@ namespace Plato
         // Other useful static methods: Invert, Lerp, etc.
         // -------------------------------------------------------------------------------
         
-        [MethodImpl(AggressiveInlining)]
-        public (Matrix3x2, Boolean) Invert()
+        public (Matrix3x2, Boolean) Invert
         {
-            var success = SNMatrix3x2.Invert(Value, out var result);
-            return (result, success);
+            [MethodImpl(AggressiveInlining)]
+            get
+            {
+                var success = SNMatrix3x2.Invert(Value, out var result);
+                return (result, success);
+            }
         }
 
         [MethodImpl(AggressiveInlining)]
@@ -159,25 +167,5 @@ namespace Plato
         {
             [MethodImpl(AggressiveInlining)] get => Value.GetDeterminant();
         }
-
-        // -------------------------------------------------------------------------------
-        // Equality, hashing, and ToString
-        // -------------------------------------------------------------------------------
-        
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Matrix3x2 other)
-            => Value.Equals(other.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj)
-            => obj is Matrix3x2 mat && Equals(mat);
-
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode()
-            => Value.GetHashCode();
-
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString()
-            => Value.ToString();
     }
 }

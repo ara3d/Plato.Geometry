@@ -1,18 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 using SNVector2 = System.Numerics.Vector2;
 
 namespace Plato
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Vector2 : IEquatable<Vector2>
+    [DataContract]
+    public partial struct Vector2 
     {
         // Fields
 
-        public SNVector2 Value;
+        [DataMember] public SNVector2 Value;
 
         // Constructor
 
@@ -43,44 +41,22 @@ namespace Plato
             get => 2;
         }
 
+        //-------------------------------------------------------------------------------------
         // Properties
+        //-------------------------------------------------------------------------------------
 
-        public Number X
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => Value.X; 
-        }
+        public Number X { [MethodImpl(AggressiveInlining)] get => Value.X; }
+        public Number Y { [MethodImpl(AggressiveInlining)] get => Value.Y; }
 
-        public Number Y
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => Value.Y;
-        }
-        
+        //-------------------------------------------------------------------------------------
         // Immutable "setters"
-        
-        [MethodImpl(AggressiveInlining)]
-        public Vector2 WithX(Number x)
-            => new(x, Y);
+        //-------------------------------------------------------------------------------------
 
         [MethodImpl(AggressiveInlining)]
-        public Vector2 WithY(Number y)
-            => new(X, y);
+        public Vector2 WithX(Number x) => new(x, Y);
 
-        // Static properties
-
-        public static readonly Vector2 E = SNVector2.E;
-        public static readonly Vector2 Epsilon = SNVector2.Epsilon;
-        public static readonly Vector2 NaN = SNVector2.NaN;
-        public static readonly Vector2 NegativeInfinity = SNVector2.NegativeInfinity;
-        public static readonly Vector2 NegativeZero = SNVector2.NegativeZero;
-        public static readonly Vector2 One = SNVector2.One;
-        public static readonly Vector2 Pi = SNVector2.Pi;
-        public static readonly Vector2 PositiveInfinity = SNVector2.PositiveInfinity;
-        public static readonly Vector2 Tau = SNVector2.Tau;
-        public static readonly Vector2 UnitX = SNVector2.UnitX;
-        public static readonly Vector2 UnitY = SNVector2.UnitY;
-        public static readonly Vector2 Zero = SNVector2.Zero;
+        [MethodImpl(AggressiveInlining)]
+        public Vector2 WithY(Number y) => new(X, y);
 
         // Implicit casts 
         
@@ -142,36 +118,6 @@ namespace Plato
         /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator -(Vector2 value) => -value.Value;
-
-        /// <summary>
-        /// Determines whether two Vector2D instances are equal.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Vector2 left, Vector2 right) => left.Value == right.Value;
-
-        /// <summary>
-        /// Determines whether two Vector2D instances are not equal.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Vector2 left, Vector2 right) => left.Value != right.Value;
-
-        /// <summary>
-        /// Determines whether the specified Vector2D is equal to the current Vector2D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Vector2 other) => Value.Equals(other.Value);
-
-        /// <summary>
-        /// Determines whether the specified object is equal to the current Vector2D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj) => obj is Vector2 other && Equals(other);
-
-        /// <summary>
-        /// Returns a hash code for the Vector2D.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode() => HashCode.Combine(X, Y);
 
         /// <summary>
         /// Returns the dot product of two <see cref="Vector2"/> instances.
@@ -406,11 +352,5 @@ namespace Plato
             [MethodImpl(AggressiveInlining)]
             get => SNVector2.Round(Value, MidpointRounding.ToPositiveInfinity);
         }
-
-        /// <summary>
-        /// Returns the string representation of the <see cref="Vector2"/> using default formatting.
-        /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString() => Value.ToString();
     }
 }

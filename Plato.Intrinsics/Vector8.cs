@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using System.Runtime.Serialization;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace Plato
@@ -10,15 +10,15 @@ namespace Plato
     /// This is a wrapper around Vector256&lt;float&gt; that provides a more user-friendly API.
     /// Note that the Vector256 class can be found in the Runtime.Intrinsics namespace, and
     /// has some design difference from Vector2, Vector3, and Vector4. One of the more notable
-    /// differences is that a Vector8 is sometimes intended to be used as a bit-mask, or an array of booleans, 
+    /// differences is that a Vector8 is sometimes intended to be used as a bit-mask  
     /// and there are a number of bit-oriented functions around them. The intent of the
     /// Vector256 type was as a wrapper around SIMD operations, and less as a general-purpose vector type.
-    /// In the end, we decided to put it in the same namespace, and expose a similar API, as Vector4.  
+    /// In the end, we decided to put it in the same namespace, and expose a similar API as Vector4.  
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Vector8 : IEquatable<Vector8>
+    [DataContract]
+    public partial struct Vector8 
     {
-        public readonly Vector256<float> Value;
+        [DataMember] public readonly Vector256<float> Value;
 
         //-------------------------------------------------------------------------------------
         // Constructors
@@ -51,40 +51,20 @@ namespace Plato
         public static implicit operator Vector8(Number value) => new(value);
 
         //-------------------------------------------------------------------------------------
-        // Constants
+        // Properties
         //-------------------------------------------------------------------------------------
 
-        public static Vector8 Zero = new(0);
-        public static Vector8 One = new(1);
-        public static Vector8 AllBitsSet = new(Vector256<float>.AllBitsSet);
-        public static Vector8 SignMask = Vector256.Create(0x80000000u).AsSingle();
-        public static Vector8 Indices => Vector256<float>.Indices;
+        public Number X0 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(0); }
+        public Number X1 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(1); }
+        public Number X2 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(2); }
+        public Number X3 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(3); }
+        public Number X4 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(4); }
+        public Number X5 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(5); }
+        public Number X6 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(6); }
+        public Number X7 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(7); }
 
-        //-------------------------------------------------------------------------------------
-        // Indexer
-        //-------------------------------------------------------------------------------------
-
-        public Number this[Integer index]
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => Value.GetElement(index);
-        }
-
-        public Integer Count
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => 8;
-        }
-
-        public Vector4 Lower
-        {
-            [MethodImpl(AggressiveInlining)] get => Value.GetLower();
-        }
-
-        public Vector4 Upper
-        {
-            [MethodImpl(AggressiveInlining)] get => Value.GetUpper();
-        }
+        public Vector4 Lower { [MethodImpl(AggressiveInlining)] get => Value.GetLower(); }
+        public Vector4 Upper { [MethodImpl(AggressiveInlining)] get => Value.GetUpper(); }
 
         [MethodImpl(AggressiveInlining)]
         public Vector8 WithLower(Vector4 lower)
@@ -150,12 +130,6 @@ namespace Plato
         //-------------------------------------------------------------------------------------
         // Comparison operators 
         //-------------------------------------------------------------------------------------
-
-        [MethodImpl(AggressiveInlining)]
-        public static Vector8 operator ==(Vector8 a, Vector8 b) => Vector256.Equals(a.Value, b.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public static Vector8 operator !=(Vector8 a, Vector8 b) => ~Vector256.Equals(a.Value, b.Value);
 
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator <(Vector8 a, Vector8 b) => Vector256.LessThan(a.Value, b.Value);
@@ -298,7 +272,7 @@ namespace Plato
 
         public Vector8 Sign
         {
-            [MethodImpl(AggressiveInlining)] get => Vector256.CopySign(One.Value, Value);
+            [MethodImpl(AggressiveInlining)] get => Vector256.CopySign(new Vector8(1), Value);
         }
 
         public Vector8 SquareRoot
@@ -345,25 +319,5 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public Vector8 WithUpper(Vector128<float> upper) => Vector256.WithUpper(this, upper);
-
-        //-------------------------------------------------------------------------------------
-        // Overrides
-        //-------------------------------------------------------------------------------------
-
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString()
-            => $"[{this[0]}, {this[1]}, {this[2]}, {this[3]}, {this[4]}, {this[5]}, {this[6]}, {this[7]}]";
-
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object? obj)
-            => obj is Vector8 other && Vector256.EqualsAll(Value, other.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode() 
-            => Value.GetHashCode();
-
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Vector8 other) 
-            => Value.Equals(other.Value);
     }
 }

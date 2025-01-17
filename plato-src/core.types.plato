@@ -33,13 +33,6 @@ type Integer4
     D: Integer;
 }
 
-// An angle measurement 
-type Angle
-    implements IMeasure
-{
-    Radians: Number;
-}
-
 type Time
     implements IMeasure
 {
@@ -53,7 +46,7 @@ type AnglePair
     End: Angle;
 }
 
-type floatInterval
+type NumberInterval
     implements IInterval<Number>
 {
     Start: Number;

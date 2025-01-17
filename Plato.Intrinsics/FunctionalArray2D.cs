@@ -20,10 +20,18 @@ namespace Plato
             Count = numColumns * numRows;
         }
 
+        [MethodImpl(AggressiveInlining)]
+        public T At(Integer col, Integer row)
+            => this[col, row];
+
+        [MethodImpl(AggressiveInlining)]
+        public T At(Integer index)
+            => Func(index / NumColumns, index % NumColumns);
+
         T IReadOnlyList<T>.this[int index]
         {
             [MethodImpl(AggressiveInlining)]
-            get => Func(index / NumColumns, index % NumColumns);
+            get => At(index);
         }
 
         T IArray<T>.this[Integer index]

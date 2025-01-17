@@ -1,15 +1,14 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using SNMatrix4x4 = System.Numerics.Matrix4x4;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace Plato
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public partial struct Matrix4x4 : IEquatable<Matrix4x4>
+    [DataContract]
+    public partial struct Matrix4x4
     {
-        public readonly SNMatrix4x4 Value;
+        [DataMember] public readonly SNMatrix4x4 Value;
 
         // --------------------------------------------------------------------------------
         // Constructor
@@ -40,7 +39,6 @@ namespace Plato
         // --------------------------------------------------------------------------------
         // Convert to/from System.Numerics.Matrix4x4
         // --------------------------------------------------------------------------------
-
         
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 FromSystem(SNMatrix4x4 sysMat)
@@ -54,11 +52,30 @@ namespace Plato
         public static implicit operator SNMatrix4x4(Matrix4x4 m) 
             => m.Value;
 
-        // --------------------------------------------------------------------------------
-        // Identity
-        // --------------------------------------------------------------------------------
-        
-        public static readonly Matrix4x4 Identity = SNMatrix4x4.Identity;
+        //-------------------------------------------------------------------------------------
+        // Properties
+        //-------------------------------------------------------------------------------------
+
+        public Vector4 Row1 { [MethodImpl(AggressiveInlining)] get => new(Value.M11, Value.M12, Value.M13, Value.M14); }
+        public Vector4 Row2 { [MethodImpl(AggressiveInlining)] get => new(Value.M21, Value.M22, Value.M23, Value.M24); }
+        public Vector4 Row3 { [MethodImpl(AggressiveInlining)] get => new(Value.M31, Value.M32, Value.M33, Value.M34); }
+        public Vector4 Row4 { [MethodImpl(AggressiveInlining)] get => new(Value.M41, Value.M42, Value.M43, Value.M44); }
+
+        //-------------------------------------------------------------------------------------
+        // Immutable "setters"
+        //-------------------------------------------------------------------------------------
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix4x4 WithRow1(Vector4 v) => new(v, Row2, Row3, Row4);
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix4x4 WithRow2(Vector4 v) => new(Row1, v, Row3, Row4);
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix4x4 WithRow3(Vector4 v) => new(Row1, Row2, v, Row4);
+
+        [MethodImpl(AggressiveInlining)]
+        public Matrix4x4 WithRow4(Vector4 v) => new(Row1, Row2, Row3, v);
 
         // --------------------------------------------------------------------------------
         // Operators (forward to System.Numerics)
@@ -140,11 +157,14 @@ namespace Plato
         /// Attempts to extract scale, rotation (as a <see cref="Quaternion"/>),
         /// and translation from Value matrix.
         /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public (Vector3, Quaternion, Vector3, Boolean) Decompose()
+        public (Vector3, Quaternion, Vector3, Boolean) Decompose
         {
-            var success = SNMatrix4x4.Decompose(Value, out var scl, out var rot, out var trans);
-            return (trans, rot, scl, success);
+            [MethodImpl(AggressiveInlining)]
+            get
+            {
+                var success = SNMatrix4x4.Decompose(Value, out var scl, out var rot, out var trans);
+                return (trans, rot, scl, success);
+            }
         }
 
         public Number Determinant
@@ -156,34 +176,6 @@ namespace Plato
         {
             [MethodImpl(AggressiveInlining)] get => SNMatrix4x4.Transpose(Value);
         }
-
-        // --------------------------------------------------------------------------------
-        // Equality, hashing, and ToString
-        // --------------------------------------------------------------------------------
-        
-        [MethodImpl(AggressiveInlining)]
-        public bool Equals(Matrix4x4 other)
-            => Value.Equals(other.Value);
-
-        [MethodImpl(AggressiveInlining)]
-        public override bool Equals(object obj)
-            => obj is Matrix4x4 other && Equals(other);
-
-        [MethodImpl(AggressiveInlining)]
-        public override int GetHashCode()
-            => Value.GetHashCode();
-
-        [MethodImpl(AggressiveInlining)]
-        public override string ToString()
-            => Value.ToString();
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator ==(Matrix4x4 a, Matrix4x4 b) 
-            => a.Equals(b);
-
-        [MethodImpl(AggressiveInlining)]
-        public static Boolean operator !=(Matrix4x4 a, Matrix4x4 b) 
-            => !a.Equals(b);
 
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 Lerp(Matrix4x4 matrix1, Matrix4x4 matrix2, Number amount)
