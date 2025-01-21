@@ -113,13 +113,13 @@ namespace Plato
         /// Multiplies a Vector4D by a scalar.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public static Vector4 operator *(Vector4 left, float scalar) => left.Value * scalar;
+        public static Vector4 operator *(Vector4 left, Number scalar) => left.Value * scalar;
 
         /// <summary>
         /// Multiplies a scalar by a Vector4D.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public static Vector4 operator *(float scalar, Vector4 right) => scalar * right.Value;
+        public static Vector4 operator *(Number scalar, Vector4 right) => scalar * right.Value;
 
         /// <summary>
         /// Divides the left Vector4D by the right Vector4D element-wise.
@@ -131,7 +131,7 @@ namespace Plato
         /// Divides a Vector4D by a scalar.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public static Vector4 operator /(Vector4 left, float scalar) => left.Value / scalar;
+        public static Vector4 operator /(Vector4 left, Number scalar) => left.Value / scalar;
 
         /// <summary>
         /// Negates the specified Vector4D.
@@ -143,19 +143,19 @@ namespace Plato
         /// Returns the dot product of two <see cref="Vector4"/> instances.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public float Dot(Vector4 right) => SNVector4.Dot(Value, right);
+        public Number Dot(Vector4 right) => SNVector4.Dot(Value, right);
 
         /// <summary>
         /// Returns the Euclidean distance between two <see cref="Vector4"/> instances.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public float Distance(Vector4 value2) => SNVector4.Distance(Value, value2);
+        public Number Distance(Vector4 value2) => SNVector4.Distance(Value, value2);
 
         /// <summary>
         /// Returns the squared Euclidean distance between two <see cref="Vector4"/> instances.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public float DistanceSquared(Vector4 value2) => SNVector4.DistanceSquared(Value, value2);
+        public Number DistanceSquared(Vector4 value2) => SNVector4.DistanceSquared(Value, value2);
 
         /// <summary>
         /// Returns a vector that clamps each element of the <see cref="Vector4"/> between the corresponding elements of the minimum and maximum vectors.
@@ -174,7 +174,7 @@ namespace Plato
         /// <summary>
         /// Returns the length of the <see cref="Vector4"/>.
         /// </summary>
-        public float Length
+        public Number Length
         {
             [MethodImpl(AggressiveInlining)] get => Value.Length();
         }
@@ -182,7 +182,7 @@ namespace Plato
         /// <summary>
         /// Returns the squared length of the <see cref="Vector4"/>.
         /// </summary>
-        public float LengthSquared
+        public Number LengthSquared
         {
             [MethodImpl(AggressiveInlining)] get => Value.LengthSquared();
         }

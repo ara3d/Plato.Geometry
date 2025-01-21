@@ -11,11 +11,6 @@ library Intrinsics
     FlatMap(xs: IArray<$T1>, f: Function1<$T1, IArray<$T2>>): IArray<$T2>;
     MakeArray2D(columns: Integer, rows: Integer, f: Function2<Integer, Integer, $T>): IArray2D<$T>;   
 
-    // TODO: this should be defined on IAny. 
-    // TODO: consider adding "ToString" and "GetHashCode",
-    Equals(a: IEquatable, b: IEquatable): Boolean;
-    NotEquals(a: IEquatable, b: IEquatable): Boolean;
-
     //==
     // Matrix4x4
     //==
@@ -111,7 +106,6 @@ library Intrinsics
     WithX(self: Vector2, x: Number): Vector2;
     WithY(self: Vector2, y: Number): Vector2;
 
-    Count(self: Vector2): Integer;
     Normalize(self: Vector2): Vector2;
     Length(self: Vector2): Number;
     LengthSquared(self: Vector2): Number;
@@ -271,9 +265,6 @@ library Intrinsics
 
     Lower(self: Vector8): Vector4;
     Upper(self: Vector8): Vector4;
-
-    WithLower(self: Vector8, lower: Vector4): Vector8;
-    WithUpper(self: Vector8, upper: Vector4): Vector8;
     
     WithElement(self: Vector8, i: Integer, f: Number): Vector8;
     WithLower(self: Vector8, lower: Vector4): Vector8;
@@ -443,6 +434,7 @@ library Intrinsics
     Round(self: Number, digits: Integer): Number;
     ScaleB(self: Number, n: Integer): Number;
     GetHashCode(self: Number): Integer;
+    Clamp(self: Number, min: Number, max: Number): Number;
 
     //==
     // Integer

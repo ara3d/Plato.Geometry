@@ -312,12 +312,6 @@ namespace Plato
         //-------------------------------------------------------------------------------------
 
         [MethodImpl(AggressiveInlining)]
-        public Vector8 WithElement(int i, Number f) => Vector256.WithElement(Value, i, f);
-
-        [MethodImpl(AggressiveInlining)]
-        public Vector8 WithLower(Vector128<float> lower) => Vector256.WithLower(this, lower);
-
-        [MethodImpl(AggressiveInlining)]
-        public Vector8 WithUpper(Vector128<float> upper) => Vector256.WithUpper(this, upper);
+        public Vector8 WithElement(Integer i, Number f) => Vector256.WithElement(Value, i, f);
     }
 }

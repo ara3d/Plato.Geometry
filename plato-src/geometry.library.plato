@@ -43,7 +43,6 @@ library Geometry
     Normal(t: Triangle3D): Vector3 => (t.B - t.A).Cross(t.C - t.A).Normalize;
     Center(t: Triangle3D): Vector3 => (t.A + t.B + t.C) / 3.0;
     Plane(t: Triangle3D): Plane => (t.Normal, t.Normal.Dot(t.A));
-	Barycentric(t: Triangle3D, uv: Vector2): Vector3 => t.A.Barycentric(t.B, t.C, uv);    
     LineA(t: Triangle3D): Line3D => (t.A, t.B);        
     LineB(t: Triangle3D): Line3D => (t.B, t.C);        
     LineC(t: Triangle3D): Line3D => (t.C, t.A);        
@@ -149,22 +148,4 @@ library Geometry
         (0.0, 1.0));
 
     Unit(_: Quad2D): Quad2D =>  ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
-
-    UnitX(_: Vector2): Vector2 => (1.0, 0.0);
-    UnitY(_: Vector2): Vector2 => (0.0, 1.0);
-    
-    UnitX(_: Vector3): Vector3 => (1.0, 0.0, 0.0);
-    UnitY(_: Vector3): Vector3 => (0.0, 1.0, 0.0);
-    UnitZ(_: Vector3): Vector3 => (0.0, 0.0, 1.0);
-
-    MinValue(_: Vector3): Vector3 => (MinNumber, MinNumber, MinNumber);
-    MaxValue(_: Vector3): Vector3 => (MaxNumber, MaxNumber, MaxNumber);
-
-    UnitX(_: Vector4): Vector4 => (1.0, 0.0, 0.0, 0.0);
-    UnitY(_: Vector4): Vector4 => (0.0, 1.0, 0.0, 0.0);
-    UnitZ(_: Vector4): Vector4 => (0.0, 0.0, 1.0, 0.0);
-    UnitW(_: Vector4): Vector4 => (0.0, 0.0, 0.0, 1.0);
-
-    Identity(_: Matrix4x4): Matrix4x4 => (Vector4.UnitX, Vector4.UnitY, Vector4.UnitZ, Vector4.UnitW);
-    Identity(_: Quaternion): Quaternion => (0.0, 0.0, 0.0, 1.0);
 }

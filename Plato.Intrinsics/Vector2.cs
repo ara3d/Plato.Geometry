@@ -24,24 +24,6 @@ namespace Plato
         public Vector2(SNVector2 x) => Value = x;
 
         //-------------------------------------------------------------------------------------
-        // Indexer
-        //-------------------------------------------------------------------------------------
-
-        public Number this[Integer index]
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => index == 0 ? X
-                : index == 1 ? Y
-                : throw new IndexOutOfRangeException();
-        }
-
-        public Integer Count
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => 2;
-        }
-
-        //-------------------------------------------------------------------------------------
         // Properties
         //-------------------------------------------------------------------------------------
 
@@ -93,13 +75,13 @@ namespace Plato
         /// Multiplies a Vector2D by a scalar.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public static Vector2 operator *(Vector2 left, float scalar) => left.Value * scalar;
+        public static Vector2 operator *(Vector2 left, Number scalar) => left.Value * scalar;
 
         /// <summary>
         /// Multiplies a scalar by a Vector2D.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public static Vector2 operator *(float scalar, Vector2 right) => scalar * right.Value;
+        public static Vector2 operator *(Number scalar, Vector2 right) => scalar * right.Value;
 
         /// <summary>
         /// Divides the left Vector2D by the right Vector2D element-wise.
@@ -111,7 +93,7 @@ namespace Plato
         /// Divides a Vector2D by a scalar.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public static Vector2 operator /(Vector2 left, float scalar) => left.Value / scalar;
+        public static Vector2 operator /(Vector2 left, Number scalar) => left.Value / scalar;
 
         /// <summary>
         /// Negates the specified Vector2D.
@@ -123,19 +105,19 @@ namespace Plato
         /// Returns the dot product of two <see cref="Vector2"/> instances.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public float Dot(Vector2 right) => SNVector2.Dot(Value, right);
+        public Number Dot(Vector2 right) => SNVector2.Dot(Value, right);
 
         /// <summary>
         /// Returns the Euclidean distance between two <see cref="Vector2"/> instances.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public float Distance(Vector2 value2) => SNVector2.Distance(Value, value2);
+        public Number Distance(Vector2 value2) => SNVector2.Distance(Value, value2);
 
         /// <summary>
         /// Returns the squared Euclidean distance between two <see cref="Vector2"/> instances.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
-        public float DistanceSquared(Vector2 value2) => SNVector2.DistanceSquared(Value, value2);
+        public Number DistanceSquared(Vector2 value2) => SNVector2.DistanceSquared(Value, value2);
 
         /// <summary>
         /// Returns a vector that clamps each element of the <see cref="Vector2"/> between the corresponding elements of the minimum and maximum vectors.
@@ -154,7 +136,7 @@ namespace Plato
         /// <summary>
         /// Returns the length of the <see cref="Vector2"/>.
         /// </summary>
-        public float Length
+        public Number Length
         {
             [MethodImpl(AggressiveInlining)] get => Value.Length();
         }
@@ -162,7 +144,7 @@ namespace Plato
         /// <summary>
         /// Returns the squared length of the <see cref="Vector2"/>.
         /// </summary>
-        public float LengthSquared
+        public Number LengthSquared
         {
             [MethodImpl(AggressiveInlining)]
             get =>  Value.LengthSquared();

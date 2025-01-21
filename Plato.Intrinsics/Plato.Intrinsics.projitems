@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Angle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ArrayEnumerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Boolean.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Character.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Function.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FunctionalArray.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FunctionalArray2D.cs" />
@@ -26,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Plane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Quaternion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyListMapExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)String.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Vector2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Vector3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Vector4.cs" />

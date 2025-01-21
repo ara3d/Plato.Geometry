@@ -181,11 +181,15 @@ namespace Plato
         public static Matrix4x4 Lerp(Matrix4x4 matrix1, Matrix4x4 matrix2, Number amount)
             => SNMatrix4x4.Lerp(matrix1.Value, matrix2.Value, amount);
 
-        [MethodImpl(AggressiveInlining)]
-        public (Matrix4x4, Boolean) Invert()
+        public Matrix4x4 Invert
         {
-            var success = SNMatrix4x4.Invert(Value, out var result);
-            return (result, success);
+            [MethodImpl(AggressiveInlining)]
+            get
+            {
+                var success = SNMatrix4x4.Invert(Value, out var result);
+                if (!success) throw new InvalidOperationException("Non-invertible matrix    ");
+                return result;
+            }
         }
 
         [MethodImpl(AggressiveInlining)]

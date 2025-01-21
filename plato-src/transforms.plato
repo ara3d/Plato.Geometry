@@ -11,48 +11,68 @@ interface ITransform3D
     Matrix(x: Self): Matrix4x4;
 }
 
-interface IRotationalTransform3D
+// Rigid transforms have only a translation and/or a rotational component.
+// Working with rigid transforms only is easier, less error-prone, and more efficient. 
+interface IRigidTransform3D 
     inherits ITransform3D
+{
+    Translation(x: Self): Translation3D;
+    Rotation(x: Self): Rotation3D;
+}
+
+// Rotational transforms have only a rotational component.
+// They can always be converted into a Quaternion.
+// They are also rigid transforms because they have no translation
+interface IRotationalTransform3D
+    inherits IRigidTransform3D
 {
     Quaternion(x: Self): Quaternion;
 }
 
+// The transform which does not change anything 
 type IdentityTransform3D
-    implements IValue, ITransform3D
+    implements IValue, IRotationalTransform3D
 {
 }
 
+// An affine transform expressed by a 4x4 matrix.
+// There are no assurances made that the matrix is affine. 
 type MatrixTransform3D
     implements ITransform3D
 {
     Matrix: Matrix4x4;
 }
 
+// A rigid transform with no rotational component. 
 type Translation3D
-    implements ITransform3D
+    implements IRigidTransform3D
 {
-    Translation: Vector3;
+    Direction: Vector3;
 }
 
+// A rigid transform wit no translational component
 type Rotation3D
     implements IRotationalTransform3D
 {
-    Rotation: Quaternion;
+    Quaternion: Quaternion;
 }
 
+// A rotational transform expressed by a forward direction and an up. 
 type LookRotation
     implements IRotationalTransform3D
 {
-    Direction: Vector3;
+    Forward: Vector3;
     Up: Vector3;
 }
 
+// A scaling transform: non-rigid 
 type Scaling3D
     implements ITransform3D
 {
     Scale: Vector3;
 }
 
+// A transform that applies, translation, rotation, and scale, in that order 
 type TRSTransform3D
     implements ITransform3D
 {
@@ -61,14 +81,15 @@ type TRSTransform3D
     Scale: Scaling3D;
 }
 
-// Also known as a Rigid Body Transform.
+// Translates and rotates, but does not scale. Also known as a Rigid Body Transform. 
 type Pose3D
-    implements ITransform3D
+    implements IRigidTransform3D
 {
     Translation: Translation3D;
     Rotation: Rotation3D;
 }
 
+// A rotational transform expressed by an angle and an axis
 type AxisAngle
     implements IRotationalTransform3D
 {
@@ -76,6 +97,7 @@ type AxisAngle
     Angle: Angle;
 }
 
+// A rotational transform expressed by three rotational components: Yaw, pitch, and roll.  
 type EulerAngles
     implements IRotationalTransform3D
 {
@@ -84,6 +106,7 @@ type EulerAngles
     Roll: Angle;
 }
 
+// A perspective view transform 
 type Perspective3D
     implements ITransform3D
 {
@@ -93,6 +116,7 @@ type Perspective3D
     Far: Number;
 }
 
+// An orthographic view transform 
 type Orthographic3D
     implements ITransform3D
 {
@@ -102,6 +126,7 @@ type Orthographic3D
     Far: Number;
 }
 
+// A transform for projecting points onto a plane, e.g., for shadows.  
 type PlaneProjection
     implements ITransform3D
 {
@@ -123,8 +148,8 @@ library Transforms
     TransformNormal(t: ITransform3D, v: Vector3): Vector3
         => v.TransformNormal(t.Matrix);
   
-    Inverse(t: ITransform3D): ITransform3D
-        => new MatrixTransform3D(t.Matrix.Invert);
+    Inverse(t: ITransform3D): MatrixTransform3D
+        => t.Matrix.Invert;
 
     //==
     // General IRotationalTransform3D helpers
@@ -137,197 +162,24 @@ library Transforms
 
     TransformNormal(r: IRotationalTransform3D, v: Vector3): Vector3
         => v.TransformNormal(r.Quaternion);
-  
-    Inverse(r: IRotationalTransform3D): IRotationalTransform3D
-        => new Rotation3D(r.Quaternion.Inverse);
+    
+    Rotation(r: IRotationalTransform3D): Rotation3D
+        => r.Quaternion;
 
-    //==
-    // Vector2 functions
-    
-    Line(a: Vector2, b: Vector2): Line2D 
-        => (a, b);
-    
-    Ray(a: Vector2, b: Vector2): Ray2D 
-        => (a, b);
-    
-    RayTo(a: Vector2, b: Vector2): Ray2D 
-        => (a, b - a);
-    
-    Vector3(v: Vector2): Vector3 
-        => v.Vector3(0);
-    
-    Vector3(v: Vector2, z: Number): Vector3 
-        => (v.X, v.Y, z);
-    
-    //==
-    // Vector3 Functions 
+    Translation(r: IRotationalTransform3D): Translation3D
+        => Translation3D.Identity;
 
-    XZY(v: Vector3): Vector3 => (v.X, v.Z, v.Y);    
-    YXZ(v: Vector3): Vector3 => (v.Y, v.X, v.Z);    
-    YZX(v: Vector3): Vector3 => (v.Y, v.Z, v.X);    
-    ZXY(v: Vector3): Vector3 => (v.Z, v.X, v.Y);    
-    ZYX(v: Vector3): Vector3 => (v.Z, v.Y, v.X);    
+    Inverse(t: IRotationalTransform3D): Rotation3D
+        => t.Quaternion.Inverse;
 
-    XY(v: Vector3): Vector2 => (v.X, v.Y);    
-    YX(v: Vector3): Vector2 => (v.Y, v.X);
-    XZ(v: Vector3): Vector2 => (v.X, v.Z);
-    ZX(v: Vector3): Vector2 => (v.Z, v.X);
-    YZ(v: Vector3): Vector2 => (v.Y, v.Z);
-    ZY(v: Vector3): Vector2 => (v.Z, v.Y);
-
-    Line(a: Vector3, b: Vector3): Line3D 
-        => (a, b);
-    
-    Ray(a: Vector3, b: Vector3): Ray3D 
-        => (a, b);
-    
-    RayTo(a: Vector3, b: Vector3): Ray3D 
-        => (a, b - a);
-    
-    Project(v: Vector3, p: Plane): Vector3 
-        => v - p.Normal * p.Normal.Dot(v);
-    
-    To2D(v: Vector3): Vector2 
-        => (v.X, v.Y);
-    
-    MixedProduct(a: Vector3, b: Vector3, c: Vector3): Number 
-        => a.Cross(b).Dot(c);
-    
-    Vector4(v: Vector3): Vector4 
-        => v.Vector4(0);
-
-    Vector4(v: Vector3, w: Number): Vector4 
-        => (v.X, v.Y, v.Z, w);
-
-    //==
-    // Vector 4 functions 
-
-    Vector3(v: Vector4): Vector3 
-        => (v.X, v.Y, v.Z);
-    
-    XYZ(v: Vector4): Vector3 
-        => v.Vector3;
-
-    //==
-    // Generic vector functions
-    
-    MidPoint(a: IVector, b: IVector): Vector2 
-        => (a + b) / 2.0;
-
-    Length(a: IVector): Number 
-        => a.Magnitude;
-    
-    LengthSquared(a: IVector): Number 
-        => a.MagnitudeSquared;
-    
-    Sum(v: IVector): Number 
-        => v.Reduce(0.0, (a, b) => a + b);
-    
-    SumSquares(v: IVector): Number 
-        => v.Square.Sum;   
-    
-    MagnitudeSquared(v: IVector): Number 
-        => v.SumSquares;    
-    
-    Magnitude(v: IVector): Number 
-        => v.MagnitudeSquared.SquareRoot;    
-    
-    Dot(v1: IVector, v2: IVector): Number 
-        => (v1 * v2).Sum;  
-    
-    Normalize(x: IVector): IVector 
-        => x.MagnitudeSquared > 0 ? x / x.Magnitude : x.Zero;
-    
-    Reflect(v: IVector, normal: IVector): IVector 
-        => v - normal * v.Dot(normal) * 2.0;
-    
-    Project(v: IVector, other: IVector): IVector 
-        => other * v.Dot(other);
-    
-    Distance(a: IVector, b: IVector): Number 
-        => (b - a).Magnitude;
-    
-    DistanceSquared(a: IVector, b: IVector): Number 
-        => (b - a).MagnitudeSquared;
-    
-    Angle(a: IVector, b: IVector): Angle 
-        => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
-    
-    IsParallel(a: IVector, b: IVector): Boolean 
-        => a.Dot(b).Abs > (1.0 - Epsilon);
-
-    //==
-    // Matrix operations   
-
-    M11(m: Matrix4x4): Number => m.Row1.X;
-    M12(m: Matrix4x4): Number => m.Row1.Y;
-    M13(m: Matrix4x4): Number => m.Row1.Z;
-    M14(m: Matrix4x4): Number => m.Row1.W;
-
-    M21(m: Matrix4x4): Number => m.Row2.X;
-    M22(m: Matrix4x4): Number => m.Row2.Y;
-    M23(m: Matrix4x4): Number => m.Row2.Z;
-    M24(m: Matrix4x4): Number => m.Row2.W;
-    
-    M31(m: Matrix4x4): Number => m.Row3.X;
-    M32(m: Matrix4x4): Number => m.Row3.Y;
-    M33(m: Matrix4x4): Number => m.Row3.Z;
-    M34(m: Matrix4x4): Number => m.Row3.W;
-    
-    M41(m: Matrix4x4): Number => m.Row4.X;
-    M42(m: Matrix4x4): Number => m.Row4.Y;
-    M43(m: Matrix4x4): Number => m.Row4.Z;
-    M44(m: Matrix4x4): Number => m.Row4.W;
-
-    Column1(m: Matrix4x4): Vector4 => (M11, M21, M31, M41);
-    Column2(m: Matrix4x4): Vector4 => (M12, M22, M32, M42);
-    Column3(m: Matrix4x4): Vector4 => (M13, M23, M33, M43);
-    Column4(m: Matrix4x4): Vector4 => (M14, M24, M34, M44);
- 
-    WithTranslation(m: Matrix4x4, v: Vector3): Matrix4x4
-        => m.WithRow4(v.X, v.Y, v.Z, 1.0);
-                
-    Translation(m: Matrix4x4): Vector3
-        => (m.M14, m.M24, m.M34);
-
-    Transform(m: Matrix4x4, v: Vector3): Vector3
-        => v.Transform(m);
-    
-    TransformNormal(m: Matrix4x4, v: Vector3): Vector3
-        => v.TransformNormal(m);
-
-    Multiply(m: Matrix4x4, v: Vector3): Vector3
-        => m.Transform(v);
-
-    //==
-    // Quaternion functions
-
-    Transform(q: Quaternion, v: Vector3): Vector3
-        => v.Transform(q);
-    
-    Multiply(q: Quaternion, v: Vector3): Vector3
-        => q.Transform(v);
-
-    Matrix4x4(q: Quaternion): Matrix4x4
-        => Matrix4x4.CreateFromQuaternion(q);
-
-    //==
-    // Translation3D functions
-
-    Matrix(t: Translation3D): Matrix4x4
-        => Matrix4x4.CreateTranslation(t.Translation);
-
-    Transform(t: Translation3D, v: Vector3): Vector3
-        => v + t.Translation;
-    
-    TransformNormal(t: Translation3D, v: Vector3): Vector3
-        => v;
-        
     //==
     // IdentityTransform3D
 
     Matrix(t: IdentityTransform3D): Matrix4x4
 		=> Matrix4x4.Identity;
+
+    Quaternion(t: IdentityTransform3D): Quaternion
+		=> Quaternion.Identity;
 
 	Transform(t: IdentityTransform3D, v: Vector3): Vector3
 		=> v;
@@ -335,9 +187,36 @@ library Transforms
 	TransformDirection(t: IdentityTransform3D, v: Vector3): Vector3
 		=> v;
 
+    Inverse(t: IdentityTransform3D): IdentityTransform3D
+        => t;
+
     IdentityTransform3D(): IdentityTransform3D
         => new IdentityTransform3D();
     
+    //==
+    // Translation3D functions
+
+    Matrix(t: Translation3D): Matrix4x4
+        => Matrix4x4.CreateTranslation(t.Translation);
+
+    Transform(t: Translation3D, v: Vector3): Vector3
+        => v + t.Direction;
+    
+    TransformNormal(t: Translation3D, v: Vector3): Vector3
+        => v;
+        
+    Identity(_: Translation3D): Translation3D
+        => Vector3.Zero;
+
+    Translation(t: Translation3D): Translation3D
+        => t;
+
+    Rotation(t: Translation3D): Rotation3D
+        => Rotation3D.Identity;
+
+    Inverse(t: Translation3D): Translation3D
+        => -t.Direction;
+
     //==
     // MatrixTransform3D
 
@@ -347,11 +226,14 @@ library Transforms
     TransformNormal(t: MatrixTransform3D, v: Vector3): Vector3
         => v.TransformNormal(t.Matrix);
 
+    Identity(_: MatrixTransform3D): MatrixTransform3D
+        => Matrix4x4.Identity;
+
     //==
     // Rotation3D
 
     Quaternion(r: Rotation3D): Quaternion
-        => r.Rotation;
+        => r.Quaternion;
 
     RotateX(a: Angle): Rotation3D
         => Quaternion.CreateFromAxisAngle(Vector3.UnitX, a);
@@ -362,15 +244,27 @@ library Transforms
     RotateZ(a: Angle): Rotation3D
         => Quaternion.CreateFromAxisAngle(Vector3.UnitZ, a);  
 
+    Translation(r: Rotation3D): Translation3D
+        => Translation3D.Identity;
+
+    Rotation(r: Rotation3D): Rotation3D
+        => r;
+
+    Identity(_: Rotation3D): Rotation3D
+        => Quaternion.Identity;
+
     //==
     // LookRotation
 
     Matrix(r: LookRotation): Matrix4x4
-        => Matrix4x4.CreateWorld((0.0, 0.0, 0.0), r.Direction, r.Up);
+        => Matrix4x4.CreateWorld((0.0, 0.0, 0.0), r.Forward, r.Up);
 
     Quaternion(r: LookRotation): Quaternion
         => Quaternion.CreateFromRotationMatrix(r.Matrix);
 
+    Identity(_: LookRotation): LookRotation
+        => (Vector3.UnitY, Vector3.UnitZ);
+        
     //==
     // Scaling3D
 
@@ -380,11 +274,17 @@ library Transforms
     UniformScaling3D(x: Number): Scaling3D
         => (x, x, x);
 
+    Identity(_: Scaling3D): Scaling3D
+        => Vector3.One;
+
     //==
     // TRSTransform3D
 
 	Matrix(t: TRSTransform3D): Matrix4x4
 		=> t.Translation.Matrix * t.Rotation.Matrix * t.Scale.Matrix;
+
+    Identity(_: TRSTransform3D): TRSTransform3D
+        => (Translation3D.Identity, Rotation3D.Identity, Scaling3D.Identity);
 
     //==
     // Pose3D
@@ -395,17 +295,26 @@ library Transforms
     TRSTransform3D(p: Pose3D): TRSTransform3D
         => (p.Translation, p.Rotation, (1.0, 1.0, 1.0));
 
+    Identity(_: Pose3D): Pose3D
+        => (Translation3D.Identity, Rotation3D.Identity);
+    
     //==
     // AxisAngle
 
     Quaternion(aa: AxisAngle): Quaternion
 	    => Quaternion.CreateFromAxisAngle(aa.Axis, aa.Angle);
 
+    Identity(_: AxisAngle): AxisAngle
+        => (Vector3.UnitX, Angle.Zero);
+
     //==
     // EulerAngles
 
     Quaternion(e: EulerAngles): Quaternion
         => Quaternion.CreateFromYawPitchRoll(e.Yaw, e.Pitch, e.Roll);
+
+    Identity(_: EulerAngles): EulerAngles
+        => (Angle.Zero, Angle.Zero, Angle.Zero);
 
     //==
     // Perspective3D

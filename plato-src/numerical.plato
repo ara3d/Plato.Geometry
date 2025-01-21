@@ -1,0 +1,87 @@
+library Numerical
+{
+    //==
+    // INumerical functions
+   
+    PlusOne(x: INumerical): INumerical 
+        => x + One;
+
+    MinusOne(x: INumerical): INumerical 
+        => x - One;    
+
+    FromOne(x: INumerical): INumerical 
+        => -x + One;
+
+    Component(x: INumerical, n: Integer): Number
+        => x.Components[n];
+
+    MaxComponent(x: INumerical): Number
+    {
+        var r = x.Component(0);
+        for (var i = 1; i < x.NumComponents; i = i + 1)
+            r = r.Max(x.Component(i));
+        return r;
+    }
+
+    MinComponent(x: INumerical): Number
+    {
+        var r = x.Component(0);
+        for (var i = 1; i < x.NumComponents; i = i + 1)
+            r = r.Min(x.Component(i));
+        return r;
+    }
+
+    MapComponents(x: INumerical, f: Function1<Number, Number>): INumerical
+        => Create(x.Components.Map(f));
+
+    ZipComponents(a: INumerical, b: INumerical, f: Function2<Number, Number, Number>): INumerical
+        => Create(a.Components.Zip(b.Components, f));
+
+    ZipComponents(a: INumerical, b: INumerical, c: INumerical, f: Function3<Number, Number, Number, Number>): INumerical
+        => Create(a.Components.Zip(b.Components, c.Components, f));
+
+    AllComponents(x: INumerical, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.All(predicate);
+
+    AnyComponent(x: INumerical, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.Any(predicate);
+
+    Clamp(x: INumerical, a: INumerical, b: INumerical): INumerical
+        => Create(x.ZipComponents(a, b, (x0, a0, b0) => x0.Clamp(a0, b0)));
+    
+    Sqrt(x: INumerical): INumerical 
+        => x.SquareRoot;
+    
+    InversePow(x: INumerical, n: INumerical): INumerical 
+        => x.Pow(n.Reciprocal);
+    
+    SmoothStep(x: INumerical): INumerical 
+        => x.Square * (3.0 - x.Twice);    
+    
+    MultiplyEpsilon(x: INumerical, y: INumerical): INumerical 
+        => x.Abs.Greater(y.Abs) * Epsilon;
+    
+    Fract(x: INumerical): INumerical 
+        => x - x.Floor;
+
+    Pow2(x: INumerical): INumerical
+        => x * x;
+    
+    Pow3(x: INumerical): INumerical 
+        => x.Pow2 * x;
+    
+    Pow4(x: INumerical): INumerical 
+        => x.Pow3 * x;
+    
+    Pow5(x: INumerical): INumerical 
+        => x.Pow4 * x;
+    
+    Sqr(x: INumerical): INumerical
+        => x.Square;
+    
+    Cube(x: INumerical): INumerical 
+        => x.Pow3;    
+    
+    ClampZeroOne(x: INumerical): INumerical
+        => x.Clamp(x.Zero, x.One);
+}

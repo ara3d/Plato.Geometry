@@ -37,6 +37,9 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static implicit operator float(Number n) => n.Value;
 
+        [MethodImpl(AggressiveInlining)]
+        public static implicit operator Number(Integer n) => n.Value;
+
         // -------------------------------------------------------------------------------
         // Operators (forward to float)
         // -------------------------------------------------------------------------------
@@ -252,7 +255,7 @@ namespace Plato
 
         /// <summary>
         /// The larger of two single-precision floating-point numbers.
-        /// </summary>
+        /// </summary>  
         [MethodImpl(AggressiveInlining)]
         public Number Max(Number other) => MathF.Max(Value, other);
 
@@ -279,6 +282,12 @@ namespace Plato
         /// </summary>
         [MethodImpl(AggressiveInlining)]
         public Number Pow(Number power) => MathF.Pow(Value, power);
+
+        /// <summary>
+        /// Clamp number within the range of two numbers.
+        /// </summary>
+        [MethodImpl(AggressiveInlining)]
+        public Number Clamp(Number a, Number b) => MathF.Max(a, MathF.Min(Value, b));
 
         /// <summary>
         /// The reciprocal of the number.
