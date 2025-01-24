@@ -133,6 +133,14 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static Vector4 operator /(Vector4 left, Number scalar) => left.Value / scalar;
 
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator %(Vector4 left, Vector4 right)
+            => left - right * (left / right).Truncate;
+
+        [MethodImpl(AggressiveInlining)]
+        public static Vector4 operator %(Vector4 left, Number scalar) 
+            => left % new Vector4(scalar);
+
         /// <summary>
         /// Negates the specified Vector4D.
         /// </summary>
@@ -299,8 +307,11 @@ namespace Plato
         /// <summary>
         /// Returns a truncated version of the specified <see cref="Vector4"/>.
         /// </summary>
-        [MethodImpl(AggressiveInlining)]
-        public Vector4 Truncate() => SNVector4.Truncate(Value);
+        public Vector4 Truncate
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => SNVector4.Truncate(Value); 
+        }
 
         /// <summary>
         /// Rounds each element of the specified <see cref="Vector2"/> to the nearest even integer.

@@ -13,7 +13,6 @@ interface IValue
 // The formal term for this is an Abelian group over addition
 interface IAdditive
 {
-    Zero(_: Self): Self;
     Add(a: Self, b: Self): Self;    
     Subtract(a: Self, b: Self): Self;    
     Negative(self: Self): Self;
@@ -28,15 +27,19 @@ interface IScalarArithmetic
     Multiply(self: Self, other: Number): Self;    
 }
 
+// A type which supports linear interpolation. 
+interface IInterpolatable   
+{ 
+    Lerp(a: Self, b: Self, t: Number): Self;
+}
+
 // This is a generalization of real number to multiple dimensions, and with or without units of measure.
-// A numerical type represents things like reals, vectors, complex numbers, and measures.
-// A type which can be added and subtracted, and supports scalar arithmetic  
-// If it supports these things then it can also implicitly supports linear interpolatation
-// Note that types implementing this interface might not support multiplication or division, 
-// such as measurements. In mathematics, this is called a vector space
+// These types can be added, negated, subtracted, and support scalar arithmetic. 
+// They do not necessarily support multiplication and division (e.g., Angles and Lengths). 
+// By definition, they implicitly support interpolation
 // https://en.wikipedia.org/wiki/Vector_space
-interface INumerical
-    inherits IInterpolatable, IScalarArithmetic, IAdditive 
+interface IVectorSpace 
+    inherits IInterpolatable, IAdditive, IScalarArithmetic
 {
     // A static function that returns the dimensionality of the numerical type. 
     NumComponents(_: Self): Integer;
@@ -45,39 +48,14 @@ interface INumerical
     Components(x: Self): IArray<Number>;
     
     // Creates a new numerical type from the components.
-    Create(_: Self, xs: IArray<Number>): Self;
-}
-
-// The less than function return true if the first value is strictly less than the other. 
-interface IOrderable 
-{
-	LessThanOrEquals(x: Self, y: Self): Boolean;
+    CreateFromComponents(_: Self, xs: IArray<Number>): Self;
 }
 
 // A type which can be multiplied by itself
-// Monid over multiplication
+// Monoid over multiplication
 interface IMultiplicative
 {
-    One(_: Self): Self;
     Multiply(a: Self, b: Self): Self;
-}
-
-// IMultiplicative inverse
-interface IInvertible
-{
-    Inverse(self: Self): Self;  
-}
-
-// Represents an Abelian group under multiplication 
-interface IMultiplicativeWithInverse
-    inherits IMultiplicative, IInvertible
-{
-}
-
-// A type which supports linear interpolation
-interface IInterpolatable   
-{ 
-    Lerp(a: Self, b: Self, t: Number): Self;
 }
 
 // A type which can be divided by itself 
@@ -97,8 +75,32 @@ interface IModulo
 // https://en.wikipedia.org/wiki/Field_(mathematics)
 // It includes Numbers and Vectors, but does not include measurements. 
 interface IArithmetic 
-    inherits IAdditive, IMultiplicativeWithInverse, IDivisible, IModulo
+    inherits IAdditive, IMultiplicative, IDivisible, IModulo
 { 
+}
+
+// A numerical type that represents reals, vectors, and complex numbers with full arithmetic. 
+interface INumerical
+    inherits IVectorSpace, IArithmetic
+{
+}
+
+// The less than function return true if the first value is strictly less than the other. 
+interface IOrderable 
+{
+	LessThanOrEquals(x: Self, y: Self): Boolean;
+}
+
+// IMultiplicative inverse
+interface IInvertible
+{
+    Inverse(self: Self): Self;  
+}
+
+// Represents an Abelian group under multiplication 
+interface IMultiplicativeWithInverse
+    inherits IMultiplicative, IInvertible
+{
 }
 
 // Represents a continuous one dimensional value.
@@ -106,12 +108,13 @@ interface IArithmetic
 // It supports all arithmetic operations.
 // The "Number" type is the only example of a IRealNumber
 interface IRealNumber
-    inherits INumerical, IOrderable, IArithmetic
+    inherits INumerical, IOrderable
 {
 }
 
 // Used for integer and cardinal types. 
-// Somewhat counter intuitively, they are not considered INumerical types.
+// They are not considered INumerical types because they are not invertible over multiplication,
+// division is only an approximation. 
 // They do however support arithmetic operations. 
 // Lerp is defined for whole numbers. 
 interface IWholeNumber 
@@ -121,9 +124,9 @@ interface IWholeNumber
 
 // A measure is a numeric value with an intrinisic unit of measure. 
 // It resembles a IReal except you cannot multiply or divide two measures without 
-// getting a new type. It does however support IAdditive on itself.
+// getting a new type. It does however support addition, negation, and scalar arithmetic
 interface IMeasure
-    inherits IOrderable, INumerical
+    inherits IOrderable, IVectorSpace
 {
 }
 
@@ -150,7 +153,7 @@ interface IBoolean
 
 // Represents an interval of values. 
 interface IInterval<T>    
-    where T: INumerical
+    where T: IVectorSpace
     inherits IValue, IArray<T>
 {
     Start(x: Self): T;
@@ -159,9 +162,35 @@ interface IInterval<T>
 
 // Represents a range of values. 
 interface IBounds<T>    
-    where T: INumerical
+    where T: IVectorSpace
     inherits IValue
 {
     Min(x: Self): T;
     Max(x: Self): T;
+}
+
+// Arrays provide a count and support the indexing operator [] 
+interface IArray<T>
+{
+    Count(xs: Self): Integer;
+    At(xs: Self, n: Integer): T;
+}
+
+// Extends the IArray interface with rows and columns. 
+interface IArray2D<T>
+    inherits IArray<T>
+{ 
+    NumRows(xs: Self): Integer;
+    NumColumns(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer): T;
+}
+
+// Extends the IArray interface with rows, columns, and layers. 
+interface IArray3D<T>
+    inherits IArray<T>
+{ 
+    NumRows(xs: Self): Integer;
+    NumColumns(xs: Self): Integer;
+    NumLayers(xs: Self): Integer;
+    At(xs: Self, column: Integer, row: Integer, layer: Integer): T;
 }

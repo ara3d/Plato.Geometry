@@ -3,6 +3,9 @@ library Vectors
     //==
     // Vector2 functions
     
+    Vector2(s: Number): Vector2    
+        => (s, s);
+
     Line(a: Vector2, b: Vector2): Line2D 
         => (a, b);
     
@@ -20,6 +23,9 @@ library Vectors
 
     //==
     // Vector3 Functions 
+
+    Vector3(s: Number): Vector3 
+        => (s, s, s);
 
     XZY(v: Vector3): Vector3 => (v.X, v.Z, v.Y);    
     YXZ(v: Vector3): Vector3 => (v.Y, v.X, v.Z);    
@@ -55,12 +61,20 @@ library Vectors
     Vector4(v: Vector3, w: Number): Vector4 
         => (v.X, v.Y, v.Z, w);
     
-    UnitX(_: Vector3): Vector3 => (1.0, 0.0, 0.0);
-    UnitY(_: Vector3): Vector3 => (0.0, 1.0, 0.0);
-    UnitZ(_: Vector3): Vector3 => (0.0, 0.0, 1.0);
+    UnitX(_: Vector3): Vector3 
+        => (1.0, 0.0, 0.0);
+    
+    UnitY(_: Vector3): Vector3 
+        => (0.0, 1.0, 0.0);
+    
+    UnitZ(_: Vector3): Vector3 
+        => (0.0, 0.0, 1.0);
 
     //==
     // Vector 4 functions 
+
+    Vector4(s: Number): Vector4   
+        => (s, s, s, s);
 
     Vector3(v: Vector4): Vector3 
         => (v.X, v.Y, v.Z);
@@ -68,16 +82,28 @@ library Vectors
     XYZ(v: Vector4): Vector3 
         => v.Vector3;
   
-    UnitX(_: Vector4): Vector4 => (1.0, 0.0, 0.0, 0.0);
-    UnitY(_: Vector4): Vector4 => (0.0, 1.0, 0.0, 0.0);
-    UnitZ(_: Vector4): Vector4 => (0.0, 0.0, 1.0, 0.0);
-    UnitW(_: Vector4): Vector4 => (0.0, 0.0, 0.0, 1.0);
+    UnitX(_: Vector4): Vector4 
+        => (1.0, 0.0, 0.0, 0.0);
+    
+    UnitY(_: Vector4): Vector4 
+        => (0.0, 1.0, 0.0, 0.0);
+    
+    UnitZ(_: Vector4): Vector4 
+        => (0.0, 0.0, 1.0, 0.0);
+    
+    UnitW(_: Vector4): Vector4 
+        => (0.0, 0.0, 0.0, 1.0);
+
+    //==
+
+    Vector8(s: Number): Vector8   
+        => (s, s, s, s, s, s, s, s);
 
     //==
     // Generic vector functions
     
     MidPoint(a: IVector, b: IVector): IVector
-        => (a + b) / 2.0;
+        => (a + b).Half;
 
     Length(a: IVector): Number 
         => a.Magnitude;
@@ -89,19 +115,19 @@ library Vectors
         => v.Reduce(0.0, (a, b) => a + b);
     
     SumSquares(v: IVector): Number 
-        => v.Square.Sum;   
+        => v.Sqr.Sum;   
     
     MagnitudeSquared(v: IVector): Number 
         => v.SumSquares;    
     
     Magnitude(v: IVector): Number 
-        => v.MagnitudeSquared.SquareRoot;    
+        => v.MagnitudeSquared.Sqrt;    
     
     Dot(v1: IVector, v2: IVector): Number 
         => (v1 * v2).Sum;  
     
     Normalize(x: IVector): IVector 
-        => x.MagnitudeSquared > 0 ? x / x.Magnitude : x.Zero;
+        => x.MagnitudeSquared > 0 ? x / x.Magnitude : Zero;
     
     Reflect(v: IVector, normal: IVector): IVector 
         => v - normal * v.Dot(normal) * 2.0;
@@ -119,19 +145,7 @@ library Vectors
         => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
     
     IsParallel(a: IVector, b: IVector): Boolean 
-        => a.Dot(b).Abs > (1.0 - Epsilon);
-
-    Zero(_: IVector): IVector 
-        => 0.0;
-
-    One(_: IVector): IVector 
-        => 0.0;
-    
-    MinValue(_: IVector): IVector 
-        => Number.MinValue;
-
-    MaxValue(_: IVector): IVector 
-        => Number.MinValue;
+        => a.Dot(b).Abs >= (One - Epsilon);
 
     //==
     // Matrix operations   
@@ -156,13 +170,20 @@ library Vectors
     M43(m: Matrix4x4): Number => m.Row4.Z;
     M44(m: Matrix4x4): Number => m.Row4.W;
 
-    Column1(m: Matrix4x4): Vector4 => (M11, M21, M31, M41);
-    Column2(m: Matrix4x4): Vector4 => (M12, M22, M32, M42);
-    Column3(m: Matrix4x4): Vector4 => (M13, M23, M33, M43);
-    Column4(m: Matrix4x4): Vector4 => (M14, M24, M34, M44);
+    Column1(m: Matrix4x4): Vector4 
+        => (M11, M21, M31, M41);
+    
+    Column2(m: Matrix4x4): Vector4 
+        => (M12, M22, M32, M42);
+    
+    Column3(m: Matrix4x4): Vector4 
+        => (M13, M23, M33, M43);
+    
+    Column4(m: Matrix4x4): Vector4 
+        => (M14, M24, M34, M44);
  
     WithTranslation(m: Matrix4x4, v: Vector3): Matrix4x4
-        => m.WithRow4(v.X, v.Y, v.Z, 1.0);
+        => m.WithRow4(v.Vector4(1.0));
                 
     Translation(m: Matrix4x4): Vector3
         => (m.M14, m.M24, m.M34);
@@ -176,7 +197,8 @@ library Vectors
     Multiply(m: Matrix4x4, v: Vector3): Vector3
         => m.Transform(v);
 
-    Identity(_: Matrix4x4): Matrix4x4 => (Vector4.UnitX, Vector4.UnitY, Vector4.UnitZ, Vector4.UnitW);
+    Identity(_: Matrix4x4): Matrix4x4 
+        => (Vector4.UnitX, Vector4.UnitY, Vector4.UnitZ, Vector4.UnitW);
 
     //==
     // Quaternion functions
@@ -193,5 +215,6 @@ library Vectors
     Matrix4x4(q: Quaternion): Matrix4x4
         => Matrix4x4.CreateFromQuaternion(q);
 
-    Identity(_: Quaternion): Quaternion => (0.0, 0.0, 0.0, 1.0);        
+    Identity(_: Quaternion): Quaternion 
+        => (0.0, 0.0, 0.0, 1.0);        
 }

@@ -79,6 +79,22 @@ using System.Runtime.Serialization;
                 => !b.Value;
         
             // -------------------------------------------------------------------------------
+            // Comparison operators
+            // -------------------------------------------------------------------------------
+
+            public static bool operator <=(Boolean a, Boolean b)
+                => !a.Value || a.Value == b.Value;
+
+            public static bool operator >=(Boolean a, Boolean b)
+                => a.Value || a.Value == b.Value;
+
+            public static bool operator <(Boolean a, Boolean b)
+                => !a && b;
+
+            public static bool operator >(Boolean a, Boolean b)
+                => a && !b;
+
+            // -------------------------------------------------------------------------------
             // IComparable / IComparable<Boolean> Implementation
             // -------------------------------------------------------------------------------
 

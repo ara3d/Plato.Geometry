@@ -101,7 +101,7 @@ library Geometry
         (x.Max.X, x.Min.Y, x.Max.Z),
         (x.Min.X, x.Max.Y, x.Max.Z), 
         (x.Max.X, x.Max.Y, x.Max.Z)];
-    Empty(_: Bounds3D): Bounds3D => (Vector3.MaxValue, Vector3.MinValue);
+    Empty(_: Bounds3D): Bounds3D => (MaxNumber, MinNumber);
     Bounds(xs: IArray<Vector3>): Bounds3D => xs.Reduce(Bounds3D.Empty, (a, b) => a.Include(b));
 
 	//==
@@ -124,7 +124,7 @@ library Geometry
     //==
     // 2D to 3D
     
-    To3D(x: Vector2): Vector3 => x;
+    To3D(x: Vector2): Vector3 => (x.X, x.Y, 0);
     To3D(x: Line2D): Line3D => (x.A.To3D, x.B.To3D);
     To3D(x: Triangle2D): Triangle3D => (x.A.To3D, x.B.To3D, x.C.To3D);
     To3D(x: Quad2D): Quad3D => (x.A.To3D, x.B.To3D, x.C.To3D, x.D.To3D);
@@ -147,5 +147,9 @@ library Geometry
         (-0.5, 3.0.Sqrt.Half), 
         (0.0, 1.0));
 
-    Unit(_: Quad2D): Quad2D =>  ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0));
+    Unit(_: Quad2D): Quad2D 
+        => ((0.0, 0.0), 
+            (1.0, 0.0), 
+            (1.0, 1.0), 
+            (0.0, 1.0));
 }

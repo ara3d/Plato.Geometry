@@ -1,7 +1,5 @@
 library Angles
 {
-    Zero(_: Angle): Angle => 0.0;
-
 	Turns(x: Integer): Angle => x.Number.Turns;
 	Degrees(x: Integer): Angle => x.Number.Turns;
 	Gradians(x: Integer): Angle => x.Number.Gradians;
@@ -17,7 +15,6 @@ library Angles
 	Turns(x: Angle): Number => x.Radians / TwoPi;
 	Degrees(x: Angle): Number => x.Turns * 360.0;
 	Gradians(x: Angle): Number => x.Turns * 400.0;
-	Radians(x: Angle): Number => x;
 
     Sec(x: Angle): Number => x.Cos.Reciprocal;
     Csc(x: Angle): Number => x.Sin.Reciprocal;

@@ -111,5 +111,14 @@ namespace Plato
             [MethodImpl(AggressiveInlining)]
             get => Math.Sign(Value);
         }
+
+        /// <summary>
+        /// Linear interpolation, using default integer rounding.
+        /// </summary>
+        public Integer Lerp(Integer other, Number t)
+        {
+            var delta = other - this;
+            return (int)(Value + (delta.Value * t));
+        }
     }
 }

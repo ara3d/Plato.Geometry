@@ -4,7 +4,7 @@ using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace Plato
 {
-    public readonly struct FunctionalArray2D<T> : IArray2D<T>
+    public readonly struct Array2D<T> : IArray2D<T>
     {
         public Integer Count { get; }
         public Integer NumColumns { get; }
@@ -12,7 +12,7 @@ namespace Plato
         public readonly Func<Integer, Integer, T> Func;
         
         [MethodImpl(AggressiveInlining)]
-        public FunctionalArray2D(Integer numColumns, Integer numRows, Func<Integer, Integer, T> func)
+        public Array2D(Integer numColumns, Integer numRows, Func<Integer, Integer, T> func)
         {
             Func = func;
             NumColumns = numColumns;

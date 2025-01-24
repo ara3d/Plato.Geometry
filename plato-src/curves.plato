@@ -33,11 +33,8 @@ library Curves
         => x.SineWave(f.Amplitude, f.Frequency, f.Phase);
 
     // https://en.wikipedia.org/wiki/Parabola
-    Parabola(x: IMultiplicative): IMultiplicative
-        => x.Sqr;
-  
     Eval(f: Parabola, x: Number): Number 
-        => x.Parabola;
+        => x.Sqr;
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
     StaircaseFloor(x: Number, steps: Integer): Number   
@@ -49,7 +46,7 @@ library Curves
 
     // https://mathworld.wolfram.com/StaircaseFunction.html
     StaircaseRound(x: Number, steps: Integer): Number
-        => (x * steps).Round / steps; 
+        => (x * steps).Round(0) / steps; 
 }
 
 //====
@@ -220,7 +217,7 @@ library AngularCurves2D
 
     // https://en.wikipedia.org/wiki/Lissajous_curve
     Lissajous(t: Angle, a: Number, b: Number, d: Angle): Vector2
-        => ((t + d).Sin, b.Sin);
+        => ((t + d).Sin, b.Turns.Sin);
 
     Eval(curve: Lissajous, t: Angle): Vector2
 		=> t.Lissajous(curve.A, curve.B, curve.Delta);

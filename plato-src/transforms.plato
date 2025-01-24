@@ -148,6 +148,9 @@ library Transforms
     TransformNormal(t: ITransform3D, v: Vector3): Vector3
         => v.TransformNormal(t.Matrix);
   
+    // NOTE: ideally, many of these have well-defined inverses which are more efficient ...
+    // However, if I include them, then they don't properly override this inverse and return the wrong type. 
+    // I need to fix that. 
     Inverse(t: ITransform3D): MatrixTransform3D
         => t.Matrix.Invert;
 
@@ -169,9 +172,6 @@ library Transforms
     Translation(r: IRotationalTransform3D): Translation3D
         => Translation3D.Identity;
 
-    Inverse(t: IRotationalTransform3D): Rotation3D
-        => t.Quaternion.Inverse;
-
     //==
     // IdentityTransform3D
 
@@ -187,8 +187,8 @@ library Transforms
 	TransformDirection(t: IdentityTransform3D, v: Vector3): Vector3
 		=> v;
 
-    Inverse(t: IdentityTransform3D): IdentityTransform3D
-        => t;
+    //Inverse(t: IdentityTransform3D): IdentityTransform3D
+    //    => t;
 
     IdentityTransform3D(): IdentityTransform3D
         => new IdentityTransform3D();
@@ -206,7 +206,7 @@ library Transforms
         => v;
         
     Identity(_: Translation3D): Translation3D
-        => Vector3.Zero;
+        => new Vector3(Zero);
 
     Translation(t: Translation3D): Translation3D
         => t;
@@ -214,8 +214,8 @@ library Transforms
     Rotation(t: Translation3D): Rotation3D
         => Rotation3D.Identity;
 
-    Inverse(t: Translation3D): Translation3D
-        => -t.Direction;
+    //Inverse(t: Translation3D): Translation3D
+    //    => -t.Direction;
 
     //==
     // MatrixTransform3D
@@ -257,7 +257,7 @@ library Transforms
     // LookRotation
 
     Matrix(r: LookRotation): Matrix4x4
-        => Matrix4x4.CreateWorld((0.0, 0.0, 0.0), r.Forward, r.Up);
+        => Matrix4x4.CreateWorld(Zero, r.Forward, r.Up);
 
     Quaternion(r: LookRotation): Quaternion
         => Quaternion.CreateFromRotationMatrix(r.Matrix);
@@ -272,10 +272,10 @@ library Transforms
         => Matrix4x4.CreateScale(s.Scale.X, s.Scale.Y, s.Scale.Z);           
 
     UniformScaling3D(x: Number): Scaling3D
-        => (x, x, x);
+        => new Vector3(x);
 
     Identity(_: Scaling3D): Scaling3D
-        => Vector3.One;
+        => new Vector3(One);
 
     //==
     // TRSTransform3D
@@ -293,7 +293,7 @@ library Transforms
         => p.Translation.Matrix * p.Rotation.Matrix;
 
     TRSTransform3D(p: Pose3D): TRSTransform3D
-        => (p.Translation, p.Rotation, (1.0, 1.0, 1.0));
+        => (p.Translation, p.Rotation, Scaling3D.Identity);
 
     Identity(_: Pose3D): Pose3D
         => (Translation3D.Identity, Rotation3D.Identity);
@@ -305,7 +305,7 @@ library Transforms
 	    => Quaternion.CreateFromAxisAngle(aa.Axis, aa.Angle);
 
     Identity(_: AxisAngle): AxisAngle
-        => (Vector3.UnitX, Angle.Zero);
+        => (Vector3.UnitX, Zero);
 
     //==
     // EulerAngles
@@ -314,13 +314,13 @@ library Transforms
         => Quaternion.CreateFromYawPitchRoll(e.Yaw, e.Pitch, e.Roll);
 
     Identity(_: EulerAngles): EulerAngles
-        => (Angle.Zero, Angle.Zero, Angle.Zero);
+        => (Zero, Zero, Zero);
 
     //==
     // Perspective3D
 
     Matrix(p: Perspective3D): Matrix4x4
-        => Matrix4x4.CreatePerspectiveFieldOfView(p.FOV, p.AspectRatio, p.Near, p.Far);
+        => Matrix4x4.CreatePerspectiveFieldOfView(p.FOV.Radians, p.AspectRatio, p.Near, p.Far);
 
     //==
     // Orthographic3D

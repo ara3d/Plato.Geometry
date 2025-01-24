@@ -1,6 +1,5 @@
 ﻿library Meshes
 {
-
     //==
     // # Primitives
 
@@ -57,16 +56,21 @@
 
     NumFaces(g: IIndexedGeometry): Integer => g.NumPrimitives;
     
+    Vertex(g: IIndexedGeometry2D, n: Integer): Vector2 => g.Points[g.Indices[n]];
+    Vertex(g: IIndexedGeometry3D, n: Integer): Vector3 => g.Points[g.Indices[n]];
+
     FaceIndices(g: IIndexedGeometry, f: Integer): IArray<Integer> => g.Indices.NthSlice(f, g.PrimitiveSize);
     FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2> => g.FaceIndices(f).Map(i => g.Vertex(i));
     FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3> => g.FaceIndices(f).Map(i => g.Vertex(i));
-    AllFaceIndices(g: IIndexedGeometry): IArray<IArray<Integer>> => g.Indices.Slices(g.PrimitiveSize);
-    Vertex(g: IIndexedGeometry2D, n: Integer): Vector2 => g.Points[g.Indices[n]];
-    Vertex(g: IIndexedGeometry3D, n: Integer): Vector3 => g.Points[g.Indices[n]];
+
+    AllFaceIndices(g: IIndexedGeometry): IArray2D<Integer> => g.Indices.Slices(g.PrimitiveSize);
+
+    AllFaceVertices(g: IIndexedGeometry2D): IArray2D<Vector2> => g.AllFaceIndices.Map(x => g.Vertex(x));
+    AllFaceVertices(g: IIndexedGeometry3D): IArray2D<Vector3> => g.AllFaceIndices.Map(x => g.Vertex(x));
+    
     Vertices(g: IIndexedGeometry2D, xs: IArray<Integer>): IArray<Vector2> => xs.Map(i => g.Vertex(i));
     Vertices(g: IIndexedGeometry3D, xs: IArray<Integer>): IArray<Vector3> => xs.Map(i => g.Vertex(i));
-    AllFaceVertices(g: IIndexedGeometry2D): IArray<IArray<Vector2>> => g.Indices.Slices(g.PrimitiveSize).Map(xs => g.Vertices(xs));
-    AllFaceVertices(g: IIndexedGeometry3D): IArray<IArray<Vector3>> => g.Indices.Slices(g.PrimitiveSize).Map(xs => g.Vertices(xs));
+    
     AllVertices(g: IIndexedGeometry2D): IArray<Vector2> => g.Vertices(g.Indices);
     AllVertices(g: IIndexedGeometry3D): IArray<Vector3> => g.Vertices(g.Indices);     
 

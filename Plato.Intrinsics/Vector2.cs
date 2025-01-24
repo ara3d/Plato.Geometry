@@ -53,51 +53,33 @@ namespace Plato
 
         // Static operators  
 
-        /// <summary>
-        /// Adds two Vector2D instances.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator +(Vector2 left, Vector2 right) => left.Value + right.Value;
 
-        /// <summary>
-        /// Subtracts the right Vector2D from the left Vector2D.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator -(Vector2 left, Vector2 right) => left.Value - right.Value;
 
-        /// <summary>
-        /// Multiplies two Vector2D instances element-wise.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator *(Vector2 left, Vector2 right) => left.Value * right.Value;
 
-        /// <summary>
-        /// Multiplies a Vector2D by a scalar.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator *(Vector2 left, Number scalar) => left.Value * scalar;
 
-        /// <summary>
-        /// Multiplies a scalar by a Vector2D.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator *(Number scalar, Vector2 right) => scalar * right.Value;
 
-        /// <summary>
-        /// Divides the left Vector2D by the right Vector2D element-wise.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator /(Vector2 left, Vector2 right) => left.Value / right.Value;
 
-        /// <summary>
-        /// Divides a Vector2D by a scalar.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator /(Vector2 left, Number scalar) => left.Value / scalar;
 
-        /// <summary>
-        /// Negates the specified Vector2D.
-        /// </summary>
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator %(Vector2 left, Vector2 right) => left - right * (left / right).Truncate;
+
+        [MethodImpl(AggressiveInlining)]
+        public static Vector2 operator %(Vector2 left, Number scalar) => left % new Vector2(scalar);
+
         [MethodImpl(AggressiveInlining)]
         public static Vector2 operator -(Vector2 value) => -value.Value;
 

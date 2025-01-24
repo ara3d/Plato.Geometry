@@ -2,10 +2,10 @@
 Angle
   - IMeasure
     - IOrderable
-    - INumerical
+    - IVectorSpace
       - IInterpolatable
-      - IScalarArithmetic
       - IAdditive
+      - IScalarArithmetic
 
 AnglePair
   - IInterval<Angle>
@@ -417,9 +417,7 @@ Integer
     - IOrderable
     - IArithmetic
       - IAdditive
-      - IMultiplicativeWithInverse
-        - IMultiplicative
-        - IInvertible
+      - IMultiplicative
       - IDivisible
       - IModulo
     - IInterpolatable
@@ -618,7 +616,7 @@ LookRotation
 
 Matrix3x2
   - IValue
-  - IArray<Vector3>
+  - IArray<Vector2>
 
 Matrix4x4
   - IValue
@@ -648,17 +646,16 @@ NPyramid
 Number
   - IRealNumber
     - INumerical
-      - IInterpolatable
-      - IScalarArithmetic
-      - IAdditive
-    - IOrderable
-    - IArithmetic
-      - IAdditive
-      - IMultiplicativeWithInverse
+      - IVectorSpace
+        - IInterpolatable
+        - IAdditive
+        - IScalarArithmetic
+      - IArithmetic
+        - IAdditive
         - IMultiplicative
-        - IInvertible
-      - IDivisible
-      - IModulo
+        - IDivisible
+        - IModulo
+    - IOrderable
 
 NumberInterval
   - IInterval<Number>
@@ -1051,10 +1048,10 @@ String
 Time
   - IMeasure
     - IOrderable
-    - INumerical
+    - IVectorSpace
       - IInterpolatable
-      - IScalarArithmetic
       - IAdditive
+      - IScalarArithmetic
 
 Torus
   - ISolid
@@ -1257,20 +1254,22 @@ Tuple7
 
 Tuple8
 
-Tuple9
-
 Vector2
   - IVector
     - IArray<Number>
     - INumerical
-      - IInterpolatable
-      - IScalarArithmetic
-      - IAdditive
+      - IVectorSpace
+        - IInterpolatable
+        - IAdditive
+        - IScalarArithmetic
+      - IArithmetic
+        - IAdditive
+        - IMultiplicative
+        - IDivisible
+        - IModulo
     - IArithmetic
       - IAdditive
-      - IMultiplicativeWithInverse
-        - IMultiplicative
-        - IInvertible
+      - IMultiplicative
       - IDivisible
       - IModulo
 
@@ -1278,14 +1277,18 @@ Vector3
   - IVector
     - IArray<Number>
     - INumerical
-      - IInterpolatable
-      - IScalarArithmetic
-      - IAdditive
+      - IVectorSpace
+        - IInterpolatable
+        - IAdditive
+        - IScalarArithmetic
+      - IArithmetic
+        - IAdditive
+        - IMultiplicative
+        - IDivisible
+        - IModulo
     - IArithmetic
       - IAdditive
-      - IMultiplicativeWithInverse
-        - IMultiplicative
-        - IInvertible
+      - IMultiplicative
       - IDivisible
       - IModulo
 
@@ -1293,14 +1296,18 @@ Vector4
   - IVector
     - IArray<Number>
     - INumerical
-      - IInterpolatable
-      - IScalarArithmetic
-      - IAdditive
+      - IVectorSpace
+        - IInterpolatable
+        - IAdditive
+        - IScalarArithmetic
+      - IArithmetic
+        - IAdditive
+        - IMultiplicative
+        - IDivisible
+        - IModulo
     - IArithmetic
       - IAdditive
-      - IMultiplicativeWithInverse
-        - IMultiplicative
-        - IInvertible
+      - IMultiplicative
       - IDivisible
       - IModulo
 
@@ -1308,13 +1315,17 @@ Vector8
   - IVector
     - IArray<Number>
     - INumerical
-      - IInterpolatable
-      - IScalarArithmetic
-      - IAdditive
+      - IVectorSpace
+        - IInterpolatable
+        - IAdditive
+        - IScalarArithmetic
+      - IArithmetic
+        - IAdditive
+        - IMultiplicative
+        - IDivisible
+        - IModulo
     - IArithmetic
       - IAdditive
-      - IMultiplicativeWithInverse
-        - IMultiplicative
-        - IInvertible
+      - IMultiplicative
       - IDivisible
       - IModulo

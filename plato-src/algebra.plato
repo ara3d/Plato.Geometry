@@ -18,7 +18,7 @@ library Algebra
     //====================
 
     // https://en.wikipedia.org/wiki/Linear_equation#Equation_of_a_line
-    Linear(x: Number, m: INumerical, b: INumerical): Number
+    Linear(x: Number, m: INumerical, b: INumerical): INumerical
         => m * x + b;
     
     //  https://en.wikipedia.org/wiki/Quadratic_function
@@ -152,4 +152,11 @@ library Algebra
         => 0.5 * ((p2 - p0)
             + 2.0 * (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3) * t
             + 3.0 * (-p0 + p1 * 3.0 - p2 * 3.0 + p3) * t.Sqr);       
+
+    // https://en.wikipedia.org/wiki/Smoothstep
+    SmoothStep(x: INumerical): INumerical 
+        => x.Sqr * (-x.Twice + 3.0);   
+
+    SmootherStep(x: INumerical): INumerical 
+        => x.Cube * (x * 6.0 - 15.0) + 10.0;
 }

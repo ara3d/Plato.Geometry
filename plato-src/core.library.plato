@@ -4,11 +4,9 @@ library Core
     // Number 
 
     Between(x: Number, a: Number, b: Number): Boolean
-        => x.ZipComponents(a, b, (x0, a0, b0) => x0.Between(a0, b0)).All(x0 => x0);
+        => x >= a && x <= b;
 
-    BetweenZeroOne(x: Number): Boolean
-        => x.Between(x.Zero, x.One);
-
+    // TODO: consider replacing with BitIncrement as per
     // https://stackoverflow.com/a/2411661
     AlmostEqual(x: Number, y: Number): Boolean 
         => (x-y).Abs <= x.MultiplyEpsilon(y);
@@ -17,11 +15,14 @@ library Core
         => x.Abs < Epsilon;
     
     AlmostZeroOrOne(x: Number): Boolean 
-        => AlmostEqual(x, 0) || AlmostEqual(x, 1);
+        => x.AlmostEqual(Zero) || x.AlmostEqual(One);
 
     Magnitude(x: Number): Number
         => x;
 
+    MultiplyEpsilon(x: Number, y: Number): Number
+        => x.Abs.Greater(y.Abs) * Epsilon;
+    
     //==    
     // IScalarArithmetic operations 
 
@@ -87,4 +88,10 @@ library Core
    
     CompareTo(a: IOrderable, b: IOrderable): Integer
 		=> a <= b ? (a == b ? 0 : - 1) : 1;
+
+    //==
+    // IVectorSpace functions
+
+    Lerp(a: IVectorSpace, b: IVectorSpace, t: Number): IVectorSpace
+        => a + (b - a) * t;
 }

@@ -50,5 +50,17 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static implicit operator string(String s) => s.ToSystem();
 
+        [MethodImpl(AggressiveInlining)]
+        public static bool operator <= (String a, String b) => a.Value.CompareTo(b.Value) <= 0;
+
+        [MethodImpl(AggressiveInlining)]
+        public static bool operator >=(String a, String b) => a.Value.CompareTo(b.Value) >= 0;
+
+        [MethodImpl(AggressiveInlining)]
+        public static bool operator <(String a, String b) => a.Value.CompareTo(b.Value) < 0;
+
+        [MethodImpl(AggressiveInlining)]
+        public static bool operator >(String a, String b) => a.Value.CompareTo(b.Value) > 0;
+
     }
 }

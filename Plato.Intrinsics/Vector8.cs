@@ -47,9 +47,6 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static implicit operator Vector8(Vector256<float> value) => new(value);
 
-        [MethodImpl(AggressiveInlining)]
-        public static implicit operator Vector8(Number value) => new(value);
-
         //-------------------------------------------------------------------------------------
         // Properties
         //-------------------------------------------------------------------------------------
@@ -98,6 +95,13 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator /(Vector8 left, Number scalar) => Vector256.Divide(left.Value, scalar);
+
+        [MethodImpl(AggressiveInlining)]
+        public static Vector8 operator %(Vector8 left, Vector8 right)
+            => left - right * (left / right).Truncate;
+        
+        [MethodImpl(AggressiveInlining)]
+        public static Vector8 operator %(Vector8 left, Number scalar) => left % new Vector8(scalar);
 
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator /(Number scalar, Vector8 right) => Vector256.Divide(new Vector8(scalar), right.Value);
@@ -275,13 +279,13 @@ namespace Plato
             [MethodImpl(AggressiveInlining)] get => Vector256.CopySign(new Vector8(1), Value);
         }
 
-        public Vector8 SquareRoot
+        public Vector8 Sqrt
         {
             [MethodImpl(AggressiveInlining)] get => Vector256.Sqrt(Value);
         }
 
         /// <summary>Square each element</summary>
-        public Vector8 Square
+        public Vector8 Sqr
         {
             [MethodImpl(AggressiveInlining)] get => this * this;
         }
@@ -301,11 +305,17 @@ namespace Plato
             }
         }
 
-        [MethodImpl(AggressiveInlining)]
-        public Number FirstElement() => Vector256.ToScalar(Value);
+        public Number FirstElement
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Vector256.ToScalar(Value);
+        }
 
-        [MethodImpl(AggressiveInlining)]
-        public Vector8 Truncate() => Vector256.Truncate(Value);
+        public Vector8 Truncate
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Vector256.Truncate(Value); 
+        }
 
         //-------------------------------------------------------------------------------------
         // Pseudo-mutation operators 

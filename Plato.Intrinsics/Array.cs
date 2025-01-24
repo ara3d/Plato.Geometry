@@ -5,13 +5,13 @@ using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace Plato
 {
-    public readonly struct FunctionalArray<T> : IArray<T>
+    public readonly struct Array<T> : IArray<T>
     {
         public readonly Func<Integer, T> Func;
         public readonly Integer Count;
 
         [MethodImpl(AggressiveInlining)]
-        public FunctionalArray(Integer count, Func<Integer, T> func)
+        public Array(Integer count, Func<Integer, T> func)
         {
             Func = func;
             Count = count;

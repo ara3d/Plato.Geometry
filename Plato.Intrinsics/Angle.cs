@@ -39,10 +39,15 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static implicit operator Angle(Number x) => new(x);
         
+        public Number Radians
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Value; 
+        }
         // -------------------------------------------------------------------------------
         // Operators (forward to float)
         // -------------------------------------------------------------------------------
-        
+
         [MethodImpl(AggressiveInlining)]
         public static Angle operator +(Angle a, Angle b)
             => new(a.Value + b.Value);

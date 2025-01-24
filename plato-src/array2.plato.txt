@@ -1,7 +1,6 @@
-
 library ArrayLibrary
 {
-	Repeat(x: IAny, n: Integer): Array<IAny>
+	Repeat(x: $T, n: Integer): Array<$T>
         => n.MapRange((i) => x);
 
     Range(n: Integer): Array<Integer>
@@ -37,8 +36,8 @@ library ArrayLibrary
     Slice(xs: IArray<$T>, from: Integer, to: Integer): Array<$T>
        => xs.Subarray(from, to - from);
 
-    Slices(xs: IArray<$T>, size: Integer): Array2D<$T>
-	    => (xs.Count / size).MakeArray2D(size, (col, row) => xs.At(col * size + row));
+    Slices(xs: IArray<$T>, size: Integer): Array<Array<$T>>
+	    => (xs.Count / size).MapRange(i => xs.NthSlice(i, size));
 
     NthSlice(xs: IArray<$T>, n: Integer, size: Integer): Array<$T>
         => xs.Subarray(n * size, size);
@@ -61,7 +60,7 @@ library ArrayLibrary
     Trim(xs: IArray<$T>, first: Integer, last: Integer): Array<$T>
         => xs.Skip(first).Drop(last);
 
-    Rest(xs: IArray<$T>): IArray<$T>
+    Rest(xs: IArray<$T>): Array<$T>
 		=> xs.Skip(1);
 
     Reduce(xs: IArray<$T>, acc: $U, f: Function2<$U, $T, $U>): $U
@@ -91,20 +90,17 @@ library ArrayLibrary
     Map(xs: IArray<$T1>, f: Function1<$T1, $T2>): Array<$T2> 
         => xs.Count.MapRange((i) => f(xs.At(i)));
 
-    //Map(xs: IArray<$T1>, f: Function1<$T1, $T1>): IArray<$T1> 
-    //    => Self.Create(xs.Count.MapRange((i) => f(xs.At(i))));
+    Map(xs: IArray<$T1>, f: Function1<$T1, $T1>): IArray<$T1> 
+        => xs.Count.MapRange((i) => f(xs.At(i)));
+
+    Zip(xs: IArray<$T1>, ys: IArray<$T1>, f: Function2<$T1, $T1, $T1>): IArray<$T1> 
+        => xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i]));  
 
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, f: Function2<$T1, $T2, $T3>): Array<$T3> 
         => xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i]));  
 
-    //Zip(xs: IArray<$T1>, ys: IArray<$T1>, f: Function2<$T1, $T1, $T1>): IArray<$T1> 
-    //    => Self.Create(xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i])));  
-
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, zs: IArray<$T3>, f: Function3<$T1, $T2, $T3, $T4>): Array<$T4> 
         => xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => f(xs[i], ys[i], zs[i]));  
-
-    //Zip(xs: IArray<$T1>, ys: IArray<$T1>, zs: IArray<$T1>, f: Function3<$T1, $T1, $T1, $T1>): IArray<$T1> 
-    //    => Self.Create(xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => f(xs[i], ys[i], zs[i])));  
 
     ModuloAt(xs: IArray<$T>, n: Integer): $T
 		=> xs.At(n % xs.Count);
@@ -127,25 +123,26 @@ library ArrayLibrary
     CartesianProduct(columns: IArray<$TColumn>, rows: IArray<$TRow>, func: Function2<$TColumn, $TRow, $TResult>): Array2D<$TResult>
         => columns.Count.MakeArray2D(rows.Count, (i, j) => func(columns[i], rows[j]));
 
-    Reverse(self: IArray<$T>): Array<$T>
+    Reverse(self: IArray<$T>): IArray<$T>
         // TODO: there is a bug in the Plato compiler that requires subtraction to be parenthesized
         => self.Indices().Map(i => self[(self.Count - 1) - i]);
 
-    Concat(xs: IArray<$T>, ys: IArray<$T>): Array<$T>
+    Concat(xs: IArray<$T>, ys: IArray<$T>): IArray<$T>
         => (xs.Count + ys.Count).MapRange(i => i < xs.Count ? xs[i] : ys[i - xs.Count]);
 
-    Prepend(self: IArray<$T>, value: $T): Array<$T>
+    Prepend(self: IArray<$T>, value: $T): IArray<$T>
         => (self.Count + 1).MapRange(i => i == 0 ? value : self[i - 1]);
 
-    Append(self: IArray<$T>, value: $T): Array<$T>
+    Append(self: IArray<$T>, value: $T): IArray<$T>
         => (self.Count + 1).MapRange(i => i == 0 ? value : self[i - 1]);
 
-    PrependAndAppend(self: IArray<$T>, before: $T, after: $T): Array<$T>
+    PrependAndAppend(self: IArray<$T>, before: $T, after: $T): IArray<$T>
         => self.Prepend(before).Append(after);
 
     //==
     // 2D functions 
 
-    Map(xs: IArray2D<$T1>, f: Function1<$T1, $T2>): Array2D<$T2> 
+    Map(xs: IArray2D<$T1>, f: Function1<$T1, $T2>): IArray2D<$T2> 
         => xs.NumColumns.MakeArray2D(xs.NumRows, (a, b) => f(xs.At(a, b)));
-} 
+
+}

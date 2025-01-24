@@ -72,11 +72,6 @@ type Tuple8<T0, T1, T2, T3, T4, T5, T6, T7>
     X0: T0; X1: T1; X2: T2; X3: T3; X4: T4; X5: T5; X6: T6; X7: T7;  
 }
 
-type Tuple9<T0, T1, T2, T3, T4, T5, T6, T7, T8>
-{
-    X0: T0; X1: T1; X2: T2; X3: T3; X4: T4; X5: T5; X6: T6; X7: T7; X8: T8;  
-}
-
 type Function0<TR> 
 { }
 
@@ -168,7 +163,7 @@ type Vector8
 // https://en.wikipedia.org/wiki/Transformation_matrix#Affine_transformations
 // https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Numerics/Matrix3x3.cs
 type Matrix3x2 
-    implements IValue, IArray<Vector3>
+    implements IValue, IArray<Vector2>
 {
     Row1: Vector2;   
     Row2: Vector2;   

@@ -84,7 +84,7 @@ namespace Plato
         // Forwarded static methods
 
         [MethodImpl(AggressiveInlining)]
-        public static Quaternion CreateFromAxisAngle(Vector3 axis, Number angle)
+        public static Quaternion CreateFromAxisAngle(Vector3 axis, Angle angle)
             => SNQuaternion.CreateFromAxisAngle(axis, angle);
 
         [MethodImpl(AggressiveInlining)]

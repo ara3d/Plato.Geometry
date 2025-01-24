@@ -36,10 +36,7 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static implicit operator float(Number n) => n.Value;
-
-        [MethodImpl(AggressiveInlining)]
-        public static implicit operator Number(Integer n) => n.Value;
-
+        
         // -------------------------------------------------------------------------------
         // Operators (forward to float)
         // -------------------------------------------------------------------------------

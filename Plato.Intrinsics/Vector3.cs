@@ -70,51 +70,35 @@ namespace Plato
         
         // Static operators  
 
-        /// <summary>
-        /// Adds two Vector3D instances.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator +(Vector3 left, Vector3 right) => left.Value + right.Value;
 
-        /// <summary>
-        /// Subtracts the right Vector3D from the left Vector3D.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator -(Vector3 left, Vector3 right) => left.Value - right.Value;
 
-        /// <summary>
-        /// Multiplies two Vector3D instances element-wise.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator *(Vector3 left, Vector3 right) => left.Value * right.Value;
 
-        /// <summary>
-        /// Multiplies a Vector3D by a scalar.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator *(Vector3 left, Number scalar) => left.Value * scalar;
 
-        /// <summary>
-        /// Multiplies a scalar by a Vector3D.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator *(Number scalar, Vector3 right) => scalar * right.Value;
 
-        /// <summary>
-        /// Divides the left Vector3D by the right Vector3D element-wise.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator /(Vector3 left, Vector3 right) => left.Value / right.Value;
 
-        /// <summary>
-        /// Divides a Vector3D by a scalar.
-        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator /(Vector3 left, Number scalar) => left.Value / scalar;
 
-        /// <summary>
-        /// Negates the specified Vector3D.
-        /// </summary>
+        [MethodImpl(AggressiveInlining)]
+        public static Vector3 operator %(Vector3 left, Vector3 right)
+            => left - right * (left / right).Truncate;
+
+        [MethodImpl(AggressiveInlining)]
+        public static Vector3 operator %(Vector3 left, Number scalar) 
+            => left % new Vector3(scalar);
+
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator -(Vector3 value) => -value.Value;
         

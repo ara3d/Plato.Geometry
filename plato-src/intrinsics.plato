@@ -7,9 +7,9 @@ library Intrinsics
     // Generic utility functions 
     //==
 
-    MapRange(x: Integer, f: Function1<Integer, $T>): IArray<$T>;
-    FlatMap(xs: IArray<$T1>, f: Function1<$T1, IArray<$T2>>): IArray<$T2>;
-    MakeArray2D(columns: Integer, rows: Integer, f: Function2<Integer, Integer, $T>): IArray2D<$T>;   
+    MapRange(x: Integer, f: Function1<Integer, $T>): Array<$T>;
+    FlatMap(xs: IArray<$T1>, f: Function1<$T1, IArray<$T2>>): Array<$T2>;
+    MakeArray2D(columns: Integer, rows: Integer, f: Function2<Integer, Integer, $T>): Array2D<$T>;   
 
     //==
     // Matrix4x4
@@ -110,7 +110,7 @@ library Intrinsics
     Length(self: Vector2): Number;
     LengthSquared(self: Vector2): Number;
     Abs(self: Vector2): Vector2;
-    SquareRoot(self: Vector2): Vector2;
+    Sqrt(self: Vector2): Vector2;
     Sin(self: Vector2): Vector2;
     Cos(self: Vector2): Vector2;
     SinCos(self: Vector2): Tuple2<Vector2, Vector2>;
@@ -163,7 +163,7 @@ library Intrinsics
     Length(self: Vector3): Number;
     LengthSquared(self: Vector3): Number;
     Abs(self: Vector3): Vector3;
-    SquareRoot(self: Vector3): Vector3;
+    Sqrt(self: Vector3): Vector3;
     Sin(self: Vector3): Vector3;
     Cos(self: Vector3): Vector3;
     SinCos(self: Vector3): Tuple2<Vector3, Vector3>;
@@ -217,7 +217,7 @@ library Intrinsics
     Length(self: Vector4): Number;
     LengthSquared(self: Vector4): Number;
     Abs(self: Vector4): Vector4;
-    SquareRoot(self: Vector4): Vector4;
+    Sqrt(self: Vector4): Vector4;
     Sin(self: Vector4): Vector4;
     Cos(self: Vector4): Vector4;
     SinCos(self: Vector4): Tuple2<Vector4, Vector4>;
@@ -290,8 +290,8 @@ library Intrinsics
     ReciprocalSqrt(self: Vector8): Vector8;
     Round(self: Vector8): Vector8;
     Sign(self: Vector8): Vector8;
-    SquareRoot(self: Vector8): Vector8;
-    Square(self: Vector8): Vector8;
+    Sqrt(self: Vector8): Vector8;
+    Sqr(self: Vector8): Vector8;
     Sum(self: Vector8): Number;
     Tan(self: Vector8): Vector8;
     Add(left: Vector8, right: Vector8): Vector8;
@@ -479,8 +479,6 @@ library Intrinsics
     Tanh(self: Angle): Number;
     Add(a: Angle, b: Angle): Angle;
     Subtract(a: Angle, b: Angle): Angle;
-    Multiply(a: Angle, b: Angle): Angle;
-    Divide(a: Angle, b: Angle): Angle;
     Multiply(a: Angle, x: Number): Angle;
     Multiply(x: Number, a: Angle): Angle;
     Divide(a: Angle, x: Number): Angle;
@@ -491,4 +489,5 @@ library Intrinsics
     GreaterThanOrEquals(a: Angle, b: Angle): Boolean;
     CompareTo(self: Angle, other: Angle): Integer;
     GetHashCode(self: Angle): Integer;
+    Radians(self: Angle): Number;
 }
