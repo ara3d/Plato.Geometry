@@ -16,7 +16,7 @@ namespace Plato
     /// In the end, we decided to put it in the same namespace, and expose a similar API as Vector4.  
     /// </summary>
     [DataContract]
-    public partial struct Vector8 
+    public partial struct Vector8
     {
         [DataMember] public readonly Vector256<float> Value;
 
@@ -51,17 +51,55 @@ namespace Plato
         // Properties
         //-------------------------------------------------------------------------------------
 
-        public Number X0 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(0); }
-        public Number X1 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(1); }
-        public Number X2 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(2); }
-        public Number X3 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(3); }
-        public Number X4 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(4); }
-        public Number X5 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(5); }
-        public Number X6 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(6); }
-        public Number X7 { [MethodImpl(AggressiveInlining)] get => Value.GetElement(7); }
+        public Number X0
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(0);
+        }
 
-        public Vector4 Lower { [MethodImpl(AggressiveInlining)] get => Value.GetLower(); }
-        public Vector4 Upper { [MethodImpl(AggressiveInlining)] get => Value.GetUpper(); }
+        public Number X1
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(1);
+        }
+
+        public Number X2
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(2);
+        }
+
+        public Number X3
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(3);
+        }
+
+        public Number X4
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(4);
+        }
+
+        public Number X5
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(5);
+        }
+
+        public Number X6
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(6);
+        }
+
+        public Number X7
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetElement(7);
+        }
+
+        public Vector4 Lower
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetLower();
+        }
+
+        public Vector4 Upper
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.GetUpper();
+        }
 
         [MethodImpl(AggressiveInlining)]
         public Vector8 WithLower(Vector4 lower)
@@ -99,12 +137,13 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator %(Vector8 left, Vector8 right)
             => left - right * (left / right).Truncate;
-        
+
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator %(Vector8 left, Number scalar) => left % new Vector8(scalar);
 
         [MethodImpl(AggressiveInlining)]
-        public static Vector8 operator /(Number scalar, Vector8 right) => Vector256.Divide(new Vector8(scalar), right.Value);
+        public static Vector8 operator /(Number scalar, Vector8 right) =>
+            Vector256.Divide(new Vector8(scalar), right.Value);
 
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator -(Vector8 value) => Vector256.Negate(value.Value);
@@ -129,7 +168,8 @@ namespace Plato
         public static Vector8 operator ^(Vector8 a, Vector8 b) => Vector256.Xor(a.Value, b.Value);
 
         [MethodImpl(AggressiveInlining)]
-        public static Vector8 ConditionalSelect(Vector8 condition, Vector8 a, Vector8 b) => Vector256.ConditionalSelect(condition.Value, a.Value, b.Value);
+        public static Vector8 ConditionalSelect(Vector8 condition, Vector8 a, Vector8 b) =>
+            Vector256.ConditionalSelect(condition.Value, a.Value, b.Value);
 
         //-------------------------------------------------------------------------------------
         // Comparison operators 
@@ -239,7 +279,7 @@ namespace Plato
         }
 
         [MethodImpl(AggressiveInlining)]
-        public Vector8 Lerp(Vector8 b, Vector8 t) 
+        public Vector8 Lerp(Vector8 b, Vector8 t)
             => Vector256.Lerp(Value, b.Value, t.Value);
 
         public Vector8 Log
@@ -307,14 +347,12 @@ namespace Plato
 
         public Number FirstElement
         {
-            [MethodImpl(AggressiveInlining)]
-            get => Vector256.ToScalar(Value);
+            [MethodImpl(AggressiveInlining)] get => Vector256.ToScalar(Value);
         }
 
         public Vector8 Truncate
         {
-            [MethodImpl(AggressiveInlining)]
-            get => Vector256.Truncate(Value); 
+            [MethodImpl(AggressiveInlining)] get => Vector256.Truncate(Value);
         }
 
         //-------------------------------------------------------------------------------------
@@ -323,5 +361,35 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public Vector8 WithElement(Integer i, Number f) => Vector256.WithElement(Value, i, f);
+
+        //-------------------------------------------------------------------------------------
+        // Minimum and maximum elements
+        //-------------------------------------------------------------------------------------
+
+        public Number MinElement
+        {
+            [MethodImpl(AggressiveInlining)]
+            get
+            {
+                var minHalf = Lower.Min(Upper);
+                var shuffled = minHalf.ZWXY;
+                var reduced = minHalf.Min(shuffled);
+                reduced = reduced.Min(reduced.YXWZ);
+                return reduced[0];
+            }
+        }
+
+        public Number MaxElement
+        {
+            [MethodImpl(AggressiveInlining)]
+            get
+            {
+                var maxHalf = Lower.Max(Upper);
+                var shuffled = maxHalf.ZWXY;
+                var reduced = maxHalf.Max(shuffled);
+                reduced = reduced.Max(reduced.YXWZ);
+                return reduced[0];
+            }
+        }
     }
 }

@@ -357,5 +357,32 @@ namespace Plato
             [MethodImpl(AggressiveInlining)]
             get => SNVector4.Round(Value, MidpointRounding.ToPositiveInfinity);
         }
+
+        public Vector4 XYWZ => new(X, Y, W, Z);
+        public Vector4 XYZW => new(X, Y, Z, W);
+        public Vector4 XWYZ => new(X, W, Y, Z);
+        public Vector4 XWZY => new(X, W, Z, Y);
+        public Vector4 XZYW => new(X, Z, Y, W);
+        public Vector4 XZWY => new(X, Z, W, Y);
+
+        public Vector4 YXZW => new(Y, X, Z, W);
+        public Vector4 YXWZ => new(Y, X, W, Z);
+        public Vector4 YZXW => new(Y, Z, X, W);
+        public Vector4 YZWX => new(Y, Z, W, X);
+        public Vector4 YWXZ => new(Y, W, X, Z);
+        public Vector4 YWZX => new(Y, W, Z, X);
+
+        public Vector4 ZXYW => new(Z, X, Y, W);
+        public Vector4 ZXWY => new(Z, X, W, Y);
+        public Vector4 ZYXW => new(Z, Y, X, W);
+        public Vector4 ZYWX => new(Z, Y, W, X);
+        public Vector4 ZWXY => new(Z, W, X, Y);
+        public Vector4 ZWYX => new(Z, W, Y, X);
+
+        public Vector4 WXZY => new(W, X, Z, Y);
+        public Vector4 WYZX => new(W, Y, Z, X);
+        public Vector4 WYXZ => new(W, Y, X, Z);
+        public Vector4 WZXY => new(W, Z, X, Y);
+        public Vector4 WZYX => new(W, Z, Y, X);
     }
 }

@@ -6,11 +6,11 @@ using SNVector2 = System.Numerics.Vector2;
 namespace Plato
 {
     [DataContract]
-    public partial struct Vector2 
+    public readonly partial struct Vector2 
     {
         // Fields
 
-        [DataMember] public SNVector2 Value;
+        [DataMember] public readonly SNVector2 Value;
 
         // Constructor
 

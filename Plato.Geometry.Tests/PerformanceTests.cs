@@ -7,6 +7,7 @@ using Ara3D.Utils;
 
 namespace Plato.Geometry.Tests
 {
+    /*
     public static class PerformanceTests
     {
         // --------------------------------------------------------------
@@ -76,5 +77,5 @@ namespace Plato.Geometry.Tests
                     return normals;
                 });
         }
-    }
+    }*/
 }

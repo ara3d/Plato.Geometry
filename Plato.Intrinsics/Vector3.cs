@@ -6,7 +6,7 @@ using SNVector3 = System.Numerics.Vector3;
 namespace Plato
 {
     [DataContract]
-    public partial struct Vector3 
+    public readonly partial struct Vector3 
     {
         // Fields
 

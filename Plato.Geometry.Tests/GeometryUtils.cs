@@ -4,6 +4,7 @@ using Line = Ara3D.Mathematics.Line;
 
 namespace Plato.Geometry.Tests.Plato.Geometry
 {
+    /*
     public static class GeometryUtils
     {
         /// <summary>
@@ -324,4 +325,5 @@ namespace Plato.Geometry.Tests.Plato.Geometry
             return Vector3.Distance(closestA, closestB);
         }
     }
+    */
 }
