@@ -15,7 +15,8 @@ namespace Plato.Geometry.Tests
 
             //@"C:\tmp\copernicus_montreal.tif",
             //@"C:\tmp\copernicus_montreal2.tif",
-            @"C:\tmp\srtm_22_03.tif",
+            //@"C:\tmp\srtm_22_03.tif",
+            @"C:\Users\cdigg\data\copernicus-dem-30m\COP30_hh\Copernicus_DSM_10_N45_00_W073_00_DEM.tif"
             //@"C:\Users\cdigg\Copernicus_DSM_COG_30_S90_00_W172_00_DEM.tif",
             //@"C:\Users\cdigg\Downloads\gpxz_elevation.geotiff"
         };

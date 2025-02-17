@@ -2,14 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.DoubleNumerics;
-using System.Drawing;
 using System.Linq;
 using Objects;
 using Objects.Geometry;
 using Objects.Other;
 using Objects.Utils;
 using Plato.SinglePrecision;
-using Plato.Geometry.Graphics;
 using Plato.Geometry.Scenes;
 using Speckle.Core.Models;
 using Color = Plato.SinglePrecision.Color;
