@@ -50,7 +50,7 @@ type Quad2D
 
 // A line segment in 2D.
 type Line2D
-    implements IPolyLine2D, IOpenShape2D, IArray<Vector2>, IInterval<Vector2>
+    implements IPolyLine2D, IOpenShape2D, IInterval<Vector2>
 {
     A: Vector2;
     B: Vector2;

@@ -15,6 +15,11 @@
     - Domain: What kind of inputs the procedural takes (like points on a number line, points on a plane, or points in space).
     - Range: The output produced by the procedural function.
 
+    # Special Kinds of Procedural
+
+    Procedurals which output boolean values are known as predicates or filters.
+    Procedurals which output numbers are known as scalar fields. Scalar fields with a threshold  
+
     # Continuous versus Discrete Geometric Forms 
 
     Continuous geometric forms are defined analytically using a function over one or more real numbers between 0 to 1. 
@@ -91,17 +96,14 @@ library procedurals
     Map(self: Procedural<$TIn, $TOut>, f: Function1<$TOut, $TOut2>): Procedural<$TIn, $TOut2>
         => x => f(self.Eval(x));
 
-    ToPredicate(self: Procedural<$TIn, $TOut>, f: Function1<$TOut, Boolean>): Procedural<$TIn, Boolean>
-        => x => f(self.Eval(x));
-
     MapDomain(self: IProcedural<$TIn, $TOut>, f: Function1<$TIn, $TIn2>): Procedural<$TIn2, $TOut>
-        => x => self.Eval(f(x));
+        => new Procedural<$TIn2, $TOut>(x => self.Eval(f(x)));
 
     Function(self: IProcedural<$TIn, $TOut>): Function1<$TIn, $TOut>
         => x => self.Eval(x);
 
     Compose(a: IProcedural<$TIn, $TOut>, b: IProcedural<$TOut, $TOut2>): Procedural<$TIn, $TOut2>
-        => x => b.Eval(a.Eval(x));
+        => new Procedural<$TIn2, $TOut>(x => b.Eval(a.Eval(x)));
 
     //==
     // The following operations are defined for procedurals that output a number (scalar field)
@@ -119,4 +121,7 @@ library procedurals
 
     Inverse(a: IProcedural<$TIn, Number>): Procedural<$TIn, Number>
         => a.Map(x => -x);
+
+    Threshold(a: IProcedural<$TIn, Number>, threshold: Number): Procedural<$TIn, Boolean>
+        => a.Map(x => x >= threshold);
 }

@@ -13,7 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ArrayEnumerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Boolean.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Character.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Function.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Array.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Array2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IArray.cs" />

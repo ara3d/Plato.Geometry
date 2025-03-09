@@ -104,12 +104,13 @@
     Triangles(q: Quad2D): IArray<Triangle2D> => [new Triangle2D(q.A, q.B, q.C), new Triangle2D(q.C, q.D, q.A)];
     Triangles(q: Quad3D): IArray<Triangle3D> => [new Triangle3D(q.A, q.B, q.C), new Triangle3D(q.C, q.D, q.A)];
 
-    Points(xs: IArray<Line2D>): IArray<Vector2> => xs.FlatMap(x => x);
-    Points(xs: IArray<Line3D>): IArray<Vector3> => xs.FlatMap(x => x);
-    Points(xs: IArray<Triangle2D>): IArray<Vector2> => xs.FlatMap(x => x);
-    Points(xs: IArray<Triangle3D>): IArray<Vector3> => xs.FlatMap(x => x);
-    Points(xs: IArray<Quad2D>): IArray<Vector2> => xs.FlatMap(x => x);
-    Points(xs: IArray<Quad3D>): IArray<Vector3> => xs.FlatMap(x => x);
+    // TODO: these functions can be combined if I support constrained or covariant generic parameters in functions. 
+    Points(xs: IArray<Line2D>): IArray<Vector2> => xs.FlatMap(x => x.Points);
+    Points(xs: IArray<Line3D>): IArray<Vector3> => xs.FlatMap(x => x.Points);
+    Points(xs: IArray<Triangle2D>): IArray<Vector2> => xs.FlatMap(x => x.Points);
+    Points(xs: IArray<Triangle3D>): IArray<Vector3> => xs.FlatMap(x => x.Points);
+    Points(xs: IArray<Quad2D>): IArray<Vector2> => xs.FlatMap(x => x.Points);
+    Points(xs: IArray<Quad3D>): IArray<Vector3> => xs.FlatMap(x => x.Points);
 
     Lines(xs: IArray<Line2D>): IArray<Line2D> => xs;
     Lines(xs: IArray<Line3D>): IArray<Line3D> => xs;

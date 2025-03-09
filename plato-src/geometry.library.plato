@@ -109,6 +109,12 @@ library Geometry
 
     Closed(x: IClosedShape): Boolean => true;
 	Closed(x: IOpenShape): Boolean => false;
+
+	//== 
+    // IPolygon functions
+
+    Points(x: IPolygon2D): IArray<Vector2> => x.Points;
+    Points(x: IPolygon3D): IArray<Vector3> => x.Points;
 	
 	//== 
 	// Misc functions 
