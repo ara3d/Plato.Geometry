@@ -143,9 +143,51 @@ library ArrayLibrary
     PrependAndAppend(self: IArray<$T>, before: $T, after: $T): Array<$T>
         => self.Prepend(before).Append(after);
 
+    ZipPairs(xs: IArray<$T>, f: Function2<$T, $T, $TR>): IArray<$TR>
+        => (xs.Count / 2).MapRange(i => f(xs[i * 2], xs[i * 2 + 1]));
+
+    ZipTriplets(xs: IArray<$T>, f: Function3<$T, $T, $T, $TR>): IArray<$TR>
+        => (xs.Count / 3).MapRange(i => f(xs[i * 3], xs[i * 3 + 1], xs[i * 3 + 2]));
+
+    ZipQuartets(xs: IArray<$T>, f: Function4<$T, $T, $T, $T, $TR>): IArray<$TR>
+        => (xs.Count / 4).MapRange(i => f(xs[i * 4], xs[i * 4 + 1], xs[i * 4 + 2], xs[i * 4 + 3]));
+
+    //==
+    // Specialized slices        
+
+    Integer2Array(xs: IArray<Integer>): IArray<Integer2>
+        => xs.ZipPairs((a, b) => new Integer2(a, b));
+
+    Integer3Array(xs: IArray<Integer>): IArray<Integer3>
+        => xs.ZipTriplets((a, b, c) => new Integer3(a, b, c));
+
+    Integer4Array(xs: IArray<Integer>): IArray<Integer4>
+        => xs.ZipQuartets((a, b, c, d) => new Integer4(a, b, c, d));
+
+    Vector2Array(xs: IArray<Number>): IArray<Vector2>
+        => xs.ZipPairs((a, b) => new Vector2(a, b));
+
+    Vector3Array(xs: IArray<Number>): IArray<Vector3>
+        => xs.ZipTriplets((a, b, c) => new Vector3(a, b, c));
+
+    Vector4Array(xs: IArray<Number>): IArray<Vector4>
+        => xs.ZipQuartets((a, b, c, d) => new Vector4(a, b, c, d));
+
     //==
     // 2D functions 
 
     Map(xs: IArray2D<$T1>, f: Function1<$T1, $T2>): Array2D<$T2> 
         => xs.NumColumns.MakeArray2D(xs.NumRows, (a, b) => f(xs.At(a, b)));
+
+    Row(self: IArray2D<$T>, row: Integer): IArray<$T>
+        => self.NumColumns.MapRange(col => self.At(col, row));
+
+    Column(self: IArray2D<$T>, col: Integer): IArray<$T>
+        => self.NumRows.MapRange(row => self.At(col, row));
+
+    Rows(self: IArray2D<$T>): IArray<IArray<$T>>
+        => self.NumRows.MapRange(row => self.Row(row));
+
+    Columns(self: IArray2D<$T>): IArray<IArray<$T>>
+        => self.NumColumns.MapRange(col => self.Column(col));
 } 

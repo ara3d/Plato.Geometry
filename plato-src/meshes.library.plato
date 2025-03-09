@@ -4,10 +4,10 @@
     // # Primitives
 
     NumPrimitives(g: IIndexedGeometry): Integer => g.Indices.Count / g.PrimitiveSize;
-    PrimitiveSize(g: IPointPrimitives): Integer => 1;
-    PrimitiveSize(g: ILinePrimitives): Integer => 2;
-    PrimitiveSize(g: ITrianglePrimitives): Integer => 3;
-    PrimitiveSize(g: IQuadPrimitives): Integer => 4;
+    PrimitiveSize(g: IPointGeometry): Integer => 1;
+    PrimitiveSize(g: ILineGeometry): Integer => 2;
+    PrimitiveSize(g: ITriangleGeometry): Integer => 3;
+    PrimitiveSize(g: IQuadGeometry): Integer => 4;
         
     //== 
     // # Indices of geometry arrays
@@ -20,11 +20,19 @@
     Indices(x: ITriangleArray3D): IArray<Integer> => x.Points.Indices();
     Indices(x: IQuadArray2D): IArray<Integer> => x.Points.Indices();
     Indices(x: IQuadArray3D): IArray<Integer> => x.Points.Indices();
+       
+    FaceIndices(x: ILineGeometry): IArray<Integer2> => x.Indices.Integer2Array;
+    FaceIndices(x: ITriangleGeometry): IArray<Integer3> => x.Indices.Integer3Array;
+    FaceIndices(x: IQuadGeometry): IArray<Integer4> => x.Indices.Integer4Array;
+
+    FaceIndices(x: ILineGeometry): IArray<Integer2> => x.Indices.Integer2Array;
+    FaceIndices(x: ITriangleGeometry): IArray<Integer3> => x.Indices.Integer3Array;
+    FaceIndices(x: IQuadGeometry): IArray<Integer4> => x.Indices.Integer4Array;
 
     // # Implicit cast functions for meshes 
 
-    LineMesh3D(g: ITriangleMesh3D): LineMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[0]]));
-    LineMesh3D(g: IQuadMesh3D): LineMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[3], a[0]]));
+    LineMesh3D(g: ITriangleMesh3D): LineMesh3D => (g.Points, g.FaceIndices.FlatMap(a => [a[0], a[1], a[1], a[2], a[2], a[0]]));
+    LineMesh3D(g: IQuadMesh3D): LineMesh3D => (g.Points, g.FaceIndices.FlatMap(a => [a[0], a[1], a[1], a[2], a[2], a[3], a[3], a[0]]));
 
     LineArray2D(t: Triangle2D): LineArray2D => new LineArray2D(t.Lines);
     LineArray2D(q: Quad2D): LineArray2D => new LineArray2D(q.Lines);
@@ -44,7 +52,7 @@
     TriangleMesh3D(g: Quad3D): TriangleMesh3D => g.TriangleArray3D;
     TriangleMesh3D(g: ITriangleArray3D): TriangleMesh3D => (g.Points, g.Points.Indices());
     TriangleMesh3D(g: IQuadArray3D): TriangleMesh3D => g.TriangleArray3D;
-    TriangleMesh3D(g: IQuadMesh3D): TriangleMesh3D => (g.Points, g.AllFaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));  
+    TriangleMesh3D(g: IQuadMesh3D): TriangleMesh3D => (g.Points, g.FaceIndices.FlatMap(a => [a[0], a[1], a[2], a[2], a[3], a[0]]));  
 
     //==
     // # IndexedGeometry
@@ -59,9 +67,8 @@
     Vertex(g: IIndexedGeometry2D, n: Integer): Vector2 => g.Points[g.Indices[n]];
     Vertex(g: IIndexedGeometry3D, n: Integer): Vector3 => g.Points[g.Indices[n]];
 
-    FaceIndices(g: IIndexedGeometry, f: Integer): IArray<Integer> => g.Indices.NthSlice(f, g.PrimitiveSize);
-    FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2> => g.FaceIndices(f).Map(i => g.Vertex(i));
-    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3> => g.FaceIndices(f).Map(i => g.Vertex(i));
+    FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2> => g.FaceIndices.At(f).Map(i => g.Vertex(i));
+    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3> => g.FaceIndices.At(f).Map(i => g.Vertex(i));
 
     AllFaceIndices(g: IIndexedGeometry): IArray2D<Integer> => g.Indices.Slices(g.PrimitiveSize);
 
