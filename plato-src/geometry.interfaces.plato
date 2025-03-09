@@ -47,7 +47,6 @@ interface IDeformable3D
     Deform(x: Self, f: Function1<Vector3, Vector3>): Self;
 }
 
-
 //==
 // # Shapes 
 // 
@@ -70,7 +69,8 @@ interface IShape3D
 { }
 
 // If Closed is true, the first point is also the last point, otherwise it isn't
-interface IOpenClosedShape : IShape
+interface IOpenClosedShape 
+    inherits IShape
 { 
     Closed(x: Self): Boolean;
 }

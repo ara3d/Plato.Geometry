@@ -77,7 +77,7 @@ interface IProcedural<TIn, TOut>
 
 type Procedural<TIn, TOut> 
 {
-    Function1<$TIn, $TOut> Function;
+    Function: Function1<TIn, TOut>;
 }
 
 library procedurals
@@ -94,6 +94,20 @@ library procedurals
     ToPredicate(self: Procedural<$TIn, $TOut>, f: Function1<$TOut, Boolean>): Procedural<$TIn, Boolean>
         => x => f(self.Eval(x));
 
+    MapDomain(self: IProcedural<$TIn, $TOut>, f: Function1<$TIn, $TIn2>): Procedural<$TIn2, $TOut>
+        => x => self.Eval(f(x));
+
+    Function(self: IProcedural<$TIn, $TOut>): Function1<$TIn, $TOut>
+        => x => self.Eval(x);
+
+    Compose(a: IProcedural<$TIn, $TOut>, b: IProcedural<$TOut, $TOut2>): Procedural<$TIn, $TOut2>
+        => x => b.Eval(a.Eval(x));
+
+    //==
+    // The following operations are defined for procedurals that output a number (scalar field)
+    // NOTE: we could in theory define these for any type that supports arithmetic operations, but adding constraints within functions is not yet supported.
+    // So I would have to make copies of these functions for each type that supports arithmetic operations. 
+
     Union(a: IProcedural<$TIn, Number>, b: IProcedural<$TIn, Number>): Procedural<$TIn, $TOut>
         => a.Combine(b, (a, b) => a.Max(b));
 
@@ -103,15 +117,6 @@ library procedurals
     Difference(a: IProcedural<$TIn, Number>, b: IProcedural<$TIn, Number>): Procedural<$TIn, $TOut>
         => a.Combine(b, (a, b) => a.Max(-b));
 
-    Inverse(a: IProcedural<$TIn, Number>): Procedural<$TIn, $TNumber>
+    Inverse(a: IProcedural<$TIn, Number>): Procedural<$TIn, Number>
         => a.Map(x => -x);
-
-    MapDomain(self: IProcedural<$TIn, $TOut>, f: Function1<$TIn, $TIn2>): Procedural<$TIn2, $TOut>
-        => x => self.Eval(f(x));
-
-    Function(self: IProcedural<$TIn, $TOut>): Function1<$TIn, $TOut>
-        => x => self.Eval(x);
-
-    Compose(a: IProcedural<$TIn, $TOut>, b: IProcedural<$TOut, $TOut2>): Procedural<$TIn, $TOut2>
-        => x => b.Eval(a.Eval(x));
 }

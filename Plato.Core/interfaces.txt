@@ -18,6 +18,8 @@ Arc
       - IGeometry
     - IOpenShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
 
 ArchimedeanSpiral
   - IPolarCurve
@@ -28,9 +30,14 @@ ArchimedeanSpiral
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Array
   - IArray<T>
@@ -70,9 +77,12 @@ Box
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 Box2D
   - IShape2D
+    - IShape
+      - IGeometry
     - IGeometry2D
       - IGeometry
 
@@ -84,9 +94,14 @@ ButterflyCurve
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Capsule
   - ISolid
@@ -96,6 +111,7 @@ Capsule
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 Cardoid
   - IPolarCurve
@@ -106,9 +122,14 @@ Cardoid
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IClosedShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Character
   - IValue
@@ -120,6 +141,8 @@ Chord
       - IGeometry
     - IClosedShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
 
 Circle
   - IAngularCurve2D
@@ -129,7 +152,10 @@ Circle
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IClosedCurve2D
     - ICurve2D
       - IGeometry2D
@@ -137,12 +163,17 @@ Circle
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
     - IClosedShape2D
       - IGeometry2D
         - IGeometry
       - IClosedShape
         - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 Color
   - ICoordinate
@@ -174,9 +205,14 @@ ConchoidOfDeSluze
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Cone
   - ISolid
@@ -186,6 +222,7 @@ Cone
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 ConeSegment
   - ISolid
@@ -195,6 +232,7 @@ ConeSegment
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 ConicSection
   - IPolarCurve
@@ -205,9 +243,14 @@ ConicSection
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Cubic
   - IRealFunction
@@ -221,17 +264,24 @@ CubicBezier2D
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
     - IOpenShape2D
       - IGeometry2D
         - IGeometry
       - IOpenShape
         - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 CubicBezier3D
   - IArray<Vector3>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 CycloidOfCeva
   - IPolarCurve
@@ -242,15 +292,21 @@ CycloidOfCeva
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Cylinder
   - ISurface
     - IGeometry3D
       - IGeometry
     - IDistanceField3D
+      - IProcedural<Vector3,Number>
 
 CylindricalCoordinate
   - ICoordinate
@@ -263,7 +319,10 @@ Ellipse
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IClosedCurve2D
     - ICurve2D
       - IGeometry2D
@@ -271,12 +330,17 @@ Ellipse
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
     - IClosedShape2D
       - IGeometry2D
         - IGeometry
       - IClosedShape
         - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 Ellipsoid
   - ISolid
@@ -286,6 +350,7 @@ Ellipsoid
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 Epicycloid
   - IAngularCurve2D
@@ -295,9 +360,14 @@ Epicycloid
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Epitrochoid
   - IAngularCurve2D
@@ -307,9 +377,14 @@ Epitrochoid
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 EulerAngles
   - IRotationalTransform3D
@@ -325,9 +400,14 @@ FermatsSpiral
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 FigureEightKnot
   - IAngularCurve3D
@@ -337,9 +417,14 @@ FigureEightKnot
       - ICurve<Vector3>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField3D
+        - IProcedural<Vector3,Number>
   - IClosedShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Function0
 
@@ -375,9 +460,14 @@ Helix
       - ICurve<Vector3>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField3D
+        - IProcedural<Vector3,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 HorizontalCoordinate
   - ICoordinate
@@ -390,9 +480,14 @@ Hypocycloid
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Hypotrochoid
   - IAngularCurve2D
@@ -402,9 +497,14 @@ Hypotrochoid
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 IdentityTransform3D
   - IValue
@@ -443,9 +543,14 @@ LemniscateOfBernoulli
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Lens
   - IClosedShape2D
@@ -453,6 +558,8 @@ Lens
       - IGeometry
     - IClosedShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
 
 Limacon
   - IPolarCurve
@@ -463,28 +570,40 @@ Limacon
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Line2D
   - IPolyLine2D
     - IPointGeometry2D
-      - IGeometry2D
-        - IGeometry
+      - IPrimitiveGeometry2D
+        - IPrimitiveGeometry
     - IOpenClosedShape
+      - IShape
+        - IGeometry
     - ICurve2D
       - IGeometry2D
         - IGeometry
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IOpenShape2D
     - IGeometry2D
       - IGeometry
     - IOpenShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
   - IArray<Vector2>
   - IInterval<Vector2>
     - IValue
@@ -493,22 +612,28 @@ Line2D
 Line3D
   - IPolyLine3D
     - IPointGeometry3D
-      - IGeometry3D
-        - IGeometry
-      - IDeformable3D
+      - IPrimitiveGeometry3D
+        - IPrimitiveGeometry
     - IOpenClosedShape
+      - IShape
+        - IGeometry
     - ICurve3D
       - IGeometry3D
         - IGeometry
       - ICurve<Vector3>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField3D
+        - IProcedural<Vector3,Number>
   - IOpenShape3D
     - IGeometry3D
       - IGeometry
     - IOpenShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
   - IDeformable3D
   - IArray<Vector3>
   - IInterval<Vector3>
@@ -525,17 +650,11 @@ LineArray2D
         - IIndexedGeometry
           - IPrimitiveGeometry
         - IPrimitiveGeometry2D
-          - IPointGeometry2D
-            - IGeometry2D
-              - IGeometry
           - IPrimitiveGeometry
       - ILineGeometry2D
         - IPrimitiveGeometry2D
-          - IPointGeometry2D
-            - IGeometry2D
-              - IGeometry
           - IPrimitiveGeometry
-        - ILinePrimitives
+        - ILineGeometry
           - IPrimitiveGeometry
 
 LineArray3D
@@ -545,19 +664,11 @@ LineArray3D
         - IIndexedGeometry
           - IPrimitiveGeometry
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
       - ILineGeometry3D
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
-        - ILinePrimitives
+        - ILineGeometry
           - IPrimitiveGeometry
 
 LineMesh3D
@@ -566,19 +677,11 @@ LineMesh3D
       - IIndexedGeometry
         - IPrimitiveGeometry
       - IPrimitiveGeometry3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
         - IPrimitiveGeometry
     - ILineGeometry3D
       - IPrimitiveGeometry3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
         - IPrimitiveGeometry
-      - ILinePrimitives
+      - ILineGeometry
         - IPrimitiveGeometry
 
 Lissajous
@@ -589,9 +692,14 @@ Lissajous
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 LogarithmicSpiral
   - IPolarCurve
@@ -602,9 +710,14 @@ LogarithmicSpiral
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 LogPolarCoordinate
   - ICoordinate
@@ -633,6 +746,7 @@ NPrism
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 NPyramid
   - ISolid
@@ -642,6 +756,7 @@ NPyramid
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 Number
   - IRealNumber
@@ -672,6 +787,8 @@ Parabola
   - IRealFunction
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Perspective3D
   - ITransform3D
@@ -685,15 +802,14 @@ PlaneProjection
 PointArray2D
   - IPointArray2D
     - IPointGeometry2D
-      - IGeometry2D
-        - IGeometry
+      - IPrimitiveGeometry2D
+        - IPrimitiveGeometry
 
 PointArray3D
   - IPointArray3D
     - IPointGeometry3D
-      - IGeometry3D
-        - IGeometry
-      - IDeformable3D
+      - IPrimitiveGeometry3D
+        - IPrimitiveGeometry
 
 PolarCoordinate
   - ICoordinate
@@ -701,31 +817,40 @@ PolarCoordinate
 PolyLine2D
   - IPolyLine2D
     - IPointGeometry2D
-      - IGeometry2D
-        - IGeometry
+      - IPrimitiveGeometry2D
+        - IPrimitiveGeometry
     - IOpenClosedShape
+      - IShape
+        - IGeometry
     - ICurve2D
       - IGeometry2D
         - IGeometry
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
 
 PolyLine3D
   - IPolyLine3D
     - IPointGeometry3D
-      - IGeometry3D
-        - IGeometry
-      - IDeformable3D
+      - IPrimitiveGeometry3D
+        - IPrimitiveGeometry
     - IOpenClosedShape
+      - IShape
+        - IGeometry
     - ICurve3D
       - IGeometry3D
         - IGeometry
       - ICurve<Vector3>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField3D
+        - IProcedural<Vector3,Number>
 
 Pose2D
   - IValue
@@ -733,6 +858,8 @@ Pose2D
 Pose3D
   - IRigidTransform3D
     - ITransform3D
+
+Procedural
 
 Pyramid
   - ISolid
@@ -742,51 +869,61 @@ Pyramid
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 Quad2D
   - IPolygon2D
-    - IClosedPolyLine2D
-      - IPolyLine2D
-        - IPointGeometry2D
-          - IGeometry2D
-            - IGeometry
-        - IOpenClosedShape
-        - ICurve2D
-          - IGeometry2D
-            - IGeometry
-          - ICurve<Vector2>
-            - IProcedural<Number,TRange>
-            - IOpenClosedShape
-          - IDistanceField2D
-      - IClosedShape2D
+    - IPolyLine2D
+      - IPointGeometry2D
+        - IPrimitiveGeometry2D
+          - IPrimitiveGeometry
+      - IOpenClosedShape
+        - IShape
+          - IGeometry
+      - ICurve2D
         - IGeometry2D
           - IGeometry
-        - IClosedShape
+        - ICurve<Vector2>
+          - IProcedural<Number,TRange>
           - IOpenClosedShape
-    - IArray<Vector2>
+            - IShape
+              - IGeometry
+        - IDistanceField2D
+          - IProcedural<Vector2,Number>
+    - IClosedShape2D
+      - IGeometry2D
+        - IGeometry
+      - IClosedShape
+        - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 Quad3D
   - IPolygon3D
-    - IClosedPolyLine3D
-      - IPolyLine3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
-        - IOpenClosedShape
-        - ICurve3D
-          - IGeometry3D
-            - IGeometry
-          - ICurve<Vector3>
-            - IProcedural<Number,TRange>
-            - IOpenClosedShape
-          - IDistanceField3D
-      - IClosedShape3D
+    - IPolyLine3D
+      - IPointGeometry3D
+        - IPrimitiveGeometry3D
+          - IPrimitiveGeometry
+      - IOpenClosedShape
+        - IShape
+          - IGeometry
+      - ICurve3D
         - IGeometry3D
           - IGeometry
-        - IClosedShape
+        - ICurve<Vector3>
+          - IProcedural<Number,TRange>
           - IOpenClosedShape
-    - IArray<Vector3>
+            - IShape
+              - IGeometry
+        - IDistanceField3D
+          - IProcedural<Vector3,Number>
+    - IClosedShape3D
+      - IGeometry3D
+        - IGeometry
+      - IClosedShape
+        - IOpenClosedShape
+          - IShape
+            - IGeometry
   - IDeformable3D
 
 QuadArray2D
@@ -796,17 +933,11 @@ QuadArray2D
         - IIndexedGeometry
           - IPrimitiveGeometry
         - IPrimitiveGeometry2D
-          - IPointGeometry2D
-            - IGeometry2D
-              - IGeometry
           - IPrimitiveGeometry
       - IQuadGeometry2D
         - IPrimitiveGeometry2D
-          - IPointGeometry2D
-            - IGeometry2D
-              - IGeometry
           - IPrimitiveGeometry
-        - IQuadPrimitives
+        - IQuadGeometry
           - IPrimitiveGeometry
 
 QuadArray3D
@@ -816,19 +947,11 @@ QuadArray3D
         - IIndexedGeometry
           - IPrimitiveGeometry
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
       - IQuadGeometry3D
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
-        - IQuadPrimitives
+        - IQuadGeometry
           - IPrimitiveGeometry
 
 QuadGrid3D
@@ -838,19 +961,11 @@ QuadGrid3D
         - IIndexedGeometry
           - IPrimitiveGeometry
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
       - IQuadGeometry3D
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
-        - IQuadPrimitives
+        - IQuadGeometry
           - IPrimitiveGeometry
 
 QuadMesh3D
@@ -859,19 +974,11 @@ QuadMesh3D
       - IIndexedGeometry
         - IPrimitiveGeometry
       - IPrimitiveGeometry3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
         - IPrimitiveGeometry
     - IQuadGeometry3D
       - IPrimitiveGeometry3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
         - IPrimitiveGeometry
-      - IQuadPrimitives
+      - IQuadGeometry
         - IPrimitiveGeometry
 
 Quadratic
@@ -886,17 +993,24 @@ QuadraticBezier2D
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
     - IOpenShape2D
       - IGeometry2D
         - IGeometry
       - IOpenShape
         - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 QuadraticBezier3D
   - IArray<Vector3>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Quaternion
   - IValue
@@ -911,47 +1025,57 @@ Ray3D
 
 Rect2D
   - IPolygon2D
-    - IClosedPolyLine2D
-      - IPolyLine2D
-        - IPointGeometry2D
-          - IGeometry2D
-            - IGeometry
-        - IOpenClosedShape
-        - ICurve2D
-          - IGeometry2D
-            - IGeometry
-          - ICurve<Vector2>
-            - IProcedural<Number,TRange>
-            - IOpenClosedShape
-          - IDistanceField2D
-      - IClosedShape2D
+    - IPolyLine2D
+      - IPointGeometry2D
+        - IPrimitiveGeometry2D
+          - IPrimitiveGeometry
+      - IOpenClosedShape
+        - IShape
+          - IGeometry
+      - ICurve2D
         - IGeometry2D
           - IGeometry
-        - IClosedShape
+        - ICurve<Vector2>
+          - IProcedural<Number,TRange>
           - IOpenClosedShape
-    - IArray<Vector2>
+            - IShape
+              - IGeometry
+        - IDistanceField2D
+          - IProcedural<Vector2,Number>
+    - IClosedShape2D
+      - IGeometry2D
+        - IGeometry
+      - IClosedShape
+        - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 RegularPolygon
   - IPolygon2D
-    - IClosedPolyLine2D
-      - IPolyLine2D
-        - IPointGeometry2D
-          - IGeometry2D
-            - IGeometry
-        - IOpenClosedShape
-        - ICurve2D
-          - IGeometry2D
-            - IGeometry
-          - ICurve<Vector2>
-            - IProcedural<Number,TRange>
-            - IOpenClosedShape
-          - IDistanceField2D
-      - IClosedShape2D
+    - IPolyLine2D
+      - IPointGeometry2D
+        - IPrimitiveGeometry2D
+          - IPrimitiveGeometry
+      - IOpenClosedShape
+        - IShape
+          - IGeometry
+      - ICurve2D
         - IGeometry2D
           - IGeometry
-        - IClosedShape
+        - ICurve<Vector2>
+          - IProcedural<Number,TRange>
           - IOpenClosedShape
-    - IArray<Vector2>
+            - IShape
+              - IGeometry
+        - IDistanceField2D
+          - IProcedural<Vector2,Number>
+    - IClosedShape2D
+      - IGeometry2D
+        - IGeometry
+      - IClosedShape
+        - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 Ring
   - IClosedShape2D
@@ -959,6 +1083,8 @@ Ring
       - IGeometry
     - IClosedShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
 
 Rose
   - IPolarCurve
@@ -969,9 +1095,14 @@ Rose
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IClosedShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Rotation3D
   - IRotationalTransform3D
@@ -987,6 +1118,8 @@ Sector
       - IGeometry
     - IClosedShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
 
 Segment
   - IClosedShape2D
@@ -994,11 +1127,15 @@ Segment
       - IGeometry
     - IClosedShape
       - IOpenClosedShape
+        - IShape
+          - IGeometry
 
 SineWave
   - IRealFunction
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 SinusoidalSpiral
   - IPolarCurve
@@ -1009,9 +1146,14 @@ SinusoidalSpiral
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Sphere
   - ISolid
@@ -1021,6 +1163,7 @@ Sphere
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 SphericalCoordinate
   - ICoordinate
@@ -1033,12 +1176,17 @@ Spiral
       - ICurve<Vector2>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField2D
+        - IProcedural<Vector2,Number>
     - IOpenShape2D
       - IGeometry2D
         - IGeometry
       - IOpenShape
         - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 String
   - IValue
@@ -1061,6 +1209,7 @@ Torus
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 TorusKnot
   - IAngularCurve3D
@@ -1070,9 +1219,14 @@ TorusKnot
       - ICurve<Vector3>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField3D
+        - IProcedural<Vector3,Number>
   - IClosedShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Transform2D
   - IValue
@@ -1089,54 +1243,68 @@ TrefoilKnot
       - ICurve<Vector3>
         - IProcedural<Number,TRange>
         - IOpenClosedShape
+          - IShape
+            - IGeometry
       - IDistanceField3D
+        - IProcedural<Vector3,Number>
   - IClosedShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Triangle2D
   - IPolygon2D
-    - IClosedPolyLine2D
-      - IPolyLine2D
-        - IPointGeometry2D
-          - IGeometry2D
-            - IGeometry
-        - IOpenClosedShape
-        - ICurve2D
-          - IGeometry2D
-            - IGeometry
-          - ICurve<Vector2>
-            - IProcedural<Number,TRange>
-            - IOpenClosedShape
-          - IDistanceField2D
-      - IClosedShape2D
+    - IPolyLine2D
+      - IPointGeometry2D
+        - IPrimitiveGeometry2D
+          - IPrimitiveGeometry
+      - IOpenClosedShape
+        - IShape
+          - IGeometry
+      - ICurve2D
         - IGeometry2D
           - IGeometry
-        - IClosedShape
+        - ICurve<Vector2>
+          - IProcedural<Number,TRange>
           - IOpenClosedShape
-    - IArray<Vector2>
+            - IShape
+              - IGeometry
+        - IDistanceField2D
+          - IProcedural<Vector2,Number>
+    - IClosedShape2D
+      - IGeometry2D
+        - IGeometry
+      - IClosedShape
+        - IOpenClosedShape
+          - IShape
+            - IGeometry
 
 Triangle3D
   - IPolygon3D
-    - IClosedPolyLine3D
-      - IPolyLine3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
-        - IOpenClosedShape
-        - ICurve3D
-          - IGeometry3D
-            - IGeometry
-          - ICurve<Vector3>
-            - IProcedural<Number,TRange>
-            - IOpenClosedShape
-          - IDistanceField3D
-      - IClosedShape3D
+    - IPolyLine3D
+      - IPointGeometry3D
+        - IPrimitiveGeometry3D
+          - IPrimitiveGeometry
+      - IOpenClosedShape
+        - IShape
+          - IGeometry
+      - ICurve3D
         - IGeometry3D
           - IGeometry
-        - IClosedShape
+        - ICurve<Vector3>
+          - IProcedural<Number,TRange>
           - IOpenClosedShape
-    - IArray<Vector3>
+            - IShape
+              - IGeometry
+        - IDistanceField3D
+          - IProcedural<Vector3,Number>
+    - IClosedShape3D
+      - IGeometry3D
+        - IGeometry
+      - IClosedShape
+        - IOpenClosedShape
+          - IShape
+            - IGeometry
   - IDeformable3D
 
 TriangleArray2D
@@ -1146,17 +1314,11 @@ TriangleArray2D
         - IIndexedGeometry
           - IPrimitiveGeometry
         - IPrimitiveGeometry2D
-          - IPointGeometry2D
-            - IGeometry2D
-              - IGeometry
           - IPrimitiveGeometry
       - ITriangleGeometry2D
         - IPrimitiveGeometry2D
-          - IPointGeometry2D
-            - IGeometry2D
-              - IGeometry
           - IPrimitiveGeometry
-        - ITrianglePrimitives
+        - ITriangleGeometry
           - IPrimitiveGeometry
 
 TriangleArray3D
@@ -1166,19 +1328,11 @@ TriangleArray3D
         - IIndexedGeometry
           - IPrimitiveGeometry
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
       - ITriangleGeometry3D
         - IPrimitiveGeometry3D
-          - IPointGeometry3D
-            - IGeometry3D
-              - IGeometry
-            - IDeformable3D
           - IPrimitiveGeometry
-        - ITrianglePrimitives
+        - ITriangleGeometry
           - IPrimitiveGeometry
 
 TriangleMesh3D
@@ -1187,19 +1341,11 @@ TriangleMesh3D
       - IIndexedGeometry
         - IPrimitiveGeometry
       - IPrimitiveGeometry3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
         - IPrimitiveGeometry
     - ITriangleGeometry3D
       - IPrimitiveGeometry3D
-        - IPointGeometry3D
-          - IGeometry3D
-            - IGeometry
-          - IDeformable3D
         - IPrimitiveGeometry
-      - ITrianglePrimitives
+      - ITriangleGeometry
         - IPrimitiveGeometry
 
 TrisectrixOfMaclaurin
@@ -1211,9 +1357,14 @@ TrisectrixOfMaclaurin
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 TRSTransform3D
   - ITransform3D
@@ -1227,9 +1378,14 @@ TschirnhausenCubic
         - ICurve<Vector2>
           - IProcedural<Number,TRange>
           - IOpenClosedShape
+            - IShape
+              - IGeometry
         - IDistanceField2D
+          - IProcedural<Vector2,Number>
   - IOpenShape
     - IOpenClosedShape
+      - IShape
+        - IGeometry
 
 Tube
   - ISolid
@@ -1239,6 +1395,7 @@ Tube
         - IGeometry3D
           - IGeometry
         - IDistanceField3D
+          - IProcedural<Vector3,Number>
 
 Tuple2
 

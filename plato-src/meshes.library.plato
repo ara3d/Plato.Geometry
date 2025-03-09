@@ -25,10 +25,6 @@
     FaceIndices(x: ITriangleGeometry): IArray<Integer3> => x.Indices.Integer3Array;
     FaceIndices(x: IQuadGeometry): IArray<Integer4> => x.Indices.Integer4Array;
 
-    FaceIndices(x: ILineGeometry): IArray<Integer2> => x.Indices.Integer2Array;
-    FaceIndices(x: ITriangleGeometry): IArray<Integer3> => x.Indices.Integer3Array;
-    FaceIndices(x: IQuadGeometry): IArray<Integer4> => x.Indices.Integer4Array;
-
     // # Implicit cast functions for meshes 
 
     LineMesh3D(g: ITriangleMesh3D): LineMesh3D => (g.Points, g.FaceIndices.FlatMap(a => [a[0], a[1], a[1], a[2], a[2], a[0]]));
@@ -222,6 +218,4 @@
         var ny = nRows - (closedY ? 0 : 1);
         return nx.MakeArray2D(ny, (col, row) => QuadFaceIndices(col, row, nCols, nRows));
     }
-    
-
 }
