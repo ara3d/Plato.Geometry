@@ -604,7 +604,6 @@ Line2D
       - IOpenClosedShape
         - IShape
           - IGeometry
-  - IArray<Vector2>
   - IInterval<Vector2>
     - IValue
     - IArray<T>
