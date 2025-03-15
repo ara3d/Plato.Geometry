@@ -63,18 +63,6 @@ library IInterval
     LinearSpaceExclusive(interval: IInterval<$T>, count: Integer): IArray<$T>
         => count.LinearSpaceExclusive.Map(x => interval.Lerp(x));
 
-    GeometricSpace(count: Integer): IArray<Number>
-        => count.LinearSpace.Map(x => 1.0.Pow(x));
-
-    GeometricSpaceExclusive(count: Integer): IArray<Number>
-        => count.LinearSpaceExclusive.Map(x => 1.0.Pow(x));
-
-    GeometricSpace(interval: IInterval<$T>, count: Integer): IArray<$T>
-        => count.GeometricSpace.Map(x => interval.Lerp(x));
-
-    GeometricSpaceExclusive(interval: IInterval<$T>, count: Integer): IArray<$T>
-        => count.GeometricSpaceExclusive.Map(x => interval.Lerp(x));
-
     Intervals(count: Integer): IArray<NumberInterval>
         => (count + 1).LinearSpace.WithNext((a, b) => new NumberInterval(a, b));
 

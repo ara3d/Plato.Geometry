@@ -87,14 +87,15 @@ type Procedural<TIn, TOut>
 
 library procedurals
 {
+/*
     Eval(self: Procedural<$TIn, $TOut>, input: $TIn): $TOut
         => self.Function(input);
 
     Combine(a: IProcedural<$TIn, $TOut>, b: IProcedural<$TIn, $TOut>, f: Function2<$TOut, $TOut, $TOut>): Procedural<$TIn, $TOut>
-        => x => f(a.Eval(x), b.Eval(x));
+        => new Procedural<$TIn, $TOut>(x => f(a.Eval(x), b.Eval(x)));
 
-    Map(self: Procedural<$TIn, $TOut>, f: Function1<$TOut, $TOut2>): Procedural<$TIn, $TOut2>
-        => x => f(self.Eval(x));
+    Map(self: IProcedural<$TIn, $TOut>, f: Function1<$TOut, $TOut2>): Procedural<$TIn, $TOut2>
+        => new Procedural<$TIn, $TOut>(x => f(self.Eval(x)));
 
     MapDomain(self: IProcedural<$TIn, $TOut>, f: Function1<$TIn, $TIn2>): Procedural<$TIn2, $TOut>
         => new Procedural<$TIn2, $TOut>(x => self.Eval(f(x)));
@@ -103,7 +104,7 @@ library procedurals
         => x => self.Eval(x);
 
     Compose(a: IProcedural<$TIn, $TOut>, b: IProcedural<$TOut, $TOut2>): Procedural<$TIn, $TOut2>
-        => new Procedural<$TIn2, $TOut>(x => b.Eval(a.Eval(x)));
+        => new Procedural<$TIn, $TOut>(x => b.Eval(a.Eval(x)));
 
     //==
     // The following operations are defined for procedurals that output a number (scalar field)
@@ -124,4 +125,5 @@ library procedurals
 
     Threshold(a: IProcedural<$TIn, Number>, threshold: Number): Procedural<$TIn, Boolean>
         => a.Map(x => x >= threshold);
+*/
 }

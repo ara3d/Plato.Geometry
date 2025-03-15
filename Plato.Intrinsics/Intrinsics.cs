@@ -5,12 +5,6 @@ namespace Plato
 {
     public static partial class Intrinsics
     {
-        [MethodImpl(AggressiveInlining)] public static TR Invoke<TR>(this Function0<TR> self) => self._function();
-        [MethodImpl(AggressiveInlining)] public static TR Invoke<T0, TR>(this Function1<T0, TR> self, T0 arg) => self._function(arg);
-        [MethodImpl(AggressiveInlining)] public static TR Invoke<T0, T1, TR>(this Function2<T0, T1, TR> self, T0 arg0, T1 arg1) => self._function(arg0, arg1);
-        [MethodImpl(AggressiveInlining)] public static TR Invoke<T0, T1, T2, TR>(this Function3<T0, T1, T2, TR> self, T0 arg0, T1 arg1, T2 arg2) => self._function(arg0, arg1, arg2);
-        [MethodImpl(AggressiveInlining)] public static TR Invoke<T0, T1, T2, T3, TR>(this Function4<T0, T1, T2, T3, TR> self, T0 arg0, T1 arg1, T2 arg2, T3 arg3) => self._function(arg0, arg1, arg2, arg3);
-        
         [MethodImpl(AggressiveInlining)] public static Array<T> MapRange<T>(this Integer x, Func<Integer, T> f) => new Array<T>(x, f);
         [MethodImpl(AggressiveInlining)] public static Array<T> MakeArray<T>(params T[] args) => new Array<T>(args.Length, i => args[i]);
         [MethodImpl(AggressiveInlining)] public static Array2D<T> MakeArray2D<T>(this Integer columns, Integer rows, Func<Integer, Integer, T> f) => new Array2D<T>(columns, rows, f);

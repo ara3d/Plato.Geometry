@@ -8,9 +8,7 @@ library Algebra
         => a * t.FromOne + b * t;
           
     // Barycentric interpolation (e.g. triangle)
-    // NOTE: we may want to put the Vector2 at the front of the type, but then this would not be made available 
-    // for the range of Interpolatable types (at least not now, based on limitations of the Plato compiler)
-    Barycentric(v1: INumerical, v2: INumerical, v3: INumerical, uv: Vector2): INumerical 
+    Barycentric(uv: Vector2, v1: INumerical, v2: INumerical, v3: INumerical): INumerical 
         => (v1 + (v2 - v1)) * uv.X + (v3 - v1) * uv.Y;   
 
     //====================

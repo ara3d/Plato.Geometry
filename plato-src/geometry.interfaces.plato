@@ -121,7 +121,7 @@ interface ICurve1D
 
 // A 2 dimensional shape with a topological space of 1 dimensions
 interface ICurve2D
-    inherits IGeometry2D, ICurve<Vector2>, IDistanceField2D
+    inherits IGeometry2D, ICurve<Vector2>
 { }
 
 // A 2D curve which is known to be closed
@@ -136,7 +136,7 @@ interface IOpenCurve2D
 
 // A 3 dimensional shape with a topological space of 1 dimensions
 interface ICurve3D
-    inherits IGeometry3D, ICurve<Vector3>, IDistanceField3D
+    inherits IGeometry3D, ICurve<Vector3> 
 { }
 
 // A 3D curve which is known to be closed
@@ -151,7 +151,7 @@ interface IOpenCurve3D
 
 // Surfaces are 3 dimensional shapes with a topological space of 2 dimensions
 interface ISurface
-    inherits IGeometry3D, IDistanceField3D
+    inherits IGeometry3D
 { }
 
 // Parametric surfaces are shapes defined from two variables (U and V)

@@ -173,7 +173,7 @@
     Deform(x: IDeformable3D, t: ITransform3D): IDeformable3D => x.Deform(v => t.Transform(v));
 
     Translate(x: IDeformable3D, v: Vector3): IDeformable3D => x.Deform(p => p + v);
-    Rotate(x: IDeformable3D, q: Quaternion): IDeformable3D => x.Deform(q);
+    Rotate(x: IDeformable3D, q: Quaternion): IDeformable3D => x.Deform(v => q.Transform(v));
     Scale(x: IDeformable3D, v: Vector3): IDeformable3D => x.Deform(p => p * v);
     Scale(x: IDeformable3D, s: Number): IDeformable3D => x.Deform(p => p * s);
 
