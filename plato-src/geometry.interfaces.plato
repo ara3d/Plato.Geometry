@@ -267,14 +267,41 @@ interface IPointGeometry3D
     Points(x: Self): IArray<Vector3>; 
 }
 
-interface ILineGeometry2D inherits IPrimitiveGeometry2D, ILineGeometry { Lines(x: Self): IArray<Line2D>; }
-interface ILineGeometry3D inherits IPrimitiveGeometry3D, ILineGeometry { Lines(x: Self): IArray<Line3D>; }
+// Collection of 2D line-segments 
+interface ILineGeometry2D inherits IPrimitiveGeometry2D, ILineGeometry 
+{ 
+    Lines(x: Self): IArray<Line2D>; 
+}
 
-interface ITriangleGeometry2D inherits IPrimitiveGeometry2D, ITriangleGeometry { Triangles(x: Self): IArray<Triangle2D>; }
-interface ITriangleGeometry3D inherits IPrimitiveGeometry3D, ITriangleGeometry { Triangles(x: Self): IArray<Triangle3D>; }
+// Collection of 3D line-segments
+interface ILineGeometry3D inherits IPrimitiveGeometry3D, ILineGeometry 
+{ 
+    Lines(x: Self): IArray<Line3D>; 
+}
 
-interface IQuadGeometry2D inherits IPrimitiveGeometry2D, IQuadGeometry { Quads(x: Self): IArray<Quad2D>; }
-interface IQuadGeometry3D inherits IPrimitiveGeometry3D, IQuadGeometry { Quads(x: Self): IArray<Quad3D>; }
+// Collection of 2D triangles 
+interface ITriangleGeometry2D inherits IPrimitiveGeometry2D, ITriangleGeometry 
+{ 
+    Triangles(x: Self): IArray<Triangle2D>; 
+}
+
+// Collection of 3D triangles 
+interface ITriangleGeometry3D inherits IPrimitiveGeometry3D, ITriangleGeometry 
+{ 
+    Triangles(x: Self): IArray<Triangle3D>; 
+}
+
+// Collection of 2D quadrilaterals
+interface IQuadGeometry2D inherits IPrimitiveGeometry2D, IQuadGeometry 
+{ 
+    Quads(x: Self): IArray<Quad2D>; 
+}
+
+// Collection of 3D quadrilaterals
+interface IQuadGeometry3D inherits IPrimitiveGeometry3D, IQuadGeometry 
+{ 
+    Quads(x: Self): IArray<Quad3D>; 
+}
 
 //==
 // # Indexed Geometry 

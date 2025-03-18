@@ -37,7 +37,7 @@ library Algebra
 
     // Linear second derivative: d2y/dx2 = 0
     LinearSecondDerivative(x: Number, m: INumerical, b: INumerical): INumerical
-        => 0.0; 
+        => m.Zero; 
 
     // Quadratic derivative: dy/dx = 2*a*x + b
     QuadraticDerivative(x: Number, a: INumerical, b: INumerical, c: INumerical): INumerical

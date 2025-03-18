@@ -1,5 +1,17 @@
 library Numerical
 {
+    Zero(_: IVectorSpace): IVectorSpace
+        => _.CreateFromNumber(0.0);
+    
+    One(_: IVectorSpace): IVectorSpace
+        => _.CreateFromNumber(1.0);
+
+    FromNumber(_: IVectorSpace, x: Number): IVectorSpace
+        => _.CreateFromNumber(x);
+
+    Lerp(a: IVectorSpace, b: IVectorSpace, t: Number): IVectorSpace
+        => a + (b - a) * t;
+
     PlusOne(x: IVectorSpace): IVectorSpace 
         => x + One;
 
@@ -29,13 +41,13 @@ library Numerical
     }
 
     MapComponents(x: IVectorSpace, f: Function1<Number, Number>): IVectorSpace
-        => Self.CreateFromComponents(x.Components.Map(f));
+        => x.CreateFromComponents(x.Components.Map(f));
 
     ZipComponents(a: IVectorSpace, b: IVectorSpace, f: Function2<Number, Number, Number>): IVectorSpace
-        => Self.CreateFromComponents(a.Components.Zip(b.Components, f));
+        => a.CreateFromComponents(a.Components.Zip(b.Components, f));
 
     ZipComponents(a: IVectorSpace, b: IVectorSpace, c: IVectorSpace, f: Function3<Number, Number, Number, Number>): IVectorSpace
-        => Self.CreateFromComponents(a.Components.Zip(b.Components, c.Components, f));
+        => a.CreateFromComponents(a.Components.Zip(b.Components, c.Components, f));
 
     AllZipComponents(a: IVectorSpace, b: IVectorSpace, f: Function2<Number, Number, Boolean>): Boolean
         => a.Components.Zip(b.Components, f).All(x => x);

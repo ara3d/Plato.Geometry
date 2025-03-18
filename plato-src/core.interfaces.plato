@@ -47,8 +47,11 @@ interface IVectorSpace
     // Returns the components of the numerical type.
     Components(x: Self): IArray<Number>;
     
-    // Creates a new numerical type from the components.
+    // Creates a new numerical type from an array of numbers 
     CreateFromComponents(_: Self, xs: IArray<Number>): Self;
+
+    // Creates a new numerical type from a single number
+    CreateFromNumber(_: Self, x: Number): Self;
 }
 
 // A type which can be multiplied by itself

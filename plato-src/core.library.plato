@@ -67,7 +67,10 @@ library Core
     
     Billionth(x: IScalarArithmetic): IScalarArithmetic 
         => x.Thousandth.Millionth;
-   
+
+    Multiply(scalar: Number, x: IScalarArithmetic): IScalarArithmetic
+        => x * scalar;
+
     //==
     // Comparable functions
     
@@ -87,11 +90,5 @@ library Core
         => a >= b ? a : b;
    
     CompareTo(a: IOrderable, b: IOrderable): Integer
-		=> a <= b ? (a == b ? 0 : - 1) : 1;
-
-    //==
-    // IVectorSpace functions
-
-    Lerp(a: IVectorSpace, b: IVectorSpace, t: Number): IVectorSpace
-        => a + (b - a) * t;
+		=> a <= b ? (a == b ? 0 : - 1) : 1; 
 }
