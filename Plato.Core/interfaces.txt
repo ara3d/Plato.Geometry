@@ -2,15 +2,15 @@
 Angle
   - IMeasure
     - IOrderable
-    - IVectorSpace
+    - IVector
       - IInterpolatable
       - IAdditive
       - IScalarArithmetic
+      - IArrayLike<Number>
 
 AnglePair
   - IInterval<Angle>
     - IValue
-    - IArray<T>
 
 Arc
   - IOpenShape2D
@@ -47,6 +47,8 @@ Array2D
 Array3D
   - IArray3D<T>
     - IArray<T>
+
+ArrayHelpers
 
 AxisAngle
   - IRotationalTransform3D
@@ -234,7 +236,6 @@ Cubic
   - IRealFunction
 
 CubicBezier2D
-  - IArray<Vector2>
   - IOpenCurve2D
     - ICurve2D
       - IGeometry2D
@@ -253,7 +254,6 @@ CubicBezier2D
             - IGeometry
 
 CubicBezier3D
-  - IArray<Vector3>
   - IOpenShape
     - IOpenClosedShape
       - IShape
@@ -476,15 +476,15 @@ Integer
 
 Integer2
   - IValue
-  - IArray<Integer>
+  - IArrayLike<Integer>
 
 Integer3
   - IValue
-  - IArray<Integer>
+  - IArrayLike<Integer>
 
 Integer4
   - IValue
-  - IArray<Integer>
+  - IArrayLike<Integer>
 
 LemniscateOfBernoulli
   - IPolarCurve
@@ -552,7 +552,6 @@ Line2D
           - IGeometry
   - IInterval<Vector2>
     - IValue
-    - IArray<T>
 
 Line3D
   - IPolyLine3D
@@ -578,10 +577,8 @@ Line3D
         - IShape
           - IGeometry
   - IDeformable3D
-  - IArray<Vector3>
   - IInterval<Vector3>
     - IValue
-    - IArray<T>
 
 LinearEquation
   - IRealFunction
@@ -668,11 +665,11 @@ LookRotation
 
 Matrix3x2
   - IValue
-  - IArray<Vector2>
+  - IArrayLike<Number>
 
 Matrix4x4
   - IValue
-  - IArray<Vector4>
+  - IArrayLike<Number>
 
 MatrixTransform3D
   - ITransform3D
@@ -696,10 +693,11 @@ NPyramid
 Number
   - IRealNumber
     - INumerical
-      - IVectorSpace
+      - IVector
         - IInterpolatable
         - IAdditive
         - IScalarArithmetic
+        - IArrayLike<Number>
       - IArithmetic
         - IAdditive
         - IMultiplicative
@@ -710,7 +708,6 @@ Number
 NumberInterval
   - IInterval<Number>
     - IValue
-    - IArray<T>
 
 Object
   - IValue
@@ -824,6 +821,7 @@ Quad2D
         - IOpenClosedShape
           - IShape
             - IGeometry
+  - IArrayLike<Vector2>
 
 Quad3D
   - IPolygon3D
@@ -850,6 +848,7 @@ Quad3D
           - IShape
             - IGeometry
   - IDeformable3D
+  - IArrayLike<Vector3>
 
 QuadArray2D
   - IQuadArray2D
@@ -910,7 +909,6 @@ Quadratic
   - IRealFunction
 
 QuadraticBezier2D
-  - IArray<Vector2>
   - IOpenCurve2D
     - ICurve2D
       - IGeometry2D
@@ -929,7 +927,6 @@ QuadraticBezier2D
             - IGeometry
 
 QuadraticBezier3D
-  - IArray<Vector3>
   - IOpenShape
     - IOpenClosedShape
       - IShape
@@ -937,7 +934,7 @@ QuadraticBezier3D
 
 Quaternion
   - IValue
-  - IArray<Number>
+  - IArrayLike<Number>
 
 Ray2D
   - IValue
@@ -1102,15 +1099,15 @@ Spiral
 String
   - IValue
   - IOrderable
-  - IArray<Character>
 
 Time
   - IMeasure
     - IOrderable
-    - IVectorSpace
+    - IVector
       - IInterpolatable
       - IAdditive
       - IScalarArithmetic
+      - IArrayLike<Number>
 
 Torus
   - ISolid
@@ -1181,6 +1178,7 @@ Triangle2D
         - IOpenClosedShape
           - IShape
             - IGeometry
+  - IArrayLike<Vector2>
 
 Triangle3D
   - IPolygon3D
@@ -1207,6 +1205,7 @@ Triangle3D
           - IShape
             - IGeometry
   - IDeformable3D
+  - IArrayLike<Vector3>
 
 TriangleArray2D
   - ITriangleArray2D
@@ -1307,18 +1306,12 @@ Tuple7
 Tuple8
 
 Vector2
-  - IVector
-    - IArray<Number>
-    - INumerical
-      - IVectorSpace
-        - IInterpolatable
-        - IAdditive
-        - IScalarArithmetic
-      - IArithmetic
-        - IAdditive
-        - IMultiplicative
-        - IDivisible
-        - IModulo
+  - INumerical
+    - IVector
+      - IInterpolatable
+      - IAdditive
+      - IScalarArithmetic
+      - IArrayLike<Number>
     - IArithmetic
       - IAdditive
       - IMultiplicative
@@ -1326,18 +1319,12 @@ Vector2
       - IModulo
 
 Vector3
-  - IVector
-    - IArray<Number>
-    - INumerical
-      - IVectorSpace
-        - IInterpolatable
-        - IAdditive
-        - IScalarArithmetic
-      - IArithmetic
-        - IAdditive
-        - IMultiplicative
-        - IDivisible
-        - IModulo
+  - INumerical
+    - IVector
+      - IInterpolatable
+      - IAdditive
+      - IScalarArithmetic
+      - IArrayLike<Number>
     - IArithmetic
       - IAdditive
       - IMultiplicative
@@ -1345,18 +1332,12 @@ Vector3
       - IModulo
 
 Vector4
-  - IVector
-    - IArray<Number>
-    - INumerical
-      - IVectorSpace
-        - IInterpolatable
-        - IAdditive
-        - IScalarArithmetic
-      - IArithmetic
-        - IAdditive
-        - IMultiplicative
-        - IDivisible
-        - IModulo
+  - INumerical
+    - IVector
+      - IInterpolatable
+      - IAdditive
+      - IScalarArithmetic
+      - IArrayLike<Number>
     - IArithmetic
       - IAdditive
       - IMultiplicative
@@ -1365,19 +1346,7 @@ Vector4
 
 Vector8
   - IVector
-    - IArray<Number>
-    - INumerical
-      - IVectorSpace
-        - IInterpolatable
-        - IAdditive
-        - IScalarArithmetic
-      - IArithmetic
-        - IAdditive
-        - IMultiplicative
-        - IDivisible
-        - IModulo
-    - IArithmetic
-      - IAdditive
-      - IMultiplicative
-      - IDivisible
-      - IModulo
+    - IInterpolatable
+    - IAdditive
+    - IScalarArithmetic
+    - IArrayLike<Number>

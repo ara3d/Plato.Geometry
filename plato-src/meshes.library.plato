@@ -21,9 +21,9 @@
     Indices(x: IQuadArray2D): IArray<Integer> => x.Points.Indices();
     Indices(x: IQuadArray3D): IArray<Integer> => x.Points.Indices();
        
-    FaceIndices(x: ILineGeometry): IArray<Integer2> => x.Indices.Integer2Array;
-    FaceIndices(x: ITriangleGeometry): IArray<Integer3> => x.Indices.Integer3Array;
-    FaceIndices(x: IQuadGeometry): IArray<Integer4> => x.Indices.Integer4Array;
+    FaceIndices(x: ILineGeometry): IArray<Integer2> => ArrayHelpers.Integer2Array(x.Indices);
+    FaceIndices(x: ITriangleGeometry): IArray<Integer3> => ArrayHelpers.Integer3Array(x.Indices);
+    FaceIndices(x: IQuadGeometry): IArray<Integer4> => ArrayHelpers.Integer4Array(x.Indices);
 
     // # Implicit cast functions for meshes 
 
@@ -63,8 +63,8 @@
     Vertex(g: IIndexedGeometry2D, n: Integer): Vector2 => g.Points[g.Indices[n]];
     Vertex(g: IIndexedGeometry3D, n: Integer): Vector3 => g.Points[g.Indices[n]];
 
-    FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2> => g.FaceIndices.At(f).Map(i => g.Vertex(i));
-    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3> => g.FaceIndices.At(f).Map(i => g.Vertex(i));
+    FaceVertices(g: IIndexedGeometry2D, f: Integer): IArray<Vector2> => g.FaceIndices.At(f).Components.Map(i => g.Vertex(i));
+    FaceVertices(g: IIndexedGeometry3D, f: Integer): IArray<Vector3> => g.FaceIndices.At(f).Components.Map(i => g.Vertex(i));
 
     AllFaceIndices(g: IIndexedGeometry): IArray2D<Integer> => g.Indices.Slices(g.PrimitiveSize);
 
@@ -195,7 +195,7 @@
     NumColumns(x: QuadGrid3D): Integer => x.PointGrid.NumColumns;
     NumRows(x: QuadGrid3D): Integer => x.PointGrid.NumRows;
     Points(x: QuadGrid3D): IArray<Vector3> => x.PointGrid;
-    Indices(x: QuadGrid3D): IArray<Integer> => x.PointGrid.AllQuadFaceIndices(x.ClosedX, x.ClosedY).FlatMap(x => x);
+    Indices(x: QuadGrid3D): IArray<Integer> => x.PointGrid.AllQuadFaceIndices(x.ClosedX, x.ClosedY).FlatMap(x => x.Components);
 
     // d -- c
     // |    |

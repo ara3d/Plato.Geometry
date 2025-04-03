@@ -35,6 +35,10 @@ library Geometry
 	Flip(t: Triangle2D): Triangle2D => (t.C, t.B, t.A);
     Center(t: Triangle2D): Vector2 => (t.A + t.B + t.C) / 3.0;
 	Barycentric(t: Triangle2D, uv: Vector2): Vector2 => t.A.Barycentric(t.B, t.C, uv);
+    LineA(t: Triangle2D): Line2D => (t.A, t.B);        
+    LineB(t: Triangle2D): Line2D => (t.B, t.C);        
+    LineC(t: Triangle2D): Line2D => (t.C, t.A);        
+    Points(t: Triangle2D): IArray<Vector2> => t.Components;
     
 	//==
     // Triangle3D functions
@@ -47,6 +51,7 @@ library Geometry
     LineB(t: Triangle3D): Line3D => (t.B, t.C);        
     LineC(t: Triangle3D): Line3D => (t.C, t.A);        
     Barycentric(t: Triangle3D, uv: Vector2): Vector3 => t.A.Barycentric(t.B, t.C, uv);
+    Points(t: Triangle2D): IArray<Vector2> => t.Components;
     
     //==
     // Rect2D functions 
@@ -62,7 +67,7 @@ library Geometry
     TopRight(x: Rect2D): Vector2 => (x.Right, x.Top);
     TopLeft(x: Rect2D): Vector2 => (x.Left, x.Top);
     Quad2D(x: Rect2D): Quad2D => (x.BottomLeft, x.BottomRight, x.TopRight, x.TopLeft);
-    Points(x: Rect2D): IArray<Vector2> => x.Quad2D;
+    Points(x: Rect2D): IArray<Vector2> => x.Quad2D.Points;
 
     //==
     // Quad2D functions
@@ -75,6 +80,7 @@ library Geometry
     LineD(q: Quad2D): Line2D => (q.D, q.A);            
     TriangleA(q: Quad2D): Triangle2D => (q.A, q.B, q.C);        
     TriangleB(q: Quad2D): Triangle2D => (q.C, q.D, q.A);        
+    Points(q: Quad2D): IArray<Vector2> => q.Components;
 
     //==
     // Quad3D functions
@@ -86,7 +92,8 @@ library Geometry
     LineC(q: Quad3D): Line3D => (q.C, q.D);        
     LineD(q: Quad3D): Line3D => (q.D, q.A);            
     TriangleA(q: Quad3D): Triangle3D => (q.A, q.B, q.C);        
-    TriangleB(q: Quad3D): Triangle3D => (q.C, q.D, q.A);        
+    TriangleB(q: Quad3D): Triangle3D => (q.C, q.D, q.A);       
+    Points(q: Quad3D): IArray<Vector3> => q.Components;
 
     //==
     // Bounds3D functions

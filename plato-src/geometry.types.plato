@@ -32,7 +32,7 @@ type Ray2D
 }
 
 type Triangle2D
-    implements IPolygon2D
+    implements IPolygon2D, IArrayLike<Vector2>
 {
     A: Vector2;
     B: Vector2;
@@ -40,7 +40,7 @@ type Triangle2D
 }
 
 type Quad2D
-    implements IPolygon2D
+    implements IPolygon2D, IArrayLike<Vector2>
 {
     A: Vector2;
     B: Vector2;
@@ -140,7 +140,7 @@ type Bounds3D
 
 // A line segment in 3D.
 type Line3D 
-    implements IPolyLine3D, IOpenShape3D, IDeformable3D, IArray<Vector3>, IInterval<Vector3>
+    implements IPolyLine3D, IOpenShape3D, IDeformable3D, IInterval<Vector3>
 {
     A: Vector3;
     B: Vector3;
@@ -158,7 +158,7 @@ type Ray3D
 //== 
 
 type Triangle3D
-    implements IPolygon3D, IDeformable3D
+    implements IPolygon3D, IDeformable3D, IArrayLike<Vector3>
 {
     A: Vector3;
     B: Vector3;
@@ -166,7 +166,7 @@ type Triangle3D
 }
 
 type Quad3D
-    implements IPolygon3D, IDeformable3D
+    implements IPolygon3D, IDeformable3D, IArrayLike<Vector3>
 {
     A: Vector3;
     B: Vector3;

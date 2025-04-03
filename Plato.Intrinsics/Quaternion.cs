@@ -13,7 +13,7 @@ namespace Plato
         [DataMember] public readonly SNQuaternion Value;
 
         // Constructor
-        
+
         [MethodImpl(AggressiveInlining)]
         public Quaternion(SNQuaternion v) => Value = v;
 
@@ -22,10 +22,25 @@ namespace Plato
 
         // Properties
 
-        public Number X { [MethodImpl(AggressiveInlining)] get => Value.X; }
-        public Number Y { [MethodImpl(AggressiveInlining)] get => Value.Y; }
-        public Number Z { [MethodImpl(AggressiveInlining)] get => Value.Z; }
-        public Number W { [MethodImpl(AggressiveInlining)] get => Value.W; }
+        public Number X
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.X;
+        }
+
+        public Number Y
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.Y;
+        }
+
+        public Number Z
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.Z;
+        }
+
+        public Number W
+        {
+            [MethodImpl(AggressiveInlining)] get => Value.W;
+        }
 
         // Immutable "setters"
 
@@ -44,7 +59,7 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public Quaternion WithW(Number w)
             => new(X, Y, Z, w);
-        
+
         // Implicit casts 
 
         [MethodImpl(AggressiveInlining)]
@@ -113,7 +128,7 @@ namespace Plato
         [MethodImpl(AggressiveInlining)]
         public static Quaternion Slerp(Quaternion quaternion1, Quaternion quaternion2, Number amount)
             => SNQuaternion.Slerp(quaternion1.Value, quaternion2.Value, amount);
-        
+
         // Properties
 
         public Number Length
@@ -128,20 +143,32 @@ namespace Plato
 
         public Quaternion Normalize
         {
-            [MethodImpl(AggressiveInlining)]
-            get => SNQuaternion.Normalize(Value);
+            [MethodImpl(AggressiveInlining)] get => SNQuaternion.Normalize(Value);
         }
 
         public Quaternion Conjugate
         {
-            [MethodImpl(AggressiveInlining)]
-            get => SNQuaternion.Conjugate(Value);
+            [MethodImpl(AggressiveInlining)] get => SNQuaternion.Conjugate(Value);
         }
 
         public Quaternion Inverse
         {
-            [MethodImpl(AggressiveInlining)]
-            get => SNQuaternion.Inverse(Value);
+            [MethodImpl(AggressiveInlining)] get => SNQuaternion.Inverse(Value);
         }
+    }
+
+    public static partial class QuaternionExtensions
+    {
+        [MethodImpl(AggressiveInlining)]
+        public static Quaternion CreateFromAxisAngle(this Quaternion _, Vector3 axis, Angle angle)
+            => SNQuaternion.CreateFromAxisAngle(axis, angle);
+
+        [MethodImpl(AggressiveInlining)]
+        public static Quaternion CreateFromYawPitchRoll(this Quaternion _, Angle yaw, Angle pitch, Angle roll)
+            => SNQuaternion.CreateFromYawPitchRoll(yaw, pitch, roll);
+
+        [MethodImpl(AggressiveInlining)]
+        public static Quaternion CreateFromRotationMatrix(this Quaternion _, Matrix4x4 matrix)
+            => SNQuaternion.CreateFromRotationMatrix(matrix);
     }
 }

@@ -110,10 +110,10 @@ library Curves2D
 		=> t.Spiral(curve.Radius1, curve.Radius2, curve.NumTurns);
 
     Eval(curve: QuadraticBezier2D, t: Number): Vector2
-		=> t.QuadraticBezier(curve.A, curve.B, curve.C);
+		=> curve.A.QuadraticBezier(curve.B, curve.C, t);
 
     Eval(curve: CubicBezier2D, t: Number): Vector2
-		=> t.QuadraticBezier(curve.A, curve.B, curve.C);
+		=> curve.A.CubicBezier(curve.B, curve.C, curve.D, t);
 }
 
 type Spiral
@@ -126,7 +126,7 @@ type Spiral
   
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier2D
-    implements IArray<Vector2>, IOpenCurve2D
+    implements IOpenCurve2D
 {
     A: Vector2;
     B: Vector2;
@@ -135,7 +135,7 @@ type QuadraticBezier2D
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve    
 type CubicBezier2D
-    implements IArray<Vector2>, IOpenCurve2D
+    implements IOpenCurve2D
 {
     A: Vector2;
     B: Vector2;
@@ -491,15 +491,15 @@ type LogarithmicSpiral
 library Curves3D
 {
     Eval(curve: QuadraticBezier3D, t: Number): Vector3
-		=> t.QuadraticBezier(curve.A, curve.B, curve.C);
+		=> curve.A.QuadraticBezier(curve.B, curve.C, t);
 
     Eval(curve: CubicBezier3D, t: Number): Vector3
-		=> t.QuadraticBezier(curve.A, curve.B, curve.C);
+		=> curve.A.CubicBezier(curve.B, curve.C, curve.D, t);
 }
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type CubicBezier3D
-    implements IArray<Vector3>, IOpenShape
+    implements IOpenShape
 {
     A: Vector3;
     B: Vector3;
@@ -509,7 +509,7 @@ type CubicBezier3D
 
 // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 type QuadraticBezier3D
-    implements IArray<Vector3>, IOpenShape
+    implements IOpenShape
 {
     A: Vector3;
     B: Vector3;
