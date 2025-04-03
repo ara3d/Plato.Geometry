@@ -375,7 +375,7 @@ namespace Plato
                 var shuffled = minHalf.ZWXY;
                 var reduced = minHalf.Min(shuffled);
                 reduced = reduced.Min(reduced.YXWZ);
-                return reduced[0];
+                return reduced.X;
             }
         }
 
@@ -388,7 +388,7 @@ namespace Plato
                 var shuffled = maxHalf.ZWXY;
                 var reduced = maxHalf.Max(shuffled);
                 reduced = reduced.Max(reduced.YXWZ);
-                return reduced[0];
+                return reduced.X;
             }
         }
     }

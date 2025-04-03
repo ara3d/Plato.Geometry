@@ -1,6 +1,6 @@
 // A pair of integers 
 type Integer2
-    implements IValue, IArray<Integer>
+    implements IValue, IArrayLike<Integer>
 {
     A: Integer;
     B: Integer;
@@ -8,7 +8,7 @@ type Integer2
 
 // A tuple of 3 integers 
 type Integer3
-    implements IValue, IArray<Integer>
+    implements IValue, IArrayLike<Integer>
 {
     A: Integer;
     B: Integer;
@@ -17,7 +17,7 @@ type Integer3
 
 // A tuple of 4 integers 
 type Integer4
-    implements IValue, IArray<Integer>
+    implements IValue, IArrayLike<Integer>
 {
     A: Integer;
     B: Integer;

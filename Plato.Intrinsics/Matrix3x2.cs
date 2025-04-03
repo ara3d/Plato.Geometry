@@ -29,7 +29,6 @@ namespace Plato
             Number m31, Number m32)
             => Value = new(m11, m12, m21, m22, m31, m32);
         
-
         [MethodImpl(AggressiveInlining)]
         public Matrix3x2(
             Vector2 row1,
@@ -44,7 +43,13 @@ namespace Plato
         public Vector2 Row1 { [MethodImpl(AggressiveInlining)] get => new(Value.M11, Value.M12); }
         public Vector2 Row2 { [MethodImpl(AggressiveInlining)] get => new(Value.M21, Value.M22); }
         public Vector2 Row3 { [MethodImpl(AggressiveInlining)] get => new(Value.M31, Value.M32); }
-        
+
+        public Number M11 => Value.M11;
+        public Number M12 => Value.M12;
+        public Number M21 => Value.M21;
+        public Number M22 => Value.M22;
+        public Number M31 => Value.M31;
+        public Number M32 => Value.M32;
         //-------------------------------------------------------------------------------------
         // Immutable "setters"
         //-------------------------------------------------------------------------------------

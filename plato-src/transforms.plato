@@ -206,7 +206,7 @@ library Transforms
         => v;
         
     Identity(_: Translation3D): Translation3D
-        => new Vector3(Zero);
+        => Vector3.Zero;
 
     Translation(t: Translation3D): Translation3D
         => t;
@@ -257,7 +257,7 @@ library Transforms
     // LookRotation
 
     Matrix(r: LookRotation): Matrix4x4
-        => Matrix4x4.CreateWorld(Zero, r.Forward, r.Up);
+        => Matrix4x4.CreateWorld(0.0, r.Forward, r.Up);
 
     Quaternion(r: LookRotation): Quaternion
         => Quaternion.CreateFromRotationMatrix(r.Matrix);
@@ -275,7 +275,7 @@ library Transforms
         => new Vector3(x);
 
     Identity(_: Scaling3D): Scaling3D
-        => new Vector3(One);
+        => Vector3.One;
 
     //==
     // TRSTransform3D
@@ -305,7 +305,7 @@ library Transforms
 	    => Quaternion.CreateFromAxisAngle(aa.Axis, aa.Angle);
 
     Identity(_: AxisAngle): AxisAngle
-        => (Vector3.UnitX, Zero);
+        => (Vector3.UnitX, 0.0);
 
     //==
     // EulerAngles
@@ -314,7 +314,7 @@ library Transforms
         => Quaternion.CreateFromYawPitchRoll(e.Yaw, e.Pitch, e.Roll);
 
     Identity(_: EulerAngles): EulerAngles
-        => (Zero, Zero, Zero);
+        => (0.0, 0.0, 0.0);
 
     //==
     // Perspective3D

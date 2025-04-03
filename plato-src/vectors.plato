@@ -100,54 +100,6 @@ library Vectors
         => (s, s, s, s, s, s, s, s);
 
     //==
-    // Generic vector functions
-    
-    MidPoint(a: IVector, b: IVector): IVector
-        => (a + b).Half;
-
-    Length(a: IVector): Number 
-        => a.Magnitude;
-    
-    LengthSquared(a: IVector): Number 
-        => a.MagnitudeSquared;
-    
-    Sum(v: IVector): Number 
-        => v.Reduce(0.0, (a, b) => a + b);
-    
-    SumSquares(v: IVector): Number 
-        => v.Sqr.Sum;   
-    
-    MagnitudeSquared(v: IVector): Number 
-        => v.SumSquares;    
-    
-    Magnitude(v: IVector): Number 
-        => v.MagnitudeSquared.Sqrt;    
-    
-    Dot(v1: IVector, v2: IVector): Number 
-        => (v1 * v2).Sum;  
-    
-    Normalize(x: IVector): IVector 
-        => x.MagnitudeSquared > 0 ? x / x.Magnitude : Zero;
-    
-    Reflect(v: IVector, normal: IVector): IVector 
-        => v - normal * v.Dot(normal) * 2.0;
-    
-    Project(v: IVector, other: IVector): IVector 
-        => other * v.Dot(other);
-    
-    Distance(a: IVector, b: IVector): Number 
-        => (b - a).Magnitude;
-    
-    DistanceSquared(a: IVector, b: IVector): Number 
-        => (b - a).MagnitudeSquared;
-    
-    Angle(a: IVector, b: IVector): Angle 
-        => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
-    
-    IsParallel(a: IVector, b: IVector): Boolean 
-        => a.Dot(b).Abs >= (One - Epsilon);
-
-    //==
     // Matrix operations   
 
     M11(m: Matrix4x4): Number => m.Row1.X;
@@ -217,4 +169,163 @@ library Vectors
 
     Identity(_: Quaternion): Quaternion 
         => (0.0, 0.0, 0.0, 1.0);        
+
+    //==
+    // Generic vector functions
+    
+    MidPoint(a: IVector, b: IVector): IVector
+        => (a + b).Half;
+
+    Length(a: IVector): Number 
+        => a.Magnitude;
+    
+    LengthSquared(a: IVector): Number 
+        => a.MagnitudeSquared;
+
+    Reduce(v: IVector, initial: Number, f: Function2<Number, Number, Number>): Number
+        => v.Components.Reduce(initial, f);
+        
+    Sum(v: IVector): Number 
+        => v.Reduce(0.0, (a, b) => a + b);
+    
+    SumSquares(v: IVector): Number 
+        => v.Sqr.Sum;   
+    
+    MagnitudeSquared(v: IVector): Number 
+        => v.SumSquares;    
+    
+    Magnitude(v: IVector): Number 
+        => v.MagnitudeSquared.Sqrt;    
+    
+    Dot(v1: IVector, v2: IVector): Number 
+        => (v1 * v2).Sum;  
+    
+    Normalize(x: IVector): IVector 
+        => x.MagnitudeSquared > 0 ? x / x.Magnitude : Zero;
+    
+    Reflect(v: IVector, normal: IVector): IVector 
+        => v - normal * v.Dot(normal) * 2.0;
+    
+    Project(v: IVector, other: IVector): IVector 
+        => other * v.Dot(other);
+    
+    Distance(a: IVector, b: IVector): Number 
+        => (b - a).Magnitude;
+    
+    DistanceSquared(a: IVector, b: IVector): Number 
+        => (b - a).MagnitudeSquared;
+    
+    Angle(a: IVector, b: IVector): Angle 
+        => (a.Dot(b) / (a.Magnitude * b.Magnitude)).Acos;     
+    
+    IsParallel(a: IVector, b: IVector): Boolean 
+        => a.Dot(b).Abs >= (1.0 - Epsilon);
+
+    Zero(_: IVector): IVector
+        => Self.CreateFromComponent(0.0);
+    
+    One(_: IVector): IVector
+        => Self.CreateFromComponent(1.0);
+
+    FromNumber(_: IVector, x: Number): IVector
+        => Self.CreateFromComponent(x);
+
+    Lerp(a: IVector, b: IVector, t: Number): IVector
+        => a + (b - a) * t;
+
+    PlusOne(x: IVector): IVector 
+        => x + One;
+
+    MinusOne(x: IVector): IVector 
+        => x - One;    
+
+    FromOne(x: IVector): IVector 
+        => -x + One;
+
+    Component(x: IVector, n: Integer): Number
+        => x.Components[n];
+
+    MaxComponent(x: IVector): Number
+        => x.Reduce(x.Component(0), (a, b) => a.Max(b));
+
+    MinComponent(x: IVector): Number
+        => x.Reduce(x.Component(0), (a, b) => a.Min(b));
+
+    MapComponents(x: IVector, f: Function1<Number, Number>): IVector
+        => Self.CreateFromComponents(x.Components.Map(f));
+
+    ZipComponents(a: IVector, b: IVector, f: Function2<Number, Number, Number>): IVector
+        => Self.CreateFromComponents(a.Components.Zip(b.Components, f));
+
+    ZipComponents(a: IVector, b: IVector, c: IVector, f: Function3<Number, Number, Number, Number>): IVector
+        => Self.CreateFromComponents(a.Components.Zip(b.Components, c.Components, f));
+
+    AllZipComponents(a: IVector, b: IVector, f: Function2<Number, Number, Boolean>): Boolean
+        => a.Components.Zip(b.Components, f).All(x => x);
+
+    AllZipComponents(a: IVector, b: IVector, c: IVector, f: Function3<Number, Number, Number, Boolean>): Boolean
+        => a.Components.Zip(b.Components, c.Components, f).All(x => x);
+
+    AnyZipComponents(a: IVector, b: IVector, f: Function2<Number, Number, Boolean>): Boolean
+        => a.Components.Zip(b.Components, f).Any(x => x);
+
+    AnyZipComponents(a: IVector, b: IVector, c: IVector, f: Function3<Number, Number, Number, Boolean>): Boolean
+        => a.Components.Zip(b.Components, c.Components, f).Any(x => x);
+
+    AllComponents(x: IVector, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.All(predicate);
+
+    AnyComponent(x: IVector, predicate: Function1<Number, Boolean>): Boolean
+		=> x.Components.Any(predicate);
+
+    Clamp(x: IVector, a: IVector, b: IVector): IVector
+        => x.ZipComponents(a, b, (x0, a0, b0) => x0.Clamp(a0, b0));
+    
+    InversePow(x: IVector, n: IVector): IVector 
+        => x.Pow(n.Reciprocal);
+    
+    Floor(x: IVector): IVector
+        => x.MapComponents(x0 => x0.Floor);
+    
+    Fract(x: IVector): IVector 
+        => x - x.Floor;
+
+    Multiply(x: IVector, y: IVector): IVector
+        => x.ZipComponents(y, (a, b) => a * b);
+
+    Pow2(x: IVector): IVector
+        => x.MapComponents(a => a * a);
+    
+    Pow3(x: IVector): IVector 
+        => x.MapComponents(a => a * a * a);
+    
+    Pow4(x: IVector): IVector 
+        => x.MapComponents(a => a * a * a * a);
+    
+    Pow5(x: IVector): IVector 
+        => x.MapComponents(a => a * a * a * a * a);
+    
+    Sqr(x: IVector): IVector
+        => x.Pow2;
+        
+    Cube(x: IVector): IVector 
+        => x.Pow3;    
+    
+    ClampZeroOne(x: IVector): IVector
+        => x.Clamp(Zero, One);
+
+    Between(x: IVector, a: IVector, b: IVector): Boolean
+        => x.AllZipComponents(a, b, (x0, a0, b0) => x0.Between(a0, b0));
+
+    BetweenZeroOne(x: IVector): Boolean
+        => x.Between(Zero, One);
+
+    Sqrt(x: IVector): IVector 
+        => x.MapComponents((n) => n.Sqrt);
+
+    Pow(x: IVector, y: IVector): IVector 
+        => x.ZipComponents(y, (a, b) => a.Pow(b));   
+        
+    Reciprocal(x: IVector): IVector
+        => x.MapComponents((n) => n.Reciprocal);
 }

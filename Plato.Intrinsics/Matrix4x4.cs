@@ -39,7 +39,7 @@ namespace Plato
         // --------------------------------------------------------------------------------
         // Convert to/from System.Numerics.Matrix4x4
         // --------------------------------------------------------------------------------
-        
+
         [MethodImpl(AggressiveInlining)]
         public static Matrix4x4 FromSystem(SNMatrix4x4 sysMat)
             => Unsafe.As<SNMatrix4x4, Matrix4x4>(ref sysMat);
