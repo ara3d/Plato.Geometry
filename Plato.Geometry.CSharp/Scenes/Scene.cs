@@ -43,7 +43,7 @@ namespace Plato.Geometry.Scenes
 
     public class SceneLine : ISceneLine
     {
-        public SceneLine(Material material, double width, bool closed, IReadOnlyList<Vector3D> points)
+        public SceneLine(Material material, double width, bool closed, IReadOnlyList<Vector3> points)
         {
             Material = material;
             Width = width;
@@ -53,7 +53,7 @@ namespace Plato.Geometry.Scenes
         public Material Material { get; set; }
         public double Width { get; set; }
         public bool Closed { get; set; }
-        public IReadOnlyList<Vector3D> Points { get; }
+        public IReadOnlyList<Vector3> Points { get; }
     }
 
 }

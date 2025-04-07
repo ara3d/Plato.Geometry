@@ -17,7 +17,7 @@ namespace Plato.Geometry.Tests
 
     public static class BSPExtensions
     {
-        public static PlaneClassification Classify(this Plane p, Vector3D v)
+        public static PlaneClassification Classify(this Plane p, Vector3 v)
         {
             var d = p.Normal.Dot(v) - p.D;
             return (d < -double.Epsilon) ? PlaneClassification.Back : (d > double.Epsilon) ? PlaneClassification.Front : PlaneClassification.Coplanar;
@@ -108,8 +108,8 @@ namespace Plato.Geometry.Tests
                         break;
 
                     case PlaneClassification.Spanning:
-                        var f = new List<Vector3D>(); 
-                        var b = new List<Vector3D>();
+                        var f = new List<Vector3>(); 
+                        var b = new List<Vector3>();
                         for (var i = 0; i < 3; i++)
                         {
                             var j = (i + 1) % 3;

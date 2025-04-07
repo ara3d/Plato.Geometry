@@ -36,15 +36,15 @@ interface IBounded3D
     Bounds(x: Self): Bounds3D;
 }
 
-// Most geometric forms that can be primitiv
+// Most geometric forms that can be primitive
 interface IDeformable2D 
 {
-    Deform(x: Self, f: Function1<Vector2, Vector2>): Self;
+    Deform(x: Self, f: Function1<Point2D, Point2D>): Self;
 }
 
 interface IDeformable3D 
 {
-    Deform(x: Self, f: Function1<Vector3, Vector3>): Self;
+    Deform(x: Self, f: Function1<Point3D, Point3D>): Self;
 }
 
 //==
@@ -103,14 +103,14 @@ interface ICurve<TRange>
 interface IDistanceField2D 
     inherits IProcedural<Vector2, Number>
 { 
-    Distance(x: Self, p: Vector2): Number;
+    Distance(x: Self, p: Point2D): Number;
 }
 
 // Given a point in space (p), the distance field returns the distance to a surface .
 interface IDistanceField3D
     inherits IProcedural<Vector3, Number>
 { 
-    Distance(x: Self, p: Vector3): Number;
+    Distance(x: Self, p: Point3D): Number;
 }
 
 // A 1 dimensional shape with a topological space of 1 dimensions
@@ -217,18 +217,28 @@ interface ISolid
 //==
 // # Primitive Geometry
 //
-// Primitive geometry refers to discrete geometry which 
-// can be described as a set of fixed size primitive forms (points, lines, triangles, quads)
-// For example triangle meshes, quad meshes, point clouds, and poly lines:
 
+// Any geometry that can be described as a series of 2D points 
+interface IPointGeometry2D
+    inherits IGeometry2D, IDeformable2D, IBounded2D
+{
+    Points(x: Self): IArray<Point2D>;
+}
+
+// Any geometry that can be described as a series of 3D points 
+interface IPointGeometry3D 
+    inherits IGeometry3D, IDeformable3D, IBounded3D
+{
+    Points(x: Self): IArray<Point3D>;
+}
+
+// A primitive geometry has a fixed number of primitives each with a fixed size 
+// Examples of primitives include lines, triangles, and quads
 interface IPrimitiveGeometry 
 {
 	PrimitiveSize(x: Self): Integer;
     NumPrimitives(x: Self): Integer;
 }
-
-// Primitive geometry with primitive of size 1
-interface IPointGeometry inherits IPrimitiveGeometry { }
 
 // Primitive geometry with primitives of size 2
 interface ILineGeometry inherits IPrimitiveGeometry { }
@@ -239,69 +249,61 @@ interface ITriangleGeometry inherits IPrimitiveGeometry { }
 // Primitive geometry with primitives of size 4
 interface IQuadGeometry inherits IPrimitiveGeometry { }
 
+// A basic 2D primitive geometry that is a collection of a fixed number of 2D points
+interface IGeometricPrimitive2D
+    inherits IPointGeometry2D, IDeformable2D
+{ }
+
+// A basic 3D primitive geometry that is a collection of a fixed number of 3D points
+interface IGeometricPrimitive3D
+    inherits IPointGeometry3D, IDeformable3D 
+{ }
+
 // 2D Primitive geometry 
-interface IPrimitiveGeometry2D 
-    inherits IPrimitiveGeometry 
+interface IPrimitiveGeometry2D<T> 
+    where T: IGeometricPrimitive2D
+    inherits IPrimitiveGeometry, IDeformable2D 
 { 
-    Corners(x: Self): IArray<Vector2>;
+    Primitives(x: Self): IArray<T>;
 }
 
 // 3D Primitive geometry 
-interface IPrimitiveGeometry3D 
-    inherits IPrimitiveGeometry 
+interface IPrimitiveGeometry3D<T> 
+    where T: IGeometricPrimitive3D
+    inherits IPrimitiveGeometry, IDeformable3D 
 { 
-    Corners(x: Self): IArray<Vector3>;
-}
-
-// 2D Point clouds 
-interface IPointGeometry2D 
-    inherits IPrimitiveGeometry2D 
-{  
-    Points(x: Self): IArray<Vector2>; 
-}
-
-// 3D point clouds 
-interface IPointGeometry3D 
-    inherits IPrimitiveGeometry3D 
-{  
-    Points(x: Self): IArray<Vector3>; 
+    Primitives(x: Self): IArray<T>;
 }
 
 // Collection of 2D line-segments 
-interface ILineGeometry2D inherits IPrimitiveGeometry2D, ILineGeometry 
-{ 
-    Lines(x: Self): IArray<Line2D>; 
-}
+interface ILineGeometry2D 
+    inherits IPrimitiveGeometry2D<Line2D>, ILineGeometry 
+{ }
 
 // Collection of 3D line-segments
-interface ILineGeometry3D inherits IPrimitiveGeometry3D, ILineGeometry 
-{ 
-    Lines(x: Self): IArray<Line3D>; 
-}
+interface ILineGeometry3D 
+    inherits IPrimitiveGeometry3D<Line3D>, ILineGeometry 
+{ }
 
 // Collection of 2D triangles 
-interface ITriangleGeometry2D inherits IPrimitiveGeometry2D, ITriangleGeometry 
-{ 
-    Triangles(x: Self): IArray<Triangle2D>; 
-}
+interface ITriangleGeometry2D 
+    inherits IPrimitiveGeometry2D<Triangle2D>, ITriangleGeometry 
+{ }
 
 // Collection of 3D triangles 
-interface ITriangleGeometry3D inherits IPrimitiveGeometry3D, ITriangleGeometry 
-{ 
-    Triangles(x: Self): IArray<Triangle3D>; 
-}
+interface ITriangleGeometry3D 
+    inherits IPrimitiveGeometry3D<Triangle3D>, ITriangleGeometry 
+{ }
 
 // Collection of 2D quadrilaterals
-interface IQuadGeometry2D inherits IPrimitiveGeometry2D, IQuadGeometry 
-{ 
-    Quads(x: Self): IArray<Quad2D>; 
-}
+interface IQuadGeometry2D 
+    inherits IPrimitiveGeometry2D<Quad2D>, IQuadGeometry 
+{ }
 
 // Collection of 3D quadrilaterals
-interface IQuadGeometry3D inherits IPrimitiveGeometry3D, IQuadGeometry 
-{ 
-    Quads(x: Self): IArray<Quad3D>; 
-}
+interface IQuadGeometry3D 
+    inherits IPrimitiveGeometry3D<Quad3D>, IQuadGeometry 
+{ }
 
 //==
 // # Indexed Geometry 
@@ -313,8 +315,8 @@ interface IIndexedGeometry inherits IPrimitiveGeometry
     Indices(x: Self): IArray<Integer>; 
 }
 
-interface IIndexedGeometry2D inherits IIndexedGeometry, IPrimitiveGeometry2D { }
-interface IIndexedGeometry3D inherits IIndexedGeometry, IPrimitiveGeometry3D { }
+interface IIndexedGeometry2D inherits IIndexedGeometry, IPointGeometry2D { }
+interface IIndexedGeometry3D inherits IIndexedGeometry, IPointGeometry3D { }
 
 interface ILineMesh2D inherits IIndexedGeometry2D, ILineGeometry2D { }
 interface ILineMesh3D inherits IIndexedGeometry3D, ILineGeometry3D { }
@@ -337,11 +339,17 @@ interface ITriangleArray3D inherits ITriangleMesh3D { }
 interface IQuadArray2D inherits IQuadMesh2D { }
 interface IQuadArray3D inherits IQuadMesh3D { }
 
+// Represents a grid of quadrilaterals. 
+interface IQuadGrid2D inherits IQuadMesh2D
+{ 
+    PointGrid(x: Self): IArray2D<Point2D>;
+}
+
 // Represents a grid of quadrilaterals. This is commonly produced when sampling a parameterized surface. 
 interface IQuadGrid3D
     inherits IQuadMesh3D
 { 
-    PointGrid(x: Self): IArray2D<Vector3>;
+    PointGrid(x: Self): IArray2D<Point3D>;
     ClosedX(x: Self): Boolean;
     ClosedY(x: Self): Boolean;
 }

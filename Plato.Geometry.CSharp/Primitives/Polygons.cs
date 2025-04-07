@@ -24,7 +24,7 @@ namespace Plato.SinglePrecision
         public static PolyLine2D RegularStarPolygon(int p, int q)
             => CirclePoints(p).EveryNth(q).ToPolyLine2D(true);
 
-        public static IArray<Vector2D> CirclePoints(int n)
+        public static IArray<Vector2> CirclePoints(int n)
             => Circle.Default.Sample(n);
 
         public static PolyLine2D StarFigure(Integer p, Integer q)
@@ -34,7 +34,7 @@ namespace Plato.SinglePrecision
             if (p.RelativelyPrime(q))
                 return RegularStarPolygon(p, q);
             var points = CirclePoints(p);
-            var r = new List<Vector2D>();
+            var r = new List<Vector2>();
             var connected = new bool[p];
             for (var i = 0; i < p; ++i)
             {

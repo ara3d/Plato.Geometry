@@ -357,7 +357,7 @@ PolarCoordinate_164 => IAny_32, Depth = 3, Cast = , Expr = IAny
 PolarCoordinate_164 => IEquatable_52, Depth = 3, Cast = , Expr = IEquatable
 PolarCoordinate_164 => IAny_32, Depth = 4, Cast = , Expr = IAny
 PolarCoordinate_164 => Angle_212, Depth = -1, Cast = PolarCoordinate_164.Angle(self: PolarCoordinate): Angle [Field];, Expr = Angle
-PolarCoordinate_164 => Vector2D_1102, Depth = -1, Cast = PolarCurves_12.Vector2D(coord: PolarCoordinate): Vector2D [Library];, Expr = Vector2D
+PolarCoordinate_164 => Vector2_1102, Depth = -1, Cast = PolarCurves_12.Vector2(coord: PolarCoordinate): Vector2 [Library];, Expr = Vector2
 LogPolarCoordinate_170
 LogPolarCoordinate_170 => ICoordinate_48, Depth = 1, Cast = , Expr = ICoordinate
 LogPolarCoordinate_170 => IValue_34, Depth = 2, Cast = , Expr = IValue
@@ -551,7 +551,7 @@ Spiral_292 => IOpenCurve2D_524, Depth = 1, Cast = , Expr = IOpenCurve2D
 Spiral_292 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Spiral_292 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Spiral_292 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Spiral_292 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Spiral_292 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Spiral_292 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Spiral_292 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Spiral_292 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -561,12 +561,12 @@ Spiral_292 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
 Spiral_292 => IOpenShape_498, Depth = 3, Cast = , Expr = IOpenShape
 Spiral_292 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 QuadraticBezier2D_298
-QuadraticBezier2D_298 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2D>
+QuadraticBezier2D_298 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2>
 QuadraticBezier2D_298 => IOpenCurve2D_524, Depth = 1, Cast = , Expr = IOpenCurve2D
 QuadraticBezier2D_298 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 QuadraticBezier2D_298 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 QuadraticBezier2D_298 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-QuadraticBezier2D_298 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+QuadraticBezier2D_298 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 QuadraticBezier2D_298 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 QuadraticBezier2D_298 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 QuadraticBezier2D_298 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -576,12 +576,12 @@ QuadraticBezier2D_298 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
 QuadraticBezier2D_298 => IOpenShape_498, Depth = 3, Cast = , Expr = IOpenShape
 QuadraticBezier2D_298 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 CubicBezier2D_304
-CubicBezier2D_304 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2D>
+CubicBezier2D_304 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2>
 CubicBezier2D_304 => IOpenCurve2D_524, Depth = 1, Cast = , Expr = IOpenCurve2D
 CubicBezier2D_304 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 CubicBezier2D_304 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 CubicBezier2D_304 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-CubicBezier2D_304 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+CubicBezier2D_304 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 CubicBezier2D_304 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 CubicBezier2D_304 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 CubicBezier2D_304 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -594,7 +594,7 @@ IAngularCurve2D_310
 IAngularCurve2D_310 => ICurve2D_520, Depth = 1, Cast = , Expr = ICurve2D
 IAngularCurve2D_310 => IGeometry2D_490, Depth = 2, Cast = , Expr = IGeometry2D
 IAngularCurve2D_310 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IAngularCurve2D_310 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2D>
+IAngularCurve2D_310 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2>
 IAngularCurve2D_310 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IAngularCurve2D_310 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IAngularCurve2D_310 => IDistanceField2D_514, Depth = 2, Cast = , Expr = IDistanceField2D
@@ -603,7 +603,7 @@ Circle_312 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurve2D
 Circle_312 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Circle_312 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Circle_312 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Circle_312 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Circle_312 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Circle_312 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Circle_312 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Circle_312 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -611,7 +611,7 @@ Circle_312 => IClosedCurve2D_522, Depth = 1, Cast = , Expr = IClosedCurve2D
 Circle_312 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Circle_312 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Circle_312 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Circle_312 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Circle_312 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Circle_312 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Circle_312 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Circle_312 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -625,7 +625,7 @@ Ellipse_318 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurve2D
 Ellipse_318 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Ellipse_318 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Ellipse_318 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Ellipse_318 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Ellipse_318 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Ellipse_318 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Ellipse_318 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Ellipse_318 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -633,7 +633,7 @@ Ellipse_318 => IClosedCurve2D_522, Depth = 1, Cast = , Expr = IClosedCurve2D
 Ellipse_318 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Ellipse_318 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Ellipse_318 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Ellipse_318 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Ellipse_318 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Ellipse_318 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Ellipse_318 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Ellipse_318 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -647,7 +647,7 @@ Epicycloid_324 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurve2
 Epicycloid_324 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Epicycloid_324 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Epicycloid_324 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Epicycloid_324 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Epicycloid_324 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Epicycloid_324 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Epicycloid_324 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Epicycloid_324 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -658,7 +658,7 @@ Hypocycloid_330 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurve
 Hypocycloid_330 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Hypocycloid_330 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Hypocycloid_330 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Hypocycloid_330 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Hypocycloid_330 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Hypocycloid_330 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Hypocycloid_330 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Hypocycloid_330 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -669,7 +669,7 @@ Epitrochoid_336 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurve
 Epitrochoid_336 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Epitrochoid_336 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Epitrochoid_336 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Epitrochoid_336 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Epitrochoid_336 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Epitrochoid_336 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Epitrochoid_336 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Epitrochoid_336 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -680,7 +680,7 @@ Hypotrochoid_342 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurv
 Hypotrochoid_342 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Hypotrochoid_342 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Hypotrochoid_342 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Hypotrochoid_342 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Hypotrochoid_342 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Hypotrochoid_342 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Hypotrochoid_342 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Hypotrochoid_342 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -691,7 +691,7 @@ ButterflyCurve_348 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCu
 ButterflyCurve_348 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 ButterflyCurve_348 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 ButterflyCurve_348 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-ButterflyCurve_348 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+ButterflyCurve_348 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 ButterflyCurve_348 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 ButterflyCurve_348 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 ButterflyCurve_348 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -702,7 +702,7 @@ Lissajous_354 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurve2D
 Lissajous_354 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Lissajous_354 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Lissajous_354 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Lissajous_354 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Lissajous_354 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Lissajous_354 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Lissajous_354 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Lissajous_354 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -713,7 +713,7 @@ IPolarCurve_360 => IAngularCurve2D_310, Depth = 1, Cast = , Expr = IAngularCurve
 IPolarCurve_360 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 IPolarCurve_360 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 IPolarCurve_360 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-IPolarCurve_360 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+IPolarCurve_360 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 IPolarCurve_360 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 IPolarCurve_360 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 IPolarCurve_360 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -723,7 +723,7 @@ CycloidOfCeva_362 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngularCur
 CycloidOfCeva_362 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 CycloidOfCeva_362 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 CycloidOfCeva_362 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-CycloidOfCeva_362 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+CycloidOfCeva_362 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 CycloidOfCeva_362 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 CycloidOfCeva_362 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 CycloidOfCeva_362 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -735,7 +735,7 @@ Limacon_368 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngularCurve2D
 Limacon_368 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 Limacon_368 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 Limacon_368 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-Limacon_368 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+Limacon_368 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 Limacon_368 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 Limacon_368 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 Limacon_368 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -747,7 +747,7 @@ Cardoid_374 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngularCurve2D
 Cardoid_374 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 Cardoid_374 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 Cardoid_374 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-Cardoid_374 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+Cardoid_374 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 Cardoid_374 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 Cardoid_374 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 Cardoid_374 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -759,7 +759,7 @@ Rose_380 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngularCurve2D
 Rose_380 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 Rose_380 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 Rose_380 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-Rose_380 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+Rose_380 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 Rose_380 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 Rose_380 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 Rose_380 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -771,7 +771,7 @@ ArchimedeanSpiral_386 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngula
 ArchimedeanSpiral_386 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 ArchimedeanSpiral_386 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 ArchimedeanSpiral_386 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-ArchimedeanSpiral_386 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+ArchimedeanSpiral_386 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 ArchimedeanSpiral_386 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 ArchimedeanSpiral_386 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 ArchimedeanSpiral_386 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -783,7 +783,7 @@ ConicSection_392 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngularCurv
 ConicSection_392 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 ConicSection_392 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 ConicSection_392 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-ConicSection_392 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+ConicSection_392 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 ConicSection_392 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 ConicSection_392 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 ConicSection_392 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -795,7 +795,7 @@ LemniscateOfBernoulli_398 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAn
 LemniscateOfBernoulli_398 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 LemniscateOfBernoulli_398 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 LemniscateOfBernoulli_398 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-LemniscateOfBernoulli_398 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+LemniscateOfBernoulli_398 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 LemniscateOfBernoulli_398 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 LemniscateOfBernoulli_398 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 LemniscateOfBernoulli_398 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -807,7 +807,7 @@ TrisectrixOfMaclaurin_404 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAn
 TrisectrixOfMaclaurin_404 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 TrisectrixOfMaclaurin_404 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 TrisectrixOfMaclaurin_404 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-TrisectrixOfMaclaurin_404 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+TrisectrixOfMaclaurin_404 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 TrisectrixOfMaclaurin_404 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 TrisectrixOfMaclaurin_404 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 TrisectrixOfMaclaurin_404 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -819,7 +819,7 @@ ConchoidOfDeSluze_410 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngula
 ConchoidOfDeSluze_410 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 ConchoidOfDeSluze_410 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 ConchoidOfDeSluze_410 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-ConchoidOfDeSluze_410 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+ConchoidOfDeSluze_410 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 ConchoidOfDeSluze_410 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 ConchoidOfDeSluze_410 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 ConchoidOfDeSluze_410 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -831,7 +831,7 @@ TschirnhausenCubic_416 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngul
 TschirnhausenCubic_416 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 TschirnhausenCubic_416 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 TschirnhausenCubic_416 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-TschirnhausenCubic_416 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+TschirnhausenCubic_416 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 TschirnhausenCubic_416 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 TschirnhausenCubic_416 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 TschirnhausenCubic_416 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -843,7 +843,7 @@ SinusoidalSpiral_422 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngular
 SinusoidalSpiral_422 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 SinusoidalSpiral_422 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 SinusoidalSpiral_422 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-SinusoidalSpiral_422 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+SinusoidalSpiral_422 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 SinusoidalSpiral_422 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 SinusoidalSpiral_422 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 SinusoidalSpiral_422 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -855,7 +855,7 @@ FermatsSpiral_428 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngularCur
 FermatsSpiral_428 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 FermatsSpiral_428 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 FermatsSpiral_428 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-FermatsSpiral_428 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+FermatsSpiral_428 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 FermatsSpiral_428 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 FermatsSpiral_428 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 FermatsSpiral_428 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -867,25 +867,25 @@ LogarithmicSpiral_434 => IAngularCurve2D_310, Depth = 2, Cast = , Expr = IAngula
 LogarithmicSpiral_434 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 LogarithmicSpiral_434 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 LogarithmicSpiral_434 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-LogarithmicSpiral_434 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+LogarithmicSpiral_434 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 LogarithmicSpiral_434 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 LogarithmicSpiral_434 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 LogarithmicSpiral_434 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
 LogarithmicSpiral_434 => IOpenShape_498, Depth = 1, Cast = , Expr = IOpenShape
 LogarithmicSpiral_434 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShape
 CubicBezier3D_440
-CubicBezier3D_440 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3D>
+CubicBezier3D_440 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3>
 CubicBezier3D_440 => IOpenShape_498, Depth = 1, Cast = , Expr = IOpenShape
 CubicBezier3D_440 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShape
 QuadraticBezier3D_446
-QuadraticBezier3D_446 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3D>
+QuadraticBezier3D_446 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3>
 QuadraticBezier3D_446 => IOpenShape_498, Depth = 1, Cast = , Expr = IOpenShape
 QuadraticBezier3D_446 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShape
 IAngularCurve3D_452
 IAngularCurve3D_452 => ICurve3D_526, Depth = 1, Cast = , Expr = ICurve3D
 IAngularCurve3D_452 => IGeometry3D_492, Depth = 2, Cast = , Expr = IGeometry3D
 IAngularCurve3D_452 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IAngularCurve3D_452 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3D>
+IAngularCurve3D_452 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3>
 IAngularCurve3D_452 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IAngularCurve3D_452 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IAngularCurve3D_452 => IDistanceField3D_516, Depth = 2, Cast = , Expr = IDistanceField3D
@@ -894,7 +894,7 @@ TorusKnot_454 => IAngularCurve3D_452, Depth = 1, Cast = , Expr = IAngularCurve3D
 TorusKnot_454 => ICurve3D_526, Depth = 2, Cast = , Expr = ICurve3D
 TorusKnot_454 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 TorusKnot_454 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-TorusKnot_454 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3D>
+TorusKnot_454 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3>
 TorusKnot_454 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 TorusKnot_454 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 TorusKnot_454 => IDistanceField3D_516, Depth = 3, Cast = , Expr = IDistanceField3D
@@ -905,7 +905,7 @@ TrefoilKnot_460 => IAngularCurve3D_452, Depth = 1, Cast = , Expr = IAngularCurve
 TrefoilKnot_460 => ICurve3D_526, Depth = 2, Cast = , Expr = ICurve3D
 TrefoilKnot_460 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 TrefoilKnot_460 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-TrefoilKnot_460 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3D>
+TrefoilKnot_460 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3>
 TrefoilKnot_460 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 TrefoilKnot_460 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 TrefoilKnot_460 => IDistanceField3D_516, Depth = 3, Cast = , Expr = IDistanceField3D
@@ -916,7 +916,7 @@ FigureEightKnot_466 => IAngularCurve3D_452, Depth = 1, Cast = , Expr = IAngularC
 FigureEightKnot_466 => ICurve3D_526, Depth = 2, Cast = , Expr = ICurve3D
 FigureEightKnot_466 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 FigureEightKnot_466 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-FigureEightKnot_466 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3D>
+FigureEightKnot_466 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3>
 FigureEightKnot_466 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 FigureEightKnot_466 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 FigureEightKnot_466 => IDistanceField3D_516, Depth = 3, Cast = , Expr = IDistanceField3D
@@ -927,7 +927,7 @@ Helix_472 => IAngularCurve3D_452, Depth = 1, Cast = , Expr = IAngularCurve3D
 Helix_472 => ICurve3D_526, Depth = 2, Cast = , Expr = ICurve3D
 Helix_472 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 Helix_472 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Helix_472 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3D>
+Helix_472 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3>
 Helix_472 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Helix_472 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Helix_472 => IDistanceField3D_516, Depth = 3, Cast = , Expr = IDistanceField3D
@@ -977,7 +977,7 @@ ICurve1D_518 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShap
 ICurve2D_520
 ICurve2D_520 => IGeometry2D_490, Depth = 1, Cast = , Expr = IGeometry2D
 ICurve2D_520 => IGeometry_488, Depth = 2, Cast = , Expr = IGeometry
-ICurve2D_520 => ICurve_512, Depth = 1, Cast = , Expr = ICurve<Vector2D>
+ICurve2D_520 => ICurve_512, Depth = 1, Cast = , Expr = ICurve<Vector2>
 ICurve2D_520 => IProcedural_510, Depth = 2, Cast = , Expr = IProcedural<Number,TRange>
 ICurve2D_520 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShape
 ICurve2D_520 => IDistanceField2D_514, Depth = 1, Cast = , Expr = IDistanceField2D
@@ -985,7 +985,7 @@ IClosedCurve2D_522
 IClosedCurve2D_522 => ICurve2D_520, Depth = 1, Cast = , Expr = ICurve2D
 IClosedCurve2D_522 => IGeometry2D_490, Depth = 2, Cast = , Expr = IGeometry2D
 IClosedCurve2D_522 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IClosedCurve2D_522 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2D>
+IClosedCurve2D_522 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2>
 IClosedCurve2D_522 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IClosedCurve2D_522 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IClosedCurve2D_522 => IDistanceField2D_514, Depth = 2, Cast = , Expr = IDistanceField2D
@@ -998,7 +998,7 @@ IOpenCurve2D_524
 IOpenCurve2D_524 => ICurve2D_520, Depth = 1, Cast = , Expr = ICurve2D
 IOpenCurve2D_524 => IGeometry2D_490, Depth = 2, Cast = , Expr = IGeometry2D
 IOpenCurve2D_524 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IOpenCurve2D_524 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2D>
+IOpenCurve2D_524 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2>
 IOpenCurve2D_524 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IOpenCurve2D_524 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IOpenCurve2D_524 => IDistanceField2D_514, Depth = 2, Cast = , Expr = IDistanceField2D
@@ -1010,7 +1010,7 @@ IOpenCurve2D_524 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosed
 ICurve3D_526
 ICurve3D_526 => IGeometry3D_492, Depth = 1, Cast = , Expr = IGeometry3D
 ICurve3D_526 => IGeometry_488, Depth = 2, Cast = , Expr = IGeometry
-ICurve3D_526 => ICurve_512, Depth = 1, Cast = , Expr = ICurve<Vector3D>
+ICurve3D_526 => ICurve_512, Depth = 1, Cast = , Expr = ICurve<Vector3>
 ICurve3D_526 => IProcedural_510, Depth = 2, Cast = , Expr = IProcedural<Number,TRange>
 ICurve3D_526 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShape
 ICurve3D_526 => IDistanceField3D_516, Depth = 1, Cast = , Expr = IDistanceField3D
@@ -1018,7 +1018,7 @@ IClosedCurve3D_528
 IClosedCurve3D_528 => ICurve3D_526, Depth = 1, Cast = , Expr = ICurve3D
 IClosedCurve3D_528 => IGeometry3D_492, Depth = 2, Cast = , Expr = IGeometry3D
 IClosedCurve3D_528 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IClosedCurve3D_528 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3D>
+IClosedCurve3D_528 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3>
 IClosedCurve3D_528 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IClosedCurve3D_528 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IClosedCurve3D_528 => IDistanceField3D_516, Depth = 2, Cast = , Expr = IDistanceField3D
@@ -1031,7 +1031,7 @@ IOpenCurve3D_530
 IOpenCurve3D_530 => ICurve3D_526, Depth = 1, Cast = , Expr = ICurve3D
 IOpenCurve3D_530 => IGeometry3D_492, Depth = 2, Cast = , Expr = IGeometry3D
 IOpenCurve3D_530 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IOpenCurve3D_530 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3D>
+IOpenCurve3D_530 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3>
 IOpenCurve3D_530 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IOpenCurve3D_530 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IOpenCurve3D_530 => IDistanceField3D_516, Depth = 2, Cast = , Expr = IDistanceField3D
@@ -1045,13 +1045,13 @@ ISurface_532 => IGeometry3D_492, Depth = 1, Cast = , Expr = IGeometry3D
 ISurface_532 => IGeometry_488, Depth = 2, Cast = , Expr = IGeometry
 ISurface_532 => IDistanceField3D_516, Depth = 1, Cast = , Expr = IDistanceField3D
 IProceduralSurface_534
-IProceduralSurface_534 => IProcedural_510, Depth = 1, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+IProceduralSurface_534 => IProcedural_510, Depth = 1, Cast = , Expr = IProcedural<Vector2,Vector3>
 IProceduralSurface_534 => ISurface_532, Depth = 1, Cast = , Expr = ISurface
 IProceduralSurface_534 => IGeometry3D_492, Depth = 2, Cast = , Expr = IGeometry3D
 IProceduralSurface_534 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
 IProceduralSurface_534 => IDistanceField3D_516, Depth = 2, Cast = , Expr = IDistanceField3D
 IExplicitSurface_536
-IExplicitSurface_536 => IProcedural_510, Depth = 1, Cast = , Expr = IProcedural<Vector2D,Number>
+IExplicitSurface_536 => IProcedural_510, Depth = 1, Cast = , Expr = IProcedural<Vector2,Number>
 IExplicitSurface_536 => ISurface_532, Depth = 1, Cast = , Expr = ISurface
 IExplicitSurface_536 => IGeometry3D_492, Depth = 2, Cast = , Expr = IGeometry3D
 IExplicitSurface_536 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
@@ -1063,17 +1063,17 @@ IImplicitSurface_540 => ISurface_532, Depth = 1, Cast = , Expr = ISurface
 IImplicitSurface_540 => IGeometry3D_492, Depth = 2, Cast = , Expr = IGeometry3D
 IImplicitSurface_540 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
 IImplicitSurface_540 => IDistanceField3D_516, Depth = 2, Cast = , Expr = IDistanceField3D
-IImplicitSurface_540 => IImplicitProcedural_538, Depth = 1, Cast = , Expr = IImplicitProcedural<Vector3D>
+IImplicitSurface_540 => IImplicitProcedural_538, Depth = 1, Cast = , Expr = IImplicitProcedural<Vector3>
 IImplicitSurface_540 => IProcedural_510, Depth = 2, Cast = , Expr = IProcedural<TDomain,Boolean>
 IImplicitCurve2D_542
 IImplicitCurve2D_542 => IGeometry2D_490, Depth = 1, Cast = , Expr = IGeometry2D
 IImplicitCurve2D_542 => IGeometry_488, Depth = 2, Cast = , Expr = IGeometry
-IImplicitCurve2D_542 => IImplicitProcedural_538, Depth = 1, Cast = , Expr = IImplicitProcedural<Vector2D>
+IImplicitCurve2D_542 => IImplicitProcedural_538, Depth = 1, Cast = , Expr = IImplicitProcedural<Vector2>
 IImplicitCurve2D_542 => IProcedural_510, Depth = 2, Cast = , Expr = IProcedural<TDomain,Boolean>
 IImplicitVolume_544
 IImplicitVolume_544 => IGeometry3D_492, Depth = 1, Cast = , Expr = IGeometry3D
 IImplicitVolume_544 => IGeometry_488, Depth = 2, Cast = , Expr = IGeometry
-IImplicitVolume_544 => IImplicitProcedural_538, Depth = 1, Cast = , Expr = IImplicitProcedural<Vector3D>
+IImplicitVolume_544 => IImplicitProcedural_538, Depth = 1, Cast = , Expr = IImplicitProcedural<Vector3>
 IImplicitVolume_544 => IProcedural_510, Depth = 2, Cast = , Expr = IProcedural<TDomain,Boolean>
 IPolyLine2D_546
 IPolyLine2D_546 => IPointGeometry2D_570, Depth = 1, Cast = , Expr = IPointGeometry2D
@@ -1083,7 +1083,7 @@ IPolyLine2D_546 => IOpenClosedShape_484, Depth = 1, Cast = , Expr = IOpenClosedS
 IPolyLine2D_546 => ICurve2D_520, Depth = 1, Cast = , Expr = ICurve2D
 IPolyLine2D_546 => IGeometry2D_490, Depth = 2, Cast = , Expr = IGeometry2D
 IPolyLine2D_546 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IPolyLine2D_546 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2D>
+IPolyLine2D_546 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector2>
 IPolyLine2D_546 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IPolyLine2D_546 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IPolyLine2D_546 => IDistanceField2D_514, Depth = 2, Cast = , Expr = IDistanceField2D
@@ -1096,7 +1096,7 @@ IPolyLine3D_548 => IOpenClosedShape_484, Depth = 1, Cast = , Expr = IOpenClosedS
 IPolyLine3D_548 => ICurve3D_526, Depth = 1, Cast = , Expr = ICurve3D
 IPolyLine3D_548 => IGeometry3D_492, Depth = 2, Cast = , Expr = IGeometry3D
 IPolyLine3D_548 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
-IPolyLine3D_548 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3D>
+IPolyLine3D_548 => ICurve_512, Depth = 2, Cast = , Expr = ICurve<Vector3>
 IPolyLine3D_548 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Number,TRange>
 IPolyLine3D_548 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 IPolyLine3D_548 => IDistanceField3D_516, Depth = 2, Cast = , Expr = IDistanceField3D
@@ -1109,7 +1109,7 @@ IClosedPolyLine2D_550 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenC
 IClosedPolyLine2D_550 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 IClosedPolyLine2D_550 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 IClosedPolyLine2D_550 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-IClosedPolyLine2D_550 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+IClosedPolyLine2D_550 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 IClosedPolyLine2D_550 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 IClosedPolyLine2D_550 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 IClosedPolyLine2D_550 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -1128,7 +1128,7 @@ IClosedPolyLine3D_552 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenC
 IClosedPolyLine3D_552 => ICurve3D_526, Depth = 2, Cast = , Expr = ICurve3D
 IClosedPolyLine3D_552 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 IClosedPolyLine3D_552 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-IClosedPolyLine3D_552 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3D>
+IClosedPolyLine3D_552 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3>
 IClosedPolyLine3D_552 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 IClosedPolyLine3D_552 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 IClosedPolyLine3D_552 => IDistanceField3D_516, Depth = 3, Cast = , Expr = IDistanceField3D
@@ -1147,7 +1147,7 @@ IPolygon2D_554 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedSh
 IPolygon2D_554 => ICurve2D_520, Depth = 3, Cast = , Expr = ICurve2D
 IPolygon2D_554 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 IPolygon2D_554 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-IPolygon2D_554 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2D>
+IPolygon2D_554 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector2>
 IPolygon2D_554 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 IPolygon2D_554 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 IPolygon2D_554 => IDistanceField2D_514, Depth = 4, Cast = , Expr = IDistanceField2D
@@ -1156,7 +1156,7 @@ IPolygon2D_554 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 IPolygon2D_554 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
 IPolygon2D_554 => IClosedShape_500, Depth = 3, Cast = , Expr = IClosedShape
 IPolygon2D_554 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
-IPolygon2D_554 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2D>
+IPolygon2D_554 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2>
 IPolygon3D_556
 IPolygon3D_556 => IClosedPolyLine3D_552, Depth = 1, Cast = , Expr = IClosedPolyLine3D
 IPolygon3D_556 => IPolyLine3D_548, Depth = 2, Cast = , Expr = IPolyLine3D
@@ -1168,7 +1168,7 @@ IPolygon3D_556 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedSh
 IPolygon3D_556 => ICurve3D_526, Depth = 3, Cast = , Expr = ICurve3D
 IPolygon3D_556 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 IPolygon3D_556 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
-IPolygon3D_556 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector3D>
+IPolygon3D_556 => ICurve_512, Depth = 4, Cast = , Expr = ICurve<Vector3>
 IPolygon3D_556 => IProcedural_510, Depth = 5, Cast = , Expr = IProcedural<Number,TRange>
 IPolygon3D_556 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
 IPolygon3D_556 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3D
@@ -1177,10 +1177,10 @@ IPolygon3D_556 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 IPolygon3D_556 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
 IPolygon3D_556 => IClosedShape_500, Depth = 3, Cast = , Expr = IClosedShape
 IPolygon3D_556 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
-IPolygon3D_556 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3D>
+IPolygon3D_556 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3>
 ISolid_558
 ISolid_558 => IProceduralSurface_534, Depth = 1, Cast = , Expr = IProceduralSurface
-ISolid_558 => IProcedural_510, Depth = 2, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+ISolid_558 => IProcedural_510, Depth = 2, Cast = , Expr = IProcedural<Vector2,Vector3>
 ISolid_558 => ISurface_532, Depth = 2, Cast = , Expr = ISurface
 ISolid_558 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 ISolid_558 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
@@ -1543,7 +1543,7 @@ Pose2D_632 => IAny_32, Depth = 2, Cast = , Expr = IAny
 Pose2D_632 => IEquatable_52, Depth = 2, Cast = , Expr = IEquatable
 Pose2D_632 => IAny_32, Depth = 3, Cast = , Expr = IAny
 Bounds2D_638
-Bounds2D_638 => IBounds_78, Depth = 1, Cast = , Expr = IBounds<Vector2D>
+Bounds2D_638 => IBounds_78, Depth = 1, Cast = , Expr = IBounds<Vector2>
 Bounds2D_638 => IEquatable_52, Depth = 2, Cast = , Expr = IEquatable
 Bounds2D_638 => IAny_32, Depth = 3, Cast = , Expr = IAny
 Bounds2D_638 => IValue_34, Depth = 2, Cast = , Expr = IValue
@@ -1568,7 +1568,7 @@ Triangle2D_650 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedSh
 Triangle2D_650 => ICurve2D_520, Depth = 4, Cast = , Expr = ICurve2D
 Triangle2D_650 => IGeometry2D_490, Depth = 5, Cast = , Expr = IGeometry2D
 Triangle2D_650 => IGeometry_488, Depth = 6, Cast = , Expr = IGeometry
-Triangle2D_650 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2D>
+Triangle2D_650 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2>
 Triangle2D_650 => IProcedural_510, Depth = 6, Cast = , Expr = IProcedural<Number,TRange>
 Triangle2D_650 => IOpenClosedShape_484, Depth = 6, Cast = , Expr = IOpenClosedShape
 Triangle2D_650 => IDistanceField2D_514, Depth = 5, Cast = , Expr = IDistanceField2D
@@ -1577,7 +1577,7 @@ Triangle2D_650 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 Triangle2D_650 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
 Triangle2D_650 => IClosedShape_500, Depth = 4, Cast = , Expr = IClosedShape
 Triangle2D_650 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
-Triangle2D_650 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2D>
+Triangle2D_650 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2>
 Triangle2D_650 => LineArray2D_800, Depth = -1, Cast = IGeometry_18.LineArray2D(t: Triangle2D): LineArray2D [Library];, Expr = LineArray2D
 Triangle2D_650 => TriangleArray2D_812, Depth = -1, Cast = IGeometry_18.TriangleArray2D(t: Triangle2D): TriangleArray2D [Library];, Expr = TriangleArray2D
 Triangle2D_650 => Triangle3D_746, Depth = -1, Cast = IGeometry_18.Triangle3D(x: Triangle2D): Triangle3D [Library];, Expr = Triangle3D
@@ -1592,7 +1592,7 @@ Quad2D_656 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Quad2D_656 => ICurve2D_520, Depth = 4, Cast = , Expr = ICurve2D
 Quad2D_656 => IGeometry2D_490, Depth = 5, Cast = , Expr = IGeometry2D
 Quad2D_656 => IGeometry_488, Depth = 6, Cast = , Expr = IGeometry
-Quad2D_656 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2D>
+Quad2D_656 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2>
 Quad2D_656 => IProcedural_510, Depth = 6, Cast = , Expr = IProcedural<Number,TRange>
 Quad2D_656 => IOpenClosedShape_484, Depth = 6, Cast = , Expr = IOpenClosedShape
 Quad2D_656 => IDistanceField2D_514, Depth = 5, Cast = , Expr = IDistanceField2D
@@ -1601,7 +1601,7 @@ Quad2D_656 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 Quad2D_656 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
 Quad2D_656 => IClosedShape_500, Depth = 4, Cast = , Expr = IClosedShape
 Quad2D_656 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
-Quad2D_656 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2D>
+Quad2D_656 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2>
 Quad2D_656 => LineArray2D_800, Depth = -1, Cast = IGeometry_18.LineArray2D(q: Quad2D): LineArray2D [Library];, Expr = LineArray2D
 Quad2D_656 => TriangleArray2D_812, Depth = -1, Cast = IGeometry_18.TriangleArray2D(q: Quad2D): TriangleArray2D [Library];, Expr = TriangleArray2D
 Quad2D_656 => Quad3D_752, Depth = -1, Cast = IGeometry_18.Quad3D(x: Quad2D): Quad3D [Library];, Expr = Quad3D
@@ -1614,7 +1614,7 @@ Line2D_662 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShape
 Line2D_662 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 Line2D_662 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 Line2D_662 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Line2D_662 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+Line2D_662 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 Line2D_662 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Line2D_662 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Line2D_662 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -1623,8 +1623,8 @@ Line2D_662 => IGeometry2D_490, Depth = 2, Cast = , Expr = IGeometry2D
 Line2D_662 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
 Line2D_662 => IOpenShape_498, Depth = 2, Cast = , Expr = IOpenShape
 Line2D_662 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
-Line2D_662 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2D>
-Line2D_662 => IInterval_76, Depth = 1, Cast = , Expr = IInterval<Vector2D>
+Line2D_662 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector2>
+Line2D_662 => IInterval_76, Depth = 1, Cast = , Expr = IInterval<Vector2>
 Line2D_662 => IEquatable_52, Depth = 2, Cast = , Expr = IEquatable
 Line2D_662 => IAny_32, Depth = 3, Cast = , Expr = IAny
 Line2D_662 => IValue_34, Depth = 2, Cast = , Expr = IValue
@@ -1651,7 +1651,7 @@ Rect2D_674 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Rect2D_674 => ICurve2D_520, Depth = 4, Cast = , Expr = ICurve2D
 Rect2D_674 => IGeometry2D_490, Depth = 5, Cast = , Expr = IGeometry2D
 Rect2D_674 => IGeometry_488, Depth = 6, Cast = , Expr = IGeometry
-Rect2D_674 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2D>
+Rect2D_674 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2>
 Rect2D_674 => IProcedural_510, Depth = 6, Cast = , Expr = IProcedural<Number,TRange>
 Rect2D_674 => IOpenClosedShape_484, Depth = 6, Cast = , Expr = IOpenClosedShape
 Rect2D_674 => IDistanceField2D_514, Depth = 5, Cast = , Expr = IDistanceField2D
@@ -1660,7 +1660,7 @@ Rect2D_674 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 Rect2D_674 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
 Rect2D_674 => IClosedShape_500, Depth = 4, Cast = , Expr = IClosedShape
 Rect2D_674 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
-Rect2D_674 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2D>
+Rect2D_674 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2>
 Rect2D_674 => Quad2D_656, Depth = -1, Cast = IGeometry_18.Quad2D(x: Rect2D): Quad2D [Library];, Expr = Quad2D
 Ring_680
 Ring_680 => IClosedShape2D_504, Depth = 1, Cast = , Expr = IClosedShape2D
@@ -1707,7 +1707,7 @@ RegularPolygon_710 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClos
 RegularPolygon_710 => ICurve2D_520, Depth = 4, Cast = , Expr = ICurve2D
 RegularPolygon_710 => IGeometry2D_490, Depth = 5, Cast = , Expr = IGeometry2D
 RegularPolygon_710 => IGeometry_488, Depth = 6, Cast = , Expr = IGeometry
-RegularPolygon_710 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2D>
+RegularPolygon_710 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector2>
 RegularPolygon_710 => IProcedural_510, Depth = 6, Cast = , Expr = IProcedural<Number,TRange>
 RegularPolygon_710 => IOpenClosedShape_484, Depth = 6, Cast = , Expr = IOpenClosedShape
 RegularPolygon_710 => IDistanceField2D_514, Depth = 5, Cast = , Expr = IDistanceField2D
@@ -1716,7 +1716,7 @@ RegularPolygon_710 => IGeometry2D_490, Depth = 4, Cast = , Expr = IGeometry2D
 RegularPolygon_710 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
 RegularPolygon_710 => IClosedShape_500, Depth = 4, Cast = , Expr = IClosedShape
 RegularPolygon_710 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
-RegularPolygon_710 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2D>
+RegularPolygon_710 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector2>
 Box2D_716
 Box2D_716 => IShape2D_494, Depth = 1, Cast = , Expr = IShape2D
 Box2D_716 => IGeometry2D_490, Depth = 2, Cast = , Expr = IGeometry2D
@@ -1727,7 +1727,7 @@ Plane_722 => IAny_32, Depth = 2, Cast = , Expr = IAny
 Plane_722 => IEquatable_52, Depth = 2, Cast = , Expr = IEquatable
 Plane_722 => IAny_32, Depth = 3, Cast = , Expr = IAny
 Bounds3D_728
-Bounds3D_728 => IBounds_78, Depth = 1, Cast = , Expr = IBounds<Vector3D>
+Bounds3D_728 => IBounds_78, Depth = 1, Cast = , Expr = IBounds<Vector3>
 Bounds3D_728 => IEquatable_52, Depth = 2, Cast = , Expr = IEquatable
 Bounds3D_728 => IAny_32, Depth = 3, Cast = , Expr = IAny
 Bounds3D_728 => IValue_34, Depth = 2, Cast = , Expr = IValue
@@ -1745,7 +1745,7 @@ Line3D_734 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedShape
 Line3D_734 => ICurve3D_526, Depth = 2, Cast = , Expr = ICurve3D
 Line3D_734 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 Line3D_734 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-Line3D_734 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3D>
+Line3D_734 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3>
 Line3D_734 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 Line3D_734 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Line3D_734 => IDistanceField3D_516, Depth = 3, Cast = , Expr = IDistanceField3D
@@ -1755,8 +1755,8 @@ Line3D_734 => IGeometry_488, Depth = 3, Cast = , Expr = IGeometry
 Line3D_734 => IOpenShape_498, Depth = 2, Cast = , Expr = IOpenShape
 Line3D_734 => IOpenClosedShape_484, Depth = 3, Cast = , Expr = IOpenClosedShape
 Line3D_734 => IDeformable3D_486, Depth = 1, Cast = , Expr = IDeformable3D
-Line3D_734 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3D>
-Line3D_734 => IInterval_76, Depth = 1, Cast = , Expr = IInterval<Vector3D>
+Line3D_734 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3>
+Line3D_734 => IInterval_76, Depth = 1, Cast = , Expr = IInterval<Vector3>
 Line3D_734 => IEquatable_52, Depth = 2, Cast = , Expr = IEquatable
 Line3D_734 => IAny_32, Depth = 3, Cast = , Expr = IAny
 Line3D_734 => IValue_34, Depth = 2, Cast = , Expr = IValue
@@ -1785,7 +1785,7 @@ Triangle3D_746 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedSh
 Triangle3D_746 => ICurve3D_526, Depth = 4, Cast = , Expr = ICurve3D
 Triangle3D_746 => IGeometry3D_492, Depth = 5, Cast = , Expr = IGeometry3D
 Triangle3D_746 => IGeometry_488, Depth = 6, Cast = , Expr = IGeometry
-Triangle3D_746 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector3D>
+Triangle3D_746 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector3>
 Triangle3D_746 => IProcedural_510, Depth = 6, Cast = , Expr = IProcedural<Number,TRange>
 Triangle3D_746 => IOpenClosedShape_484, Depth = 6, Cast = , Expr = IOpenClosedShape
 Triangle3D_746 => IDistanceField3D_516, Depth = 5, Cast = , Expr = IDistanceField3D
@@ -1794,7 +1794,7 @@ Triangle3D_746 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Triangle3D_746 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
 Triangle3D_746 => IClosedShape_500, Depth = 4, Cast = , Expr = IClosedShape
 Triangle3D_746 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
-Triangle3D_746 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector3D>
+Triangle3D_746 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector3>
 Triangle3D_746 => IDeformable3D_486, Depth = 1, Cast = , Expr = IDeformable3D
 Triangle3D_746 => Plane_722, Depth = -1, Cast = IGeometry_18.Plane(t: Triangle3D): Plane [Library];, Expr = Plane
 Triangle3D_746 => LineArray3D_806, Depth = -1, Cast = IGeometry_18.LineArray3D(t: Triangle3D): LineArray3D [Library];, Expr = LineArray3D
@@ -1812,7 +1812,7 @@ Quad3D_752 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 Quad3D_752 => ICurve3D_526, Depth = 4, Cast = , Expr = ICurve3D
 Quad3D_752 => IGeometry3D_492, Depth = 5, Cast = , Expr = IGeometry3D
 Quad3D_752 => IGeometry_488, Depth = 6, Cast = , Expr = IGeometry
-Quad3D_752 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector3D>
+Quad3D_752 => ICurve_512, Depth = 5, Cast = , Expr = ICurve<Vector3>
 Quad3D_752 => IProcedural_510, Depth = 6, Cast = , Expr = IProcedural<Number,TRange>
 Quad3D_752 => IOpenClosedShape_484, Depth = 6, Cast = , Expr = IOpenClosedShape
 Quad3D_752 => IDistanceField3D_516, Depth = 5, Cast = , Expr = IDistanceField3D
@@ -1821,7 +1821,7 @@ Quad3D_752 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Quad3D_752 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
 Quad3D_752 => IClosedShape_500, Depth = 4, Cast = , Expr = IClosedShape
 Quad3D_752 => IOpenClosedShape_484, Depth = 5, Cast = , Expr = IOpenClosedShape
-Quad3D_752 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector3D>
+Quad3D_752 => IArray_26, Depth = 2, Cast = , Expr = IArray<Vector3>
 Quad3D_752 => IDeformable3D_486, Depth = 1, Cast = , Expr = IDeformable3D
 Quad3D_752 => LineArray3D_806, Depth = -1, Cast = IGeometry_18.LineArray3D(q: Quad3D): LineArray3D [Library];, Expr = LineArray3D
 Quad3D_752 => TriangleArray3D_818, Depth = -1, Cast = IGeometry_18.TriangleArray3D(q: Quad3D): TriangleArray3D [Library];, Expr = TriangleArray3D
@@ -1899,7 +1899,7 @@ PolyLine2D_776 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedSh
 PolyLine2D_776 => ICurve2D_520, Depth = 2, Cast = , Expr = ICurve2D
 PolyLine2D_776 => IGeometry2D_490, Depth = 3, Cast = , Expr = IGeometry2D
 PolyLine2D_776 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-PolyLine2D_776 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2D>
+PolyLine2D_776 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector2>
 PolyLine2D_776 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 PolyLine2D_776 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 PolyLine2D_776 => IDistanceField2D_514, Depth = 3, Cast = , Expr = IDistanceField2D
@@ -1914,7 +1914,7 @@ PolyLine3D_782 => IOpenClosedShape_484, Depth = 2, Cast = , Expr = IOpenClosedSh
 PolyLine3D_782 => ICurve3D_526, Depth = 2, Cast = , Expr = ICurve3D
 PolyLine3D_782 => IGeometry3D_492, Depth = 3, Cast = , Expr = IGeometry3D
 PolyLine3D_782 => IGeometry_488, Depth = 4, Cast = , Expr = IGeometry
-PolyLine3D_782 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3D>
+PolyLine3D_782 => ICurve_512, Depth = 3, Cast = , Expr = ICurve<Vector3>
 PolyLine3D_782 => IProcedural_510, Depth = 4, Cast = , Expr = IProcedural<Number,TRange>
 PolyLine3D_782 => IOpenClosedShape_484, Depth = 4, Cast = , Expr = IOpenClosedShape
 PolyLine3D_782 => IDistanceField3D_516, Depth = 3, Cast = , Expr = IDistanceField3D
@@ -2165,7 +2165,7 @@ Array3D_1022 => IArray_26, Depth = 2, Cast = , Expr = IArray<T>
 Sphere_1028
 Sphere_1028 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Sphere_1028 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Sphere_1028 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Sphere_1028 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Sphere_1028 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Sphere_1028 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Sphere_1028 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2178,7 +2178,7 @@ Cylinder_1034 => IDistanceField3D_516, Depth = 2, Cast = , Expr = IDistanceField
 Capsule_1040
 Capsule_1040 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Capsule_1040 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Capsule_1040 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Capsule_1040 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Capsule_1040 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Capsule_1040 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Capsule_1040 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2186,7 +2186,7 @@ Capsule_1040 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3
 Cone_1046
 Cone_1046 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Cone_1046 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Cone_1046 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Cone_1046 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Cone_1046 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Cone_1046 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Cone_1046 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2194,7 +2194,7 @@ Cone_1046 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3D
 ConeSegment_1052
 ConeSegment_1052 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 ConeSegment_1052 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-ConeSegment_1052 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+ConeSegment_1052 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 ConeSegment_1052 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 ConeSegment_1052 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 ConeSegment_1052 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2202,7 +2202,7 @@ ConeSegment_1052 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceFi
 Box_1058
 Box_1058 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Box_1058 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Box_1058 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Box_1058 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Box_1058 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Box_1058 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Box_1058 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2210,7 +2210,7 @@ Box_1058 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3D
 Pyramid_1064
 Pyramid_1064 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Pyramid_1064 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Pyramid_1064 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Pyramid_1064 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Pyramid_1064 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Pyramid_1064 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Pyramid_1064 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2218,7 +2218,7 @@ Pyramid_1064 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3
 Torus_1070
 Torus_1070 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Torus_1070 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Torus_1070 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Torus_1070 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Torus_1070 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Torus_1070 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Torus_1070 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2226,7 +2226,7 @@ Torus_1070 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3D
 NPrism_1076
 NPrism_1076 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 NPrism_1076 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-NPrism_1076 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+NPrism_1076 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 NPrism_1076 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 NPrism_1076 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 NPrism_1076 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2234,7 +2234,7 @@ NPrism_1076 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3D
 Tube_1082
 Tube_1082 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Tube_1082 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Tube_1082 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Tube_1082 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Tube_1082 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Tube_1082 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Tube_1082 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2242,7 +2242,7 @@ Tube_1082 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3D
 NPyramid_1088
 NPyramid_1088 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 NPyramid_1088 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-NPyramid_1088 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+NPyramid_1088 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 NPyramid_1088 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 NPyramid_1088 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 NPyramid_1088 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
@@ -2250,82 +2250,82 @@ NPyramid_1088 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField
 Ellipsoid_1094
 Ellipsoid_1094 => ISolid_558, Depth = 1, Cast = , Expr = ISolid
 Ellipsoid_1094 => IProceduralSurface_534, Depth = 2, Cast = , Expr = IProceduralSurface
-Ellipsoid_1094 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2D,Vector3D>
+Ellipsoid_1094 => IProcedural_510, Depth = 3, Cast = , Expr = IProcedural<Vector2,Vector3>
 Ellipsoid_1094 => ISurface_532, Depth = 3, Cast = , Expr = ISurface
 Ellipsoid_1094 => IGeometry3D_492, Depth = 4, Cast = , Expr = IGeometry3D
 Ellipsoid_1094 => IGeometry_488, Depth = 5, Cast = , Expr = IGeometry
 Ellipsoid_1094 => IDistanceField3D_516, Depth = 4, Cast = , Expr = IDistanceField3D
-Vector2D_1102
-Vector2D_1102 => IVector_46, Depth = 1, Cast = , Expr = IVector
-Vector2D_1102 => INumerical_36, Depth = 2, Cast = , Expr = INumerical
-Vector2D_1102 => IValue_34, Depth = 3, Cast = , Expr = IValue
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IEquatable_52, Depth = 4, Cast = , Expr = IEquatable
-Vector2D_1102 => IAny_32, Depth = 5, Cast = , Expr = IAny
-Vector2D_1102 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IArithmetic_72, Depth = 2, Cast = , Expr = IArithmetic
-Vector2D_1102 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IDivisible_68, Depth = 3, Cast = , Expr = IDivisible
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IModulo_70, Depth = 3, Cast = , Expr = IModulo
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IArray_26, Depth = 2, Cast = , Expr = IArray<Number>
-Vector2D_1102 => IInterpolatable_66, Depth = 2, Cast = , Expr = IInterpolatable
-Vector2D_1102 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => IAlgebraic_64, Depth = 2, Cast = , Expr = IAlgebraic
-Vector2D_1102 => IInterpolatable_66, Depth = 3, Cast = , Expr = IInterpolatable
-Vector2D_1102 => IAdditive_54, Depth = 4, Cast = , Expr = IAdditive
-Vector2D_1102 => IAny_32, Depth = 5, Cast = , Expr = IAny
-Vector2D_1102 => IScalarArithmetic_56, Depth = 4, Cast = , Expr = IScalarArithmetic
-Vector2D_1102 => IAny_32, Depth = 5, Cast = , Expr = IAny
-Vector2D_1102 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
-Vector2D_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector2D_1102 => Vector3D_1108, Depth = -1, Cast = IGeometry_18.Vector3D(v: Vector2D): Vector3D [Library];, Expr = Vector3D
-Vector3D_1108
-Vector3D_1108 => IVector_46, Depth = 1, Cast = , Expr = IVector
-Vector3D_1108 => INumerical_36, Depth = 2, Cast = , Expr = INumerical
-Vector3D_1108 => IValue_34, Depth = 3, Cast = , Expr = IValue
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IEquatable_52, Depth = 4, Cast = , Expr = IEquatable
-Vector3D_1108 => IAny_32, Depth = 5, Cast = , Expr = IAny
-Vector3D_1108 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IArithmetic_72, Depth = 2, Cast = , Expr = IArithmetic
-Vector3D_1108 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IDivisible_68, Depth = 3, Cast = , Expr = IDivisible
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IModulo_70, Depth = 3, Cast = , Expr = IModulo
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IArray_26, Depth = 2, Cast = , Expr = IArray<Number>
-Vector3D_1108 => IInterpolatable_66, Depth = 2, Cast = , Expr = IInterpolatable
-Vector3D_1108 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IAlgebraic_64, Depth = 2, Cast = , Expr = IAlgebraic
-Vector3D_1108 => IInterpolatable_66, Depth = 3, Cast = , Expr = IInterpolatable
-Vector3D_1108 => IAdditive_54, Depth = 4, Cast = , Expr = IAdditive
-Vector3D_1108 => IAny_32, Depth = 5, Cast = , Expr = IAny
-Vector3D_1108 => IScalarArithmetic_56, Depth = 4, Cast = , Expr = IScalarArithmetic
-Vector3D_1108 => IAny_32, Depth = 5, Cast = , Expr = IAny
-Vector3D_1108 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
-Vector3D_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
-Vector3D_1108 => IDeformable3D_486, Depth = 1, Cast = , Expr = IDeformable3D
-Vector3D_1108 => Vector4D_1114, Depth = -1, Cast = IGeometry_18.Vector4D(v: Vector3D): Vector4D [Library];, Expr = Vector4D
+Vector2_1102
+Vector2_1102 => IVector_46, Depth = 1, Cast = , Expr = IVector
+Vector2_1102 => INumerical_36, Depth = 2, Cast = , Expr = INumerical
+Vector2_1102 => IValue_34, Depth = 3, Cast = , Expr = IValue
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IEquatable_52, Depth = 4, Cast = , Expr = IEquatable
+Vector2_1102 => IAny_32, Depth = 5, Cast = , Expr = IAny
+Vector2_1102 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IArithmetic_72, Depth = 2, Cast = , Expr = IArithmetic
+Vector2_1102 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IDivisible_68, Depth = 3, Cast = , Expr = IDivisible
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IModulo_70, Depth = 3, Cast = , Expr = IModulo
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IArray_26, Depth = 2, Cast = , Expr = IArray<Number>
+Vector2_1102 => IInterpolatable_66, Depth = 2, Cast = , Expr = IInterpolatable
+Vector2_1102 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => IAlgebraic_64, Depth = 2, Cast = , Expr = IAlgebraic
+Vector2_1102 => IInterpolatable_66, Depth = 3, Cast = , Expr = IInterpolatable
+Vector2_1102 => IAdditive_54, Depth = 4, Cast = , Expr = IAdditive
+Vector2_1102 => IAny_32, Depth = 5, Cast = , Expr = IAny
+Vector2_1102 => IScalarArithmetic_56, Depth = 4, Cast = , Expr = IScalarArithmetic
+Vector2_1102 => IAny_32, Depth = 5, Cast = , Expr = IAny
+Vector2_1102 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
+Vector2_1102 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector2_1102 => Vector3_1108, Depth = -1, Cast = IGeometry_18.Vector3(v: Vector2): Vector3 [Library];, Expr = Vector3
+Vector3_1108
+Vector3_1108 => IVector_46, Depth = 1, Cast = , Expr = IVector
+Vector3_1108 => INumerical_36, Depth = 2, Cast = , Expr = INumerical
+Vector3_1108 => IValue_34, Depth = 3, Cast = , Expr = IValue
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IEquatable_52, Depth = 4, Cast = , Expr = IEquatable
+Vector3_1108 => IAny_32, Depth = 5, Cast = , Expr = IAny
+Vector3_1108 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IArithmetic_72, Depth = 2, Cast = , Expr = IArithmetic
+Vector3_1108 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IDivisible_68, Depth = 3, Cast = , Expr = IDivisible
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IModulo_70, Depth = 3, Cast = , Expr = IModulo
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IArray_26, Depth = 2, Cast = , Expr = IArray<Number>
+Vector3_1108 => IInterpolatable_66, Depth = 2, Cast = , Expr = IInterpolatable
+Vector3_1108 => IAdditive_54, Depth = 3, Cast = , Expr = IAdditive
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IScalarArithmetic_56, Depth = 3, Cast = , Expr = IScalarArithmetic
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IAlgebraic_64, Depth = 2, Cast = , Expr = IAlgebraic
+Vector3_1108 => IInterpolatable_66, Depth = 3, Cast = , Expr = IInterpolatable
+Vector3_1108 => IAdditive_54, Depth = 4, Cast = , Expr = IAdditive
+Vector3_1108 => IAny_32, Depth = 5, Cast = , Expr = IAny
+Vector3_1108 => IScalarArithmetic_56, Depth = 4, Cast = , Expr = IScalarArithmetic
+Vector3_1108 => IAny_32, Depth = 5, Cast = , Expr = IAny
+Vector3_1108 => IMultiplicative_58, Depth = 3, Cast = , Expr = IMultiplicative
+Vector3_1108 => IAny_32, Depth = 4, Cast = , Expr = IAny
+Vector3_1108 => IDeformable3D_486, Depth = 1, Cast = , Expr = IDeformable3D
+Vector3_1108 => Vector4D_1114, Depth = -1, Cast = IGeometry_18.Vector4D(v: Vector3): Vector4D [Library];, Expr = Vector4D
 Vector4D_1114
 Vector4D_1114 => IVector_46, Depth = 1, Cast = , Expr = IVector
 Vector4D_1114 => INumerical_36, Depth = 2, Cast = , Expr = INumerical
@@ -2366,7 +2366,7 @@ Matrix3x3_1120 => IValue_34, Depth = 1, Cast = , Expr = IValue
 Matrix3x3_1120 => IAny_32, Depth = 2, Cast = , Expr = IAny
 Matrix3x3_1120 => IEquatable_52, Depth = 2, Cast = , Expr = IEquatable
 Matrix3x3_1120 => IAny_32, Depth = 3, Cast = , Expr = IAny
-Matrix3x3_1120 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3D>
+Matrix3x3_1120 => IArray_26, Depth = 1, Cast = , Expr = IArray<Vector3>
 Matrix4x4_1126
 Matrix4x4_1126 => IValue_34, Depth = 1, Cast = , Expr = IValue
 Matrix4x4_1126 => IAny_32, Depth = 2, Cast = , Expr = IAny

@@ -8,7 +8,7 @@ namespace Plato.Geometry.Experimental
         public Bounds3D Bounds;
         public Number Value;
 
-        public Vector3D Position
+        public Vector3 Position
             => Bounds.Center;
 
         public Voxel(Bounds3D bounds, Number value)
@@ -28,7 +28,7 @@ namespace Plato.Geometry.Experimental
 
     public static unsafe class MarchingCubeExtensions
     {
-        public static Vector3D InterpolateVertices(Vector3D vertex0, Vector3D vertex1, Number fieldValue0, Number fieldValue1, Number threshold)
+        public static Vector3 InterpolateVertices(Vector3 vertex0, Vector3 vertex1, Number fieldValue0, Number fieldValue1, Number threshold)
         {
             var lerpAmount = fieldValue0.Unlerp(fieldValue1, threshold);
             if (lerpAmount >= 0 && lerpAmount <= 1)
@@ -75,7 +75,7 @@ namespace Plato.Geometry.Experimental
             if (edgeTable[cubeIndex] == 0)
                 return;
 
-            var edgeCutList = stackalloc Vector3D[12];
+            var edgeCutList = stackalloc Vector3[12];
 
             // Given the flags lookup which edges need to be given vertices.
             for (var n = 0; n < 4; n++)

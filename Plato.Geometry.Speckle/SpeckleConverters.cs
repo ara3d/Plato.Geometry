@@ -158,7 +158,7 @@ namespace Plato.Geometry.Speckle
             var r = self.ToPlato(d);
             // TODO: this is a hack and needs to be replaced, while sitill making things work.. 
             var scl = 0.001;
-            r.Transform = new Transform3D(Vector3D.Default, PQuaternion.Identity, (scl, scl, scl));
+            r.Transform = new Transform3D(Vector3.Default, PQuaternion.Identity, (scl, scl, scl));
             return new Scene(r);
         }
 
@@ -198,10 +198,10 @@ namespace Plato.Geometry.Speckle
             return r;
         }
 
-        public static Vector3D ToPlato(this Vector3 self)
+        public static Vector3 ToPlato(this Plato.Vector3 self)
             => (self.X, self.Y, self.Z);
 
-        public static Vector3D ToPlato(this Vector4 self)
+        public static Vector3 ToPlato(this Vector4 self)
             => (self.X, self.Y, self.Z);
 
         public static Rotation3D ToPlato(this Quaternion self)
@@ -218,13 +218,13 @@ namespace Plato.Geometry.Speckle
         public static Color ToColor(this System.Drawing.Color self, double opacity)
             => new Color(self.R / 255.0, self.G / 255.0, self.B / 255.0, opacity);
 
-        public static IArray<Vector3D> ToPlato(this IReadOnlyList<double> self)
+        public static IArray<Vector3> ToPlato(this IReadOnlyList<double> self)
         {
             var n = self.Count / 3;
-            var r = new List<Vector3D>(n);
+            var r = new List<Vector3>(n);
             for (var i = 0; i < n; ++i)
             {
-                r.Add(new Vector3D(self[i * 3], self[i * 3 + 1], self[i * 3 + 2]));
+                r.Add(new Vector3(self[i * 3], self[i * 3 + 1], self[i * 3 + 2]));
             }
 
             return r.ToIArray();

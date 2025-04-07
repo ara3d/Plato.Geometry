@@ -40,6 +40,7 @@ library Intrinsics
     Lerp(self: Matrix4x4, matrix1: Matrix4x4, matrix2: Matrix4x4, amount: Number): Matrix4x4;
     Invert(self: Matrix4x4): Tuple2<Matrix4x4, Boolean>;
     GetHashCode(self: Matrix4x4): Integer;
+    Rotation(self: Matrix4x4): Quaternion;
     
     CreateTranslation(_: Matrix4x4, position: Vector3): Matrix4x4;
     CreateScale(_: Matrix4x4, scale: Number): Matrix4x4;
@@ -389,29 +390,46 @@ library Intrinsics
     Asin(self: Number): Angle;
     Asinh(self: Number): Angle;
     Atan(self: Number): Angle;
+    Atan2(self: Number, x: Number): Angle;
     Atanh(self: Number): Angle;
     BitDecrement(self: Number): Number;
     BitIncrement(self: Number): Number;
     Cbrt(self: Number): Number;
     Ceiling(self: Number): Number;
+    Clamp(self: Number, min: Number, max: Number): Number;
+    CopySign(self: Number, y: Number): Number;
     Exp(self: Number): Number;
     Floor(self: Number): Number;
+    FusedMultiplyAdd(self: Number, y: Number, z: Number): Number;
     ILogB(self: Number): Number;
-    NaturalLog(self: Number): Number;
+    IEEERemainder(self: Number, y: Number): Number;
+    Log(self: Number, newBase: Number): Number;
     Log10(self: Number): Number;
     Log2(self: Number): Number;
+    Min(self: Number, other: Number): Number;
+    MinMagnitude(self: Number, other: Number): Number;
+    Max(self: Number, other: Number): Number;
+    MaxMagnitude(self: Number, other: Number): Number;
+    NaturalLog(self: Number): Number;
+    Pow(self: Number, power: Number): Number;
     Reciprocal(self: Number): Number;
     ReciprocalEstimate(self: Number): Number;
     ReciprocalSquareRootEstimate(self: Number): Number;
+    Round(self: Number, digits: Integer): Number;
+    RoundAwayFromZero(self: Number, digits: Integer): Number;
+    RoundToZero(self: Number, digits: Integer): Number;
+    ScaleB(self: Number, n: Integer): Number;
     Sign(self: Number): Integer;
     SquareRoot(self: Number): Number;
     Square(self: Number): Number;
     Truncate(self: Number): Number;
+    
     Add(a: Number, b: Number): Number;
     Subtract(a: Number, b: Number): Number;
     Multiply(a: Number, b: Number): Number;
     Divide(a: Number, b: Number): Number;
     Negative(n: Number): Number;
+
     Equals(a: Number, b: Number): Boolean;
     NotEquals(a: Number, b: Number): Boolean;
     LessThan(a: Number, b: Number): Boolean;
@@ -419,22 +437,8 @@ library Intrinsics
     GreaterThan(a: Number, b: Number): Boolean;
     GreaterThanOrEquals(a: Number, b: Number): Boolean;
     CompareTo(self: Number, other: Number): Integer;
-    Atan2(self: Number, x: Number): Angle;
-    CopySign(self: Number, y: Number): Number;
-    FusedMultiplyAdd(self: Number, y: Number, z: Number): Number;
-    IEEERemainder(self: Number, y: Number): Number;
-    Log(self: Number, newBase: Number): Number;
-    Max(self: Number, other: Number): Number;
-    MaxMagnitude(self: Number, other: Number): Number;
-    Min(self: Number, other: Number): Number;
-    MinMagnitude(self: Number, other: Number): Number;
-    Pow(self: Number, power: Number): Number;
-    RoundToZero(self: Number, digits: Integer): Number;
-    RoundAwayFromZero(self: Number, digits: Integer): Number;
-    Round(self: Number, digits: Integer): Number;
-    ScaleB(self: Number, n: Integer): Number;
+
     GetHashCode(self: Number): Integer;
-    Clamp(self: Number, min: Number, max: Number): Number;
 
     //==
     // Integer

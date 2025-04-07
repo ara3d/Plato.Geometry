@@ -1,12 +1,5 @@
 library Algebra
-{
-    //==
-    // IInterpolatable functions. 
-
-    // Linear interpolation
-    Lerp(a: INumerical, b: INumerical, t: Number): INumerical
-        => a * t.FromOne + b * t;
-          
+{           
     // Barycentric interpolation (e.g. triangle)
     Barycentric(v1: INumerical, v2: INumerical, v3: INumerical, uv: Vector2): INumerical 
         => (v1 + (v2 - v1)) * uv.X + (v3 - v1) * uv.Y;   

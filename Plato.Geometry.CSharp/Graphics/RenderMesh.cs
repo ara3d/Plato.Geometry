@@ -29,10 +29,10 @@ namespace Plato.Geometry.Graphics
             => new RenderMesh(Buffer<RenderVertex>.Empty, Buffer<Integer>.Empty);
 
         public static RenderMesh Create(
-            IArray<Vector3D> vertices, 
+            IArray<Vector3> vertices, 
             IArray<Integer> indices = null, 
-            IArray<Vector3D> normals = null, 
-            IArray<Vector2D> uvs = null, 
+            IArray<Vector3> normals = null, 
+            IArray<Vector2> uvs = null, 
             IArray<Color32> colors = null)
         {
             var vertexCount = vertices.Count;
@@ -41,11 +41,11 @@ namespace Plato.Geometry.Graphics
 
             var indexBuffer = indices?.ToBuffer() ?? vertexCount.Range.ToBuffer();
 
-            normals = normals ?? Vector3D.Default.Repeat(vertexCount);
+            normals = normals ?? Vector3.Default.Repeat(vertexCount);
             if (normals.Count != vertexCount)
                 throw new InvalidOperationException($"Normals count {normals.Count} must match vertices count {vertexCount}.");
 
-            uvs = uvs ?? Vector2D.Default.Repeat(vertexCount);
+            uvs = uvs ?? Vector2.Default.Repeat(vertexCount);
             if (uvs.Count != vertexCount)
                 throw new InvalidOperationException($"UVs count {uvs.Count} must match vertices count {vertexCount}.");
 

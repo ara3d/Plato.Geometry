@@ -167,6 +167,12 @@ namespace Plato
             }
         }
 
+        public Quaternion Rotation
+        {
+            [MethodImpl(AggressiveInlining)]
+            get => Decompose.Item2;
+        }
+
         public Number Determinant
         {
             [MethodImpl(AggressiveInlining)] get => Value.GetDeterminant();

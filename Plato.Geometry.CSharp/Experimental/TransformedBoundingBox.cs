@@ -6,16 +6,16 @@ using Plato.SinglePrecision;
     /*
 public static class TransformedBoundingBox
 {
-    public static Transform3D ComputeBestFitBoundingBox(this IEnumerable<Vector3D> points)
+    public static Transform3D ComputeBestFitBoundingBox(this IEnumerable<Vector3> points)
         => ComputeBestFitBoundingBox(points.ToArray());
 
-    public static Transform3D ComputeBestFitBoundingBox(this Vector3D[] points)
+    public static Transform3D ComputeBestFitBoundingBox(this Vector3[] points)
     {
         if (points == null || points.Length == 0)
             throw new ArgumentException("Points array is null or empty.");
 
         // Compute the mean of the points
-        var mean = Vector3D.Default;
+        var mean = Vector3.Default;
         foreach (var point in points)
             mean += point;
         mean /= points.Length;
@@ -50,10 +50,10 @@ public static class TransformedBoundingBox
         double[,] eigenvectors;
         JacobiEigenvalue(covarianceMatrix, out eigenvalues, out eigenvectors);
 
-        // Convert eigenvectors matrix to Vector3D array and ensure right-handed coordinate system
-        var u = new Vector3D((float)eigenvectors[0, 0], (float)eigenvectors[1, 0], (float)eigenvectors[2, 0]);
-        var v = new Vector3D((float)eigenvectors[0, 1], (float)eigenvectors[1, 1], (float)eigenvectors[2, 1]);
-        var w = new Vector3D((float)eigenvectors[0, 2], (float)eigenvectors[1, 2], (float)eigenvectors[2, 2]);
+        // Convert eigenvectors matrix to Vector3 array and ensure right-handed coordinate system
+        var u = new Vector3((float)eigenvectors[0, 0], (float)eigenvectors[1, 0], (float)eigenvectors[2, 0]);
+        var v = new Vector3((float)eigenvectors[0, 1], (float)eigenvectors[1, 1], (float)eigenvectors[2, 1]);
+        var w = new Vector3((float)eigenvectors[0, 2], (float)eigenvectors[1, 2], (float)eigenvectors[2, 2]);
 
         // Ensure the eigenvectors form a right-handed coordinate system
         if (u.Cross(v).Dot(w) < 0)
@@ -70,8 +70,8 @@ public static class TransformedBoundingBox
         var invRotation = rotation.Transpose;
 
         // Transform points to rotated space and find min/max extents
-        var min = Vector3D.MaxValue;
-        var max = Vector3D.MinValue;
+        var min = Vector3.MaxValue;
+        var max = Vector3.MinValue;
         foreach (var point in points)
         {
             var centeredPoint = point - mean;
@@ -210,13 +210,13 @@ public static class TransformedBoundingBox
 */
     public static class TransformedBoundingBox
    {
-       public static Transform3D ComputeBestFitBoundingBox(this IEnumerable<Vector3D> points)
+       public static Transform3D ComputeBestFitBoundingBox(this IEnumerable<Vector3> points)
            => ComputeBestFitBoundingBox(points.ToArray());
    
-       public static Transform3D ComputeBestFitBoundingBox(this Vector3D[] points)
+       public static Transform3D ComputeBestFitBoundingBox(this Vector3[] points)
        {
            // Compute the mean of the points
-           var mean = Vector3D.Default;
+           var mean = Vector3.Default;
            foreach (var point in points)
            {
                mean += point;
@@ -270,9 +270,9 @@ public static class TransformedBoundingBox
            var invRotation = rotation.Transpose;
    
            // Transform points to rotated space
-           var rotatedPoints = new Vector3D[points.Length];
-           var min = Vector3D.MaxValue;
-           var max = Vector3D.MinValue;
+           var rotatedPoints = new Vector3[points.Length];
+           var min = Vector3.MaxValue;
+           var max = Vector3.MinValue;
            for (var i = 0; i < points.Length; i++)
            {
                var p = points[i] - mean; // Center the points
@@ -302,7 +302,7 @@ public static class TransformedBoundingBox
     public static void EigenDecompositionSymmetric3x3(
          float m00, float m01, float m02,
          float m11, float m12, float m22,
-         out Vector3D[] eigenvectors,
+         out Vector3[] eigenvectors,
          out float[] eigenvalues)
     {
         // Compute the eigenvalues using the analytical solution
@@ -311,11 +311,11 @@ public static class TransformedBoundingBox
         {
             // The matrix is diagonal.
             eigenvalues = new float[] { m00, m11, m22 };
-            eigenvectors = new Vector3D[]
+            eigenvectors = new Vector3[]
             {
-                new Vector3D(1, 0, 0),
-                new Vector3D(0, 1, 0),
-                new Vector3D(0, 0, 1)
+                new Vector3(1, 0, 0),
+                new Vector3(0, 1, 0),
+                new Vector3(0, 0, 1)
             };
             return;
         }
@@ -361,14 +361,14 @@ public static class TransformedBoundingBox
         eigenvalues = new float[] { eig1, eig2, eig3 };
 
         // Compute the eigenvectors
-        eigenvectors = new Vector3D[3];
+        eigenvectors = new Vector3[3];
         eigenvectors[0] = EigenVectorSymmetric3x3(m00, m01, m02, m11, m12, m22, eig1);
         eigenvectors[1] = EigenVectorSymmetric3x3(m00, m01, m02, m11, m12, m22, eig2);
         eigenvectors[2] = EigenVectorSymmetric3x3(m00, m01, m02, m11, m12, m22, eig3);
     }
 
     // Helper function to compute an eigenvector for a given eigenvalue
-    public static Vector3D EigenVectorSymmetric3x3(
+    public static Vector3 EigenVectorSymmetric3x3(
            float m00, float m01, float m02,
            float m11, float m12, float m22,
            float eigenvalue)
@@ -379,9 +379,9 @@ public static class TransformedBoundingBox
            var a22 = m22 - eigenvalue;
    
            // Set up the equations
-           var row0 = new Vector3D(a00, m01, m02);
-           var row1 = new Vector3D(m01, a11, m12);
-           var row2 = new Vector3D(m02, m12, a22);
+           var row0 = new Vector3(a00, m01, m02);
+           var row1 = new Vector3(m01, a11, m12);
+           var row2 = new Vector3(m02, m12, a22);
    
            // Use cross products to find the eigenvector
            var v1 = row1.Cross(row0);
@@ -393,7 +393,7 @@ public static class TransformedBoundingBox
            float len2 = v2.LengthSquared;
            float len3 = v3.LengthSquared;
    
-           Vector3D v;
+           Vector3 v;
            if (len1 >= len2 && len1 >= len3)
            {
                v = v1;

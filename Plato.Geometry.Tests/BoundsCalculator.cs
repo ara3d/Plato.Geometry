@@ -8,60 +8,60 @@ namespace Plato.Geometry.Tests
 {
     public static unsafe class BoundsCalculator
     {
-        public static (Vector3, Vector3) ComputeBoundsLINQ(Vector3[] points)
+        public static (global::Plato.Vector3, global::Plato.Vector3) ComputeBoundsLINQ(global::Plato.Vector3[] points)
             => points == null || points.Length == 0
                 ? throw new ArgumentException("Points array cannot be null or empty.")
                 : points.Aggregate(
                     (points[0], points[0]),
-                    (acc, point) => (Vector3.Min(acc.Item1, point), Vector3.Max(acc.Item2, point)
+                    (acc, point) => (global::Plato.Vector3.Min(acc.Item1, point), global::Plato.Vector3.Max(acc.Item2, point)
                         ));
 
-        public static (Vector3, Vector3) ComputeBoundsForEach(Vector3[] points)
+        public static (global::Plato.Vector3, global::Plato.Vector3) ComputeBoundsForEach(global::Plato.Vector3[] points)
         {
-            var min = new Vector3(float.MaxValue);
-            var max = new Vector3(float.MinValue);
+            var min = new global::Plato.Vector3(float.MaxValue);
+            var max = new global::Plato.Vector3(float.MinValue);
             foreach (var p in points)
             {
-                min = Vector3.Min(min, p);
-                max = Vector3.Max(max, p);
+                min = global::Plato.Vector3.Min(min, p);
+                max = global::Plato.Vector3.Max(max, p);
             }
 
             return (min, max);
         }
 
-        public static (Vector3, Vector3) ComputeBoundsForLoop(Vector3[] points)
+        public static (global::Plato.Vector3, global::Plato.Vector3) ComputeBoundsForLoop(global::Plato.Vector3[] points)
         {
-            var min = new Vector3(float.MaxValue);
-            var max = new Vector3(float.MinValue);
+            var min = new global::Plato.Vector3(float.MaxValue);
+            var max = new global::Plato.Vector3(float.MinValue);
             for (var i=0; i < points.Length; i++)
             {
                 var p = points[i];
-                min = Vector3.Min(min, p);
-                max = Vector3.Max(max, p);
+                min = global::Plato.Vector3.Min(min, p);
+                max = global::Plato.Vector3.Max(max, p);
             }
             return (min, max);
         }
 
-        public static (Vector3, Vector3) ComputeBoundsForLoopUnsafe(Vector3[] points)
+        public static (global::Plato.Vector3, global::Plato.Vector3) ComputeBoundsForLoopUnsafe(global::Plato.Vector3[] points)
         {
-            var min = new Vector3(float.MaxValue);
-            var max = new Vector3(float.MinValue);
+            var min = new global::Plato.Vector3(float.MaxValue);
+            var max = new global::Plato.Vector3(float.MinValue);
             var n = points.Length;
-            fixed (Vector3* ptr = points)
+            fixed (global::Plato.Vector3* ptr = points)
             {
                 for (var i = 0; i < n; i++)
                 {
                     var p = ptr[i];
-                    min = Vector3.Min(min, p);
-                    max = Vector3.Max(max, p);
+                    min = global::Plato.Vector3.Min(min, p);
+                    max = global::Plato.Vector3.Max(max, p);
                 }
             }
             return (min, max);
         }
 
-        public static (Vector3, Vector3) ComputeBoundsSIMD(Vector3[] points)
+        public static (global::Plato.Vector3, global::Plato.Vector3) ComputeBoundsSIMD(global::Plato.Vector3[] points)
         {
-            fixed (Vector3* ptr = points)
+            fixed (global::Plato.Vector3* ptr = points)
             {
                 ComputeBounds(ptr, points.Length, out var min, out var max);
                 return (min, max);
@@ -69,7 +69,7 @@ namespace Plato.Geometry.Tests
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ComputeBounds(Vector3* points, int count, out Vector3 min, out Vector3 max)
+        public static void ComputeBounds(global::Plato.Vector3* points, int count, out global::Plato.Vector3 min, out global::Plato.Vector3 max)
         {
             if (count <= 0)
                 throw new ArgumentException("Count must be greater than zero.");
@@ -86,7 +86,7 @@ namespace Plato.Geometry.Tests
             }
         }
 
-        private static void ComputeBoundsAvx(Vector3* points, int count, out Vector3 min, out Vector3 max)
+        private static void ComputeBoundsAvx(global::Plato.Vector3* points, int count, out global::Plato.Vector3 min, out global::Plato.Vector3 max)
         {
             float* ptr = (float*)points;
             int total = count * 3;
@@ -127,13 +127,13 @@ namespace Plato.Geometry.Tests
             }
 
             // Reduce min and max vectors to scalar values
-            min = new Vector3(
+            min = new global::Plato.Vector3(
                 ReduceMinAvx(minVec.GetLower()),
                 ReduceMinAvx(minVec.GetUpper()),
                 ReduceMinAvx(Avx.Blend(minVec.GetLower(), minVec.GetUpper(), 0b00110011))
             );
 
-            max = new Vector3(
+            max = new global::Plato.Vector3(
                 ReduceMaxAvx(maxVec.GetLower()),
                 ReduceMaxAvx(maxVec.GetUpper()),
                 ReduceMaxAvx(Avx.Blend(maxVec.GetLower(), maxVec.GetUpper(), 0b00110011))
@@ -168,16 +168,16 @@ namespace Plato.Geometry.Tests
             return vec.ToScalar();
         }
 
-        private static (Vector3, Vector3) ComputeBoundsScalar(Vector3[] points)
+        private static (global::Plato.Vector3, global::Plato.Vector3) ComputeBoundsScalar(global::Plato.Vector3[] points)
         {
-            fixed (Vector3* ptr = points)
+            fixed (global::Plato.Vector3* ptr = points)
             {
                 ComputeBoundsScalar(ptr, points.Length, out var min, out var max);
                 return (min, max);
             }
         } 
 
-        private static void ComputeBoundsScalar(Vector3* points, int count, out Vector3 min, out Vector3 max)
+        private static void ComputeBoundsScalar(global::Plato.Vector3* points, int count, out global::Plato.Vector3 min, out global::Plato.Vector3 max)
         {
             float* ptr = (float*)points;
             int total = count * 3;
@@ -204,19 +204,19 @@ namespace Plato.Geometry.Tests
                 maxZ = z > maxZ ? z : maxZ;
             }
 
-            min = new Vector3(minX, minY, minZ);
-            max = new Vector3(maxX, maxY, maxZ);
+            min = new global::Plato.Vector3(minX, minY, minZ);
+            max = new global::Plato.Vector3(maxX, maxY, maxZ);
         }
 
-        public static Vector3[] Points = GenerateRandomPoints(1000 * 1000 * 100);
+        public static global::Plato.Vector3[] Points = GenerateRandomPoints(1000 * 1000 * 100);
         
-        public static Vector3[] GenerateRandomPoints(int count)
+        public static global::Plato.Vector3[] GenerateRandomPoints(int count)
         {
-            var points = new Vector3[count];
+            var points = new global::Plato.Vector3[count];
             var rnd = new Random();
             for (int i = 0; i < count; i++)
             {
-                points[i] = new Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble());
+                points[i] = new global::Plato.Vector3((float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble());
             }
             return points;
         }

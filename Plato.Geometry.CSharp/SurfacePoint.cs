@@ -1,8 +1,8 @@
 ﻿using System;
-using Plato.SinglePrecision;
 
 namespace Plato.Geometry
 {
+
     /// <summary>
     /// Usually the result of sampling a parametric surface.
     /// Each point (and vector to it) can be referred to by index, as can the quadrant formed between it and the the next point. See below:
@@ -18,17 +18,17 @@ namespace Plato.Geometry
     /// </summary>
     public interface ISurfacePoint
     {
-        Vector2D UV { get; }
-        Vector3D InBinormal { get; }
-        Vector3D OutBinormal { get; }
-        Vector3D InTangent { get; }
-        Vector3D OutTangent { get; }
+        Vector2 UV { get; }
+        Vector3 InBinormal { get; }
+        Vector3 OutBinormal { get; }
+        Vector3 InTangent { get; }
+        Vector3 OutTangent { get; }
     }
 
     public class SurfacePoint
         : ISurfacePoint
     {
-        public SurfacePoint(Vector3D center, Vector2D uv, Vector3D a, Vector3D b, Vector3D c, Vector3D d)
+        public SurfacePoint(Vector3 center, Vector2 uv, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
         {
             Center = center;
             UV = uv;
@@ -37,19 +37,19 @@ namespace Plato.Geometry
             V2 = c;
             V3 = d;
         }
-        public Vector3D Center { get; }
-        public Vector2D UV { get; }
-        public Vector3D Normal => OutTangent.Cross(OutBinormal);
-        public Vector3D V0 { get; }
-        public Vector3D V1 { get; }
-        public Vector3D V2 { get; }
-        public Vector3D V3 { get; }
-        public Vector3D InBinormal => Center - V2;
-        public Vector3D OutBinormal => V0 - Center;
-        public Vector3D InTangent => Center - V3;
-        public Vector3D OutTangent => V1 - Center;
+        public Vector3 Center { get; }
+        public Vector2 UV { get; }
+        public Vector3 Normal => OutTangent.Cross(OutBinormal);
+        public Vector3 V0 { get; }
+        public Vector3 V1 { get; }
+        public Vector3 V2 { get; }
+        public Vector3 V3 { get; }
+        public Vector3 InBinormal => Center - V2;
+        public Vector3 OutBinormal => V0 - Center;
+        public Vector3 InTangent => Center - V3;
+        public Vector3 OutTangent => V1 - Center;
 
-        public static SurfacePoint Create(Func<Vector2D, Vector3D> f, Vector2D uv)
+        public static SurfacePoint Create(Func<Vector2, Vector3> f, Vector2 uv)
         {
             var e = Constants.Epsilon;
             var p = f(uv);

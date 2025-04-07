@@ -35,7 +35,7 @@ namespace Plato.Geometry.Ifc
         public static TriangleMesh3D ToTriangleMesh(this IfcMesh m)
         {
             var vertexBuffer = m.Vertices.ToTemporaryBuffer<IfcVertex>(m.NumVertices);
-            var vertices = vertexBuffer.Clone().ToIArray().Map(v => new Vector3D(v.PX, v.PY, v.PZ));
+            var vertices = vertexBuffer.Clone().ToIArray().Map(v => new Vector3(v.PX, v.PY, v.PZ));
             var indexBuffer = m.Indices.ToTemporaryBuffer<Integer>(m.NumIndices);
             var indices = indexBuffer.Clone().ToIArray();
             return new TriangleMesh3D(vertices, indices);

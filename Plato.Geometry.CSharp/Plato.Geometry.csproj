@@ -1,20 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Description>A feature-rich, efficient, and intuitive C# library for a wide range of 2D and 3D numerical 
-      and geometry computation. Cross platform with no dependencies, and fully compatible with .NET Standard 2.0.
+    <Description>
+      A feature-rich, efficient, and intuitive C# library of algorithms and data structure
+      numerical and geometry computation in 2D/3D. Cross platform with no dependencies.
+      Licensed under the commerically friendly and unrestrictive MIT License.
+      Targets .NET 9.0.
     </Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/ara3d/Plato.Geometry</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ara3d/Plato.Geometry</RepositoryUrl>
-    <Version>1.0.0-alpha2</Version>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
-    <AssemblyFileVersion>1.0.0.2</AssemblyFileVersion>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <AssemblyFileVersion>1.0.1.0</AssemblyFileVersion>
     <Authors>Ara 3D Inc.</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright (c) Ara 3D Inc 2024, Licensed under MIT License</Copyright>
+    <Copyright>Copyright (c) Ara 3D Inc 2025, Licensed under MIT License</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <!-- https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/ -->
@@ -35,6 +38,10 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Include="..\LICENSE" Link="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Plato.Core\Plato.Core.csproj" />
   </ItemGroup>
 
 

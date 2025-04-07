@@ -99,7 +99,7 @@ namespace Plato.Geometry.Tests
         public static void TestBounds()
         {
             var m = PlatonicSolids.Tetrahedron;
-            Console.WriteLine($"Min vector : {Vector3D.MinValue}, Max vector: {Vector3D.MaxValue}");
+            Console.WriteLine($"Min vector : {Vector3.MinValue}, Max vector: {Vector3.MaxValue}");
             var b1 = new Bounds3D((1, 1, 1), (2, 2, 2));
             Console.WriteLine($"Constructed bounds = {b1}");
             Console.WriteLine($"Empty: {Bounds3D.Empty}");
@@ -132,7 +132,7 @@ namespace Plato.Geometry.Tests
         {
             var columns = SampleRange(0, 1, usegs);
             var rows = SampleRange(0, 1, vsegs);
-            var points = columns.CartesianProduct(rows, (u, v) => new Vector3D(u, v, 0));
+            var points = columns.CartesianProduct(rows, (u, v) => new Vector3(u, v, 0));
             return new QuadGrid3D(points, closedX, closedY);
         }
 

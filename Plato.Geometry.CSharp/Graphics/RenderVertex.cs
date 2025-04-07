@@ -6,23 +6,23 @@ namespace Plato.Geometry.Graphics
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct RenderVertex
     {
-        public RenderVertex(Vector3D position) 
-            : this(position, Vector3D.Default.Zero, Vector2D.Default.Zero, Color32.Default)
+        public RenderVertex(Vector3 position) 
+            : this(position, Vector3.Default.Zero, Vector2.Default.Zero, Color32.Default)
         { }
 
-        public RenderVertex(Vector3D position, Vector3D normal) 
-            : this(position, normal, Vector2D.Default.Zero, Color32.Default)
+        public RenderVertex(Vector3 position, Vector3 normal) 
+            : this(position, normal, Vector2.Default.Zero, Color32.Default)
         { }
 
-        public RenderVertex(Vector3D position, Vector3D normal, Vector2D uv) 
+        public RenderVertex(Vector3 position, Vector3 normal, Vector2 uv) 
             : this(position, normal, uv, Color32.Default)
         { }
 
-        public RenderVertex(Vector3D position, Color color) 
-            : this(position, Vector3D.Default.Zero, Vector2D.Default.Zero, color)
+        public RenderVertex(Vector3 position, Color color) 
+            : this(position, Vector3.Default.Zero, Vector2.Default.Zero, color)
         { }
 
-        public RenderVertex(Vector3D position, Vector3D normal, Vector2D uv, Color color)
+        public RenderVertex(Vector3 position, Vector3 normal, Vector2 uv, Color color)
         {
             PX = (float)position.X;
             PY = (float)position.Y;
@@ -40,15 +40,15 @@ namespace Plato.Geometry.Graphics
         public float U, V; // UV = 4 bytes
         public Color32 RGBA; // Colors = 4 bytes
 
-        public static implicit operator RenderVertex(Vector3D v) => new RenderVertex(v);
-        public static implicit operator RenderVertex((Vector3D v, Vector3D n) args) => new RenderVertex(args.v, args.n);
-        public static implicit operator RenderVertex((Vector3D v, Vector3D n, Vector2D uv) args) => new RenderVertex(args.v, args.n, args.uv);
-        public static implicit operator RenderVertex((Vector3D v, Vector3D n, Vector2D uv, Color c) args) => new RenderVertex(args.v, args.n, args.uv, args.c);
-        public static implicit operator RenderVertex((Vector3D v, Color c) args) => new RenderVertex(args.v, args.c);
+        public static implicit operator RenderVertex(Vector3 v) => new RenderVertex(v);
+        public static implicit operator RenderVertex((Vector3 v, Vector3 n) args) => new RenderVertex(args.v, args.n);
+        public static implicit operator RenderVertex((Vector3 v, Vector3 n, Vector2 uv) args) => new RenderVertex(args.v, args.n, args.uv);
+        public static implicit operator RenderVertex((Vector3 v, Vector3 n, Vector2 uv, Color c) args) => new RenderVertex(args.v, args.n, args.uv, args.c);
+        public static implicit operator RenderVertex((Vector3 v, Color c) args) => new RenderVertex(args.v, args.c);
 
-        public Vector3D Position => (PX, PY, PZ);
-        public Vector3D Normal => (NX, NY, NZ);
-        public Vector2D UV => (U, V);
+        public Vector3 Position => (PX, PY, PZ);
+        public Vector3 Normal => (NX, NY, NZ);
+        public Vector2 UV => (U, V);
         public Color Color => RGBA;
     }
 }

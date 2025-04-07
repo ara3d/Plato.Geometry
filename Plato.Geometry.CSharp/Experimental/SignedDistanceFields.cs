@@ -7,14 +7,14 @@ namespace Plato.Geometry.Experimental
 {
     public interface ISignedDistanceField
     {
-        Number Distance(Vector3D point);
+        Number Distance(Vector3 point);
     }
 
     public class SignedDistanceField : ISignedDistanceField
     {
-        public SignedDistanceField(Func<Vector3D, Number> func) => Func = func;
-        public Func<Vector3D, Number> Func;
-        public Number Distance(Vector3D point) => Func(point);
+        public SignedDistanceField(Func<Vector3, Number> func) => Func = func;
+        public Func<Vector3, Number> Func;
+        public Number Distance(Vector3 point) => Func(point);
     }
 
     public enum SDFType
@@ -104,19 +104,19 @@ namespace Plato.Geometry.Experimental
             return new SignedDistanceField(p => a.Distance(p).Lerp(b.Distance(p), t));
         }
 
-        public static Number XYPlaneDistance(Vector3D v) => v.Z;
-        public static Number XZPlaneDistance(Vector3D v) => v.Y;
-        public static Number YZPlaneDistance(Vector3D v) => v.X;
-        public static Number SphereDistance(Vector3D v) => v.Length - 1.0;
-        public static Number XAxisDistance(Vector3D v) => v.YZ.Length;
-        public static Number YAxisDistance(Vector3D v) => v.XZ.Length;
-        public static Number ZAxisDistance(Vector3D v) => v.XY.Length;
-        public static Number CylinderDistance(Vector3D v) => new Vector2D(v.X, v.Z).Length - 1.0;
-        public static Number CapsuleDistance(Vector3D v) => Math.Max(new Vector2D(v.X, v.Z).Length - 1.0, Math.Abs(v.Y) - 1.0);
+        public static Number XYPlaneDistance(Vector3 v) => v.Z;
+        public static Number XZPlaneDistance(Vector3 v) => v.Y;
+        public static Number YZPlaneDistance(Vector3 v) => v.X;
+        public static Number SphereDistance(Vector3 v) => v.Length - 1.0;
+        public static Number XAxisDistance(Vector3 v) => v.YZ.Length;
+        public static Number YAxisDistance(Vector3 v) => v.XZ.Length;
+        public static Number ZAxisDistance(Vector3 v) => v.XY.Length;
+        public static Number CylinderDistance(Vector3 v) => new Vector2(v.X, v.Z).Length - 1.0;
+        public static Number CapsuleDistance(Vector3 v) => Math.Max(new Vector2(v.X, v.Z).Length - 1.0, Math.Abs(v.Y) - 1.0);
 
-        public static Number BoxDistance(Vector3D v) => new Vector3D(Math.Max(Math.Abs(v.X) - 1.0, 0.0), Math.Max(Math.Abs(v.Y) - 1.0, 0.0), Math.Max(Math.Abs(v.Z) - 1.0, 0.0)).Length;
+        public static Number BoxDistance(Vector3 v) => new Vector3(Math.Max(Math.Abs(v.X) - 1.0, 0.0), Math.Max(Math.Abs(v.Y) - 1.0, 0.0), Math.Max(Math.Abs(v.Z) - 1.0, 0.0)).Length;
 
-        public static Number ConeDistance(Vector3D p, double h = 1, double r = 1)
+        public static Number ConeDistance(Vector3 p, double h = 1, double r = 1)
         {
             // Shift the cone to be centered at the origin
             var halfHeight = h / 2;
@@ -146,16 +146,16 @@ namespace Plato.Geometry.Experimental
             return s * d;
         }
 
-        public static Number PyramidDistance(Vector3D v)
+        public static Number PyramidDistance(Vector3 v)
         {
-            var q = new Vector3D(Math.Abs(v.X), Math.Abs(v.Y), Math.Abs(v.Z));
+            var q = new Vector3(Math.Abs(v.X), Math.Abs(v.Y), Math.Abs(v.Z));
             var d = Math.Max(q.Z - 1.0, Math.Max(q.X, q.Y) - 1.0);
             return d;
         }
 
-        public static Number TorusDistance(Vector3D v)
+        public static Number TorusDistance(Vector3 v)
         {
-            var q = new Vector2D(new Vector2D(v.X, v.Z).Length - 1.0, v.Y);
+            var q = new Vector2(new Vector2(v.X, v.Z).Length - 1.0, v.Y);
             var d = q.Length - 0.5;
             return d;
         }

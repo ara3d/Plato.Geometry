@@ -86,7 +86,7 @@ namespace Plato.Geometry.G3Sharp
             return Math.Sqrt(dist.GetSquared());
         }
 
-        public static IArray<Vector3D> NearestPoints(this TriangleMesh3D self, IArray<Vector3d> points)
+        public static IArray<Vector3> NearestPoints(this TriangleMesh3D self, IArray<Vector3d> points)
         {
             var tree = self.ToG3Sharp().AABBTree();
             return points.Map(p => tree.NearestPoint(p).ToPlato());
@@ -119,12 +119,12 @@ namespace Plato.Geometry.G3Sharp
             if (!result.Equals(IOWriteResult.Ok))
                 throw new Exception($"Failed to write file to {filePath} with result {result.ToString()}");
         }
-        public static IArray<Vector3D> ToPlato(this DVector<double> self)
+        public static IArray<Vector3> ToPlato(this DVector<double> self)
         {
-            return (self.Length / 3).MapRange(i => new Vector3D(self[i * 3], self[i * 3 + 1], self[i * 3 + 2]));
+            return (self.Length / 3).MapRange(i => new Vector3(self[i * 3], self[i * 3 + 1], self[i * 3 + 2]));
         }
 
-        public static Vector3D ToPlato(this Vector3d self)
+        public static Vector3 ToPlato(this Vector3d self)
         {
             return (self.x, self.y, self.z);
         }
@@ -141,10 +141,10 @@ namespace Plato.Geometry.G3Sharp
             return new TriangleMesh3D(verts, indices);
         }
 
-        public static Vector3d ToVector3D(this Vector3D self)
+        public static Vector3d ToVector3D(this Vector3 self)
             => new Vector3d(self.X, self.Y, self.Z);        
 
-        public static Vector3d ToG3Sharp(this Vector3D self)
+        public static Vector3d ToG3Sharp(this Vector3 self)
             => new Vector3d(self.X, self.Y, self.Z);        
 
         public static DMesh3 ToG3Sharp(this TriangleMesh3D self)

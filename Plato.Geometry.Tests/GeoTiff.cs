@@ -64,9 +64,9 @@ namespace Plato.Geometry.Tests
 
         public List<DataPoint> Points = new List<DataPoint>();
 
-        public Vector3D ToVector3D(DataPoint p)
+        public Vector3 ToVector3D(DataPoint p)
         {
-            return new Vector3D(p.Col, p.Row, p.Elevation / 20);
+            return new Vector3(p.Col, p.Row, p.Elevation / 20);
         }
 
         public DataPoint GetDataPoint(int col, int row)
@@ -77,14 +77,14 @@ namespace Plato.Geometry.Tests
             return r;
         }
 
-        public Vector3D GetVertex(int col, int row)
+        public Vector3 GetVertex(int col, int row)
         {
             return ToVector3D(GetDataPoint(col, row));
         }
 
         public TriangleMesh3D BuildTriMesh(int xOffset, int yOffset, int maxWidth, int maxHeight)
         {
-            var vertices = new List<Vector3D>();
+            var vertices = new List<Vector3>();
             maxHeight = Math.Min(maxHeight, height);
             maxWidth = Math.Min(maxWidth, width);
             for (var row = 0; row < maxHeight - 1; row++)

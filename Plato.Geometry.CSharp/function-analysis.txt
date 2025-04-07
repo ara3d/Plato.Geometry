@@ -56,11 +56,11 @@ Error No viable functions found occurred during analysis of IBounds_2.Include(x:
 
 Group INumerical_4
 
-Error No viable functions found occurred during analysis of INumerical_4.XAxis2D(): Vector2D [Library];
-Error No viable functions found occurred during analysis of INumerical_4.YAxis2D(): Vector2D [Library];
-Error No viable functions found occurred during analysis of INumerical_4.XAxis3D(): Vector3D [Library];
-Error No viable functions found occurred during analysis of INumerical_4.YAxis3D(): Vector3D [Library];
-Error No viable functions found occurred during analysis of INumerical_4.ZAxis3D(): Vector3D [Library];
+Error No viable functions found occurred during analysis of INumerical_4.XAxis2D(): Vector2 [Library];
+Error No viable functions found occurred during analysis of INumerical_4.YAxis2D(): Vector2 [Library];
+Error No viable functions found occurred during analysis of INumerical_4.XAxis3D(): Vector3 [Library];
+Error No viable functions found occurred during analysis of INumerical_4.YAxis3D(): Vector3 [Library];
+Error No viable functions found occurred during analysis of INumerical_4.ZAxis3D(): Vector3 [Library];
 Error No viable functions found occurred during analysis of INumerical_4.UnitInterval(): NumberInterval [Library];
 0. Pi
   Signature : INumerical_4.Pi(): Number
@@ -251,7 +251,7 @@ Error No viable functions found occurred during analysis of INumerical_4.Multipl
 Error No viable functions found occurred during analysis of INumerical_4.Divide(x: IVector,y: IVector): IVector [Library];
 Error No viable functions found occurred during analysis of INumerical_4.Modulo(x: IVector,y: IVector): IVector [Library];
 Error No viable functions found occurred during analysis of INumerical_4.Lerp(a: IInterpolatable,b: IInterpolatable,t: Number): IInterpolatable [Library];
-Error No viable functions found occurred during analysis of INumerical_4.Barycentric(v1: IInterpolatable,v2: IInterpolatable,v3: IInterpolatable,uv: Vector2D): IInterpolatable [Library];
+Error No viable functions found occurred during analysis of INumerical_4.Barycentric(v1: IInterpolatable,v2: IInterpolatable,v3: IInterpolatable,uv: Vector2): IInterpolatable [Library];
 
 Group Curves_6
 
@@ -263,8 +263,8 @@ Group Curves_6
   Signature : Curves_6.Closed(ParameterDef=curve$9065:ICurve3D): Boolean
   Body      : False
   Inline    : False#
-Error No viable functions found occurred during analysis of Curves_6.Sample(curve: ICurve2D,numPoints: Integer): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of Curves_6.Sample(curve: ICurve3D,numPoints: Integer): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of Curves_6.Sample(curve: ICurve2D,numPoints: Integer): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of Curves_6.Sample(curve: ICurve3D,numPoints: Integer): IArray<Vector3> [Library];
 Error No viable functions found occurred during analysis of Curves_6.ToPolyLine2D(curve: ICurve2D,numPoints: Integer): PolyLine2D [Library];
 Error No viable functions found occurred during analysis of Curves_6.ToPolyLine3D(curve: ICurve3D,numPoints: Integer): PolyLine3D [Library];
 Error No viable functions found occurred during analysis of Curves_6.Linear(x: Number,m: Number,b: Number): Number [Library];
@@ -289,38 +289,38 @@ Error No viable functions found occurred during analysis of Curves_6.QuadraticBe
 
 Group Curves2D_8
 
-Error No viable functions found occurred during analysis of Curves2D_8.Spiral(t: Number,R: Number,r: Number,numTurns: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of Curves2D_8.Eval(curve: Spiral,t: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of Curves2D_8.Eval(curve: QuadraticBezier2D,t: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of Curves2D_8.Eval(curve: CubicBezier2D,t: Number): Vector2D [Library];
+Error No viable functions found occurred during analysis of Curves2D_8.Spiral(t: Number,R: Number,r: Number,numTurns: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of Curves2D_8.Eval(curve: Spiral,t: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of Curves2D_8.Eval(curve: QuadraticBezier2D,t: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of Curves2D_8.Eval(curve: CubicBezier2D,t: Number): Vector2 [Library];
 
 Group AngularCurves2D_10
 
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Eval(curve: IAngularCurve2D,t: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.UnitCircle(t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Circle(t: Angle,center: Vector2D,radius: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Circle,t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Ellipse(t: Angle,center: Vector2D,size: Vector2D): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Ellipse,t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Epicycloid(t: Angle,R: Number,r: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Epicycloid,t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Hypocycloid(t: Angle,R: Number,r: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Hypocycloid,t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Epitrochoid(t: Angle,R: Number,r: Number,d: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Epitrochoid,t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Hypotrochoid(t: Angle,R: Number,r: Number,d: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Hypotrochoid,t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.ButterflyCurve(t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.ButterflyCurveSection(t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: ButterflyCurve,t: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.Lissajous(t: Angle,a: Number,b: Number,d: Angle): Vector2D [Library];
-Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Lissajous,t: Angle): Vector2D [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Eval(curve: IAngularCurve2D,t: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.UnitCircle(t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Circle(t: Angle,center: Vector2,radius: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Circle,t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Ellipse(t: Angle,center: Vector2,size: Vector2): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Ellipse,t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Epicycloid(t: Angle,R: Number,r: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Epicycloid,t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Hypocycloid(t: Angle,R: Number,r: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Hypocycloid,t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Epitrochoid(t: Angle,R: Number,r: Number,d: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Epitrochoid,t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Hypotrochoid(t: Angle,R: Number,r: Number,d: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Hypotrochoid,t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.ButterflyCurve(t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.ButterflyCurveSection(t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: ButterflyCurve,t: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.Lissajous(t: Angle,a: Number,b: Number,d: Angle): Vector2 [Library];
+Error No viable functions found occurred during analysis of AngularCurves2D_10.GetPoint(curve: Lissajous,t: Angle): Vector2 [Library];
 
 Group PolarCurves_12
 
 Error No viable functions found occurred during analysis of PolarCurves_12.EvalPolar(curve: IPolarCurve,t: Angle): PolarCoordinate [Library];
-Error No viable functions found occurred during analysis of PolarCurves_12.Vector2D(coord: PolarCoordinate): Vector2D [Library];
-Error No viable functions found occurred during analysis of PolarCurves_12.GetPoint(curve: IPolarCurve,t: Angle): Vector2D [Library];
+Error No viable functions found occurred during analysis of PolarCurves_12.Vector2(coord: PolarCoordinate): Vector2 [Library];
+Error No viable functions found occurred during analysis of PolarCurves_12.GetPoint(curve: IPolarCurve,t: Angle): Vector2 [Library];
 Error No viable functions found occurred during analysis of PolarCurves_12.CycloidOfCeva(t: Angle): Number [Library];
 Error No viable functions found occurred during analysis of PolarCurves_12.GetRadius(curve: CycloidOfCeva,t: Angle): Number [Library];
 Error No viable functions found occurred during analysis of PolarCurves_12.Limacon(t: Angle,a: Number,b: Number): Number [Library];
@@ -350,74 +350,74 @@ Error No viable functions found occurred during analysis of PolarCurves_12.GetRa
 
 Group Curves3D_14
 
-Error No viable functions found occurred during analysis of Curves3D_14.Eval(curve: QuadraticBezier3D,t: Number): Vector3D [Library];
-Error No viable functions found occurred during analysis of Curves3D_14.Eval(curve: CubicBezier3D,t: Number): Vector3D [Library];
+Error No viable functions found occurred during analysis of Curves3D_14.Eval(curve: QuadraticBezier3D,t: Number): Vector3 [Library];
+Error No viable functions found occurred during analysis of Curves3D_14.Eval(curve: CubicBezier3D,t: Number): Vector3 [Library];
 
 Group AngularCurves3D_16
 
-Error No viable functions found occurred during analysis of AngularCurves3D_16.Eval(curve: IAngularCurve3D,t: Number): Vector3D [Library];
-Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: TorusKnot,t: Angle): Vector3D [Library];
-Error No viable functions found occurred during analysis of AngularCurves3D_16.TrefoilKnot(t: Angle): Vector3D [Library];
-Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: TrefoilKnot,t: Angle): Vector3D [Library];
-Error No viable functions found occurred during analysis of AngularCurves3D_16.FigureEightKnot(t: Angle): Vector3D [Library];
-Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: FigureEightKnot,t: Angle): Vector3D [Library];
-Error No viable functions found occurred during analysis of AngularCurves3D_16.Helix(t: Angle,revs: Number): Vector3D [Library];
-Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: Helix,t: Angle): Vector3D [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.Eval(curve: IAngularCurve3D,t: Number): Vector3 [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: TorusKnot,t: Angle): Vector3 [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.TrefoilKnot(t: Angle): Vector3 [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: TrefoilKnot,t: Angle): Vector3 [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.FigureEightKnot(t: Angle): Vector3 [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: FigureEightKnot,t: Angle): Vector3 [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.Helix(t: Angle,revs: Number): Vector3 [Library];
+Error No viable functions found occurred during analysis of AngularCurves3D_16.GetPoint(curve: Helix,t: Angle): Vector3 [Library];
 
 Group IGeometry_18
 
 Error No viable functions found occurred during analysis of IGeometry_18.Length(x: Line2D): Number [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Direction(x: Line2D): Vector2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Direction(x: Line2D): Vector2 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Ray2D(x: Line2D): Ray2D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Reverse(x: Line2D): Line2D [Library];
 20. Start
-  Signature : IGeometry_18.Start(ParameterDef=x$10948:Line2D): Vector2D
+  Signature : IGeometry_18.Start(ParameterDef=x$10948:Line2D): Vector2
   Body      : A(x)
   Inline    : A(x#)#1
 21. End
-  Signature : IGeometry_18.End(ParameterDef=x$10954:Line2D): Vector2D
+  Signature : IGeometry_18.End(ParameterDef=x$10954:Line2D): Vector2
   Body      : B(x)
   Inline    : B(x#)#1
 Error No viable functions found occurred during analysis of IGeometry_18.Length(x: Line3D): Number [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Direction(x: Line3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Direction(x: Line3D): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Ray3D(x: Line3D): Ray3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Reverse(x: Line3D): Line3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: Line3D,f: Function1<Vector3D,Vector3D>): Line3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: Line3D,f: Function1<Vector3,Vector3>): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Bounds3D(x: Line3D): Bounds3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Start(x: Line3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.End(x: Line3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Start(x: Line3D): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.End(x: Line3D): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Angle(a: Ray3D,b: Ray3D): Angle [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: Ray3D,f: Function1<Vector3D,Vector3D>): Ray3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: Ray3D,f: Function1<Vector3,Vector3>): Ray3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Line3D(r: Ray3D): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Reverse(r: Ray3D): Ray3D [Library];
 Error Expected only one relation matching Number to IScalarArithmetic occurred during analysis of IGeometry_18.Area(t: Triangle2D): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Flip(t: Triangle2D): Triangle2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Center(t: Triangle2D): Vector2D [Library];
-Error Expected only one relation matching Vector3D to IInterpolatable occurred during analysis of IGeometry_18.Barycentric(t: Triangle2D,uv: Vector2D): Vector2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Center(t: Triangle2D): Vector2 [Library];
+Error Expected only one relation matching Vector3 to IInterpolatable occurred during analysis of IGeometry_18.Barycentric(t: Triangle2D,uv: Vector2): Vector2 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Flip(t: Triangle3D): Triangle3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Normal(t: Triangle3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Center(t: Triangle3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Normal(t: Triangle3D): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Center(t: Triangle3D): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Plane(t: Triangle3D): Plane [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Barycentric(t: Triangle3D,uv: Vector2D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Barycentric(t: Triangle3D,uv: Vector2): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineA(t: Triangle3D): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineB(t: Triangle3D): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineC(t: Triangle3D): Line3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(t: Triangle3D,f: Function1<Vector3D,Vector3D>): Triangle3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Barycentric(t: Triangle3D,uv: Vector2D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(t: Triangle3D,f: Function1<Vector3,Vector3>): Triangle3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Barycentric(t: Triangle3D,uv: Vector2): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Width(x: Rect2D): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Height(x: Rect2D): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Left(x: Rect2D): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Right(x: Rect2D): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Bottom(x: Rect2D): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Top(x: Rect2D): Number [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.BottomLeft(x: Rect2D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.BottomRight(x: Rect2D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.TopRight(x: Rect2D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.TopLeft(x: Rect2D): Vector2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.BottomLeft(x: Rect2D): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.BottomRight(x: Rect2D): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.TopRight(x: Rect2D): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.TopLeft(x: Rect2D): Vector2 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Quad2D(x: Rect2D): Quad2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Rect2D): IArray<Vector2D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Rect2D): IArray<Vector2> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Flip(q: Quad2D): Quad2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Center(q: Quad2D): Vector2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Center(q: Quad2D): Vector2 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineA(q: Quad2D): Line2D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineB(q: Quad2D): Line2D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineC(q: Quad2D): Line2D [Library];
@@ -425,52 +425,52 @@ Error No viable functions found occurred during analysis of IGeometry_18.LineD(q
 Error No viable functions found occurred during analysis of IGeometry_18.TriangleA(q: Quad2D): Triangle2D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.TriangleB(q: Quad2D): Triangle2D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Flip(q: Quad3D): Quad3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Center(q: Quad3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Center(q: Quad3D): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineA(q: Quad3D): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineB(q: Quad3D): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineC(q: Quad3D): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LineD(q: Quad3D): Line3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.TriangleA(q: Quad3D): Triangle3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.TriangleB(q: Quad3D): Triangle3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(q: Quad3D,f: Function1<Vector3D,Vector3D>): Quad3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Vector3D(v: Vector2D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.MidPoint(a: Vector2D,b: Vector2D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Line(a: Vector2D,b: Vector2D): Line2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Ray(a: Vector2D,b: Vector2D): Ray2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.RayTo(a: Vector2D,b: Vector2D): Ray2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Cross(a: Vector2D,b: Vector2D): Number [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Vector4D(v: Vector3D): Vector4D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ToVector4D(v: Vector3D,w: Number): Vector4D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.XZY(v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.YXZ(v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.YZX(v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ZXY(v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ZYX(v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.XY(v: Vector3D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.YX(v: Vector3D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.XZ(v: Vector3D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ZX(v: Vector3D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.YZ(v: Vector3D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ZY(v: Vector3D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.MidPoint(a: Vector3D,b: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Line(a: Vector3D,b: Vector3D): Line3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Ray(a: Vector3D,b: Vector3D): Ray3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.RayTo(a: Vector3D,b: Vector3D): Ray3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Project(v: Vector3D,p: Plane): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(v: Vector3D,f: Function1<Vector3D,Vector3D>): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.To2D(v: Vector3D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Cross(a: Vector3D,b: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.MixedProduct(a: Vector3D,b: Vector3D,c: Vector3D): Number [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(q: Quad3D,f: Function1<Vector3,Vector3>): Quad3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Vector3(v: Vector2): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.MidPoint(a: Vector2,b: Vector2): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Line(a: Vector2,b: Vector2): Line2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Ray(a: Vector2,b: Vector2): Ray2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.RayTo(a: Vector2,b: Vector2): Ray2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Cross(a: Vector2,b: Vector2): Number [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Vector4D(v: Vector3): Vector4D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ToVector4D(v: Vector3,w: Number): Vector4D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.XZY(v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.YXZ(v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.YZX(v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ZXY(v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ZYX(v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.XY(v: Vector3): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.YX(v: Vector3): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.XZ(v: Vector3): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ZX(v: Vector3): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.YZ(v: Vector3): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ZY(v: Vector3): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.MidPoint(a: Vector3,b: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Line(a: Vector3,b: Vector3): Line3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Ray(a: Vector3,b: Vector3): Ray3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.RayTo(a: Vector3,b: Vector3): Ray3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Project(v: Vector3,p: Plane): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(v: Vector3,f: Function1<Vector3,Vector3>): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.To2D(v: Vector3): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Cross(a: Vector3,b: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.MixedProduct(a: Vector3,b: Vector3,c: Vector3): Number [Library];
 22. Count
   Signature : IGeometry_18.Count(ParameterDef=c$12191:Complex): Integer
   Body      : 2
   Inline    : 2#
 23. Count
-  Signature : IGeometry_18.Count(ParameterDef=v$12195:Vector2D): Integer
+  Signature : IGeometry_18.Count(ParameterDef=v$12195:Vector2): Integer
   Body      : 2
   Inline    : 2#
 24. Count
-  Signature : IGeometry_18.Count(ParameterDef=v$12199:Vector3D): Integer
+  Signature : IGeometry_18.Count(ParameterDef=v$12199:Vector3): Integer
   Body      : 3
   Inline    : 3#
 25. Count
@@ -478,10 +478,10 @@ Error No viable functions found occurred during analysis of IGeometry_18.MixedPr
   Body      : 4
   Inline    : 4#
 Error No viable functions found occurred during analysis of IGeometry_18.At(c: Complex,n: Integer): Number [Library];
-Error Expected only one relation matching Integer to IEquatable occurred during analysis of IGeometry_18.At(v: Vector2D,n: Integer): Number [Library];
-Error Expected only one relation matching Integer to IEquatable occurred during analysis of IGeometry_18.At(v: Vector3D,n: Integer): Number [Library];
+Error Expected only one relation matching Integer to IEquatable occurred during analysis of IGeometry_18.At(v: Vector2,n: Integer): Number [Library];
+Error Expected only one relation matching Integer to IEquatable occurred during analysis of IGeometry_18.At(v: Vector3,n: Integer): Number [Library];
 Error Expected only one relation matching Integer to IEquatable occurred during analysis of IGeometry_18.At(v: Vector4D,n: Integer): Number [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ToVector3D(v: Vector4D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ToVector3(v: Vector4D): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Length(a: IVector): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.LengthSquared(a: IVector): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Sum(v: IVector): Number [Library];
@@ -496,11 +496,11 @@ Error No viable functions found occurred during analysis of IGeometry_18.Project
 Error No viable functions found occurred during analysis of IGeometry_18.Distance(a: IVector,b: IVector): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.DistanceSquared(a: IVector,b: IVector): Number [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Angle(a: IVector,b: IVector): Angle [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.IsParallel(a: Vector3D,b: Vector3D): Boolean [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Center(x: Bounds3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Corners(x: Bounds3D): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.IsParallel(a: Vector3,b: Vector3): Boolean [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Center(x: Bounds3D): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Corners(x: Bounds3D): IArray<Vector3> [Library];
 Error Too many functions occurred during analysis of IGeometry_18.Empty(_: Bounds3D): Bounds3D [Library];
-Error Too many functions occurred during analysis of IGeometry_18.Bounds(xs: IArray<Vector3D>): Bounds3D [Library];
+Error Too many functions occurred during analysis of IGeometry_18.Bounds(xs: IArray<Vector3>): Bounds3D [Library];
 26. Closed
   Signature : IGeometry_18.Closed(ParameterDef=x$12689:IClosedShape): Boolean
   Body      : True
@@ -509,29 +509,29 @@ Error Too many functions occurred during analysis of IGeometry_18.Bounds(xs: IAr
   Signature : IGeometry_18.Closed(ParameterDef=x$12693:IOpenShape): Boolean
   Body      : False
   Inline    : False#
-Error No viable functions found occurred during analysis of IGeometry_18.CirclePoints(n: Integer): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(x: RegularPolygon): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.At(x: RegularPolygon,n: Integer): Vector2D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.CirclePoints(n: Integer): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(x: RegularPolygon): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.At(x: RegularPolygon,n: Integer): Vector2 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Count(x: RegularPolygon): Integer [Library];
-Error Expected only one relation matching Vector3D to IInterpolatable occurred during analysis of IGeometry_18.Eval(x: Line2D,t: Number): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Eval(x: Line3D,t: Number): Vector3D [Library];
+Error Expected only one relation matching Vector3 to IInterpolatable occurred during analysis of IGeometry_18.Eval(x: Line2D,t: Number): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Eval(x: Line3D,t: Number): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Faces(g: ITriangleMesh2D): IArray<Triangle2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Faces(g: ITriangleMesh3D): IArray<Triangle3D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Faces(g: IQuadMesh2D): IArray<Quad2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Faces(g: IQuadMesh3D): IArray<Quad3D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.NumFaces(g: IIndexedGeometry): Integer [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.FaceIndices(g: IIndexedGeometry,f: Integer): IArray<Integer> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.FaceVertices(g: IIndexedGeometry2D,f: Integer): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.FaceVertices(g: IIndexedGeometry3D,f: Integer): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.FaceVertices(g: IIndexedGeometry2D,f: Integer): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.FaceVertices(g: IIndexedGeometry3D,f: Integer): IArray<Vector3> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.AllFaceIndices(g: IIndexedGeometry): IArray<IArray<Integer>> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Vertex(g: IIndexedGeometry2D,n: Integer): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Vertex(g: IIndexedGeometry3D,n: Integer): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Vertices(g: IIndexedGeometry2D,xs: IArray<Integer>): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Vertices(g: IIndexedGeometry3D,xs: IArray<Integer>): IArray<Vector3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.AllFaceVertices(g: IIndexedGeometry2D): IArray<IArray<Vector2D>> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.AllFaceVertices(g: IIndexedGeometry3D): IArray<IArray<Vector3D>> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.AllVertices(g: IIndexedGeometry2D): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.AllVertices(g: IIndexedGeometry3D): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Vertex(g: IIndexedGeometry2D,n: Integer): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Vertex(g: IIndexedGeometry3D,n: Integer): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Vertices(g: IIndexedGeometry2D,xs: IArray<Integer>): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Vertices(g: IIndexedGeometry3D,xs: IArray<Integer>): IArray<Vector3> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.AllFaceVertices(g: IIndexedGeometry2D): IArray<IArray<Vector2>> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.AllFaceVertices(g: IIndexedGeometry3D): IArray<IArray<Vector3>> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.AllVertices(g: IIndexedGeometry2D): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.AllVertices(g: IIndexedGeometry3D): IArray<Vector3> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(x: ILineMesh2D): IArray<Line2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(x: ILineMesh3D): IArray<Line3D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Triangles(x: ITriangleMesh2D): IArray<Triangle2D> [Library];
@@ -588,7 +588,7 @@ Error No viable functions found occurred during analysis of IGeometry_18.Triangl
 Error No viable functions found occurred during analysis of IGeometry_18.TriangleMesh3D(g: IQuadArray3D): TriangleMesh3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.TriangleMesh3D(g: IQuadMesh3D): TriangleMesh3D [Library];
 34. To3D
-  Signature : IGeometry_18.To3D(ParameterDef=x$13588:Vector2D): Vector3D
+  Signature : IGeometry_18.To3D(ParameterDef=x$13588:Vector2): Vector3
   Body      : x
   Inline    : x#
 Error No viable functions found occurred during analysis of IGeometry_18.To3D(x: Line2D): Line3D [Library];
@@ -604,9 +604,9 @@ Error No viable functions found occurred during analysis of IGeometry_18.Bounds3
 Error No viable functions found occurred during analysis of IGeometry_18.Ray3D(x: Ray2D): Ray3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.PolyLine3D(x: PolyLine2D): PolyLine3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: IDeformable3D,t: ITransform3D): IDeformable3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Translate(x: IDeformable3D,v: Vector3D): IDeformable3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Translate(x: IDeformable3D,v: Vector3): IDeformable3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Rotate(x: IDeformable3D,q: Quaternion): IDeformable3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Scale(x: IDeformable3D,v: Vector3D): IDeformable3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Scale(x: IDeformable3D,v: Vector3): IDeformable3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Scale(x: IDeformable3D,s: Number): IDeformable3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.RotateX(x: IDeformable3D,a: Angle): IDeformable3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.RotateY(x: IDeformable3D,a: Angle): IDeformable3D [Library];
@@ -619,13 +619,13 @@ Error No viable functions found occurred during analysis of IGeometry_18.ScaleY(
 Error No viable functions found occurred during analysis of IGeometry_18.ScaleZ(x: IDeformable3D,s: Number): IDeformable3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Unit(_: Triangle2D): Triangle2D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Unit(_: Quad2D): Quad2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.UnitX(_: Vector2D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.UnitY(_: Vector2D): Vector2D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.UnitX(_: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.UnitY(_: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.UnitZ(_: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.MinValue(_: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.MaxValue(_: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.UnitX(_: Vector2): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.UnitY(_: Vector2): Vector2 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.UnitX(_: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.UnitY(_: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.UnitZ(_: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.MinValue(_: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.MaxValue(_: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.UnitX(_: Vector4D): Vector4D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.UnitY(_: Vector4D): Vector4D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.UnitZ(_: Vector4D): Vector4D [Library];
@@ -633,48 +633,48 @@ Error No viable functions found occurred during analysis of IGeometry_18.UnitW(_
 Error No viable functions found occurred during analysis of IGeometry_18.Identity(_: Matrix3x3): Matrix3x3 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Identity(_: Matrix4x4): Matrix4x4 [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Identity(_: Quaternion): Quaternion [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: LineMesh3D,f: Function1<Vector3D,Vector3D>): LineMesh3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: TriangleMesh3D,f: Function1<Vector3D,Vector3D>): TriangleMesh3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: QuadMesh3D,f: Function1<Vector3D,Vector3D>): QuadMesh3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: PolyLine3D,f: Function1<Vector3D,Vector3D>): PolyLine3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: LineArray3D,f: Function1<Vector3D,Vector3D>): LineArray3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: TriangleArray3D,f: Function1<Vector3D,Vector3D>): TriangleArray3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: PointArray3D,f: Function1<Vector3D,Vector3D>): PointArray3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: QuadArray3D,f: Function1<Vector3D,Vector3D>): QuadArray3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: QuadGrid3D,f: Function1<Vector3D,Vector3D>): QuadGrid3D [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: Bounds3D,f: Function1<Vector3D,Vector3D>): Bounds3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: LineMesh3D,f: Function1<Vector3,Vector3>): LineMesh3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: TriangleMesh3D,f: Function1<Vector3,Vector3>): TriangleMesh3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: QuadMesh3D,f: Function1<Vector3,Vector3>): QuadMesh3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: PolyLine3D,f: Function1<Vector3,Vector3>): PolyLine3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: LineArray3D,f: Function1<Vector3,Vector3>): LineArray3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: TriangleArray3D,f: Function1<Vector3,Vector3>): TriangleArray3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: PointArray3D,f: Function1<Vector3,Vector3>): PointArray3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: QuadArray3D,f: Function1<Vector3,Vector3>): QuadArray3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: QuadGrid3D,f: Function1<Vector3,Vector3>): QuadGrid3D [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Deform(x: Bounds3D,f: Function1<Vector3,Vector3>): Bounds3D [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.NumColumns(x: QuadGrid3D): Integer [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.NumRows(x: QuadGrid3D): Integer [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(x: QuadGrid3D): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(x: QuadGrid3D): IArray<Vector3> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Indices(x: QuadGrid3D): IArray<Integer> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.AllQuadFaceIndices(xs: IArray2D<$T>,closedX: Boolean,closedY: Boolean): IArray2D<Integer4> [Library];
 35. Points
-  Signature : IGeometry_18.Points(ParameterDef=x$14629:Line2D): IArray<Vector2D>
+  Signature : IGeometry_18.Points(ParameterDef=x$14629:Line2D): IArray<Vector2>
   Body      : [A(x), B(x)]
   Inline    : [A(x#)#1, B(x#)#1]#
-Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Line3D): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Line3D): IArray<Vector3> [Library];
 36. Points
-  Signature : IGeometry_18.Points(ParameterDef=x$14649:Triangle2D): IArray<Vector2D>
+  Signature : IGeometry_18.Points(ParameterDef=x$14649:Triangle2D): IArray<Vector2>
   Body      : [A(x), B(x), C(x)]
   Inline    : [A(x#)#1, B(x#)#1, C(x#)#1]#
-Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Triangle3D): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Triangle3D): IArray<Vector3> [Library];
 37. Points
-  Signature : IGeometry_18.Points(ParameterDef=x$14675:Quad2D): IArray<Vector2D>
+  Signature : IGeometry_18.Points(ParameterDef=x$14675:Quad2D): IArray<Vector2>
   Body      : [A(x), B(x), C(x), D(x)]
   Inline    : [A(x#)#1, B(x#)#1, C(x#)#1, D(x#)#1]#
-Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Quad3D): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(x: Quad3D): IArray<Vector3> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(x: Triangle2D): IArray<Line2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(x: Triangle3D): IArray<Line3D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(x: Quad2D): IArray<Line2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(x: Quad3D): IArray<Line3D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Triangles(q: Quad2D): IArray<Triangle2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Triangles(q: Quad3D): IArray<Triangle3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Line2D>): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Line3D>): IArray<Vector3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Triangle2D>): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Triangle3D>): IArray<Vector3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Quad2D>): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Quad3D>): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Line2D>): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Line3D>): IArray<Vector3> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Triangle2D>): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Triangle3D>): IArray<Vector3> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Quad2D>): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IArray<Quad3D>): IArray<Vector3> [Library];
 38. Lines
   Signature : IGeometry_18.Lines(ParameterDef=xs$15026:IArray<Line2D>): IArray<Line2D>
   Body      : xs
@@ -697,12 +697,12 @@ Error No viable functions found occurred during analysis of IGeometry_18.Lines(x
   Inline    : xs#
 Error No viable functions found occurred during analysis of IGeometry_18.Triangles(xs: IArray<Quad2D>): IArray<Triangle2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Triangles(xs: IArray<Quad3D>): IArray<Triangle3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ILineArray2D): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ILineArray3D): IArray<Vector3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ITriangleArray2D): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ITriangleArray3D): IArray<Vector3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IQuadArray2D): IArray<Vector2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IQuadArray3D): IArray<Vector3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ILineArray2D): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ILineArray3D): IArray<Vector3> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ITriangleArray2D): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: ITriangleArray3D): IArray<Vector3> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IQuadArray2D): IArray<Vector2> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.Points(xs: IQuadArray3D): IArray<Vector3> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(xs: ITriangleArray2D): IArray<Line2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(xs: ITriangleArray3D): IArray<Line3D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(xs: IQuadArray2D): IArray<Line2D> [Library];
@@ -711,8 +711,8 @@ Error No viable functions found occurred during analysis of IGeometry_18.Triangl
 Error No viable functions found occurred during analysis of IGeometry_18.Triangles(xs: IQuadArray3D): IArray<Triangle3D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(xs: IPolyLine2D): IArray<Line2D> [Library];
 Error No viable functions found occurred during analysis of IGeometry_18.Lines(xs: IPolyLine3D): IArray<Line3D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ToLines(xs: IArray<Vector2D>,ys: IArray<Vector2D>): IArray<Line2D> [Library];
-Error No viable functions found occurred during analysis of IGeometry_18.ToLines(xs: IArray<Vector3D>,ys: IArray<Vector3D>): IArray<Line3D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ToLines(xs: IArray<Vector2>,ys: IArray<Vector2>): IArray<Line2D> [Library];
+Error No viable functions found occurred during analysis of IGeometry_18.ToLines(xs: IArray<Vector3>,ys: IArray<Vector3>): IArray<Line3D> [Library];
 42. ClosedX
   Signature : IGeometry_18.ClosedX(ParameterDef=xs$15519:ISolid): Boolean
   Body      : True
@@ -759,11 +759,11 @@ Group Intrinsics_22
 
 Group Transforms_24
 
-Error Too many functions occurred during analysis of Transforms_24.Matrix(v: Vector3D): Matrix4x4 [Library];
+Error Too many functions occurred during analysis of Transforms_24.Matrix(v: Vector3): Matrix4x4 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Matrix(t: Translation3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(t: Translation3D,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(t: Translation3D,v: Vector3): Vector3 [Library];
 44. TransformNormal
-  Signature : Transforms_24.TransformNormal(ParameterDef=t$16444:Translation3D, ParameterDef=v$16446:Vector3D): Vector3D
+  Signature : Transforms_24.TransformNormal(ParameterDef=t$16444:Translation3D, ParameterDef=v$16446:Vector3): Vector3
   Body      : v
   Inline    : v#
 Error No viable functions found occurred during analysis of Transforms_24.Matrix4x4(t: ITransform3D): Matrix4x4 [Library];
@@ -836,15 +836,15 @@ Error Too many functions occurred during analysis of Transforms_24.Row2(m: Matri
 Error Too many functions occurred during analysis of Transforms_24.Row3(m: Matrix4x4): Vector4D [Library];
 Error Expected no parameters occurred during analysis of Transforms_24.Row4(m: Matrix4x4): Vector4D [Library];
 Error Too many functions occurred during analysis of Transforms_24.GetRow(m: Matrix4x4,row: Integer): Vector4D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Multiply(m: Matrix4x4,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Multiply(m: Matrix4x4,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.CreateFromRows(_: Matrix4x4,row1: Vector4D,row2: Vector4D,row3: Vector4D,row4: Vector4D): Matrix4x4 [Library];
-Error Too many functions occurred during analysis of Transforms_24.CreateFromRows(_: Matrix4x4,row1: Vector3D,row2: Vector3D,row3: Vector3D): Matrix4x4 [Library];
-Error Too many functions occurred during analysis of Transforms_24.WithTranslation(m: Matrix4x4,v: Vector3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Translation(m: Matrix4x4): Vector3D [Library];
-Error Too many functions occurred during analysis of Transforms_24.CreateTranslation(_: Matrix4x4,v: Vector3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.CreateScale(_: Matrix4x4,v: Vector3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(m: Matrix4x4,v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(m: Matrix4x4,v: Vector3D): Vector3D [Library];
+Error Too many functions occurred during analysis of Transforms_24.CreateFromRows(_: Matrix4x4,row1: Vector3,row2: Vector3,row3: Vector3): Matrix4x4 [Library];
+Error Too many functions occurred during analysis of Transforms_24.WithTranslation(m: Matrix4x4,v: Vector3): Matrix4x4 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Translation(m: Matrix4x4): Vector3 [Library];
+Error Too many functions occurred during analysis of Transforms_24.CreateTranslation(_: Matrix4x4,v: Vector3): Matrix4x4 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.CreateScale(_: Matrix4x4,v: Vector3): Matrix4x4 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(m: Matrix4x4,v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(m: Matrix4x4,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Transpose(m: Matrix4x4): Matrix4x4 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Multiply(m: Matrix4x4,s: Number): Matrix4x4 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Divide(m: Matrix4x4,s: Number): Matrix4x4 [Library];
@@ -854,9 +854,9 @@ Error Too many functions occurred during analysis of Transforms_24.Matrix(m: Mat
   Signature : Transforms_24.Matrix(ParameterDef=m$17753:Matrix4x4): Matrix4x4
   Body      : m
   Inline    : m#
-Error No viable functions found occurred during analysis of Transforms_24.Row1(m: Matrix3x3): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Row2(m: Matrix3x3): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Row3(m: Matrix3x3): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Row1(m: Matrix3x3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Row2(m: Matrix3x3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Row3(m: Matrix3x3): Vector3 [Library];
 Error Too many functions occurred during analysis of Transforms_24.M11(m: Matrix3x3): Number [Library];
 Error Too many functions occurred during analysis of Transforms_24.M12(m: Matrix3x3): Number [Library];
 Error Too many functions occurred during analysis of Transforms_24.M13(m: Matrix3x3): Number [Library];
@@ -868,47 +868,47 @@ Error Too many functions occurred during analysis of Transforms_24.M32(m: Matrix
 Error Too many functions occurred during analysis of Transforms_24.M33(m: Matrix3x3): Number [Library];
 Error Too many functions occurred during analysis of Transforms_24.Determinant(m: Matrix3x3): Number [Library];
 62. Transform
-  Signature : Transforms_24.Transform(ParameterDef=t$17917:IdentityTransform3D, ParameterDef=v$17919:Vector3D): Vector3D
+  Signature : Transforms_24.Transform(ParameterDef=t$17917:IdentityTransform3D, ParameterDef=v$17919:Vector3): Vector3
   Body      : v
   Inline    : v#
 63. TransformNormal
-  Signature : Transforms_24.TransformNormal(ParameterDef=t$17923:IdentityTransform3D, ParameterDef=v$17925:Vector3D): Vector3D
+  Signature : Transforms_24.TransformNormal(ParameterDef=t$17923:IdentityTransform3D, ParameterDef=v$17925:Vector3): Vector3
   Body      : v
   Inline    : v#
 Error Too many functions occurred during analysis of Transforms_24.Matrix(t: IdentityTransform3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(t: Transform3D,v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(t: Transform3D,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(t: Transform3D,v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(t: Transform3D,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Matrix(t: Transform3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(p: Pose3D,v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(p: Pose3D,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(p: Pose3D,v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(p: Pose3D,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Matrix(p: Pose3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(aa: AxisAngle,v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(aa: AxisAngle,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(aa: AxisAngle,v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(aa: AxisAngle,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Matrix(aa: AxisAngle): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(e: EulerAngles,v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(e: EulerAngles,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(e: EulerAngles,v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(e: EulerAngles,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Matrix(e: EulerAngles): Matrix4x4 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Pose3D(f: Frame3D): Pose3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(f: Frame3D,v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(f: Frame3D,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(f: Frame3D,v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(f: Frame3D,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Matrix(f: Frame3D): Matrix4x4 [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Transform(r: Rotation3D,v: Vector3D): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(r: Rotation3D,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Transform(r: Rotation3D,v: Vector3): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(r: Rotation3D,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Matrix(r: Rotation3D): Matrix4x4 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Quaternion(v: Vector4D): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Vector4D(q: Quaternion): Vector4D [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Magnitude(q: Quaternion): Number [Library];
 Error No viable functions found occurred during analysis of Transforms_24.MagnitudeSquared(q: Quaternion): Number [Library];
-Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(q: Quaternion,v: Vector3D): Vector3D [Library];
+Error No viable functions found occurred during analysis of Transforms_24.TransformNormal(q: Quaternion,v: Vector3): Vector3 [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Concatenate(q1: Quaternion,q2: Quaternion): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Conjugate(q: Quaternion): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Inverse(q: Quaternion): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Normalize(q: Quaternion): Quaternion [Library];
-Error Too many functions occurred during analysis of Transforms_24.XYZ(q: Quaternion): Vector3D [Library];
-Error No viable functions found occurred during analysis of Transforms_24.AxisAngle(v: Vector3D,a: Angle): AxisAngle [Library];
+Error Too many functions occurred during analysis of Transforms_24.XYZ(q: Quaternion): Vector3 [Library];
+Error No viable functions found occurred during analysis of Transforms_24.AxisAngle(v: Vector3,a: Angle): AxisAngle [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Multiply(q: Quaternion,scalar: Number): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.Divide(q: Quaternion,scalar: Number): Quaternion [Library];
-Error No viable functions found occurred during analysis of Transforms_24.Rotation(v: Vector3D,theta: Angle): Quaternion [Library];
+Error No viable functions found occurred during analysis of Transforms_24.Rotation(v: Vector3,theta: Angle): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.XRotation(theta: Angle): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.YRotation(theta: Angle): Quaternion [Library];
 Error No viable functions found occurred during analysis of Transforms_24.ZRotation(theta: Angle): Quaternion [Library];

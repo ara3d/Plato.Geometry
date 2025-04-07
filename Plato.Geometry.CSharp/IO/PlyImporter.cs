@@ -447,9 +447,9 @@ namespace Plato.Geometry.IO
 
             // TODO: normals / colors / uv
 
-            var vertices = new List<Vector3D>();
+            var vertices = new List<Vector3>();
             for (var i = 0; i != xs.Count; ++i)
-                vertices.Add(new Vector3D(xs.GetDouble(i), ys.GetDouble(i), zs.GetDouble(i)));
+                vertices.Add(new Vector3(xs.GetDouble(i), ys.GetDouble(i), zs.GetDouble(i)));
             
             var indexBuffer = buffers.First(b => b.Name == "vertex_indices");
             

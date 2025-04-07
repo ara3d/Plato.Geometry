@@ -1,5 +1,4 @@
-﻿using Plato.SinglePrecision;
-using Plato.Geometry.Graphics;
+﻿using Plato.Geometry.Graphics;
 using System.Collections.Generic;
 
 namespace Plato.Geometry.Scenes
@@ -14,26 +13,25 @@ namespace Plato.Geometry.Scenes
         string Id { get; }
         string Name { get; }
         ITransform3D Transform { get; }
-        IReadOnlyList<ISceneObject> Objects { get; }
-        IReadOnlyList<ISceneNode> Children { get; }
-        IEnumerable<KeyValuePair<string, object>> GetProps();
-        object GetProp(string key);
+        IArray<ISceneObject> Objects { get; }
+        IArray<ISceneNode> Children { get; }
     }
 
     public interface ISceneObject
     {
-        Material Material { get; }
     }
 
     public interface ISceneLine : ISceneObject
     {
         double Width { get; }
         bool Closed { get; }
-        IReadOnlyList<Vector3D> Points { get; }
+        Material Material { get; }
+        IReadOnlyList<Vector3> Points { get; }
     }
 
     public interface ISceneMesh : ISceneObject
     {
+        Material Material { get; }
         TriangleMesh3D Mesh { get; }
     }
 

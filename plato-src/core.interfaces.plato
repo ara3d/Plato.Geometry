@@ -6,6 +6,7 @@ interface IAny
 }
 
 // A value is a read-only type which has the implicit rule that only Values are members
+// Currently everything is an IValue 
 interface IValue 
 { 
 }
@@ -50,12 +51,12 @@ interface IArrayLike<T>
 }
 
 // This is a generalization of real number to multiple dimensions, and with or without units of measure.
-// These types can be added, negated, subtracted, and support scalar arithmetic. 
+// Coordinates, Measurements, and Vectors are all considered IVectorLike types.
 // They do not necessarily support multiplication and division (e.g., Angles and Lengths). 
-// By definition, they implicitly support interpolation
-// https://en.wikipedia.org/wiki/Vector_space
-interface IVector 
-    inherits IInterpolatable, IAdditive, IScalarArithmetic, IArrayLike<Number>
+// Adding and subtracting them might yield new types (e.g., Points and DateTimes)
+// Closely related to vector space: https://en.wikipedia.org/wiki/Vector_space
+interface IVectorLike
+    inherits IInterpolatable, IScalarArithmetic, IArrayLike<Number>
 {
 }
 
@@ -91,9 +92,13 @@ interface IArithmetic
 // This includes real numbers, complex numbers, and vectors.
 // It does not include measurements. INumerical types are not necessarily orderable.
 interface INumerical
-    inherits IVector, IArithmetic
-{
-}
+    inherits IVectorLike, IArithmetic
+{ }
+
+// A vector supports component-wise arithmetic operations.
+interface IVector 
+    inherits INumerical
+{ }
 
 // The less than function return true if the first value is strictly less than the other. 
 interface IOrderable 
@@ -110,8 +115,7 @@ interface IInvertible
 // Represents an Abelian group under multiplication 
 interface IMultiplicativeWithInverse
     inherits IMultiplicative, IInvertible
-{
-}
+{ }
 
 // Represents a continuous one dimensional value.
 // https://en.wikipedia.org/wiki/Real_float
@@ -119,8 +123,7 @@ interface IMultiplicativeWithInverse
 // The "Number" type is the only example of a IRealNumber
 interface IRealNumber
     inherits INumerical, IOrderable
-{
-}
+{ }
 
 // Used for integer and cardinal types. 
 // They are not considered INumerical types because they are not invertible over multiplication,
@@ -129,22 +132,28 @@ interface IRealNumber
 // Lerp is defined for whole numbers. 
 interface IWholeNumber 
     inherits IOrderable, IArithmetic, IInterpolatable
-{
-}
+{ }
 
 // A measure is a numeric value with an intrinisic unit of measure. 
 // It resembles an IRealNumber except you cannot multiply or divide two measures without 
 // getting a new type. It does however support addition, negation, and scalar arithmetic
-// We can think of it as a vector with a single component, and that can be ordered.  
+// We can think of it as a vector with a single component, and as such can be ordered.  
 interface IMeasure
-    inherits IOrderable, IVector
-{
-}
+    inherits IVectorLike, IOrderable
+{ }
 
 // A coordinate is a point in some space (e.g., a cartesian grid). 
 // This also includes a time line, so a DateTime is considered a ICoordinate. 
 interface ICoordinate
 { }
+
+// When subtracting values gives us a new type (like Point2D gives Vector2)
+interface IDifference<T>
+{
+    Add(x: Self, amount: T): Self;
+    Subtract(x: Self, amount: T): Self;
+    Subtract(x: Self, y: Self): T;
+}
 
 // Basic boolean operations, which are also similar to set operations.  
 interface IBoolean
@@ -156,7 +165,7 @@ interface IBoolean
 
 // Represents an interval of values. 
 interface IInterval<T>    
-    where T: IVector
+    where T: IVectorLike
     inherits IValue
 {
     Start(x: Self): T;
@@ -165,7 +174,7 @@ interface IInterval<T>
 
 // Represents a range of values. 
 interface IBounds<T>    
-    where T: IVector
+    where T: IVectorLike
     inherits IValue
 {
     Min(x: Self): T;

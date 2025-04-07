@@ -30,9 +30,42 @@ type ArrayHelpers
 
 library ArrayLibrary
 {
+    //==
+    // ArrayLike functions
+
     At(xs: IArrayLike<$T>, n: Integer): $T
         => xs.Components[n];
-        
+              
+    MapComponents(x: IArrayLike<$T>, f: Function1<$T, $T>): IArrayLike<$T>
+        => Self.CreateFromComponents(x.Components.Map(f));
+
+    ZipComponents(a: IArrayLike<$T>, b: IArrayLike<$T>, f: Function2<$T, $T, $T>): IArrayLike<$T>
+        => Self.CreateFromComponents(a.Components.Zip(b.Components, f));
+
+    ZipComponents(a: IArrayLike<$T>, b: IArrayLike<$T>, c: IArrayLike<$T>, f: Function3<$T, $T, $T, $T>): IArrayLike<$T>
+        => Self.CreateFromComponents(a.Components.Zip(b.Components, c.Components, f));
+
+    AllZipComponents(a: IArrayLike<$T>, b: IArrayLike<$T>, f: Function2<$T, $T, Boolean>): Boolean
+        => a.Components.Zip(b.Components, f).All(x => x);
+
+    AllZipComponents(a: IArrayLike<$T>, b: IArrayLike<$T>, c: IArrayLike<$T>, f: Function3<$T, $T, $T, Boolean>): Boolean
+        => a.Components.Zip(b.Components, c.Components, f).All(x => x);
+
+    AnyZipComponents(a: IArrayLike<$T>, b: IArrayLike<$T>, f: Function2<$T, $T, Boolean>): Boolean
+        => a.Components.Zip(b.Components, f).Any(x => x);
+
+    AnyZipComponents(a: IArrayLike<$T>, b: IArrayLike<$T>, c: IArrayLike<$T>, f: Function3<$T, $T, $T, Boolean>): Boolean
+        => a.Components.Zip(b.Components, c.Components, f).Any(x => x);
+
+    AllComponents(x: IArrayLike<$T>, predicate: Function1<$T, Boolean>): Boolean
+		=> x.Components.All(predicate);
+
+    AnyComponent(x: IArrayLike<$T>, predicate: Function1<$T, Boolean>): Boolean
+		=> x.Components.Any(predicate);
+
+    //== 
+    // Array functions
+
 	Repeat(x: IAny, n: Integer): Array<IAny>
         => n.MapRange((i) => x);
 
@@ -123,20 +156,11 @@ library ArrayLibrary
     Map(xs: IArray<$T1>, f: Function1<$T1, $T2>): Array<$T2> 
         => xs.Count.MapRange((i) => f(xs.At(i)));
 
-    //Map(xs: IArray<$T1>, f: Function1<$T1, $T1>): IArray<$T1> 
-    //    => Self.Create(xs.Count.MapRange((i) => f(xs.At(i))));
-
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, f: Function2<$T1, $T2, $T3>): Array<$T3> 
         => xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i]));  
 
-    //Zip(xs: IArray<$T1>, ys: IArray<$T1>, f: Function2<$T1, $T1, $T1>): IArray<$T1> 
-    //    => Self.Create(xs.Count.Lesser(ys.Count).MapRange((i) => f(xs[i], ys[i])));  
-
     Zip(xs: IArray<$T1>, ys: IArray<$T2>, zs: IArray<$T3>, f: Function3<$T1, $T2, $T3, $T4>): Array<$T4> 
         => xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => f(xs[i], ys[i], zs[i]));  
-
-    //Zip(xs: IArray<$T1>, ys: IArray<$T1>, zs: IArray<$T1>, f: Function3<$T1, $T1, $T1, $T1>): IArray<$T1> 
-    //    => Self.Create(xs.Count.Lesser(ys.Count).Lesser(zs.Count).MapRange((i) => f(xs[i], ys[i], zs[i])));  
 
     ModuloAt(xs: IArray<$T>, n: Integer): $T
 		=> xs.At(n % xs.Count);
