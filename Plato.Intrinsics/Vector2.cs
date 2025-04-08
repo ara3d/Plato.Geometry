@@ -30,6 +30,8 @@ namespace Plato
         public Number X { [MethodImpl(AggressiveInlining)] get => Value.X; }
         public Number Y { [MethodImpl(AggressiveInlining)] get => Value.Y; }
 
+        public readonly int Count = 2;
+
         //-------------------------------------------------------------------------------------
         // Immutable "setters"
         //-------------------------------------------------------------------------------------

@@ -117,7 +117,7 @@ type Array3D<T>
 // A 2-dimensional vector
 // https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Numerics/Vector2.cs
 type Vector2
-    implements INumerical
+    implements IVector
 {
     X: Number;
     Y: Number;
@@ -126,7 +126,7 @@ type Vector2
 // A 3-dimensional vector    
 // https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Numerics/Vector3.cs
 type Vector3
-    implements INumerical
+    implements IVector
 {
     X: Number;
     Y: Number;
@@ -136,7 +136,7 @@ type Vector3
 // A 4-dimensional vector
 // https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Numerics/Vector4.cs
 type Vector4
-    implements INumerical
+    implements IVector
 {
     X: Number;
     Y: Number;  

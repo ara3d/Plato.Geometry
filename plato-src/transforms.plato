@@ -259,34 +259,23 @@ library Transforms
         => x.TransformNormal(v);
 
     Multiply(x: ITransform3D, m: Matrix4x4): MatrixTransform3D
-        => x.Compose(y);
-
-    Multiply(x: Scaling3D, scalar: Number): Scaling3D
-        => x.Scale * scalar;
+        => x.Compose(m);
 
     //==
     // General ITransform3D helpers
 
     // Transforms a point 
     TransformPoint(x: ITransform3D, v: Point3D): Point3D
-        => v.Vector.Transform(x.Matrix);
+        => v.Vector3.Transform(x.Matrix);
     
     // Transforms a normal vector 
     TransformNormal(x: ITransform3D, v: Vector3): Vector3
-        => v.Vector.TransformNormal(x.Matrix);
+        => v.TransformNormal(x.Matrix);
 
     // Assures that every transform can be implicitly converted into a Matrix4x4 
     Matrix4x4(t: ITransform3D): Matrix4x4
 		=> t.Matrix;
 
-    // Assures that every transform can also be implicitly converted into a MatrixTransform3D
-    MatrixTransform3D(t: ITransform3D): MatrixTransform3D
-		=> t.Matrix;
-
-    // Any matrix, can be implicitly converted into a Matrix transform 
-    MatrixTransform3D(m: Matrix4x4): MatrixTransform3D
-        => m;
-   
     // Any 3D transform can be trivially inverted 
     Invert(t: ITransform3D): MatrixTransform3D
         => t.Matrix.Invert;
@@ -332,11 +321,8 @@ library Transforms
         
     // An identity translation is a zero vector
     Identity(_: Translation3D): Translation3D
-        => Vector3.Zero;
+        => Zero3;
 
-    Translation3D(v: Vector3): Translation3D
-        => v;
-    
     TranslationX(x: Number): Translation3D
         => x.XVector3;
 
@@ -353,9 +339,6 @@ library Transforms
     Identity(_: MatrixTransform3D): MatrixTransform3D
         => Matrix4x4.Identity;
 
-    Transform(m: Matrix4x4): MatrixTransform3D
-        => m;
-
     //==
     // Rotation3D
 
@@ -371,10 +354,10 @@ library Transforms
     // LookDirection3D
 
     Matrix(r: LookDirection3D): Matrix4x4
-        => Matrix4x4.CreateWorld(0.0, r.Forward, ZAxis3D);
+        => Matrix4x4.CreateWorld(0.0, r.Direction, ZAxis3D);
 
     Identity(_: LookDirection3D): LookDirection3D
-        => (Vector3.UnitY, ZAxis3D);        
+        => Vector3.UnitY;        
         
     //==
     // LookAt3D
@@ -383,7 +366,7 @@ library Transforms
         => Matrix4x4.CreateWorld(0.0, r.Forward, ZAxis3D);
 
     Identity(_: LookAt3D): LookAt3D
-        => (Origin, YAxis3D);        
+        => (Origin3D, YAxis3D);        
 
     LookAt(from: Point3D, target: Point3D): LookAt3D
         => (from, target);
@@ -407,7 +390,7 @@ library Transforms
     // TRSTransform3D
 
 	Matrix(t: TRSTransform3D): Matrix4x4
-		=> t.Translation * t.Rotation * t.Scale;
+		=> (t.Translation * t.Rotation) * t.Scale.Matrix;
 
     Identity(_: TRSTransform3D): TRSTransform3D
         => (Translation3D.Identity, Rotation3D.Identity, Scaling3D.Identity);
@@ -460,9 +443,9 @@ library Transforms
     // Yaw Pitch 
 
     Quaternion(e: YawPitch): Quaternion
-        => Quaternion.CreateFromYawPitchRoll(e.Yaw, e.Pitch, 0);
+        => Quaternion.CreateFromYawPitchRoll(e.Yaw, e.Pitch, 0.0);
 
-    Identity(_: YawPitchRoll): YawPitch
+    Identity(_: YawPitch): YawPitch
         => (0.0, 0.0);
 
     //==

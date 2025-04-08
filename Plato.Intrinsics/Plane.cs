@@ -53,7 +53,7 @@ namespace Plato
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Plane(SNPlane plane)
-            => Value = Value;
+            => Value = plane;
 
         // --------------------------------------------------------------------
         // Internal: Convert to/from Plane

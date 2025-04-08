@@ -173,10 +173,10 @@ interface IInterval<T>
 }
 
 // Represents a range of values. 
-interface IBounds<T>    
-    where T: IVectorLike
+interface IBounds<TValue, TDelta>    
+    where T: IVectorLike, T: IDifference<TDelta>
     inherits IValue
 {
-    Min(x: Self): T;
-    Max(x: Self): T;
+    Min(x: Self): TValue;
+    Max(x: Self): TValue;
 }

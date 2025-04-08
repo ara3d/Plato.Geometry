@@ -101,6 +101,8 @@ namespace Plato
             [MethodImpl(AggressiveInlining)] get => Value.GetUpper();
         }
 
+        public readonly int Count = 8;
+
         [MethodImpl(AggressiveInlining)]
         public Vector8 WithLower(Vector4 lower)
             => new(lower, Upper);

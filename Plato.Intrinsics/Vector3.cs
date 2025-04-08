@@ -42,6 +42,8 @@ namespace Plato
             [MethodImpl(AggressiveInlining)]
             get => Value.Z;
         }
+   
+        public readonly int Count = 3;
 
         // Immutable "setters"
 

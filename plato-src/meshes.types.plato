@@ -18,7 +18,7 @@ type TriangleMesh3D
 }
 
 type QuadMesh2D
-    implements IQuadMesh3D
+    implements IQuadMesh2D
 {   
     Points: IArray<Point2D>;
     FaceIndices: IArray<Integer4>;
@@ -96,7 +96,7 @@ type QuadArray3D
 type QuadGrid2D
 	implements IQuadGrid2D
 {
-	PointGrid: IArray2D<Point2D>;
+	Grid: IArray2D<Point2D>;
 	ClosedX: Boolean;
     ClosedY: Boolean;
 }
@@ -104,7 +104,7 @@ type QuadGrid2D
 type QuadGrid3D
 	implements IQuadGrid3D
 {
-	PointGrid: IArray2D<Point3D>;
+	Grid: IArray2D<Point3D>;
 	ClosedX: Boolean;
     ClosedY: Boolean;
 }

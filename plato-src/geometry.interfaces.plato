@@ -121,7 +121,7 @@ interface ICurve1D
 
 // A 2 dimensional shape with a topological space of 1 dimensions
 interface ICurve2D
-    inherits IGeometry2D, ICurve<Vector2>
+    inherits IGeometry2D, ICurve<Point2D>
 { }
 
 // A 2D curve which is known to be closed
@@ -136,7 +136,7 @@ interface IOpenCurve2D
 
 // A 3 dimensional shape with a topological space of 1 dimensions
 interface ICurve3D
-    inherits IGeometry3D, ICurve<Vector3> 
+    inherits IGeometry3D, ICurve<Point3D> 
 { }
 
 // A 3D curve which is known to be closed
@@ -160,7 +160,7 @@ interface ISurface
 // They are effectively Bivariate functions. You can also think of them as curves that have 
 // two parameters. 
 interface IProceduralSurface
-    inherits IProcedural<Vector2, Vector3>, ISurface 
+    inherits IProcedural<Vector2, Point3D>, ISurface 
 {
     ClosedX(x: Self): Boolean;
     ClosedY(x: Self): Boolean;
@@ -178,17 +178,17 @@ interface IImplicitProcedural<TDomain>
 
 // An implicit surface, where we are either on the surface or not. 
 interface IImplicitSurface
-    inherits ISurface, IImplicitProcedural<Vector3>
+    inherits ISurface, IImplicitProcedural<Point3D>
 { }
 
 // An implicitly defined curve
 interface IImplicitCurve2D
-    inherits IGeometry2D, IImplicitProcedural<Vector2>
+    inherits IGeometry2D, IImplicitProcedural<Point2D>
 { }
 
 // An implicit solid/volume, where we are either inside (true) or outside (false).
 interface IImplicitVolume
-    inherits IGeometry3D, IImplicitProcedural<Vector3>
+    inherits IGeometry3D, IImplicitProcedural<Point3D>
 { }
 
 // https://en.wikipedia.org/wiki/Polygonal_chain
@@ -315,29 +315,29 @@ interface IIndexedGeometry inherits IPrimitiveGeometry
     Indices(x: Self): IArray<Integer>; 
 }
 
+interface IPointArray2D inherits IPointGeometry2D { }
+interface IPointArray3D inherits IPointGeometry3D { }
+
 interface IIndexedGeometry2D inherits IIndexedGeometry, IPointGeometry2D { }
 interface IIndexedGeometry3D inherits IIndexedGeometry, IPointGeometry3D { }
 
 interface ILineMesh2D inherits IIndexedGeometry2D, ILineGeometry2D { }
 interface ILineMesh3D inherits IIndexedGeometry3D, ILineGeometry3D { }
 
+interface ILineArray2D inherits ILineGeometry2D { }
+interface ILineArray3D inherits ILineGeometry3D { }
+
 interface ITriangleMesh2D inherits IIndexedGeometry2D, ITriangleGeometry2D { }
 interface ITriangleMesh3D inherits IIndexedGeometry3D, ITriangleGeometry3D { }
+
+interface ITriangleArray2D inherits ITriangleGeometry2D { }
+interface ITriangleArray3D inherits ITriangleGeometry3D { }
 
 interface IQuadMesh2D inherits IIndexedGeometry2D, IQuadGeometry2D { }
 interface IQuadMesh3D inherits IIndexedGeometry3D, IQuadGeometry3D { }
 
-interface IPointArray2D inherits IPointGeometry2D { }
-interface IPointArray3D inherits IPointGeometry3D { }
-
-interface ILineArray2D inherits ILineMesh2D { }
-interface ILineArray3D inherits ILineMesh3D { }
-
-interface ITriangleArray2D inherits ITriangleMesh2D { }
-interface ITriangleArray3D inherits ITriangleMesh3D { }
-
-interface IQuadArray2D inherits IQuadMesh2D { }
-interface IQuadArray3D inherits IQuadMesh3D { }
+interface IQuadArray2D inherits IQuadGeometry2D { }
+interface IQuadArray3D inherits IQuadGeometry3D { }
 
 // Represents a grid of quadrilaterals. 
 interface IQuadGrid2D inherits IQuadMesh2D

@@ -18,11 +18,11 @@ library Algebra
         
     //  https://en.wikipedia.org/wiki/Cubic_function
     Cubic(a: INumerical, b: INumerical, c: INumerical, d: INumerical, x: Number): INumerical
-        => a * x.Cube + b * x.Sqr + c * x + d;
+        => a * x.Pow3 + b * x.Sqr + c * x + d;
 
     // https://en.wikipedia.org/wiki/Quartic_function
     Quartic(a: INumerical, b: INumerical, c: INumerical, d: INumerical, e: INumerical, x: Number): INumerical
-        => a * x.Pow(4) + b * x.Cube + c * x.Sqr + d * x + e;
+        => a * x.Pow(4) + b * x.Pow3 + c * x.Sqr + d * x + e;
 
     // Linear derivative: dy/dx = m
     LinearDerivative(m: INumerical, b: INumerical, x: Number): INumerical
@@ -67,10 +67,10 @@ library Algebra
     //====================
 
     CubicBezier(a: INumerical, b: INumerical, c: INumerical, d: INumerical, t: Number): INumerical
-		=> a * (1.0 - t).Cube 
+		=> a * (1.0 - t).Pow3 
            + b * 3.0 * (1.0 - t).Sqr * t 
            + c * 3.0 * (1.0 - t) * t.Sqr 
-           + d * t.Cube;	
+           + d * t.Pow3;	
    
     CubicBezierDerivative(a: INumerical, b: INumerical, c: INumerical, d: INumerical, t: Number): INumerical
        => (b - a) * 3.0 * (1.0 - t).Sqr
@@ -103,10 +103,10 @@ library Algebra
     //         + (-2t^3 + 3t^2)*p1
     //         + (t^3 - t^2)*m1
     Hermite(p0: INumerical, p1: INumerical, m0: INumerical, m1: INumerical, t: Number): INumerical
-        => p0 * (2.0 * t.Cube - 3.0 * t.Sqr + 1.0)
-            + m0 * (t.Cube - 2.0 * t.Sqr + t)
-            + p1 * (-2.0 * t.Cube + 3.0 * t.Sqr)
-            + m1 * (t.Cube - t.Sqr);              
+        => p0 * (2.0 * t.Pow3 - 3.0 * t.Sqr + 1.0)
+            + m0 * (t.Pow3 - 2.0 * t.Sqr + t)
+            + p1 * (-2.0 * t.Pow3 + 3.0 * t.Sqr)
+            + m1 * (t.Pow3 - t.Sqr);              
 
     // Hermite derivative: 
     // dH/dt = (6t^2 - 6t) * p0 + (3t^2 - 4t + 1) * m0
@@ -133,7 +133,7 @@ library Algebra
         => 0.5 * (p1 * 2.0 
             + (p2 - p0) * t 
             + (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3) * t.Sqr 
-            + (-p0 + p1 * 3.0 - p2 * 3.0 + p3) * t.Cube);
+            + (-p0 + p1 * 3.0 - p2 * 3.0 + p3) * t.Pow3);
 
     // CatmullRom derivative:
     // dCR/dt = 0.5 * [(-p0 + p2) 
@@ -149,5 +149,5 @@ library Algebra
         => x.Sqr * (-x.Twice + 3.0);   
   
     SmootherStep(x: INumerical): INumerical 
-        => x.Cube * (x * 6.0 - 15.0) + 10.0;
+        => x.Pow3 * (x * 6.0 - 15.0) + 10.0;
 }

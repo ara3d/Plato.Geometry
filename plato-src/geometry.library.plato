@@ -1,25 +1,40 @@
 library Geometry
 {
     //==
-    // Point and Size conversions to/from vectors
+    // Point2D 
 
+    Origin2D(): Point2D => (0.0, 0.0);
+    MinPoint2D(): Point2D => Point2D.MinValue;
+    MaxPoint2D(): Point2D => Point2D.MaxValue;
     Vector2(x: Point2D): Vector2 => (x.X, x.Y);
-    Point2D(x: Vector2): Vector2 => (x.X, x.Y);
-    Vector2(x: Point2D): Vector2 => (x.X, x.Y);
+    Point2D(x: Vector2): Point2D => (x.X, x.Y);
+    LineTo(a: Point2D, b: Point2D): Line2D => (a, b);
+    RayTo(a: Point2D, b: Point2D): Ray2D => (a, b - a);
+    RayFrom(a: Point2D, dir: Vector2): Ray2D => (a, dir);
+    Subtract(p1: Point2D, p2: Point2D): Vector2 => p1.Vector2 - p2.Vector2;
+    Add(p1: Point2D, p2: Vector2): Point2D => p1.Vector2 + p2;
+    Add(p1: Point2D, p2: Point2D): Point2D => p1.Vector2 + p2.Vector2;
+    Multiply(a: Point2D, n: Number): Point2D => (a.X * n, a.Y * n);
+    Divide(a: Point2D, n: Number): Point2D => (a.X / n, a.Y / n);
+    Multiply(a: Point2D, v: Vector2): Point2D => a.Vector2 * v;
+    
+    //==
+    // Point3D
+
+    Origin3D(): Point3D => (0.0, 0.0, 0.0);
+    MinPoint3D(): Point3D => Point3D.MinValue;
+    MaxPoint3D(): Point3D => Point3D.MaxValue;
     Vector3(x: Point3D): Vector3 => (x.X, x.Y, x.Z);
     Point3D(x: Vector3): Point3D => (x.X, x.Y, x.Z);
-    Average(a: Point2D, b: Point2D): Point2D => a.Vector2.Average(b.Vector2);
-    Average(a: Point3D, b: Point3D): Point3D => a.Vector3.Average(b.Vector3);
-
-    //==
-    // Operator overloading for points
-
-    Subtract(p1: Point2D, p2: Point2D): Vector2 => p1.Vector2 - p2.Vector2;
+    LineTo(a: Point3D, b: Point3D): Line3D => (a, b);
+    RayTo(a: Point3D, b: Point3D): Ray3D => (a, b - a);
+    RayFrom(a: Point3D, dir: Vector3): Ray3D => (a, dir);
     Subtract(p1: Point3D, p2: Point3D): Vector3 => p1.Vector3 - p2.Vector3;
-    Add(p1: Point2D, p2: Vector2): Point2D => p1.Vector2 + p2;
     Add(p1: Point3D, p2: Vector3): Point3D => p1.Vector3 + p2;
-    Add(p1: Point2D, p2: Point2D): Vector2 => p1.Vector2 + p2.Vector2;
-    Add(p1: Point3D, p2: Point3D): Vector3 => p1.Vector3 + p2.Vector3;
+    Add(p1: Point3D, p2: Point3D): Point3D => p1.Vector3 + p2.Vector3;
+    Multiply(a: Point3D, n: Number): Point3D => (a.X * n, a.Y * n, a.Z * n);
+    Divide(a: Point3D, n: Number): Point3D => (a.X / n, a.Y / n, a.Z / n);
+    Multiply(a: Point3D, v: Vector3): Point3D => a.Vector3 * v;
 
     //==
 	// 2D Lines
@@ -31,6 +46,12 @@ library Geometry
     Start(x: Line2D): Point2D => x.A;
     End(x: Line2D): Point2D => x.B;
     Center(x: Line2D): Point2D => x.A.Average(x.B);
+    Eval(x: Line2D, t: Number): Point2D => x.A.Lerp(x.B, t);
+    
+    //==
+    // 2D Rays
+
+    Ray2D(v: Vector2): Ray2D => (Origin2D, v);
 
 	//== 
 	// 3D Lines
@@ -43,10 +64,12 @@ library Geometry
     Start(x: Line3D): Point3D => x.A;
     End(x: Line3D): Point3D => x.B;
     Center(x: Line3D): Point3D => x.A.Average(x.B);
+    Eval(x: Line3D, t: Number): Point3D => x.A.Lerp(x.B, t);  
 
 	//==
 	// 3D Rays
 
+    Ray3D(v: Vector3): Ray3D => (Origin3D, v);
 	Angle(a: Ray3D, b: Ray3D): Angle => a.Direction.Angle(b.Direction);
     Reverse(r: Ray3D): Ray3D => (r.Origin, -r.Direction);
 
@@ -56,7 +79,7 @@ library Geometry
 	Area(t: Triangle2D): Number => (t.A.X * (t.C.Y - t.B.Y) + t.B.X * (t.A.Y - t.C.Y) + t.C.X * (t.B.Y - t.A.Y)).Half;
 	Flip(t: Triangle2D): Triangle2D => (t.C, t.B, t.A);
     Center(t: Triangle2D): Point2D => (t.A + t.B + t.C) / 3.0;
-	Barycentric(t: Triangle2D, uv: Vector2): Point2D => t.A.Barycentric(t.B, t.C, uv);
+	Barycentric(t: Triangle2D, uv: Vector2): Point2D => t.A.Vector2.Barycentric(t.B, t.C, uv);
     LineA(t: Triangle2D): Line2D => (t.A, t.B);        
     LineB(t: Triangle2D): Line2D => (t.B, t.C);        
     LineC(t: Triangle2D): Line2D => (t.C, t.A);        
@@ -65,14 +88,16 @@ library Geometry
 	//==
     // Triangle3D functions
 
+    Area(t: Triangle3D): Number => t.CrossProductA.Magnitude;
+    CrossProductA(t: Triangle3D): Vector3 => (t.B - t.A).Cross(t.C - t.A);
     Flip(t: Triangle3D): Triangle3D => (t.C, t.B, t.A);        
-    Normal(t: Triangle3D): Vector3 => (t.B - t.A).Cross(t.C - t.A).Normalize;
+    Normal(t: Triangle3D): Vector3 => t.CrossProductA.Normalize;
     Center(t: Triangle3D): Point3D => (t.A + t.B + t.C) / 3.0;
     Plane(t: Triangle3D): Plane => (t.Normal, t.Normal.Dot(t.A));
     LineA(t: Triangle3D): Line3D => (t.A, t.B);        
     LineB(t: Triangle3D): Line3D => (t.B, t.C);        
     LineC(t: Triangle3D): Line3D => (t.C, t.A);        
-    Barycentric(t: Triangle3D, uv: Vector2): Point3D => t.A.Barycentric(t.B, t.C, uv);
+    Barycentric(t: Triangle3D, uv: Vector2): Point3D => t.A.Vector3.Barycentric(t.B, t.C, uv);
     Points(t: Triangle2D): IArray<Point2D> => t.Components;
     
     //==
@@ -121,9 +146,25 @@ library Geometry
     Normal(q: Quad3D): Vector3 => q.TriangleA.Normal.Average(q.TriangleB.Normal).Normalize;
 
     //==
+    // Bounds2D functions
+
+    Center(x: Bounds2D): Point2D => x.Min.Average(x.Max);
+    Corners(x: Bounds2D): IArray<Point2D> => [
+        (x.Min.X, x.Min.Y), 
+        (x.Max.X, x.Min.Y), 
+        (x.Min.X, x.Max.Y), 
+        (x.Max.X, x.Max.Y), 
+        (x.Min.X, x.Min.Y), 
+        (x.Max.X, x.Min.Y),
+        (x.Min.X, x.Max.Y), 
+        (x.Max.X, x.Max.Y)];
+    Empty(_: Bounds2D): Bounds2D => (MaxPoint2D, MinPoint2D);
+    Bounds(xs: IArray<Point2D>): Bounds2D => xs.Reduce(Bounds2D.Empty, (a, b) => a.Include(b));
+
+    //==
     // Bounds3D functions
 
-    Center(x: Bounds3D): Point3D => (x.Min + x.Max).Half;
+    Center(x: Bounds3D): Point3D => x.Min.Average(x.Max);
     Corners(x: Bounds3D): IArray<Point3D> => [
         (x.Min.X, x.Min.Y, x.Min.Z), 
         (x.Max.X, x.Min.Y, x.Min.Z), 
@@ -133,7 +174,7 @@ library Geometry
         (x.Max.X, x.Min.Y, x.Max.Z),
         (x.Min.X, x.Max.Y, x.Max.Z), 
         (x.Max.X, x.Max.Y, x.Max.Z)];
-    Empty(_: Bounds3D): Bounds3D => (MaxNumber, MinNumber);
+    Empty(_: Bounds3D): Bounds3D => (MaxPoint3D, MinPoint3D);
     Bounds(xs: IArray<Point3D>): Bounds3D => xs.Reduce(Bounds3D.Empty, (a, b) => a.Include(b));
 
 	//==
@@ -150,9 +191,6 @@ library Geometry
     At(x: RegularPolygon, n: Integer): Point2D => (n.Number / x.NumPoints).Turns.UnitCircle;
     Count(x: RegularPolygon): Integer => x.NumPoints;
     
-    Eval(x: Line2D, t: Number): Point2D => x.A.Lerp(x.B, t);
-    Eval(x: Line3D, t: Number): Point3D => x.A.Lerp(x.B, t);  
-
     //==
     // 2D to 3D
     
