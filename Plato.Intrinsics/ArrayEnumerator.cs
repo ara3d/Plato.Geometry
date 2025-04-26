@@ -3,19 +3,12 @@ using System.Runtime.CompilerServices;
 
 namespace Plato
 {
-    public struct ArrayEnumerator<T> : IEnumerator<T>
+    [method: MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public struct ArrayEnumerator<T>(IReadOnlyList<T> array) : IEnumerator<T>
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ArrayEnumerator(IArray<T> array)
-        {
-            Array = array;
-            Index = -1;
-            Count = array.Count;
-        }
-
-        public readonly IArray<T> Array;
-        public int Index;
-        public readonly int Count;
+        public readonly IReadOnlyList<T> Array = array;
+        public int Index = -1;
+        public readonly int Count = array.Count;
 
         public T Current
         {

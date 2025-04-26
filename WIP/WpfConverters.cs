@@ -16,10 +16,10 @@ namespace Plato.Geometry.WPF
 {
     public static class WpfConverters
     {
-        public static WVector3D ToWpf(this Vector3D v) 
+        public static WVector3D ToWpf(this Vector3 v) 
             => new WVector3D(v.X, v.Y, v.Z);
         
-        public static Point3D ToPoint(this Vector3D v) 
+        public static Point3D ToPoint(this Vector3 v) 
             => new Point3D(v.X, v.Y, v.Z);
         
         public static Vector3D ToPlato(this WVector3D v) 

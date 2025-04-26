@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Description>
       A feature-rich, efficient, and intuitive C# library of algorithms and data structure
@@ -41,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\studio\src\Ara3D.Studio\Ara3D.DataFormat\Ara3D.Studio.Data.csproj" />
     <ProjectReference Include="..\Plato.Core\Plato.Core.csproj" />
   </ItemGroup>
 

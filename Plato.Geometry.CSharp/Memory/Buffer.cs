@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Plato.SinglePrecision;
 
 namespace Plato.Geometry.Memory
 {

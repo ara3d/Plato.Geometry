@@ -2,6 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 
+public readonly partial struct Color
+{
+    public Color Lerp(Color c, double t) 
+        => (R.Lerp(c.R, t), G.Lerp(c.G, t), B.Lerp(c.B, t), A.Lerp(c.A, t));
+
+    public Color Tint(double t)
+        => Lerp(Colors.White, t);
+
+    public Color Shade(double t)
+        => Lerp(Colors.Black, t);
+}
+
+public static class ExtraIntrinsics
+{
+    // NOTE: this addresses a problem with the Plato compiler not being able 
+    // to add operators to the Number type. This is a workaround.
+    public static T Multiply<T>(this Number scalar, T self) where T : IScalarArithmetic<T>
+        => self.Multiply(scalar);
+
+    public static Number MapComponents(this Number n, Func<Number, Number> f)
+        => f(n);
+}
+
+
 namespace Plato
 {
     /// <summary>
@@ -9,6 +33,74 @@ namespace Plato
     /// </summary>
     public static partial class Extensions2
     {
+
+        /// <summary>
+        /// Returns greatest common divisor
+        /// https://stackoverflow.com/a/41766138
+        /// https://en.wikipedia.org/wiki/Greatest_common_divisor
+        /// </summary>
+        public static int Gcd(this Integer a, Integer b)
+        {
+            if (a < 0) a = -a;
+            if (b < 0) b = -b;
+            while (a != 0 && b != 0)
+            {
+                if (a > b) a %= b;
+                else b %= a;
+            }
+
+            return a | b;
+        }
+
+        /// <summary>
+        /// Returns greatest common divisor
+        /// https://stackoverflow.com/a/41766138
+        /// https://en.wikipedia.org/wiki/Greatest_common_divisor
+        /// https://en.wikipedia.org/wiki/Euclidean_algorithm
+        /// </summary>
+        public static ulong Gcd(this ulong a, ulong b)
+        {
+            while (a != 0 && b != 0)
+            {
+                if (a > b) a %= b;
+                else b %= a;
+            }
+            return a | b;
+        }
+
+        /// <summary>
+        /// Two integers are relatively prime if they share no common positive factors (divisors) except 1.
+        /// https://mathworld.wolfram.com/RelativelyPrime.html
+        /// </summary>
+        public static bool RelativelyPrime(this Integer a, Integer b)
+            => a.Gcd(b) == 1;
+
+        public static bool IsEven(this Integer i)
+            => i % 2 == 0;
+
+        public static bool IsOdd(this Integer i)
+            => i % 1 == 0;
+
+        public static Integer3 Sort(this Integer3 v)
+        {
+            if (v.A < v.B)
+            {
+                return v.B <= v.C
+                    ? v
+                    : v.A <= v.C
+                        ? new Integer3(v.A, v.C, v.B)
+                        : new Integer3(v.C, v.A, v.B);
+            }
+
+            return v.A < v.C
+                ? new Integer3(v.B, v.A, v.C)
+                : v.B < v.C
+                    ? new Integer3(v.B, v.C, v.A)
+                    : new Integer3(v.C, v.B, v.A);
+        }
+    }
+
+        
         public static IArray<T> ToIArray<T>(this IReadOnlyList<T> self)
             => new ListArray<T>(self);
 
@@ -21,8 +113,8 @@ namespace Plato
         public static IArray<T> MapRange<T>(this int count, Func<Integer, T> func)
             => ((Integer)count).MapRange(func);
 
-        public static QuadGrid3D UpArrow(double length, double minorRadius, double majorRadius, int radialSegments,
-            double percentTail)
+        public static QuadGrid3D UpArrow(Number length, Number minorRadius, Number majorRadius, int radialSegments,
+            Number percentTail)
         {
             var first = Vector3.Default;
             var last = Vector3.UnitZ * length;
@@ -36,8 +128,8 @@ namespace Plato
             return profile.SurfaceOfRevolution(Vector3.UnitZ, radialSegments, true, true);
         }   
 
-        public static IArray<Vector3> Transform(this IArray<Vector3> points, Transform3D t)
-            => points.Map(t.Transform);
+        public static IArray<Vector3> Transform(this IArray<Point3D> points, Matrix4x4 m)
+            => points.Map(p => m.Tra);
 
         public static IArray2D<T> ToArray2D<T>(this IArray<IArray<T>> rows)
         {
@@ -49,14 +141,14 @@ namespace Plato
             return new Array2D<T>(nColumns, rows.Count, (i, j) => rows[j][i]);
         }
 
-        public static ITransform3D FractionalRotation(Number numerator, Number denominator, Vector3 axis)
-            => axis.AxisAngle(FractionalTurn(numerator, denominator));
+        public static AxisAngle FractionalRotation(Number numerator, Number denominator, Vector3 axis)
+            => (axis, FractionalTurn(numerator, denominator));
 
-        public static ITransform3D FractionalRotation(Number amount, Vector3 axis)
-            => axis.AxisAngle(-amount.Turns);
+        public static AxisAngle FractionalRotation(Number amount, Vector3 axis)
+            => (axis, -amount.Turns);
 
-        public static IArray<Vector3> TransformBy(this IArray<Vector3> self, ITransform3D t)
-            => self.Map(t.Transform);
+        public static IArray<Vector3> TransformBy(this IArray<Vector3> self, Matrix4x4 m)
+            => self.Map(m.Transform);
 
         public static QuadGrid3D SurfaceOfRevolution(this IArray<Vector3> points, Vector3 axis, Integer segments,
             Boolean closedU, Boolean closedV)
@@ -67,24 +159,23 @@ namespace Plato
                 .ToQuadGrid(closedU, closedV);
 
         public static QuadGrid3D ToQuadGrid(this IArray2D<Vector3> points, bool closedX, bool closedY)
-            => new QuadGrid3D(points, closedX, closedY);
+            => (points.Map(p => p.Point3D), closedX, closedY);
 
-        public static QuadGrid3D ToQuadGrid(Func<Vector2, Vector3> f, Integer nGridSize, Boolean closedX,
-            Boolean closedY)
+        public static QuadGrid3D ToQuadGrid(Func<Vector2, Vector3> f, Integer nGridSize, Boolean closedX, Boolean closedY)
             => nGridSize
                 .MakeArray2D(nGridSize, (a, b) =>
-                    new Vector2(a.Value / (double)nGridSize, b.Value / (double)nGridSize))
+                    new Vector2(a.Value / (Number)nGridSize, b.Value / (Number)nGridSize))
                 .Map(uv => f((uv.X, uv.Y)))
                 .ToQuadGrid(closedX, closedY);
 
-        public static TriangleMesh3D ToTriangleMesh(this IQuadMesh3D q)
+        public static TriangleMesh3D ToTriangleMesh(this QuadMesh3D q)
         {
             var vertices = q.Points;
             var nFaces = q.Indices.Count / 4;
             var nxs = q.Indices;
             var indices = nFaces.Range.FlatMap(f => Intrinsics.MakeArray(
-                nxs[f * 4 + 0], nxs[f * 4 + 1], nxs[f * 4 + 2],
-                nxs[f * 4 + 2], nxs[f * 4 + 3], nxs[f * 4 + 0]));
+                new Integer3(nxs[f * 4 + 0], nxs[f * 4 + 1], nxs[f * 4 + 2]),
+                new Integer3(nxs[f * 4 + 2], nxs[f * 4 + 3], nxs[f * 4 + 0])));
             return new TriangleMesh3D(vertices, indices);
         }
 
@@ -109,31 +200,6 @@ namespace Plato
             => vectors.Map(v => v.Normalize);
         
         //==
-        // Primitives to points 
-
-        public static PolyLine2D ToPolyLine2D(this Vector2[] self, bool closed)
-            => self.ToIArray().ToPolyLine2D(closed);
-
-        public static PolyLine2D ToPolyLine2D(this IArray<Vector2> self, bool closed)
-            => new PolyLine2D(self, closed);
-
-        public static PolyLine3D ToPolyLine3D(this IArray<Vector2> self, bool closed)
-            => self.ToPolyLine2D(closed);
-
-        public static PolyLine3D ToPolygon(this Vector3[] self)
-            => self.ToPolyLine3D(true);
-
-        public static PolyLine3D ToPolygon(this IArray<Vector3> self)
-            => self.ToPolyLine3D(true);
-
-        public static PolyLine3D ToPolyLine3D(this Vector3[] self, bool closed)
-            => self.ToIArray().ToPolyLine3D(closed);
-
-        public static PolyLine3D ToPolyLine3D(this IArray<Vector3> self, bool closed)
-            => new PolyLine3D(self, closed);
-
-        public static TriangleMesh3D ToMesh(this IArray<Triangle3D> self)
-            => self.Points().ToTriangleMesh();
 
         public static TriangleMesh3D ToTriangleMesh(this IArray<Vector3> points, IArray<Integer> indices)
             => new TriangleMesh3D(points, indices);
@@ -144,7 +210,7 @@ namespace Plato
         public static IArray<Integer> FlipWindingOrderTriangleIndices(this IArray<Integer> indices)
             => indices.Slices(3).FlatMap(slice => slice.Reverse());
 
-        public static TriangleMesh3D DoubleSided(this TriangleMesh3D mesh)
+        public static TriangleMesh3D NumberSided(this TriangleMesh3D mesh)
             => mesh.Points.ToTriangleMesh(mesh.Indices.Concat(mesh.Indices.FlipWindingOrderTriangleIndices()));
 
         public static TriangleMesh3D Faceted(this TriangleMesh3D self)
@@ -153,8 +219,8 @@ namespace Plato
         public static TriangleMesh3D FlipWindingOrder(this TriangleMesh3D mesh)
             => mesh.Points.ToTriangleMesh(mesh.Indices.FlipWindingOrderTriangleIndices());
 
-        public static QuadMesh3D ToQuadMesh(this IArray<Vector3> points, IArray<Integer> indices)
-            => new QuadMesh3D(points, indices);
+        public static QuadMesh3D ToQuadMesh(this IArray<Point3D> points, IArray<Integer4> indices)
+            => (points, indices);
 
         public static QuadMesh3D ToQuadMesh(this IArray<Vector3> points)
             => points.ToQuadMesh(points.Indices());
@@ -286,7 +352,7 @@ namespace Plato
         // https://gist.github.com/unitycoder/10241239e080720376830f84511ccd3c
         // https://en.m.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
         // https://stackoverflow.com/questions/4543506/algorithm-for-intersection-of-2-lines
-        public static bool Intersection(this Line2D line1, Line2D line2, out Vector2 point, double epsilon = 0.000001f)
+        public static bool Intersection(this Line2D line1, Line2D line2, out Vector2 point, Number epsilon = 0.000001f)
         {
 
             var x1 = line1.A.X;
@@ -415,7 +481,7 @@ namespace Plato
 
         // Returns the distance between two lines
         // t and u are the distances if the intersection points along the two lines
-        public static Number LineLineDistance(Line2D line1, Line2D line2, out Number t, out Number u, double epsilon = 0.0000001f)
+        public static Number LineLineDistance(Line2D line1, Line2D line2, out Number t, out Number u, Number epsilon = 0.0000001f)
         {
             var x1 = line1.A.X;
             var y1 = line1.A.Y;
@@ -479,7 +545,7 @@ namespace Plato
 
         // Returns the distance between a line and a point.
         // t is the distance along the line of the closest point
-        public static Number Distance(this Line2D line, Vector2 p, out Number t)
+        public static Number Distance(this Line2D line, Point2D p, out Number t)
         {
             var (a, b) = line;
 
@@ -518,7 +584,7 @@ namespace Plato
         public static Angle Turns(this int n)
             => ((Number)n).Turns;
 
-        public static Angle Turns(this double d)
+        public static Angle Turns(this Number d)
             => ((Number)d).Turns;
 
         public static Angle Degrees(this int n)
@@ -564,11 +630,11 @@ namespace Plato
         //==
         // Curve functions
 
-        public static IArray<Vector2> Points(this ICurve2D curve, Integer count, Number from, Number to)
+        public static IArray<Point2D> Points(this ICurve2D curve, Integer count, Number from, Number to)
             => (curve.Closed ? count.LinearSpaceExclusive : count.LinearSpace).Map(t => curve.Eval(from.Lerp(to, t)));
 
         public static PolyLine3D ToPolyLine3D(this ICurve2D curve, int segments, Number from, Number to)
-            => new PolyLine3D(curve.Points(segments, from, to).To3D(), curve.Closed);
+            => new PolyLine3D(curve.Points(segments, from, to).Map(p => p.To3D()), curve.Closed);
 
         // TODO: there are more of these that need to be added to the library.
         // Given just an interface, there is an obvious class that implements the interface
@@ -583,5 +649,118 @@ namespace Plato
 
         public static ICurve2D ToCurve(this IRealFunction f)
             => new Curve2D(t => (t, f.Eval(t)), false);
+
+        public static Point3D To3D(this Point2D p)
+            => new Point3D(p.X, p.Y, 0);
+    }
+   public static class SceneExtensions
+    {
+        public static readonly Material DefaultLineMaterial = Colors.Blue;
+        public static readonly Material DefaultMeshMaterial = Colors.Gray;
+        
+        public static SceneNode AddNode(this SceneNode self, string name = null)
+        {
+            var id = Guid.NewGuid().ToString();
+            var node = new SceneNode
+            {
+                Id = id,
+                Name = name ?? $"Node {id}"
+            };
+            self.Children.Add(node);
+            return node;
+        }
+
+        public static SceneLine AddLines(this SceneNode self, IReadOnlyList<Vector3> points, bool closed, Material material = null, double width = 0.01, string name = null)
+        {
+            var obj = new SceneLine(material ?? DefaultLineMaterial, width, closed, points);
+            var id = Guid.NewGuid().ToString();
+            var node = new SceneNode
+            {
+                Id = id,
+                Name = name ?? $"Line {id}"
+            };
+            node.Objects.Add(obj);
+            self.Children.Add(node);
+            return obj;
+        }
+
+        public static SceneMesh AddMesh(this SceneNode self, TriangleMesh3D mesh, ITransform3D transform = null, Material material = null, string name = null)
+        {
+            var obj = new SceneMesh(material ?? DefaultMeshMaterial, mesh);
+            var id = Guid.NewGuid().ToString();
+            var node = new SceneNode
+            {
+                Id = id,
+                Name = name ?? $"Mesh {id}",
+                Transform = transform ?? IdentityTransform3D.Default,
+            };
+            node.Objects.Add(obj);
+            self.Children.Add(node);
+            return obj;
+        }
+
+        public static TriangleMesh3D ToTriangleMesh(this IScene scene)
+        {
+            var points = new List<Vector3>();
+            var indices = new List<Integer>();
+            AddMeshes(scene.Root, points, indices);
+            return new TriangleMesh3D(new ListArray<Vector3>(points), new ListArray<Integer>(indices));
+        }
+
+        public static void AddMeshes(ISceneNode node, List<Vector3> points, List<Integer> indices)
+        {
+            foreach (var m in node.Objects.OfType<ISceneMesh>())
+                AddMesh(m.Mesh, node.Transform, points, indices);
+            foreach (var c in node.Children)
+                AddMeshes(c, points, indices);
+        }
+
+        // TODO: this seems to be part of a MeshBuilder
+
+        public static void AddMesh(ITriangleMesh3D mesh, ITransform3D transform, List<Vector3> points, List<Integer> indices)
+        {
+            var offset = points.Count;
+            foreach (var p in mesh.Points)
+                points.Add(transform.Transform(p));
+            foreach (var i in mesh.Indices)
+                indices.Add(i + offset);
+        }
+
+        public static IEnumerable<ISceneNode> GetSelfAndDescendants(this ISceneNode node)
+        {
+            if (node == null)
+                yield break;
+            yield return node;
+            foreach (var c in node.Children)
+                foreach (var d in c.GetSelfAndDescendants())
+                    yield return d;
+        }
+
+        public static IEnumerable<ISceneNode> GetNodes(this IScene scene)
+            => scene.Root.GetSelfAndDescendants();
+
+        // NOTE: this doesn't seem to work 
+        public static ISceneNode Filter(this ISceneNode node, Func<ISceneNode, bool> filter)
+        {
+            var children = node.Children.Select(c => c.Filter(filter)).Where(c => c != null).ToList();
+            // NOTE: this is not very efficient. But it could work. 
+            var r = new SceneNode()
+            {
+                Id = node.Id,
+                Name = node.Name,
+                Properties = node.GetProps().ToDictionary(kv => kv.Key, kv => kv.Value),
+            };
+            r.Objects.AddRange(node.Objects);
+            r.Children.AddRange(children);
+            if (!filter(r))
+                return null;
+            return r;
+        }
+
+        public static IEnumerable<ISceneNode> GetNodesWithMeshes(this IScene scene)
+            => scene.GetNodes().Where(n => n.GetMeshes().Any());
+
+        public static IEnumerable<ISceneMesh> GetMeshes(this ISceneNode node)
+            => node.Objects.OfType<ISceneMesh>();
     }
 }

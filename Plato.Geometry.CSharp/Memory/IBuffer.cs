@@ -1,5 +1,4 @@
 ﻿using System;
-using Plato.SinglePrecision;
 
 namespace Plato.Geometry.Memory
 {

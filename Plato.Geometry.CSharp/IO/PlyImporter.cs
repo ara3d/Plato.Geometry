@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Plato.SinglePrecision;
 using Plato.Geometry.Memory;
 
 namespace Plato.Geometry.IO
@@ -435,6 +434,12 @@ namespace Plato.Geometry.IO
             return allBuffers;
         }
 
+        public static IArray<T> ToIArray<T>(this IEnumerable<T> self)
+            => self.ToList().ToIArray();
+
+        public static IArray<T> ToIArray<T>(this IReadOnlyList<T> self)
+            => new Array<T>(self.Count, i => self[i]);
+
         public static TriangleMesh3D ToMesh(this IReadOnlyList<IPlyBuffer> buffers)
         {
             var xs = buffers.First(b => b.Name == "x");
@@ -449,7 +454,7 @@ namespace Plato.Geometry.IO
 
             var vertices = new List<Vector3>();
             for (var i = 0; i != xs.Count; ++i)
-                vertices.Add(new Vector3(xs.GetDouble(i), ys.GetDouble(i), zs.GetDouble(i)));
+                vertices.Add(new Vector3((float)xs.GetDouble(i), (float)ys.GetDouble(i), (float)zs.GetDouble(i)));
             
             var indexBuffer = buffers.First(b => b.Name == "vertex_indices");
             
@@ -457,21 +462,22 @@ namespace Plato.Geometry.IO
             var numFaces = faceSizes.Count;
             var cur = 0;
 
-            var indices = new List<Integer>();
+            var indices = new List<Integer3>();
             for (var f = 0; f < numFaces; f++)
             {
                 var cnt = faceSizes.GetInt(f);
                 for (var i = 0; i < cnt - 2; i++)
                 {
-                    indices.Add(indexBuffer.GetInt(cur + i));
-                    indices.Add(indexBuffer.GetInt(cur + i + 1));
-                    indices.Add(indexBuffer.GetInt(cur + i + 2));
+                    indices.Add(new Integer3(
+                    indexBuffer.GetInt(cur + i),
+                    indexBuffer.GetInt(cur + i + 1),
+                    indexBuffer.GetInt(cur + i + 2)));
                 }
 
                 cur += cnt;
             }
 
-            return new TriangleMesh3D(vertices.ToIArray(), indices.ToIArray());
+            return new TriangleMesh3D(vertices.Select(v => v.Point3D).ToIArray(), indices.ToIArray());
         }   
     }
 }

@@ -94,8 +94,7 @@ namespace Plato
         public static Vector3 operator /(Vector3 left, Number scalar) => left.Value / scalar;
 
         [MethodImpl(AggressiveInlining)]
-        public static Vector3 operator %(Vector3 left, Vector3 right)
-            => left - right * (left / right).Truncate;
+        public static Vector3 operator %(Vector3 left, Vector3 right) => new(left.X % right.X, left.Y % right.Y, left.Z % right.Z);
 
         [MethodImpl(AggressiveInlining)]
         public static Vector3 operator %(Vector3 left, Number scalar) 
@@ -181,75 +180,6 @@ namespace Plato
         }
 
         /// <summary>
-        /// Returns the sine of each element.
-        /// </summary>
-        public Vector3 Sin
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.Sin(Value);
-        }
-
-        /// <summary>
-        /// Returns the cosine of each element.
-        /// </summary>
-        public Vector3 Cos
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.Cos(Value);
-        }
-
-        /// <summary>
-        /// Returns a vector whose elements are the sine and cosine of each element.
-        /// </summary>
-        public (Vector3 Sin, Vector3 Cos) SinCos
-        {
-            [MethodImpl(AggressiveInlining)]
-            get
-            {
-                var (sin, cos) = SNVector3.SinCos(Value);
-                return (sin, cos);
-            }
-        }
-
-        /// <summary>
-        /// Converts degrees to radians for each element.
-        /// </summary>
-        public Vector3 DegreesToRadians
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.DegreesToRadians(Value);
-        }
-
-        /// <summary>
-        /// Converts radians to degrees for each element.
-        /// </summary>
-        public Vector3 RadiansToDegrees
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.RadiansToDegrees(Value);
-        }
-
-        /// <summary>
-        /// Returns the exponential of each element.
-        /// </summary>
-        public Vector3 Exp
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.Exp(Value);
-        }
-
-        /// <summary>
-        /// Returns the natural logarithm (base e) of each element.
-        /// </summary>
-        public Vector3 Log
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.Log(Value);
-        }
-
-        /// <summary>
-        /// Returns the base-2 logarithm of each element.
-        /// </summary>
-        public Vector3 Log2
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.Log2(Value);
-        }
-
-        /// <summary>
         /// Transforms by a 4x4 matrix.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
@@ -278,58 +208,5 @@ namespace Plato
         /// </summary>
         [MethodImpl(AggressiveInlining)]
         public Vector3 Min(Vector3 value2) => SNVector3.Min(Value, value2);
-
-        /// <summary>
-        /// Returns a truncated version of the specified <see cref="Vector3"/>.
-        /// </summary>
-        public Vector3 Truncate
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector3.Truncate(Value);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest even integer
-        /// </summary>
-        public Vector3 Round
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector3.Round(Value, MidpointRounding.ToEven);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards zero.
-        /// </summary>
-        public Vector3 RoundTowardsZero
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector3.Round(Value, MidpointRounding.ToZero);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, away from zero.
-        /// </summary>
-        public Vector3 RoundAwayFromZero
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector3.Round(Value, MidpointRounding.AwayFromZero);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards negative infinity
-        /// </summary>
-        public Vector3 Floor
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector3.Round(Value, MidpointRounding.ToNegativeInfinity);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards positive infinity
-        /// </summary>
-        public Vector3 Ceiling
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector3.Round(Value, MidpointRounding.ToPositiveInfinity);
-        }
     }
 }

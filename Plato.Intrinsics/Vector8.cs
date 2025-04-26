@@ -138,7 +138,7 @@ namespace Plato
 
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator %(Vector8 left, Vector8 right)
-            => left - right * (left / right).Truncate;
+            => new(left.Lower % right.Lower, left.Upper % right.Upper);
 
         [MethodImpl(AggressiveInlining)]
         public static Vector8 operator %(Vector8 left, Number scalar) => left % new Vector8(scalar);
@@ -203,21 +203,6 @@ namespace Plato
         // Basic math functions 
         //-------------------------------------------------------------------------------------
 
-        public Vector8 Sin
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.Sin(Value);
-        }
-
-        public Vector8 Cos
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.Cos(Value);
-        }
-
-        public (Vector8, Vector8) SinCos
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.SinCos(Value);
-        }
-
         public Vector8 Abs
         {
             [MethodImpl(AggressiveInlining)] get => Vector256.Abs(Value);
@@ -229,74 +214,11 @@ namespace Plato
         }
 
         [MethodImpl(AggressiveInlining)]
-        public Vector8 Clamp(Vector8 min, Vector8 max) => Vector256.Clamp(Value, min.Value, max.Value);
-
-        public Vector8 DegreesToRadians
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.DegreesToRadians(Value);
-        }
-
-        [MethodImpl(AggressiveInlining)]
-        public Vector8 CopySign(Vector8 sign) => Vector256.CopySign(Value, sign.Value);
-
-        [MethodImpl(AggressiveInlining)]
         public Number Dot(Vector8 other) => Vector256.Dot(Value, other.Value);
-
-        public Vector8 Exp
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.Exp(Value);
-        }
 
         public Vector8 Floor
         {
             [MethodImpl(AggressiveInlining)] get => Vector256.Floor(Value);
-        }
-
-        [MethodImpl(AggressiveInlining)]
-        public Vector8 Hypot(Vector8 other) => Vector256.Hypot(Value, other.Value);
-
-        public Vector8 IsNaN
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.IsNaN(Value);
-        }
-
-        public Vector8 IsNegative
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.IsNegative(Value);
-        }
-
-        public Vector8 IsPositive
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.IsPositive(Value);
-        }
-
-        public Vector8 IsPositiveInfinity
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.IsPositiveInfinity(Value);
-        }
-
-        public Vector8 IsZero
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.IsZero(Value);
-        }
-
-        [MethodImpl(AggressiveInlining)]
-        public Vector8 Lerp(Vector8 b, Vector8 t)
-            => Vector256.Lerp(Value, b.Value, t.Value);
-
-        public Vector8 Log
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.Log(Value);
-        }
-
-        public Vector8 Log2
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.Log2(Value);
-        }
-
-        public Vector8 RadiansToDegrees
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.RadiansToDegrees(Value);
         }
 
         /// <summary>Reciprocal (1/x) of each element</summary>
@@ -309,16 +231,6 @@ namespace Plato
         public Vector8 ReciprocalSqrt
         {
             [MethodImpl(AggressiveInlining)] get => Avx.ReciprocalSqrt(Value);
-        }
-
-        public Vector8 Round
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.Round(Value);
-        }
-
-        public Vector8 Sign
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.CopySign(new Vector8(1), Value);
         }
 
         public Vector8 Sqrt
@@ -337,24 +249,9 @@ namespace Plato
             [MethodImpl(AggressiveInlining)] get => Vector256.Sum(Value);
         }
 
-        public Vector8 Tan
-        {
-            [MethodImpl(AggressiveInlining)]
-            get
-            {
-                var (a, b) = SinCos;
-                return a / b;
-            }
-        }
-
         public Number FirstElement
         {
             [MethodImpl(AggressiveInlining)] get => Vector256.ToScalar(Value);
-        }
-
-        public Vector8 Truncate
-        {
-            [MethodImpl(AggressiveInlining)] get => Vector256.Truncate(Value);
         }
 
         //-------------------------------------------------------------------------------------

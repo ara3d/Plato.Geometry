@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Plato.SinglePrecision;
 
 namespace Plato.Geometry.Graphics
 {
@@ -7,16 +6,16 @@ namespace Plato.Geometry.Graphics
     {
         public string Name;
         public Color Color;
-        public float Transmission;
-        public float Metallic;
-        public float Roughness;
-        public float Sheen;
-        public float SheenTint;
+        public double Transmission;
+        public double Metallic;
+        public double Roughness;
+        public double Sheen;
+        public double SheenTint;
         public bool UseSpecularReflectance = false;
-        public float SpecularReflectance = 0.4;
-        public float IndexOfRefraction;
-        public float SpecularTint;
-        public float SubsurfaceScattering;
+        public double SpecularReflectance = 0.4;
+        public double IndexOfRefraction;
+        public double SpecularTint;
+        public double SubsurfaceScattering;
         public Color SubsurfaceColor;
 
         public Material(Color color)
@@ -27,23 +26,23 @@ namespace Plato.Geometry.Graphics
             int green, 
             int blue, 
             int alpha,            
-            float transmission, 
-            float metallic, 
-            float roughness, 
-            float sheen, 
-            float sheenTint, 
+            double transmission, 
+            double metallic, 
+            double roughness, 
+            double sheen, 
+            double sheenTint, 
             bool useSpecularReflectance, 
-            float specularReflectance, 
-            float indexOfRefraction, 
-            float specularTint, 
-            float subsurfaceScattering, 
+            double specularReflectance, 
+            double indexOfRefraction, 
+            double specularTint, 
+            double subsurfaceScattering, 
             int subsurfaceRed,
             int subsurfaceGreen,
             int subsurfaceBlue,
             [System.Runtime.CompilerServices.CallerMemberName] string name = "")
         {
             Debug.Assert(alpha == 255, "Alpha channel is not currently supported");
-            Color = new Color(red / 255.0f, green / 255.0f, blue / 255.0f, 1.0f - transmission);
+            Color = new Color(red / 255.0f, green / 255.0f, blue / 255.0f, (float)(1.0 - transmission));
             Metallic = metallic;
             Roughness = roughness;
             Sheen = sheen;
@@ -52,7 +51,7 @@ namespace Plato.Geometry.Graphics
             SpecularReflectance = specularReflectance;
             SpecularTint = specularTint;
             IndexOfRefraction = indexOfRefraction;
-            SubsurfaceColor = new Color(subsurfaceRed / 255.0f, subsurfaceGreen / 255.0f, subsurfaceBlue / 255.0f, 1.0f);
+            SubsurfaceColor = new Color(subsurfaceRed / 255, subsurfaceGreen / 255, subsurfaceBlue / 255, 1);
             SubsurfaceScattering = subsurfaceScattering;
             Name = name;
         }
@@ -69,8 +68,8 @@ namespace Plato.Geometry.Graphics
     public struct SpecularSettings
     {
         public readonly Color Color;
-        public readonly float Power;
-        public SpecularSettings(Color color, float power)
+        public readonly double Power;
+        public SpecularSettings(Color color, double power)
         {
             Color = color;
             Power = power;
@@ -78,7 +77,8 @@ namespace Plato.Geometry.Graphics
 
         public static Color DielectricSpecular = new Color(0.04f, 0.04f, 0.04f, 1.0f);
 
-        public static SpecularSettings FromPBR(Color color, float metallic, float roughness)
-            => new SpecularSettings(DielectricSpecular.Lerp(color, metallic), ((Number)1).Lerp(100, 1 - roughness));
+        public static SpecularSettings FromPBR(Color color, double metallic, double roughness)
+            => throw new System.NotImplementedException();
+        //=> new SpecularSettings(DielectricSpecular.Lerp(color, metallic), ((Number)1).Lerp(100, 1 - roughness));
     }
 }

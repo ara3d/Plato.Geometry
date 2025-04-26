@@ -53,6 +53,10 @@ namespace Plato
             => a.Value * b.Value;
 
         [MethodImpl(AggressiveInlining)]
+        public static Number operator %(Number a, Number b)
+            => a.Value % b.Value;
+
+        [MethodImpl(AggressiveInlining)]
         public static Number operator /(Number a, Number b)
             => a.Value / b.Value;
 

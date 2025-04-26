@@ -147,8 +147,8 @@ public Number SmoothStep { [MethodImpl(AggressiveInlining)] get  => this.Sqr.Mul
 public Number SmootherStep { [MethodImpl(AggressiveInlining)] get  => this.Pow3.Multiply(this.Multiply(((Number)6)).Subtract(((Number)15))).Add(((Number)10)); } 
 public static Number Zero { [MethodImpl(AggressiveInlining)] get  => Number.CreateFromComponent(((Number)0)); } 
 public static Number One { [MethodImpl(AggressiveInlining)] get  => Number.CreateFromComponent(((Number)1)); } 
-public static Number MinValue { [MethodImpl(AggressiveInlining)] get  => Number.CreateFromComponent(Number.MinValue); } 
-public static Number MaxValue { [MethodImpl(AggressiveInlining)] get  => Number.CreateFromComponent(Number.MaxValue); } 
+public static Number MinValue { [MethodImpl(AggressiveInlining)] get  => float.MinValue; } 
+public static Number MaxValue { [MethodImpl(AggressiveInlining)] get  => float.MaxValue; } 
 [MethodImpl(AggressiveInlining)]  public Number Reduce(Number initial, System.Func<Number, Number, Number> f) => this.Components.Reduce(initial, f);
 public Number MinComponent { [MethodImpl(AggressiveInlining)] get  => this.Reduce(this.At(((Integer)0)), (a, b)  => a.Min(b)); } 
 public Number MaxComponent { [MethodImpl(AggressiveInlining)] get  => this.Reduce(this.At(((Integer)0)), (a, b)  => a.Max(b)); } 

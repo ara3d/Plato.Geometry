@@ -134,10 +134,13 @@ namespace Plato
         /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector4 operator /(Vector4 left, Number scalar) => left.Value / scalar;
-
+        
+        /// <summary>
+        /// Pairwise modulo operator. 
+        /// </summary>
         [MethodImpl(AggressiveInlining)]
         public static Vector4 operator %(Vector4 left, Vector4 right)
-            => left - right * (left / right).Truncate;
+            => new(left.X % right.X, left.Y % right.Y, left.Z % right.Z, left.W % right.W);
 
         [MethodImpl(AggressiveInlining)]
         public static Vector4 operator %(Vector4 left, Number scalar) 
@@ -214,75 +217,6 @@ namespace Plato
         }
 
         /// <summary>
-        /// Returns the sine of each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 Sin
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector4.Sin(Value);
-        }
-
-        /// <summary>
-        /// Returns the cosine of each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 Cos
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector4.Cos(Value);
-        }
-
-        /// <summary>
-        /// Returns a vector whose elements are the sine and cosine of each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public (Vector4 Sin, Vector4 Cos) SinCos
-        {
-            [MethodImpl(AggressiveInlining)]
-            get
-            {
-                var (sin, cos) = SNVector4.SinCos(Value);
-                return (sin, cos);
-            }
-        }
-
-        /// <summary>
-        /// Converts degrees to radians for each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 DegreesToRadians
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector4.DegreesToRadians(Value);
-        }
-
-        /// <summary>
-        /// Converts radians to degrees for each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 RadiansToDegrees
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector4.RadiansToDegrees(Value);
-        }
-
-        /// <summary>
-        /// Returns the exponential of each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 Exp
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector4.Exp(Value);
-        }
-
-        /// <summary>
-        /// Returns the natural logarithm (base e) of each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 Log
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector4.Log(Value);
-        }
-
-        /// <summary>
-        /// Returns the base-2 logarithm of each element in the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 Log2
-        {
-            [MethodImpl(AggressiveInlining)] get => SNVector4.Log2(Value);
-        }
-
-        /// <summary>
         /// Transforms a <see cref="Vector4"/> by a 4x4 matrix.
         /// </summary>
         [MethodImpl(AggressiveInlining)]
@@ -305,61 +239,7 @@ namespace Plato
         /// </summary>
         [MethodImpl(AggressiveInlining)]
         public Vector4 Min(Vector4 value2) => SNVector4.Min(Value, value2);
-
-        /// <summary>
-        /// Returns a truncated version of the specified <see cref="Vector4"/>.
-        /// </summary>
-        public Vector4 Truncate
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector4.Truncate(Value); 
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest even integer.
-        /// </summary>
-        public Vector4 Round
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector4.Round(Value, MidpointRounding.ToEven);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards zero.
-        /// </summary>
-        public Vector4 RoundTowardsZero
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector4.Round(Value, MidpointRounding.ToZero);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, away from zero.
-        /// </summary>
-        public Vector4 RoundAwayFromZero
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector4.Round(Value, MidpointRounding.AwayFromZero);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards negative infinity
-        /// </summary>
-        public Vector4 Floor
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector4.Round(Value, MidpointRounding.ToNegativeInfinity);
-        }
-
-        /// <summary>
-        /// Rounds each element of the specified <see cref="Vector2"/> to the nearest integer, towards positive infinity
-        /// </summary>
-        public Vector4 Ceiling
-        {
-            [MethodImpl(AggressiveInlining)]
-            get => SNVector4.Round(Value, MidpointRounding.ToPositiveInfinity);
-        }
-
+        
         public Vector4 XYWZ => new(X, Y, W, Z);
         public Vector4 XYZW => new(X, Y, Z, W);
         public Vector4 XWYZ => new(X, W, Y, Z);

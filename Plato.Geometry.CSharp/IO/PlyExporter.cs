@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Plato.SinglePrecision;
-using Plato.Geometry.Graphics;
 
 namespace Plato.Geometry.IO
 {
@@ -16,7 +14,7 @@ namespace Plato.Geometry.IO
         public static void WritePly(this TriangleMesh3D mesh, string filePath)
             => File.WriteAllLines(filePath, PlyStrings(mesh));
 
-        public static IEnumerable<string> PlyStrings(TriangleMesh3D g, IArray<Color32> colors = null)
+        public static IEnumerable<string> PlyStrings(TriangleMesh3D g, IArray<ByteRGBA> colors = null)
         {
             var vertices = g.Points;
             var indices = g.Indices;
@@ -36,7 +34,7 @@ namespace Plato.Geometry.IO
                 yield return "property uchar blue";
             }
 
-            yield return "element face " + g.NumFaces;
+            yield return "element face " + g.NumPrimitives;
             yield return "property list uchar int vertex_index";
             yield return "end_header";
 
@@ -64,7 +62,7 @@ namespace Plato.Geometry.IO
 
             // Write the face indices
             var index = 0;
-            for (var i = 0; i < g.NumFaces; i++)
+            for (var i = 0; i < g.NumPrimitives; i++)
             {
                 yield return $"3 {indices[index++]} {indices[index++]} {indices[index++]}";
             }

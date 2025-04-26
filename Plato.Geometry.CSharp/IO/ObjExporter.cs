@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Plato.SinglePrecision;
 
 namespace Plato.Geometry.IO
 {
@@ -24,7 +23,7 @@ namespace Plato.Geometry.IO
                     yield return $"vt {uvs[v].X} {uvs[v].Y}";
             }
 
-            foreach (var f in mesh.AllFaceIndices)
+            foreach (var f in mesh.FaceIndices)
             {
                 var a = f[0] + 1;
                 var b = f[1] + 1;

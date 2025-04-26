@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Plato.SinglePrecision;
 using Plato.Geometry.Graphics;
 
 namespace Plato.Geometry.Scenes
@@ -24,9 +23,9 @@ namespace Plato.Geometry.Scenes
 
         public ITransform3D Transform { get; set; } = IdentityTransform3D.Default;
         public readonly List<ISceneObject> Objects = new List<ISceneObject>();
-        IReadOnlyList<ISceneObject> ISceneNode.Objects => Objects;
+        IArray<ISceneObject> ISceneNode.Objects => throw new System.NotImplementedException();
         public readonly List<ISceneNode> Children = new List<ISceneNode>();
-        IReadOnlyList<ISceneNode> ISceneNode.Children => Children;
+        IArray<ISceneNode> ISceneNode.Children => throw new System.NotImplementedException();
         public object GetProp(string key) => Properties.TryGetValue(key, out var r) ? r : null;
     }
 
