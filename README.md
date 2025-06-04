@@ -1,9 +1,10 @@
-## PROJECT IS ON HOLD! 
+## PROJECT HAS MOVED! 
 
 ### Active work is happening in Ara3D.Geometry project at https://github.com/ara3d/ara3d-sdk
 
-We will resume work on the Plato.Geometry repository once the Ara3D.Geometry project has reached a stable equilibrium. 
-The goal is to first assure that Ara3D.Geometry is well tested, and provides a good user experience. 
+We will resume work on the Plato.Geometry repository once the Ara3D.Geometry C# libraries have reached a stable equilibrium. 
+The goal is to first assure that Ara3D.Geometry is well tested, and provides a good user experience, and then 
+we will resume work on Plato.Geometry as a multi-language. 
 
 # Plato.Geometry
 
