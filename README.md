@@ -1,6 +1,13 @@
+## PROJECT IS ON HOLD! 
+
+### Active work is happening in Ara3D.Geometry project at https://github.com/ara3d/ara3d-sdk
+
+We will resume work on the Plato.Geometry repository once the Ara3D.Geometry project has reached a stable equilibrium. 
+The goal is to first assure that Ara3D.Geometry is well tested, and provides a good user experience. 
+
 # Plato.Geometry
 
-**Plato.Geometry** is a C# geometry library with a multi-language geometry kernel at it's core. In
+**Plato.Geometry** is a C# geometry library with a multi-language geometry kernel at it's core. Inis 
 other words it is a math and geometry library that is appropriate for usage in 
 3D Computer Aided Design (CAD), Computer Aided Engineering (CAE), and Digital Content Creation (DCC) software. 
 
